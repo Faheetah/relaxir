@@ -1,0 +1,28 @@
+<h1>Listing Recipes</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Directions</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for recipe <- @recipes do %>
+    <tr>
+      <td><%= recipe.title %></td>
+      <td><%= recipe.directions %></td>
+
+      <td>
+        <span><%= link "Show", to: Routes.recipe_path(@conn, :show, recipe) %></span>
+        <span><%= link "Edit", to: Routes.recipe_path(@conn, :edit, recipe) %></span>
+        <span><%= link "Delete", to: Routes.recipe_path(@conn, :delete, recipe), method: :delete, data: [confirm: "Are you sure?"] %></span>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<span><%= link "New Recipe", to: Routes.recipe_path(@conn, :new) %></span>

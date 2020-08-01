@@ -17,6 +17,7 @@ defmodule RelaxirWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+    resources "/recipes", RecipeController
   end
 
   scope "/api", RelaxirWeb do
