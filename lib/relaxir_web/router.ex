@@ -19,10 +19,11 @@ defmodule RelaxirWeb.Router do
     get "/", PageController, :index
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", RelaxirWeb do
-  #   pipe_through :api
-  # end
+  scope "/api", RelaxirWeb do
+    pipe_through :api
+
+    resources "/ingredients", IngredientController
+  end
 
   # Enables LiveDashboard only for development
   #
