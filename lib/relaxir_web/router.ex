@@ -18,6 +18,7 @@ defmodule RelaxirWeb.Router do
 
     get "/", PageController, :index
     resources "/recipes", RecipeController
+    resources "/users", UserController
   end
 
   scope "/api", RelaxirWeb do
