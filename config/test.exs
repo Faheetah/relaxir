@@ -20,11 +20,3 @@ config :relaxir, RelaxirWeb.Endpoint,
 
 # Print only warnings and errors during test
 config :logger, level: :warn
-
-config :relaxir, RelaxirWeb.Endpoint,
-  server: true
-
-config :relaxir, :sql_sandbox, true
-
-config :wallaby,
-  driver: Wallaby.Chrome

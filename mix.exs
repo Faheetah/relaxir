@@ -46,7 +46,7 @@ defmodule Relaxir.MixProject do
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
       {:argon2_elixir, "~> 2.3.0"},
-      {:wallaby, "~> 0.26.2", [runtime: false, only: :test]},
+      {:mix_test_watch, "~> 1.0", runtime: false, only: :dev},
     ]
   end
 
