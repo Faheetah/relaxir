@@ -36,7 +36,6 @@ defmodule Relaxir.Users.User do
         put_change(changeset,
                    :password_hash,
                    Argon2.add_hash(password) |> get_hash)
-        |> IO.inspect
       _ ->
         changeset
     end

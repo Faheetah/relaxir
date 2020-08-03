@@ -47,6 +47,10 @@ defmodule Relaxir.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:argon2_elixir, "~> 2.3.0"},
       {:mix_test_watch, "~> 1.0", runtime: false, only: :dev},
+      {:ueberauth, "~> 0.6.3"},
+      {:ueberauth_identity, "~> 0.3.0"},
+      {:ueberauth_google, "~> 0.8"},
+      {:guardian, "~> 2.1"},
     ]
   end
 

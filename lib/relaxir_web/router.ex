@@ -13,15 +13,42 @@ defmodule RelaxirWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/", RelaxirWeb do
-    pipe_through :browser
+  pipeline :guardian do
+    plug RelaxirWeb.Authentication.Pipeline
+  end
 
-    get "/", PageController, :index
+  pipeline :browser_auth do
+    plug Guardian.Plug.EnsureAuthenticated
+  end
+
+
+  scope "/", RelaxirWeb do
+    pipe_through [:browser, :guardian, :browser_auth]
+
     resources "/recipes", RecipeController
     resources "/users", UserController
+    resources "/profile", ProfileController, only: [:show], singleton: true
     
+    delete "/logout", SessionController, :delete
+  end
+
+  scope "/", RelaxirWeb do
+    pipe_through [:browser]
+
+    get "/", PageController, :index
+    resources "/recipes", RecipeController, only: [:show, :index]
     get "/register", RegistrationController, :new
+    post "/register", RegistrationController, :create
+
     get "/login", SessionController, :new
+    post "/login", SessionController, :create
+  end
+
+  scope "/auth", RelaxirWeb do
+    pipe_through [:browser, :guardian]
+
+    get "/:provider", AuthController, :request
+    get "/:provider/callback", AuthController, :callback
   end
 
   scope "/api", RelaxirWeb do

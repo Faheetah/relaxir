@@ -16,3 +16,6 @@ config :relaxir, RelaxirWeb.Endpoint,
   secret_key_base: System.fetch_env!("SECRET_KEY_BASE")
 
 config :relaxir, RelaxirWeb.Endpoint, server: true
+
+config :relaxir, RelaxirWeb.Authentication,
+    secret_key: System.get_env("GUARDIAN_SECRET_KEY")

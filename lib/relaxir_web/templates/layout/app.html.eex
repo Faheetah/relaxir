@@ -11,17 +11,35 @@
   <body>
     <header>
       <section class="container">
-        <nav role="navigation">
-          <ul>
-            <li><a href="https://hexdocs.pm/phoenix/overview.html">Get Started</a></li>
-            <%= if function_exported?(Routes, :live_dashboard_path, 2) do %>
-              <li><%= link "LiveDashboard", to: Routes.live_dashboard_path(@conn, :home) %></li>
-            <% end %>
-          </ul>
-        </nav>
-        <a href="https://phoenixframework.org/" class="phx-logo">
-          <img src="<%= Routes.static_path(@conn, "/images/phoenix.png") %>" alt="Phoenix Framework Logo"/>
-        </a>
+        <nav class="navigation" role="navigation">
+          <section class="container">
+            <a href="#" class="navigation-title" title="Relaxir">Relaxir</a>
+              <ul class="navigation-list float-right">
+                <%= if @conn.assigns[:current_account] do %>
+                  <%= if function_exported?(Routes, :live_dashboard_path, 2) do %>
+                    <li><%= link "LiveDashboard", to: Routes.live_dashboard_path(@conn, :home) %></li>
+                  <% end %>
+                  <li class="navigation-item">
+                    <%= @current_account.email %>
+                  </li>
+                  <li class="navigation-item">
+                    <%= link(
+                      "Log Out",
+                      to: Routes.session_path(@conn, :delete),
+                      method: :delete
+                    ) %>
+                  </li>
+                <% else %>
+                  <li class="navigation-item">
+                    <%= link("Log In", to: Routes.session_path(@conn, :new)) %>
+                  </li> 
+                  <li class="navigation-item">
+                    <%= link("Register", to: Routes.registration_path(@conn, :new)) %>
+                  </li> 
+                <% end %>
+              </ul>
+            </section>
+          </nav>
       </section>
     </header>
     <main role="main" class="container">
