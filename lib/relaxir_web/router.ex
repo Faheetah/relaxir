@@ -21,17 +21,6 @@ defmodule RelaxirWeb.Router do
     plug Guardian.Plug.EnsureAuthenticated
   end
 
-
-  scope "/", RelaxirWeb do
-    pipe_through [:browser, :guardian, :browser_auth]
-
-    resources "/recipes", RecipeController
-    resources "/users", UserController
-    resources "/profile", ProfileController, only: [:show], singleton: true
-    
-    delete "/logout", SessionController, :delete
-  end
-
   scope "/", RelaxirWeb do
     pipe_through [:browser]
 
@@ -42,6 +31,15 @@ defmodule RelaxirWeb.Router do
 
     get "/login", SessionController, :new
     post "/login", SessionController, :create
+
+    scope "/" do
+      pipe_through [:guardian, :browser_auth]
+  
+      resources "/recipes", RecipeController
+      resources "/profile", ProfileController, only: [:show], singleton: true
+      
+      delete "/logout", SessionController, :delete
+    end
   end
 
   scope "/auth", RelaxirWeb do
