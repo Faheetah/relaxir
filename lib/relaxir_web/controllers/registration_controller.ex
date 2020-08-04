@@ -8,7 +8,7 @@ defmodule RelaxirWeb.RegistrationController do
 
   def new(conn, _) do
     if Authentication.get_current_user(conn) do
-      redirect(conn, to: Routes.profile_path(conn, :show))
+      redirect(conn, to: Routes.recipe_path(conn, :index))
     else
       render(
         conn,
@@ -24,7 +24,7 @@ defmodule RelaxirWeb.RegistrationController do
       {:ok, user} ->
         conn
         |> Authentication.log_in(user)
-        |> redirect(to: Routes.profile_path(conn, :show))
+        |> redirect(to: Routes.recipe_path(conn, :index))
       
       {:error, changeset} ->
         render(conn, :new,

@@ -1,6 +1,6 @@
 defmodule RelaxirWeb.Router do
   import Phoenix.LiveDashboard.Router
-  import RelaxirWeb.Authentication, only: [load_current_user: 2]
+  import RelaxirWeb.Authentication, only: [load_current_user: 2, require_admin: 2]
 
   use RelaxirWeb, :router
 
@@ -40,12 +40,15 @@ defmodule RelaxirWeb.Router do
     scope "/" do
       pipe_through [:browser_auth]
   
-      resources "/recipes", RecipeController, excludes: [:show, :index]
       resources "/profile", ProfileController, only: [:show], singleton: true
       
       delete "/logout", SessionController, :delete
 
-      live_dashboard "/dashboard", metrics: RelaxirWeb.Telemetry
+      scope "/" do
+        pipe_through [:require_admin]
+        resources "/recipes", RecipeController, excludes: [:show, :index]
+        live_dashboard "/dashboard", metrics: RelaxirWeb.Telemetry
+      end
     end
   end
 

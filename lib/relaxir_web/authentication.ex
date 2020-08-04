@@ -22,6 +22,13 @@ defmodule RelaxirWeb.Authentication do
     |> assign(:current_user, Guardian.Plug.current_resource(conn))
   end
 
+  def require_admin(conn, _) do
+    case get_current_user(conn) do
+      %Users.User{is_admin: true} -> conn
+      _ -> RelaxirWeb.Authentication.ErrorHandler.auth_error(conn, {:requires_admin, :requires_admin}, %{})
+    end
+  end
+
   def get_current_user(conn) do
     __MODULE__.Plug.current_resource(conn)
   end
