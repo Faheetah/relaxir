@@ -1,0 +1,46 @@
+name: Elixir CI
+
+env:
+  MIX_ENV: prod
+
+on:
+  release:
+  push:
+    types: 
+      - created
+
+jobs:
+  build:
+
+    name: Build release
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Elixir
+      uses: actions/setup-elixir@v1
+      with:
+        elixir-version: '1.10.4'
+        otp-version: '23.0'
+    - name: Restore dependencies cache
+      uses: actions/cache@v2
+      with:
+        path: deps
+        key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
+        restore-keys: ${{ runner.os }}-mix-
+    - name: Install dependencies
+      run: mix deps.get
+    - name: Run release
+      run: mix release relaxir
+    - name: Bundle project
+      run: zip --junk-paths _build/prod/rel/relaxir/
+    - name: Upload release bundle
+      id: upload-release-asset
+      uses: actions/upload-release-asset@v1.0.2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+        asset_path: ./relaxir.zip
+        asset_name: relaxir.zip
+        asset_content_type: application/zip
