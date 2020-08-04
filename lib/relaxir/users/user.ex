@@ -6,6 +6,7 @@ defmodule Relaxir.Users.User do
     field :email, :string
     field :password, :string, virtual: true
     field :encrypted_password, :string
+    field :is_admin, :boolean
 
     timestamps()
   end

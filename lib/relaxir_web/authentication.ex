@@ -4,6 +4,7 @@ defmodule RelaxirWeb.Authentication do
   """
   use Guardian, otp_app: :relaxir
   alias Relaxir.{Users, Users.User}
+  import Plug.Conn
 
   def subject_for_token(resource, _claims) do
     {:ok, to_string(resource.id)}
@@ -14,6 +15,11 @@ defmodule RelaxirWeb.Authentication do
       nil -> {:error, :resource_not_found}
       user -> {:ok, user}
     end
+  end
+
+  def load_current_user(conn, _) do
+    conn
+    |> assign(:current_user, Guardian.Plug.current_resource(conn))
   end
 
   def get_current_user(conn) do

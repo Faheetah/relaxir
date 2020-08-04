@@ -14,5 +14,7 @@
 
 </ul>
 
+<%= if @current_user && @current_user.is_admin do %>
 <span><%= link "Edit", to: Routes.recipe_path(@conn, :edit, @recipe) %></span>
 <span><%= link "Back", to: Routes.recipe_path(@conn, :index) %></span>
+<% end %>

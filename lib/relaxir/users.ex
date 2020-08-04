@@ -1,17 +1,19 @@
 defmodule Relaxir.Users do
+  import Ecto.Changeset
+
   alias Relaxir.Repo
   alias __MODULE__.User
 
   def register(%Ueberauth.Auth{provider: :identity} = params) do
     %User{}
     |> User.changeset(extract_user_params(params))
-    |> Relaxir.Repo.insert()
+    |> Repo.insert()
   end
 
   def register(%Ueberauth.Auth{} = params) do
     %User{}
     |> User.oauth_changeset(extract_user_params(params))
-    |> Relaxir.Repo.insert()
+    |> Repo.insert()
   end
 
   def get_or_register(%Ueberauth.Auth{info: %{email: email}} = params) do
@@ -24,6 +26,12 @@ defmodule Relaxir.Users do
 
   def change_user(user \\ %User{}) do
     User.changeset(user, %{})
+  end
+
+  def set_admin(id) do
+    change(get_user(id))
+    |> put_change(:is_admin, true)
+    |> Repo.update()
   end
 
   defp extract_user_params(%{credentials: %{other: other}, info: info}) do

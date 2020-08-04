@@ -13,29 +13,20 @@
       <section class="container">
         <nav class="navigation" role="navigation">
           <section class="container">
-            <a href="#" class="navigation-title" title="Relaxir">Relaxir</a>
-              <ul class="navigation-list float-right">
+              <ul class="navigation-list">
+                <li class="navigation-item">
+                  <a href="/" title="Relaxir">Relaxir</a>
+                </li>
                 <%= if @conn.assigns[:current_user] do %>
                   <%= if function_exported?(Routes, :live_dashboard_path, 2) do %>
-                    <li><%= link "LiveDashboard", to: Routes.live_dashboard_path(@conn, :home) %></li>
+                    <li class="navigation-item"><%= link "LiveDashboard", to: Routes.live_dashboard_path(@conn, :home) %></li>
                   <% end %>
                   <li class="navigation-item">
                     <%= @current_user.email %>
                   </li>
                   <li class="navigation-item">
-                    <%= link(
-                      "Log Out",
-                      to: Routes.session_path(@conn, :delete),
-                      method: :delete
-                    ) %>
+                    <%= link("Log Out", to: Routes.session_path(@conn, :delete), method: :delete) %>
                   </li>
-                <% else %>
-                  <li class="navigation-item">
-                    <%= link("Log In", to: Routes.session_path(@conn, :new)) %>
-                  </li> 
-                  <li class="navigation-item">
-                    <%= link("Register", to: Routes.registration_path(@conn, :new)) %>
-                  </li> 
                 <% end %>
               </ul>
             </section>
