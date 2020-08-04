@@ -1,8 +1,8 @@
-defmodule Relaxir.Accounts.Account do
+defmodule Relaxir.Users.User do
   use Ecto.Schema
   import Ecto.Changeset
 
-  schema "accounts" do
+  schema "users" do
     field :email, :string
     field :password, :string, virtual: true
     field :encrypted_password, :string
@@ -11,8 +11,8 @@ defmodule Relaxir.Accounts.Account do
   end
 
   @doc false
-  def changeset(account, attrs) do
-    account
+  def changeset(user, attrs) do
+    user
     |> cast(attrs, [:email, :password])
     |> validate_required([:email, :password])
     |> validate_confirmation(:password, required: true)

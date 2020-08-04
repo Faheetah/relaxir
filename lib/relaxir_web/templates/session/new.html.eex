@@ -1,7 +1,7 @@
 <div class="row">
   <div class="column column-50 column-offset-25">
     <h1>Log In</h1>
-    <%= form_for @changeset, @action, [as: :account], fn f -> %>
+    <%= form_for @changeset, @action, [as: :user], fn f -> %>
       <%= label f, :email, "Email address" %>
       <%= email_input f, :email %>
       <%= error_tag f, :email %>
@@ -17,7 +17,7 @@
 <div class="row">
   <div class="column column-50 column-offset-25">
     <p>
-      Need an account?
+      Need an user?
       <%= link "Register here", to: Routes.registration_path(@conn, :new) %>
     </p>
   </div>

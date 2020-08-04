@@ -1,7 +1,7 @@
 defmodule RelaxirWeb.AuthController do
   use RelaxirWeb, :controller
   plug Ueberauth
-  alias Relaxir.Accounts
+  alias Relaxir.Users
   alias RelaxirWeb.Authentication
 
   def request(conn, _params) do
@@ -9,10 +9,10 @@ defmodule RelaxirWeb.AuthController do
   end
 
   def callback(%{assigns: %{ueberauth_auth: auth_data}} = conn, _params) do
-    case Accounts.get_or_register(auth_data) do
-      {:ok, account} ->
+    case Users.get_or_register(auth_data) do
+      {:ok, user} ->
         conn
-        |> Authentication.log_in(account)
+        |> Authentication.log_in(user)
         |> redirect(to: Routes.profile_path(conn, :show))
       
       {:error, _error_changeset} ->

@@ -3,7 +3,7 @@ defmodule RelaxirWeb.ProfileController do
   alias RelaxirWeb.Authentication
 
   def show(conn, _parameters) do
-    current_account = Authentication.get_current_account(conn)
-    render(conn, :show, current_account: current_account)
+    current_user = Authentication.get_current_user(conn)
+    render(conn, :show, current_user: current_user)
   end
 end

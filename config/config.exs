@@ -31,7 +31,7 @@ config :ueberauth, Ueberauth,
     google: {Ueberauth.Strategy.Google, []},
     identity: {
       Ueberauth.Strategy.Identity, [
-        param_nesting: "account",
+        param_nesting: "user",
         request_path: "/register",
         callback_path: "/register",
         callback_methods: ["POST"]

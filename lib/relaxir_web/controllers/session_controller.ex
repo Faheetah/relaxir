@@ -1,28 +1,28 @@
 defmodule RelaxirWeb.SessionController do
   use RelaxirWeb, :controller
-  alias Relaxir.Accounts
+  alias Relaxir.Users
   alias RelaxirWeb.Authentication
 
   def new(conn, _params) do
-    if Authentication.get_current_account(conn) do
+    if Authentication.get_current_user(conn) do
       redirect(conn, to: Routes.profile_path(conn, :show))
     else
       render(
         conn, 
         :new, 
-        changeset: Accounts.change_account(),
+        changeset: Users.change_user(),
         action: Routes.session_path(conn, :create)
       )
     end
   end
 
-  def create(conn, %{"account" => %{"email" => email, "password" => password}}) do
+  def create(conn, %{"user" => %{"email" => email, "password" => password}}) do
     case email
-         |> Accounts.get_by_email()
+         |> Users.get_by_email()
          |> Authentication.authenticate(password) do
-      {:ok, account} ->
+      {:ok, user} ->
         conn
-        |> Authentication.log_in(account)
+        |> Authentication.log_in(user)
         |> redirect(to: Routes.profile_path(conn, :show))
 
       {:error, :invalid_credentials} ->

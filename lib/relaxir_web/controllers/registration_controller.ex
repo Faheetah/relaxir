@@ -3,27 +3,27 @@ defmodule RelaxirWeb.RegistrationController do
 
   plug(Ueberauth)
 
-  alias Relaxir.Accounts
+  alias Relaxir.Users
   alias RelaxirWeb.Authentication
 
   def new(conn, _) do
-    if Authentication.get_current_account(conn) do
+    if Authentication.get_current_user(conn) do
       redirect(conn, to: Routes.profile_path(conn, :show))
     else
       render(
         conn,
         :new,
-        changeset: Accounts.change_account(),
+        changeset: Users.change_user(),
         action: Routes.registration_path(conn, :create)
       )
     end
   end
 
   def create(%{assigns: %{ueberauth_auth: auth_params}} = conn, _params) do
-    case Accounts.register(auth_params) do
-      {:ok, account} ->
+    case Users.register(auth_params) do
+      {:ok, user} ->
         conn
-        |> Authentication.log_in(account)
+        |> Authentication.log_in(user)
         |> redirect(to: Routes.profile_path(conn, :show))
       
       {:error, changeset} ->

@@ -1,0 +1,42 @@
+defmodule Relaxir.Users do
+  alias Relaxir.Repo
+  alias __MODULE__.User
+
+  def register(%Ueberauth.Auth{provider: :identity} = params) do
+    %User{}
+    |> User.changeset(extract_user_params(params))
+    |> Relaxir.Repo.insert()
+  end
+
+  def register(%Ueberauth.Auth{} = params) do
+    %User{}
+    |> User.oauth_changeset(extract_user_params(params))
+    |> Relaxir.Repo.insert()
+  end
+
+  def get_or_register(%Ueberauth.Auth{info: %{email: email}} = params) do
+    if user = get_by_email(email) do
+      {:ok, user}
+    else
+      register(params)
+    end
+  end
+
+  def change_user(user \\ %User{}) do
+    User.changeset(user, %{})
+  end
+
+  defp extract_user_params(%{credentials: %{other: other}, info: info}) do
+    info
+    |> Map.from_struct()
+    |> Map.merge(other)
+  end
+
+  def get_user(id) do
+    Repo.get(User, id)
+  end
+
+  def get_by_email(email) do
+    Repo.get_by(User, email: email)
+  end
+end
