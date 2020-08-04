@@ -21,12 +21,12 @@ jobs:
       with:
         elixir-version: '1.10.4'
         otp-version: '23.0'
-    - name: Restore dependencies cache
-      uses: actions/cache@v2
-      with:
-        path: deps
-        key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
-        restore-keys: ${{ runner.os }}-mix-
+    # - name: Restore dependencies cache
+    #   uses: actions/cache@v2
+    #   with:
+    #     path: deps
+    #     key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
+    #     restore-keys: ${{ runner.os }}-mix-
     - name: Install dependencies
       run: mix deps.get
     - name: Run release
