@@ -32,8 +32,6 @@ defmodule RelaxirWeb.Router do
     get "/register", RegistrationController, :new
     post "/register", RegistrationController, :create
 
-    resources "/recipes", RecipeController, only: [:show, :index]
-
     get "/login", SessionController, :new
     post "/login", SessionController, :create
 
@@ -50,6 +48,8 @@ defmodule RelaxirWeb.Router do
         live_dashboard "/dashboard", metrics: RelaxirWeb.Telemetry
       end
     end
+
+    resources "/recipes", RecipeController, only: [:show, :index]
   end
 
   scope "/auth", RelaxirWeb do
