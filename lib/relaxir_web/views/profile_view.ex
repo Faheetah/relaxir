@@ -1,3 +1,3 @@
-defmodule Relaxir.ProfileView do
+defmodule RelaxirWeb.ProfileView do
   use RelaxirWeb, :view
 end

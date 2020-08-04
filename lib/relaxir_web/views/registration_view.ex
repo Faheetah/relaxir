@@ -1,3 +1,3 @@
 defmodule RelaxirWeb.RegistrationView do
-    use RelaxirWeb, :view
+  use RelaxirWeb, :view
 end
