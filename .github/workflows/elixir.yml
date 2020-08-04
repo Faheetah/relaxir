@@ -4,6 +4,9 @@ env:
   MIX_ENV: prod
 
 on:
+  push:
+    branches: 
+      - master
   release:
     types: 
     - released
