@@ -24,6 +24,9 @@ jobs:
     
     - name: Install hex
       run: mix local.hex --force
+          
+    - name: Install hex
+      run: mix local.rebar --force
     
     - name: Restore dependencies cache
       uses: actions/cache@v2
