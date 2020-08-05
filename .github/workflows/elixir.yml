@@ -47,8 +47,8 @@ jobs:
       uses: actions/create-release@v1
       id: release
       with:
-        tag_name: ${{ mix_version }}
-        release_name: ${{ mix_version }}
+        tag_name: ${{ env.mix_version }}
+        release_name: ${{ env.mix_version }}
       
     - name: Upload release bundle
       id: upload-release-asset
