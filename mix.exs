@@ -52,6 +52,7 @@ defmodule Relaxir.MixProject do
       {:ueberauth_identity, "~> 0.3.0"},
       {:ueberauth_google, "~> 0.8"},
       {:guardian, "~> 2.1"},
+      {:earmark, "~> 1.4.10"},
     ]
   end
 

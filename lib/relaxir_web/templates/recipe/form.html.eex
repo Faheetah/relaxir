@@ -10,7 +10,7 @@
   <%= error_tag f, :title %>
 
   <%= label f, :directions %>
-  <%= text_input f, :directions %>
+  <%= textarea f, :directions %>
   <%= error_tag f, :directions %>
 
   <div>
