@@ -33,6 +33,10 @@ jobs:
       
     - name: Install dependencies
       run: mix deps.get
+
+    - name: Install NPM
+      run: npm install
+      working-directory: assets/
       
     - name: Run release
       run: mix release
