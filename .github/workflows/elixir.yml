@@ -41,7 +41,7 @@ jobs:
       run: tar -zcvf relaxir.tar.gz relaxir/
       working-directory: _build/prod/rel/
     
-    - run: echo "::set-env name=mix_version::${mix get_version}"
+    - run: echo "::set-env name=mix_version::$(mix get_version)"
       
     - name: Create release
       uses: actions/create-release@v1
