@@ -13,6 +13,7 @@ defmodule Mix.Tasks.Deploy do
     |> ssh("tar -zvxf relaxir.tar.gz")
     |> ssh("sudo rsync -av --chown=relaxir:relaxir relaxir/ /home/relaxir/relaxir/")
     |> ssh("sudo systemctl restart relaxir")
+    |> ssh("sudo rsync -av --delete --chown=relaxir:relaxir relaxir/ /home/relaxir/relaxir/")
   end
 
   defp ssh(conn, command) do
