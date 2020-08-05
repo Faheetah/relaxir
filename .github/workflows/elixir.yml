@@ -4,9 +4,8 @@ env:
   MIX_ENV: prod
 
 on:
-  release:
-    types: 
-    - released
+  push:
+    tags: '*'
 
 jobs:
   build:
@@ -41,6 +40,16 @@ jobs:
     - name: Bundle project
       run: tar -zcvf relaxir.tar.gz relaxir/
       working-directory: _build/prod/rel/
+    
+    - id: version_name
+      run: mix get_version
+    
+    - name: Create release
+      uses: actions/create-release@v1
+      id: release
+      with:
+        tag_name: ${{ version_name }}
+        release_name: ${{ version_name }}
       
     - name: Upload release bundle
       id: upload-release-asset
@@ -48,7 +57,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ github.event.release.upload_url }}
+        upload_url: ${{ release.upload_url }}
         asset_path: _build/prod/rel/relaxir.tar.gz
         asset_name: relaxir-ubuntu-20.04.tar.gz
         asset_content_type: application/zip
