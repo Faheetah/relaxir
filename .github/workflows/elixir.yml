@@ -27,11 +27,11 @@ jobs:
     - name: Install rebar
       run: mix local.rebar --force
     
-    - name: Install dependencies
-      run: mix deps.get
+    - name: Build dependencies
+      run: mix deps.get --only prod && mix compile
 
-    - name: Build NPM
-      run: npm install && npm run deploy
+    - name: Build web assets
+      run: npm install && npm run deploy && mix phx.digest
       working-directory: assets/
       
     - name: Build release
@@ -42,7 +42,7 @@ jobs:
       working-directory: _build/prod/rel/
     
     - name: Get project version
-      run: echo "::set-env name=mix_version::$(mix get_version)"
+      run: echo "::set-env name=mix_version::$(mix relaxir.version)"
       
     - name: Create Github release
       uses: actions/create-release@v1
