@@ -15,39 +15,36 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     
-    - name: Install Elixir
-      run: wget https://packages.erlang-solutions.com/erlang/debian/pool/elixir_1.10.4-1~ubuntu~focal_all.deb && sudo dpkg -i 'elixir_1.10.4-1~ubuntu~focal_all.deb'
+    - name: Download elixir
+      run: wget https://packages.erlang-solutions.com/erlang/debian/pool/elixir_1.10.4-1~ubuntu~focal_all.deb
+    
+    - name: Download elixir
+      run: sudo dpkg -i elixir_1.10.4-1~ubuntu~focal_all.deb
     
     - name: Install hex
       run: mix local.hex --force
           
-    - name: Install hex
+    - name: Install rebar
       run: mix local.rebar --force
     
-    - name: Restore dependencies cache
-      uses: actions/cache@v2
-      with:
-        path: deps
-        key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
-        restore-keys: ${{ runner.os }}-mix-
-      
     - name: Install dependencies
       run: mix deps.get
 
-    - name: Install NPM
-      run: npm install
+    - name: Build NPM
+      run: npm install && npm run deploy
       working-directory: assets/
       
-    - name: Run release
+    - name: Build release
       run: mix release
       
     - name: Bundle project
       run: tar -zcvf relaxir.tar.gz relaxir/
       working-directory: _build/prod/rel/
     
-    - run: echo "::set-env name=mix_version::$(mix get_version)"
+    - name: Get project version
+      run: echo "::set-env name=mix_version::$(mix get_version)"
       
-    - name: Create release
+    - name: Create Github release
       uses: actions/create-release@v1
       id: create_release
       env:
