@@ -31,8 +31,7 @@ jobs:
       run: mix deps.get --only prod && mix compile
 
     - name: Build web assets
-      run: npm install && npm run deploy && mix phx.digest
-      working-directory: assets/
+      run: npm install --prefix ./assets && npm run deploy --prefix ./assets && mix phx.digest
       
     - name: Build release
       run: mix release
