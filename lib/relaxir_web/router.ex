@@ -28,13 +28,6 @@ defmodule RelaxirWeb.Router do
   scope "/", RelaxirWeb do
     pipe_through [:browser, :guardian]
 
-    get "/", RecipeController, :index
-    get "/register", RegistrationController, :new
-    post "/register", RegistrationController, :create
-
-    get "/login", SessionController, :new
-    post "/login", SessionController, :create
-
     scope "/" do
       pipe_through [:browser_auth]
   
@@ -42,12 +35,20 @@ defmodule RelaxirWeb.Router do
       
       delete "/logout", SessionController, :delete
 
-      scope "/" do
-        pipe_through [:require_admin]
-        resources "/recipes", RecipeController, excludes: [:show, :index]
-        live_dashboard "/dashboard", metrics: RelaxirWeb.Telemetry
-      end
     end
+
+    scope "/" do
+      pipe_through [:browser_auth, :require_admin]
+      resources "/recipes", RecipeController, except: [:show, :index]
+      live_dashboard "/dashboard", metrics: RelaxirWeb.Telemetry
+    end
+
+    get "/", RecipeController, :index
+    get "/register", RegistrationController, :new
+    post "/register", RegistrationController, :create
+
+    get "/login", SessionController, :new
+    post "/login", SessionController, :create
 
     resources "/recipes", RecipeController, only: [:show, :index]
   end
