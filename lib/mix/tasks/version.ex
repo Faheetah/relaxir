@@ -1,4 +1,4 @@
-defmodule Mix.Tasks.GetVersion do
+defmodule Mix.Tasks.Relaxir.Version do
   use Mix.Task
 
   @shortdoc "Get the version for a release"

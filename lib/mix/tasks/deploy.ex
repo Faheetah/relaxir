@@ -1,4 +1,4 @@
-defmodule Mix.Tasks.Deploy do
+defmodule Mix.Tasks.Relaxir.Deploy do
   use Mix.Task
 
   @shortdoc "Create a tagged release"
