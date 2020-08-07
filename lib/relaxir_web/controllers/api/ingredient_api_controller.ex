@@ -1,4 +1,4 @@
-defmodule RelaxirWeb.IngredientController do
+defmodule RelaxirWeb.Api.IngredientController do
   use RelaxirWeb, :controller
 
   alias Relaxir.Ingredients
@@ -6,9 +6,10 @@ defmodule RelaxirWeb.IngredientController do
 
   action_fallback RelaxirWeb.FallbackController
 
-  def index(conn, _params) do
+  def index(conn, params) do
+    IO.inspect params
     ingredients = Ingredients.list_ingredients()
-    render(conn, "index.json", ingredients: ingredients)
+    render(conn, :index, ingredients: ingredients)
   end
 
   def create(conn, %{"ingredient" => ingredient_params}) do
