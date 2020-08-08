@@ -5,7 +5,7 @@ defmodule RelaxirWeb.AuthController do
   alias RelaxirWeb.Authentication
 
   def request(conn, _params) do
-    IO.inspect conn
+    conn
   end
 
   def callback(%{assigns: %{ueberauth_auth: auth_data}} = conn, _params) do
