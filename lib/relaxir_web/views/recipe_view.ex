@@ -1,3 +1,21 @@
 defmodule RelaxirWeb.RecipeView do
   use RelaxirWeb, :view
+
+  def ingredients_input(form, field, _opts \\ []) do
+    ingredients = Phoenix.HTML.Form.input_value(form, field)
+    Phoenix.HTML.Form.textarea(form, field, value: ingredients_to_text(ingredients))
+  end
+
+  def ingredients_to_text(ingredients) do
+    ingredients
+    |> Enum.map(fn i -> i.name end)
+    |> Enum.join("\r\n")
+  end
+
+  def render_markdown(text) do
+    case text do
+      nil -> ""
+      _ -> raw(Earmark.as_html!(text))
+    end
+  end
 end

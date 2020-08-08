@@ -1,6 +1,13 @@
 <h1><%= @recipe.title %></h1>
   
-<%= raw(Earmark.as_html!(@recipe.directions)) %>
+<%= render_markdown @recipe.directions %>
+
+<strong>Ingredients:</strong>
+<%= for ingredient <- @recipe.ingredients do %>
+<li>
+  <%= ingredient.name %>
+</li>
+<% end %>
 
 <%= if @current_user && @current_user.is_admin do %>
 <span><%= link "Edit", to: Routes.recipe_path(@conn, :edit, @recipe) %></span>

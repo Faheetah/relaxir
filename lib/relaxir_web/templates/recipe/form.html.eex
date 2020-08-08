@@ -9,6 +9,10 @@
   <%= text_input f, :title %>
   <%= error_tag f, :title %>
 
+  <%= label f, :ingredients %>
+  <%= ingredients_input f, :ingredients %>
+  <%= error_tag f, :ingredients %>
+
   <%= label f, :directions %>
   <%= textarea f, :directions %>
   <%= error_tag f, :directions %>

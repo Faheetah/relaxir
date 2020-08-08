@@ -6,8 +6,7 @@ defmodule RelaxirWeb.Api.IngredientController do
 
   action_fallback RelaxirWeb.FallbackController
 
-  def index(conn, params) do
-    IO.inspect params
+  def index(conn, _params) do
     ingredients = Ingredients.list_ingredients()
     render(conn, :index, ingredients: ingredients)
   end

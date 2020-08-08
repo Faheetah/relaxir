@@ -3,7 +3,7 @@ defmodule Relaxir.Repo.Migrations.CreateRecipes do
 
   def change do
     create table(:recipes) do
-      add :title, :string
+      add :title, :string, null: false
       add :directions, :string
 
       timestamps()

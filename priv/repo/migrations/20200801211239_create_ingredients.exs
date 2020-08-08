@@ -8,5 +8,6 @@ defmodule Relaxir.Repo.Migrations.CreateIngredients do
       timestamps()
     end
 
+    create unique_index(:ingredients, [:name])
   end
 end
