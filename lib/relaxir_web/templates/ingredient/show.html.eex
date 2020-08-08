@@ -1,5 +1,14 @@
 <h1><%= @ingredient.name %></h1>
   
+<%= if @ingredient.recipes != [] do %>
+<strong>Recipes:</strong>
+<%= for recipe <- @ingredient.recipes do %>
+<li>
+  <%= link recipe.title, to: Routes.recipe_path(@conn, :show, recipe)%> 
+</li>
+<% end %>
+<% end %>
+
 <%= if @current_user && @current_user.is_admin do %>
 <span><%= link "Edit", to: Routes.ingredient_path(@conn, :edit, @ingredient) %></span>
 <span><%= link "Back", to: Routes.ingredient_path(@conn, :index) %></span>

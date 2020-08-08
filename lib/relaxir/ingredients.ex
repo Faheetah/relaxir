@@ -8,7 +8,11 @@ defmodule Relaxir.Ingredients do
     Repo.all(Ingredient)
   end
 
-  def get_ingredient!(id), do: Repo.get!(Ingredient, id)
+  def get_ingredient!(id) do
+    Ingredient
+    |> preload(:recipes)
+    |> Repo.get!(id)
+  end
 
   def get_ingredient_by_name!(name) do
     Repo.get_by(Ingredient, name: name)
