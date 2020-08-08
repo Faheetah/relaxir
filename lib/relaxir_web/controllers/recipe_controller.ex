@@ -12,7 +12,7 @@ defmodule RelaxirWeb.RecipeController do
   end
 
   def new(conn, _params) do
-    changeset = Recipes.change_recipe(%Recipe{ingredients: []})
+    changeset = Recipes.change_recipe(%Recipe{ingredients: [], categories: []})
     render(conn, "new.html", changeset: changeset)
   end
 

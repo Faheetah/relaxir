@@ -1,0 +1,14 @@
+<h1>Categories</h1>
+
+<%= if @current_user && @current_user.is_admin do %>
+<h4>
+  <%= link "+ New Category", to: Routes.category_path(@conn, :new) %>
+</h4>
+<% end %>
+
+<%= for category <- @categories do %>
+<h4>
+  <%= link category.name, to: Routes.category_path(@conn, :show, category) %>
+</h4>
+<% end %>
+

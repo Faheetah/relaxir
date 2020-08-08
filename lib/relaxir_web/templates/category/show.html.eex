@@ -1,0 +1,15 @@
+<h1><%= @category.name %></h1>
+
+<%= if @category.recipes != [] do %>
+<strong>Recipes:</strong>
+<%= for recipe <- @category.recipes do %>
+<li>
+  <%= link recipe.title, to: Routes.recipe_path(@conn, :show, recipe)%> 
+</li>
+<% end %>
+<% end %>
+
+<%= if @current_user && @current_user.is_admin do %>
+<span><%= link "Edit", to: Routes.category_path(@conn, :edit, @category) %></span>
+<span><%= link "Back", to: Routes.category_path(@conn, :index) %></span>
+<% end %>

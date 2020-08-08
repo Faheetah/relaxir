@@ -6,15 +6,17 @@ defmodule Relaxir.Recipes do
   alias Relaxir.Recipes.Recipe
   alias Relaxir.Ingredients
   alias Relaxir.Ingredients.Ingredient
+  alias Relaxir.Categories
+  alias Relaxir.Categories.Category
 
   def list_recipes do
     Repo.all(Recipe)
-    |> Repo.preload(:ingredients)
+    |> Repo.preload([:ingredients, :categories])
   end
 
   def get_recipe!(id) do
     Recipe
-    |> preload(:ingredients)
+    |> preload([:ingredients, :categories])
     |> Repo.get!(id)
   end
 
@@ -22,16 +24,15 @@ defmodule Relaxir.Recipes do
     %Recipe{}
     |> Recipe.changeset(attrs)
     |> put_assoc(:ingredients, parse_ingredients(attrs))
+    |> put_assoc(:categories, parse_categories(attrs))
     |> Repo.insert()
   end
 
   def update_recipe(%Recipe{} = recipe, attrs) do
     recipe
     |> Recipe.changeset(attrs)
-    # here we need to instead of just parse_ingredients, 
-    # parse each one and add it to the changeset, not 
-    # blindly create it
     |> put_assoc(:ingredients, parse_ingredients(attrs))
+    |> put_assoc(:categories, parse_categories(attrs))
     |> Repo.update()
   end
 
@@ -41,6 +42,23 @@ defmodule Relaxir.Recipes do
 
   def change_recipe(%Recipe{} = recipe, attrs \\ %{}) do
     Recipe.changeset(recipe, attrs)
+  end
+
+  defp parse_categories(nil), do: []
+
+  defp parse_categories(attrs) do
+    (attrs["categories"] || "")
+    |> String.split(",")
+    |> Enum.map(&String.trim/1)
+    |> Enum.reject(& &1 == "")
+    |> Enum.map(&get_or_create_category/1)
+  end
+
+  defp get_or_create_category(category) do
+    case Categories.get_category_by_name!(category) do
+      nil -> Category.changeset(%Category{}, %{name: category})
+      category -> category
+    end
   end
 
   defp parse_ingredients(nil), do: []

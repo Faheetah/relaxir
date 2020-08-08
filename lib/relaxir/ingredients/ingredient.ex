@@ -9,7 +9,7 @@ defmodule Relaxir.Ingredients.Ingredient do
 
   schema "ingredients" do
     field :name, :string
-    many_to_many :recipes, Recipe, join_through: RecipeIngredient
+    many_to_many :recipes, Recipe, join_through: RecipeIngredient, on_replace: :delete
 
     timestamps()
   end

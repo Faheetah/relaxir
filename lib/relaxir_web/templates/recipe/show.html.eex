@@ -2,6 +2,15 @@
   
 <%= render_markdown @recipe.directions %>
 
+<%= if @recipe.categories != [] do %>
+<strong>Categories:</strong>
+<%= for category <- @recipe.categories do %>
+<li>
+  <%= link category.name, to: Routes.category_path(@conn, :show, category)%> 
+</li>
+<% end %>
+<% end %>
+
 <%= if @recipe.ingredients != [] do %>
 <strong>Ingredients:</strong>
 <%= for ingredient <- @recipe.ingredients do %>
