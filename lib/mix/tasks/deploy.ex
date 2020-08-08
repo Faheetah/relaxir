@@ -12,6 +12,7 @@ defmodule Mix.Tasks.Relaxir.Deploy do
     |> ssh("wget --progress=bar:force -O relaxir.tar.gz #{download_url}")
     |> ssh("tar -zvxf relaxir.tar.gz")
     |> ssh("sudo rsync -av --chown=relaxir:relaxir relaxir/ /home/relaxir/relaxir/")
+    |> ssh("sudo -u relaxir bash -c 'cd /home/relaxir && source secrets.source && ./relaxir/bin/relaxir eval Relaxir.Release.migrate'")
     |> ssh("sudo systemctl restart relaxir")
     |> ssh("sudo rsync -av --delete --chown=relaxir:relaxir relaxir/ /home/relaxir/relaxir/")
   end
