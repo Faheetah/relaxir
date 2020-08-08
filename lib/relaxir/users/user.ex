@@ -14,7 +14,7 @@ defmodule Relaxir.Users.User do
   @doc false
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:email, :password])
+    |> cast(attrs, [:email, :password, :is_admin])
     |> validate_required([:email, :password])
     |> validate_confirmation(:password, required: true)
     |> unique_constraint(:email)

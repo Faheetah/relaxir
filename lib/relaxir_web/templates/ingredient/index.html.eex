@@ -1,24 +1,13 @@
-<h1>Listing Ingredients</h1>
-
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-    </tr>
-  </thead>
-  <tbody>
-<%= for ingredient <- @ingredients do %>
-    <tr>
-      <td><%= ingredient.name %></td>
-
-      <td>
-        <span><%= link "Show", to: Routes.ingredient_path(@conn, :show, ingredient) %></span>
-      </td>
-    </tr>
-<% end %>
-  </tbody>
-</table>
+<h1>Ingredients</h1>
 
 <%= if @current_user && @current_user.is_admin do %>
-<span><%= link "New Ingredient", to: Routes.ingredient_path(@conn, :new) %></span>
+<h4>
+  <%= link "+ New Ingredient", to: Routes.ingredient_path(@conn, :new) %>
+</h4>
+<% end %>
+
+<%= for ingredient <- @ingredients do %>
+<h4>
+  <%= link ingredient.name, to: Routes.ingredient_path(@conn, :show, ingredient) %>
+</h4>
 <% end %>

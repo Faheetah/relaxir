@@ -1,27 +1,13 @@
-<h1>Listing Recipes</h1>
-
-<table>
-  <thead>
-    <tr>
-      <th>Title</th>
-      <th>Directions</th>
-
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-<%= for recipe <- @recipes do %>
-    <tr>
-      <td><%= recipe.title %></td>
-
-      <td>
-        <span><%= link "Show", to: Routes.recipe_path(@conn, :show, recipe) %></span>
-      </td>
-    </tr>
-<% end %>
-  </tbody>
-</table>
+<h1>Recipes</h1>
 
 <%= if @current_user && @current_user.is_admin do %>
-<span><%= link "New Recipe", to: Routes.recipe_path(@conn, :new) %></span>
+<h4>
+  <%= link "+ New Recipe", to: Routes.recipe_path(@conn, :new) %>
+</h4>
+<% end %>
+
+<%= for recipe <- @recipes do %>
+<h4>
+  <%= link recipe.title, to: Routes.recipe_path(@conn, :show, recipe) %> 
+</h4>
 <% end %>

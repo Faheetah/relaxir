@@ -11,7 +11,7 @@ defmodule Mix.Tasks.Relaxir.SeedDb do
     |> Enum.each(&Application.ensure_all_started/1)
     Repo.start_link
 
-    ["Tomates", "Lettuce", "Cheese", "Jalapenos"]
+    ["Tomatoes", "Lettuce", "Cheese", "Jalapenos"]
     |> Enum.each(& Ingredients.create_ingredient(%{name: &1}))
 
     Recipes.create_recipe(%{"title" => "Beef Fajitas", "ingredients" => "Beef\nOnion\nBell Pepper"})
