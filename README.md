@@ -1,20 +1,39 @@
-# Relaxir
+# Setup
 
-To start your Phoenix server:
+Install Elixir
 
-  * Install dependencies with `mix deps.get`
-  * Create and migrate your database with `mix ecto.setup`
-  * Install Node.js dependencies with `npm install` inside the `assets` directory
-  * Start Phoenix endpoint with `mix phx.server`
+mix local.hex --force
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+mix local.rebar --force
 
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
+mix deps.get
 
-## Learn more
+npm install --prefix ./assets
 
-  * Official website: https://www.phoenixframework.org/
-  * Guides: https://hexdocs.pm/phoenix/overview.html
-  * Docs: https://hexdocs.pm/phoenix
-  * Forum: https://elixirforum.com/c/phoenix-forum
-  * Source: https://github.com/phoenixframework/phoenix
+npm run deploy --prefix ./assets
+
+mix phx.digest
+
+# Dev
+
+`mix ecto.reset`
+`mix relaxir.add_user email=test@test password=test admin=true`
+`mix relaxir.seed_db`
+`iex -S mix phx.server`
+
+Or inside of phx.server
+
+Mix.Tasks.Relaxir.AddUser.run(["email=test@test", "password=test", "admin=true"])
+Mix.Tasks.Relaxir.SeedDb.run([])
+
+# Prod
+
+Increment version in mix.esx
+
+Add a tag for the version, found with `mix relaxir.version`
+
+Push with tags
+
+Wait for the build job
+
+`mix relaxir.deploy`
