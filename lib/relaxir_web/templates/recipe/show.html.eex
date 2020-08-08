@@ -6,7 +6,7 @@
 <strong>Ingredients:</strong>
 <%= for ingredient <- @recipe.ingredients do %>
 <li>
-  <%= ingredient.name %>
+  <%= link ingredient.name, to: Routes.ingredient_path(@conn, :show, ingredient)%> 
 </li>
 <% end %>
 <% end %>
