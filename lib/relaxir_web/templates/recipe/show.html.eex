@@ -2,11 +2,13 @@
   
 <%= render_markdown @recipe.directions %>
 
+<%= if @recipe.ingredients != [] do %>
 <strong>Ingredients:</strong>
 <%= for ingredient <- @recipe.ingredients do %>
 <li>
   <%= ingredient.name %>
 </li>
+<% end %>
 <% end %>
 
 <%= if @current_user && @current_user.is_admin do %>
