@@ -53,6 +53,7 @@ defmodule Relaxir.MixProject do
       {:ueberauth_google, "~> 0.8"},
       {:guardian, "~> 2.1"},
       {:earmark, "~> 1.4.10"},
+      {:csv, "~> 2.3.1"},
     ]
   end
 

@@ -68,5 +68,6 @@ defmodule RelaxirWeb.Router do
     pipe_through :api
 
     resources "/ingredients", IngredientController, only: [:show, :index]
+    resources "/food", UsdaController, [:show, :index]
   end
 end

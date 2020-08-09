@@ -8,7 +8,7 @@ defmodule RelaxirWeb.Api.IngredientController do
 
   def index(conn, _params) do
     ingredients = Ingredients.list_ingredients()
-    render(conn, :index, ingredients: ingredients)
+    render(conn, "index.json", ingredients: ingredients)
   end
 
   def create(conn, %{"ingredient" => ingredient_params}) do
