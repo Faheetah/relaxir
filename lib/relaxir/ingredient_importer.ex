@@ -6,6 +6,8 @@ defmodule Relaxir.IngredientImporter do
 
   @structs %{
     "Food" => Ingredients.Food,
+    "FoodNutrient" => Ingredients.FoodNutrient,
+    "Nutrient" => Ingredients.Nutrient,
   }
 
   Logger.configure(log: :info)
@@ -24,7 +26,19 @@ defmodule Relaxir.IngredientImporter do
     entries
     |> Enum.reduce(Multi.new(), fn(entry, multi) -> Multi.insert(multi, entry, entry, on_conflict: :nothing) end)
     |> Repo.transaction
+    |> get_error
     IO.write ".. done\n"
+  end
+
+  def get_error(msg) do
+    case msg do
+      # {:error, 
+      # #Ecto.Changeset<action: nil, changes: %{derivation_id: 71, fdc_id: 344604, id: 6320396, nutrient_id: 1003}, errors: [amount: {"is invalid", [type: :integer, validation: :cast]}], data: #Relaxir.Ingredients.FoodNutrient<>, valid?: false>, #Ecto.Changeset<action: :insert, changes: %{derivation_id: 71, fdc_id: 344604, id: 6320396, nutrient_id: 1003}, errors: [amount: {"is invalid", [type: :integer, validation: :cast]}], data: #Relaxir.Ingredients.FoodNutrient<>, valid?: false>, 
+      #  %{}
+      # }
+      {:error, err, _, _} -> IO.inspect err
+      _ -> true
+    end
   end
 
   def do_import(path) do
