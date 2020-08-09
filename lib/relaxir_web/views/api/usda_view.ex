@@ -3,7 +3,6 @@ defmodule RelaxirWeb.Api.UsdaView do
   alias RelaxirWeb.Api.UsdaView
 
   def render("index.json", %{food: food}) do
-    IO.inspect food
     render_many(food, UsdaView, "food.json")
   end
 

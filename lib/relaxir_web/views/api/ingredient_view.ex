@@ -11,7 +11,6 @@ defmodule RelaxirWeb.Api.IngredientView do
   end
 
   def render("ingredient.json", %{ingredient: ingredient}) do
-    IO.inspect ingredient
     %{id: ingredient.id, name: ingredient.name}
   end
 end
