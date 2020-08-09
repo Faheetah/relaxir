@@ -1,7 +1,7 @@
 defmodule Mix.Tasks.Relaxir.Import do
-  use Mix.Task
+  use Mix.Task 
 
-  Logger.configure(level: :warn)
+  Logger.configure(log: :info)
 
   @shortdoc "Import USDA data into ingredients"
   def run(params) do

@@ -8,7 +8,7 @@ defmodule Relaxir.IngredientImporter do
     "Food" => Ingredients.Food,
   }
 
-  Logger.configure(level: :warn)
+  Logger.configure(log: :info)
 
   def import(module_name, path) do
     module = @structs[module_name]
@@ -22,7 +22,7 @@ defmodule Relaxir.IngredientImporter do
   def insert_multiple({entries, index}) do
     IO.write "Batch #{index + 1}"
     entries
-    |> Enum.reduce(Multi.new(), fn(entry, multi) -> Multi.insert(multi, entry.changes.fdc_id, entry, on_conflict: :nothing) end)
+    |> Enum.reduce(Multi.new(), fn(entry, multi) -> Multi.insert(multi, entry, entry, on_conflict: :nothing) end)
     |> Repo.transaction
     IO.write ".. done\n"
   end
