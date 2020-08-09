@@ -1,13 +1,12 @@
 defmodule Mix.Tasks.Relaxir.Import do
   use Mix.Task
 
+  Logger.configure(level: :warn)
+
   @shortdoc "Import USDA data into ingredients"
   def run(params) do
-    [path | rest] = params
-
-    case rest do
-      ["--skip"|_] -> Relaxir.IngredientImporter.import(path)
-      _ -> Relaxir.IngredientImporter.import!(path)
-    end
+    parsed_params = Relaxir.Mix.Helpers.parse_args params
+    [module, path] = parsed_params[:positionals]
+    Relaxir.IngredientImporter.import(module, path)
   end
 end

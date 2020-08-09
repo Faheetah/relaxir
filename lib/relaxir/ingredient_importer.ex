@@ -2,22 +2,21 @@ defmodule Relaxir.IngredientImporter do
   import Ecto.Query, warn: false
   alias Ecto.Multi
   alias Relaxir.Repo
-  alias Relaxir.Ingredients.Food
+  alias Relaxir.Ingredients
+
+  @structs %{
+    "Food" => Ingredients.Food,
+  }
 
   Logger.configure(level: :warn)
 
-  def import!(path) do
+  def import(module_name, path) do
+    module = @structs[module_name]
     do_import(path)
-    |> Stream.map(&(Food.changeset(%Food{}, &1)))
-    |> Enum.each(&Relaxir.Repo.insert!/1)
-  end
-
-  def import(path) do
-    do_import(path)
-    |> Stream.map(&(Food.changeset(%Food{}, &1)))
+    |> Stream.map(&(module.changeset(struct(module, %{}), &1)))
     |> Stream.chunk_every(1000)
     |> Stream.with_index
-    |> Enum.each(&insert_multiple/1)
+    |> Enum.each(&(insert_multiple(&1)))
   end
 
   def insert_multiple({entries, index}) do
@@ -35,7 +34,6 @@ defmodule Relaxir.IngredientImporter do
 
     stream = path
     |> Path.expand
-    |> Path.join("food.csv")
     |> File.stream!
 
     headers = stream
