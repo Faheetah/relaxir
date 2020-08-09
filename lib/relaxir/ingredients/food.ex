@@ -2,33 +2,19 @@ defmodule Relaxir.Ingredients.Food do
   use Ecto.Schema
   import Ecto.Changeset
 
-  @fields [
-    :fdc_id,
-    :data_type,
-    :description,
-    :food_category_id,
-    :publication_date
-  ]
-
-  def get_fields(), do: @fields
-
-  @derive {Jason.Encoder, only: @fields}
-
-  schema "food" do
-    field :fdc_id, :id
+  schema "foods" do
     field :data_type, :string
     field :description, :string
-    field :food_category_id, :id
-    field :publication_date, :string
+    field :fdc_id, :integer
+    field :food_category_id, :integer
+    field :publication_date, :date
 
     timestamps()
   end
 
   @doc false
-  def changeset(ingredient, attrs) do
-    ingredient
-    |> cast(attrs, @fields)
-    |> validate_required([:fdc_id, :data_type])
+  def changeset(food, attrs) do
+    food
+    |> cast(attrs, [:fdc_id, :data_type, :description, :food_category_id, :publication_date])
   end
 end
-
