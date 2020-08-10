@@ -1,7 +1,5 @@
 <h1><%= @recipe.title %></h1>
   
-<%= render_markdown @recipe.directions %>
-
 <%= if @recipe.categories != [] do %>
 <strong>Categories:</strong>
 <%= for category <- @recipe.categories do %>
@@ -19,6 +17,8 @@
 </li>
 <% end %>
 <% end %>
+
+<%= render_markdown @recipe.directions %>
 
 <%= if @current_user && @current_user.is_admin do %>
 <span><%= link "Edit", to: Routes.recipe_path(@conn, :edit, @recipe) %></span>
