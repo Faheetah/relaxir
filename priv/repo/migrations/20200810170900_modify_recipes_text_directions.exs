@@ -1,4 +1,4 @@
-defmodule Relaxir.Repo.Migrations.CreateRecipes do
+defmodule Relaxir.Repo.Migrations.ModifyRecipesText do
   use Ecto.Migration
 
   def change do
