@@ -21,13 +21,6 @@ defmodule Relaxir.Users.User do
     |> put_encrypted_password()
   end
 
-  def oauth_changeset(struct, params) do
-    struct
-    |> cast(params, [:email])
-    |> validate_required([:email])
-    |> unique_constraint(:email)
-  end
-
   defp put_encrypted_password(%{valid?: true, changes: %{password: pw}} = changeset) do
     put_change(changeset, :encrypted_password, Argon2.hash_pwd_salt(pw))
   end

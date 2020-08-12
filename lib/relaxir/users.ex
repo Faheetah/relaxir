@@ -4,15 +4,9 @@ defmodule Relaxir.Users do
   alias Relaxir.Repo
   alias __MODULE__.User
 
-  def register(%Ueberauth.Auth{provider: :identity} = params) do
-    %User{}
-    |> User.changeset(extract_user_params(params))
-    |> Repo.insert()
-  end
-
   def register(%Ueberauth.Auth{} = params) do
     %User{}
-    |> User.oauth_changeset(extract_user_params(params))
+    |> User.changeset(extract_user_params(params))
     |> Repo.insert()
   end
 
