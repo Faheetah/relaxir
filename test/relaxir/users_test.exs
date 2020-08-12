@@ -4,7 +4,7 @@ defmodule Relaxir.UsersTest do
   alias Relaxir.Users
   alias Relaxir.Users.User
 
-  test "register for an user with valid information" do
+  test "register for a user with valid information" do
     pre_count = count_of(User)
     params = valid_user_params()
 
@@ -14,7 +14,7 @@ defmodule Relaxir.UsersTest do
     assert pre_count + 1 == count_of(User)
   end
 
-  test "register for an user with an existing email address" do
+  test "register for a user with an existing email address" do
     params = valid_user_params()
     Repo.insert!(%User{email: params.info.email})
 
@@ -26,7 +26,7 @@ defmodule Relaxir.UsersTest do
     assert pre_count == count_of(User)
   end
 
-  test "register for an user without matching password and confirmation" do
+  test "register for a user without matching password and confirmation" do
     pre_count = count_of(User)
     %{credentials: credentials} = params = valid_user_params()
 
