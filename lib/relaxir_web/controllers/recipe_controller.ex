@@ -74,7 +74,6 @@ defmodule RelaxirWeb.RecipeController do
   end
 
   defp parse_categories(category) do
-    category |> IO.inspect
     (category || "")
     |> String.split(",")
     |> Enum.map(&String.trim/1)
