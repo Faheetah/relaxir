@@ -1,6 +1,5 @@
 defmodule RelaxirWeb.ConnCase do
   use ExUnit.CaseTemplate
-  import Phoenix.ConnTest
 
   using do
     quote do

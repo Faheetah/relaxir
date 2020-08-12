@@ -2,7 +2,6 @@ defmodule RelaxirWeb.IngredientControllerTest do
   use RelaxirWeb.ConnCase
 
   alias Relaxir.Ingredients
-  alias Relaxir.Ingredients.Ingredient
 
   @create_attrs %{
     name: "some name"
