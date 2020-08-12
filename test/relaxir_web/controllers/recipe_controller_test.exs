@@ -3,19 +3,21 @@ defmodule RelaxirWeb.RecipeControllerTest do
 
   alias Relaxir.Recipes
 
-  @create_attrs %{directions: "some directions", title: "some title"}
-  @update_attrs %{directions: "some updated directions", title: "some updated title"}
+  @create_attrs %{"directions" => "some directions", "title" => "some title", "categories" => "", "ingredients" => ""}
+  @update_attrs %{"directions" => "updated directions", "title" => "updated title", "categories" => "", "ingredients" => ""}
   @invalid_attrs %{directions: nil, title: nil}
 
   def fixture(:recipe) do
-    {:ok, recipe} = Recipes.create_recipe(@create_attrs)
+    create_attrs = @create_attrs
+    |> Map.merge(%{"categories" => [], "ingredients" => []})
+    {:ok, recipe} = Recipes.create_recipe(create_attrs)
     recipe
   end
 
   describe "index" do
     test "lists all recipes", %{conn: conn} do
       conn = get(conn, Routes.recipe_path(conn, :index))
-      assert html_response(conn, 200) =~ "Listing Recipes"
+      assert html_response(conn, 200) =~ "Recipes"
     end
   end
 
@@ -34,7 +36,7 @@ defmodule RelaxirWeb.RecipeControllerTest do
       assert redirected_to(conn) == Routes.recipe_path(conn, :show, id)
 
       conn = get(conn, Routes.recipe_path(conn, :show, id))
-      assert html_response(conn, 200) =~ "Show Recipe"
+      assert html_response(conn, 200) =~ "some directions"
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
@@ -60,7 +62,7 @@ defmodule RelaxirWeb.RecipeControllerTest do
       assert redirected_to(conn) == Routes.recipe_path(conn, :show, recipe)
 
       conn = get(conn, Routes.recipe_path(conn, :show, recipe))
-      assert html_response(conn, 200) =~ "some updated directions"
+      assert html_response(conn, 200) =~ "updated directions"
     end
 
     test "renders errors when data is invalid", %{conn: conn, recipe: recipe} do

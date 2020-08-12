@@ -26,7 +26,7 @@ defmodule Relaxir.CategoriesTest do
 
     test "get_category!/1 returns the category with given id" do
       category = category_fixture()
-      assert Categories.get_category!(category.id) == category
+      assert Categories.get_category!(category.id).name == @valid_attrs.name
     end
 
     test "create_category/1 with valid data creates a category" do
@@ -47,7 +47,7 @@ defmodule Relaxir.CategoriesTest do
     test "update_category/2 with invalid data returns error changeset" do
       category = category_fixture()
       assert {:error, %Ecto.Changeset{}} = Categories.update_category(category, @invalid_attrs)
-      assert category == Categories.get_category!(category.id)
+      assert Categories.get_category!(category.id).name == @valid_attrs.name
     end
 
     test "delete_category/1 deletes the category" do

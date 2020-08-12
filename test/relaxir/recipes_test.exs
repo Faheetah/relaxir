@@ -6,9 +6,26 @@ defmodule Relaxir.RecipesTest do
   describe "recipes" do
     alias Relaxir.Recipes.Recipe
 
-    @valid_attrs %{directions: "some directions", title: "some title"}
-    @update_attrs %{directions: "some updated directions", title: "some updated title"}
-    @invalid_attrs %{directions: nil, title: nil}
+    @valid_attrs %{
+      "directions" => "some directions", 
+      "title" => "some title", 
+      "categories" => [], 
+      "ingredients" => []
+    }
+
+    @update_attrs %{
+      "directions" => "some updated directions", 
+      "title" => "some updated title",
+      "categories" => [], 
+      "ingredients" => []
+    }
+
+    @invalid_attrs %{
+      "directions" => nil, 
+      "title" => nil,
+      "categories" => [], 
+      "ingredients" => []
+    }
 
     def recipe_fixture(attrs \\ %{}) do
       {:ok, recipe} =
