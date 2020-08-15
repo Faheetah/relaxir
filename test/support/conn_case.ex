@@ -22,13 +22,7 @@ defmodule RelaxirWeb.ConnCase do
       Ecto.Adapters.SQL.Sandbox.mode(Relaxir.Repo, {:shared, self()})
     end
  
-    if user = Relaxir.Users.get_by_email("test@test") do
-      {:ok, user}
-    else
-      user = %Relaxir.Users.User{}
-      |> Relaxir.Users.User.changeset(%{email: "test@test", password: "test", password_confirmation: "test", is_admin: true})
-      |> Relaxir.Repo.insert!()
-    end
+    user = Relaxir.Users.get_by_email("test@test")
 
     conn = Phoenix.ConnTest.build_conn()
     |> RelaxirWeb.Authentication.log_in(user)
