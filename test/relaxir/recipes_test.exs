@@ -44,8 +44,11 @@ defmodule Relaxir.RecipesTest do
     end
 
     test "list_recipes/0 returns all recipes" do
-      recipe = recipe_fixture()
-      assert Recipes.list_recipes() == [recipe]
+      Recipes.create_recipe(@valid_attrs)
+      Recipes.create_recipe(@update_attrs)
+      recipes = Recipes.list_recipes()
+      assert length(recipes) == 2
+      assert Enum.sort([@valid_attrs["title"], @update_attrs["title"]]) == Enum.sort(Enum.map(recipes, fn r -> r.title end))
     end
 
     test "get_recipe!/1 returns the recipe with given id" do
