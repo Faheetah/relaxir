@@ -4,22 +4,22 @@ defmodule Relaxir.Recipes.Recipe do
 
   alias Relaxir.RecipeIngredient
   alias Relaxir.RecipeCategory
-  alias Relaxir.Ingredients.Ingredient
   alias Relaxir.Categories.Category
 
   schema "recipes" do
     field :directions, :string
     field :title, :string
-    many_to_many :ingredients, Ingredient, join_through: RecipeIngredient, on_replace: :delete
+    has_many :recipe_ingredients, RecipeIngredient, on_replace: :delete
+    has_many :ingredients, through: [:recipe_ingredients, :ingredient]
     many_to_many :categories, Category, join_through: RecipeCategory, on_replace: :delete
 
     timestamps()
   end
 
-  @doc false
   def changeset(recipe, attrs) do
     recipe
     |> cast(attrs, [:title, :directions])
+    |> cast_assoc(:recipe_ingredients)
     |> validate_required([:title])
   end
 end
