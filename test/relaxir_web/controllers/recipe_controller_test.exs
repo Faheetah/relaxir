@@ -1,7 +1,9 @@
 defmodule RelaxirWeb.RecipeControllerTest do
   use RelaxirWeb.ConnCase
 
+  alias Relaxir.Ingredients
   alias Relaxir.Recipes
+  alias RelaxirWeb.RecipeController
 
   @create_attrs %{"directions" => "some directions", "title" => "some title", "categories" => "", "ingredients" => ""}
   @update_attrs %{"directions" => "updated directions", "title" => "updated title", "categories" => "", "ingredients" => ""}
@@ -182,6 +184,20 @@ defmodule RelaxirWeb.RecipeControllerTest do
       %{id: id} = redirected_params(conn)
       conn = get(conn, Routes.recipe_path(conn, :show, id))
       assert html_response(conn, 200) =~ "texmex"
+    end
+  end
+
+  describe "parsing ingredients" do
+    test "builds a list of new ingredients when it doesn't find an ingredient" do
+      ingredients = "kale\nkohlrabi"
+      assert %{ingredient: %{name: "kale"}} in RecipeController.parse_ingredients(ingredients)
+    end
+
+    test "finds existing ingredients" do
+      {:ok, cauliflower} = Ingredients.create_ingredient(%{name: "cauliflower"})
+
+      ingredients = "cauliflower\nkale"
+      assert %{ingredient_id: cauliflower.id} in RecipeController.parse_ingredients(ingredients)
     end
   end
 end

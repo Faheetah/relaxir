@@ -66,32 +66,40 @@ defmodule RelaxirWeb.RecipeController do
     |> redirect(to: Routes.recipe_path(conn, :index))
   end
 
-  defp parse_attrs(attrs) do
+  def parse_attrs(attrs) do
     attrs
     |> Map.put("recipe_ingredients", parse_ingredients(attrs["ingredients"]))
     |> update_in(["categories"], &parse_categories/1)
   end
 
-  defp parse_categories(category) do
-    (category || "")
+  def parse_categories(categories) do
+    categories = (categories || "")
     |> String.split(",")
     |> Enum.map(&String.trim/1)
     |> Enum.reject(& &1 == "")
-    |> Enum.map(fn (category) -> 
-      case Categories.get_category_by_name!(category) do
-        nil -> Category.changeset(%Category{}, %{name: category})
+
+    fetched_categories = Categories.get_categories_by_name!(categories)
+
+    categories
+    |> Enum.map(fn (name) -> 
+      case Enum.find(fetched_categories, fn c -> c.name == name end) do
+        nil -> Category.changeset(%Category{}, %{name: name})
         category -> category
       end
     end)
   end
 
-  defp parse_ingredients(ingredient) do
-    (ingredient || "")
+  def parse_ingredients(ingredients) do
+    ingredients = (ingredients || "")
     |> String.split("\n")
     |> Enum.map(&String.trim/1)
     |> Enum.reject(& &1 == "")
+
+    fetched_ingredients = Ingredients.get_ingredients_by_name!(ingredients)
+
+    ingredients
     |> Enum.map(fn (name) ->
-      case Ingredients.get_ingredient_by_name!(name) do
+      case Enum.find(fetched_ingredients, fn i -> i.name == name end) do
         nil -> %{ingredient: %{name: name}}
         ingredient -> %{ingredient_id: ingredient.id}
       end
