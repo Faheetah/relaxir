@@ -12,7 +12,6 @@ defmodule Relaxir.Categories.Category do
     timestamps()
   end
 
-  @doc false
   def changeset(category, attrs) do
     category
     |> cast(attrs, [:name])

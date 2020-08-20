@@ -18,6 +18,15 @@ defmodule Relaxir.Categories do
     Repo.get_by(Category, name: name)
   end
 
+  def get_categories_by_name!(names) do
+    query = from category in Category,
+        where: category.name in ^names, 
+        select: category
+
+    query
+    |> Repo.all
+  end
+
   def create_category(attrs \\ %{}) do
     %Category{}
     |> Category.changeset(attrs)
