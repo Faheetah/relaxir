@@ -7,13 +7,17 @@ defmodule Relaxir.Recipes do
 
   def list_recipes do
     Repo.all(Recipe)
-    |> Repo.preload([:ingredients, :categories])
   end
 
   def get_recipe!(id) do
     Recipe
     |> preload([:recipe_ingredients, :ingredients, :categories])
     |> Repo.get!(id)
+  end
+
+  def create_recipe!(attrs \\ %{}) do
+    {:ok, recipe} = create_recipe(attrs)
+    recipe
   end
 
   def create_recipe(attrs \\ %{}) do
