@@ -12,6 +12,5 @@ defmodule Relaxir.RecipeCategory do
   def changeset(recipe_category, attrs) do
     recipe_category
     |> cast(attrs, [:recipes, :categories])
-    |> validate_required([])
   end
 end

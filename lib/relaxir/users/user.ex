@@ -11,7 +11,6 @@ defmodule Relaxir.Users.User do
     timestamps()
   end
 
-  @doc false
   def changeset(user, attrs) do
     user
     |> cast(attrs, [:email, :password, :is_admin])

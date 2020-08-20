@@ -11,6 +11,7 @@ defmodule Relaxir.MixProject do
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
+      test_coverage: [tool: LcovEx],
       deps: deps()
     ]
   end
@@ -54,6 +55,8 @@ defmodule Relaxir.MixProject do
       {:guardian, "~> 2.1"},
       {:earmark, "~> 1.4.10"},
       {:csv, "~> 2.3.1"},
+      {:excoveralls, "~> 0.13.1", only: :test},
+      {:lcov_ex, "~> 0.1.0", runtime: false, only: :test},
     ]
   end
 

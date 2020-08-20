@@ -60,5 +60,15 @@ defmodule Relaxir.CategoriesTest do
       category = category_fixture()
       assert %Ecto.Changeset{} = Categories.change_category(category)
     end
+
+    test "get_category_by_name!/1 returns a found category" do
+      category_fixture()
+      assert Categories.get_category_by_name!("some name").name == @valid_attrs.name
+    end
+
+    test "get_categories_by_name!/1 returns found categories" do
+      category_fixture()
+      assert hd(Categories.get_categories_by_name!(["some name"])).name == @valid_attrs.name
+    end
   end
 end

@@ -27,7 +27,7 @@ defmodule Relaxir.Categories do
     |> Repo.all
   end
 
-  def create_category(attrs \\ %{}) do
+  def create_category(attrs) do
     %Category{}
     |> Category.changeset(attrs)
     |> Repo.insert()

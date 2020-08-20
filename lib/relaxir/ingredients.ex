@@ -27,7 +27,7 @@ defmodule Relaxir.Ingredients do
     |> Repo.all
   end
 
-  def create_ingredient(attrs \\ %{}) do
+  def create_ingredient(attrs) do
     %Ingredient{}
     |> Ingredient.changeset(attrs)
     |> Repo.insert()
