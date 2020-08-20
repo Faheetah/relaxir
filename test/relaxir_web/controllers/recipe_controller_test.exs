@@ -5,22 +5,24 @@ defmodule RelaxirWeb.RecipeControllerTest do
 
   @create_attrs %{"directions" => "some directions", "title" => "some title", "categories" => "", "ingredients" => ""}
   @update_attrs %{"directions" => "updated directions", "title" => "updated title", "categories" => "", "ingredients" => ""}
-  @invalid_attrs %{"directions" => nil, "title" => nil}
+  @invalid_attrs %{"directions" => nil, "title" => nil, "ingredients" => "", "categories" => ""}
   @defaults %{"categories" => [], "ingredients" => []}
-  @ingredients %{"ingredients" => "cauliflower, broccoli"}
+  @ingredients %{"ingredients" => "cauliflower\nbroccoli"}
   @categories %{"categories" => "texmex, breakfast"}
 
 
   def create_recipe_with_associations(_) do
-    ingredients = ["cauliflower", "broccoli"]
-    |> Enum.map(&(%{name: &1}))
+    ingredients = [
+        %{"ingredient" => %{"name" => "cauliflower"}},
+        %{"ingredient" => %{"name" => "broccoli"}}
+      ]
 
     categories = ["texmex", "breakfast"]
     |> Enum.map(&(%{name: &1}))
 
     {:ok, recipe} = @create_attrs
     |> Map.merge(@defaults)
-    |> Map.merge(%{"ingredients" => ingredients})
+    |> Map.merge(%{"recipe_ingredients" => ingredients})
     |> Map.merge(%{"categories" => categories})
     |> Recipes.create_recipe()
     %{recipe: recipe}
@@ -70,6 +72,18 @@ defmodule RelaxirWeb.RecipeControllerTest do
     test "renders form for editing chosen recipe", %{conn: conn, recipe: recipe} do
       conn = get(conn, Routes.recipe_path(conn, :edit, recipe))
       assert html_response(conn, 200) =~ "Edit Recipe"
+    end
+  end
+
+  describe "update recipe with ingredients" do
+    setup [:create_recipe_with_associations]
+
+    test "updates existing ingredients", %{conn: conn, recipe: recipe} do
+      conn = put(conn, Routes.recipe_path(conn, :update, recipe), recipe: @update_attrs)
+      assert redirected_to(conn) == Routes.recipe_path(conn, :show, recipe)
+
+      conn = get(conn, Routes.recipe_path(conn, :show, recipe))
+      assert html_response(conn, 200) =~ "updated directions"
     end
   end
 

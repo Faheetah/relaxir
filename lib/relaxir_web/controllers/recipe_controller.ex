@@ -4,7 +4,6 @@ defmodule RelaxirWeb.RecipeController do
   alias Relaxir.Recipes
   alias Relaxir.Recipes.Recipe
   alias Relaxir.Ingredients
-  alias Relaxir.Ingredients.Ingredient
   alias Relaxir.Categories
   alias Relaxir.Categories.Category
   alias RelaxirWeb.Authentication
@@ -69,8 +68,8 @@ defmodule RelaxirWeb.RecipeController do
 
   defp parse_attrs(attrs) do
     attrs
+    |> Map.put("recipe_ingredients", parse_ingredients(attrs["ingredients"]))
     |> update_in(["categories"], &parse_categories/1)
-    |> update_in(["ingredients"], &parse_ingredients/1)
   end
 
   defp parse_categories(category) do
@@ -78,14 +77,12 @@ defmodule RelaxirWeb.RecipeController do
     |> String.split(",")
     |> Enum.map(&String.trim/1)
     |> Enum.reject(& &1 == "")
-    |> Enum.map(&get_or_create_category/1)
-  end
-
-  defp get_or_create_category(category) do
-    case Categories.get_category_by_name!(category) do
-      nil -> Category.changeset(%Category{}, %{name: category})
-      category -> category
-    end
+    |> Enum.map(fn (category) -> 
+      case Categories.get_category_by_name!(category) do
+        nil -> Category.changeset(%Category{}, %{name: category})
+        category -> category
+      end
+    end)
   end
 
   defp parse_ingredients(ingredient) do
@@ -93,13 +90,11 @@ defmodule RelaxirWeb.RecipeController do
     |> String.split("\n")
     |> Enum.map(&String.trim/1)
     |> Enum.reject(& &1 == "")
-    |> Enum.map(&get_or_create_ingredient/1)
-  end
-
-  defp get_or_create_ingredient(ingredient) do
-    case Ingredients.get_ingredient_by_name!(ingredient) do
-      nil -> Ingredient.changeset(%Ingredient{}, %{name: ingredient})
-      ingredient -> ingredient
-    end
+    |> Enum.map(fn (name) ->
+      case Ingredients.get_ingredient_by_name!(name) do
+        nil -> %{ingredient: %{name: name}}
+        ingredient -> %{ingredient_id: ingredient.id}
+      end
+    end)
   end
 end

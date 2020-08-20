@@ -18,9 +18,13 @@ defmodule RelaxirWeb.RecipeView do
   end
 
   def ingredients_to_text(ingredients) do
-    ingredients
-    |> Enum.map(fn i -> i.name end)
-    |> Enum.join("\r\n")
+    cond do
+      is_list(ingredients) ->
+        ingredients
+        |> Enum.map(fn i -> i.name end)
+        |> Enum.join("\n")
+      true -> ingredients
+    end
   end
 
   def render_markdown(text) do

@@ -3,21 +3,22 @@ defmodule Relaxir.Ingredients.Ingredient do
   import Ecto.Changeset
 
   alias Relaxir.RecipeIngredient
-  alias Relaxir.Recipes.Recipe
 
   @derive {Jason.Encoder, only: [:id, :name]}
 
   schema "ingredients" do
     field :name, :string
-    many_to_many :recipes, Recipe, join_through: RecipeIngredient, on_replace: :delete
+    has_many :recipe_ingredients, RecipeIngredient
+    has_many :recipes, through: [:recipe_ingredients, :recipe], on_replace: :delete
 
     timestamps()
   end
 
-  @doc false
   def changeset(ingredient, attrs) do
     ingredient
     |> cast(attrs, [:name])
+    |> cast_assoc(:recipe_ingredients)
     |> validate_required([:name])
+    |> unique_constraint([:name])
   end
 end
