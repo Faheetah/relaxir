@@ -150,6 +150,20 @@ defmodule Relaxir.RecipesTest do
     end
 
     test "update_recipe/2 removes ingredients" do
+      recipe = Recipes.create_recipe!(%{@valid_attrs | "recipe_ingredients" => @ingredients})
+
+      recipe_ingredients = %{
+        "recipe_ingredients" => [],
+        "categories" => []
+      }
+
+      Recipes.update_recipe(recipe, recipe_ingredients)
+
+      recipe = Recipes.get_recipe!(recipe.id)
+
+      assert recipe.recipe_ingredients == []
+      # Ensure only the RecipeIngredient link was removed, do not cascade delete to ingredients
+      assert "cauliflower" in Enum.map(Relaxir.Ingredients.list_ingredients(), fn i -> i.name end)
     end
   end
 end
