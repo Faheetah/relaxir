@@ -60,5 +60,15 @@ defmodule Relaxir.IngredientsTest do
       ingredient = ingredient_fixture()
       assert %Ecto.Changeset{} = Ingredients.change_ingredient(ingredient)
     end
+
+    test "get_ingredient_by_name!/1 returns a found ingredient" do
+      ingredient_fixture()
+      assert Ingredients.get_ingredient_by_name!("some name").name == @valid_attrs.name
+    end
+
+    test "get_ingredients_by_name!/1 returns found ingredients" do
+      ingredient_fixture()
+      assert hd(Ingredients.get_ingredients_by_name!(["some name"])).name == @valid_attrs.name
+    end
   end
 end
