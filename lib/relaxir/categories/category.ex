@@ -3,11 +3,13 @@ defmodule Relaxir.Categories.Category do
   import Ecto.Changeset
 
   alias Relaxir.RecipeCategory
-  alias Relaxir.Recipes.Recipe
+
+  @derive {Jason.Encoder, only: [:id, :name]}
 
   schema "categories" do
     field :name, :string
-    many_to_many :recipes, Recipe, join_through: RecipeCategory, on_replace: :delete
+    has_many :recipe_categories, RecipeCategory
+    has_many :recipes, through: [:recipe_categories, :recipe], on_replace: :delete
 
     timestamps()
   end
@@ -15,6 +17,8 @@ defmodule Relaxir.Categories.Category do
   def changeset(category, attrs) do
     category
     |> cast(attrs, [:name])
+    |> cast_assoc(:recipe_categories)
     |> validate_required([:name])
+    |> unique_constraint([:name])
   end
 end

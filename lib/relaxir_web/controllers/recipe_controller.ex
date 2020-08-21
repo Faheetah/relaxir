@@ -3,9 +3,6 @@ defmodule RelaxirWeb.RecipeController do
 
   alias Relaxir.Recipes
   alias Relaxir.Recipes.Recipe
-  alias Relaxir.Ingredients
-  alias Relaxir.Categories
-  alias Relaxir.Categories.Category
   alias RelaxirWeb.Authentication
 
   def index(conn, _params) do
@@ -68,41 +65,15 @@ defmodule RelaxirWeb.RecipeController do
 
   def parse_attrs(attrs) do
     attrs
-    |> Map.put("recipe_ingredients", parse_ingredients(attrs["ingredients"]))
-    |> update_in(["categories"], &parse_categories/1)
+    |> split_field("ingredients", "\n")
+    |> split_field("categories", ",")
   end
 
-  def parse_categories(categories) do
-    categories = (categories || "")
-    |> String.split(",")
+  def split_field(attrs, name, separator) do
+    field = (attrs[name] || "")
+    |> String.split(separator)
     |> Enum.map(&String.trim/1)
     |> Enum.reject(& &1 == "")
-
-    fetched_categories = Categories.get_categories_by_name!(categories)
-
-    categories
-    |> Enum.map(fn (name) -> 
-      case Enum.find(fetched_categories, fn c -> c.name == name end) do
-        nil -> Category.changeset(%Category{}, %{name: name})
-        category -> category
-      end
-    end)
-  end
-
-  def parse_ingredients(ingredients) do
-    ingredients = (ingredients || "")
-    |> String.split("\n")
-    |> Enum.map(&String.trim/1)
-    |> Enum.reject(& &1 == "")
-
-    fetched_ingredients = Ingredients.get_ingredients_by_name!(ingredients)
-
-    ingredients
-    |> Enum.map(fn (name) ->
-      case Enum.find(fetched_ingredients, fn i -> i.name == name end) do
-        nil -> %{ingredient: %{name: name}}
-        ingredient -> %{ingredient_id: ingredient.id}
-      end
-    end)
+    Map.put(attrs, name, field)
   end
 end
