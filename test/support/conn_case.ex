@@ -21,11 +21,13 @@ defmodule RelaxirWeb.ConnCase do
     unless tags[:async] do
       Ecto.Adapters.SQL.Sandbox.mode(Relaxir.Repo, {:shared, self()})
     end
- 
+
     user = Relaxir.Users.get_by_email("test@test")
 
-    conn = Phoenix.ConnTest.build_conn()
-    |> RelaxirWeb.Authentication.log_in(user)
+    conn =
+      Phoenix.ConnTest.build_conn()
+      |> RelaxirWeb.Authentication.log_in(user)
+
     {:ok, conn: conn}
   end
 end

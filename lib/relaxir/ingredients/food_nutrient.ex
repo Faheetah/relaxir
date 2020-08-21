@@ -20,6 +20,18 @@ defmodule Relaxir.Ingredients.FoodNutrient do
   @doc false
   def changeset(food_nutrient, attrs) do
     food_nutrient
-    |> cast(attrs, [:id, :fdc_id, :nutrient_id, :amount, :data_points, :derivation_id, :min, :max, :median, :footnote, :min_year_acquired])
+    |> cast(attrs, [
+      :id,
+      :fdc_id,
+      :nutrient_id,
+      :amount,
+      :data_points,
+      :derivation_id,
+      :min,
+      :max,
+      :median,
+      :footnote,
+      :min_year_acquired
+    ])
   end
 end

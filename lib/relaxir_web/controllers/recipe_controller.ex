@@ -70,10 +70,12 @@ defmodule RelaxirWeb.RecipeController do
   end
 
   def split_field(attrs, name, separator) do
-    field = (attrs[name] || "")
-    |> String.split(separator)
-    |> Enum.map(&String.trim/1)
-    |> Enum.reject(& &1 == "")
+    field =
+      (attrs[name] || "")
+      |> String.split(separator)
+      |> Enum.map(&String.trim/1)
+      |> Enum.reject(&(&1 == ""))
+
     Map.put(attrs, name, field)
   end
 end

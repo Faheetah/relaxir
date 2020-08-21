@@ -19,12 +19,13 @@ defmodule Relaxir.Ingredients do
   end
 
   def get_ingredients_by_name!(names) do
-    query = from ingredient in Ingredient,
-        where: ingredient.name in ^names, 
+    query =
+      from ingredient in Ingredient,
+        where: ingredient.name in ^names,
         select: ingredient
 
     query
-    |> Repo.all
+    |> Repo.all()
   end
 
   def create_ingredient(attrs) do

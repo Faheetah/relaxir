@@ -17,5 +17,4 @@ config :relaxir, RelaxirWeb.Endpoint,
 
 config :relaxir, RelaxirWeb.Endpoint, server: true
 
-config :relaxir, RelaxirWeb.Authentication,
-    secret_key: System.get_env("GUARDIAN_SECRET_KEY")
+config :relaxir, RelaxirWeb.Authentication, secret_key: System.get_env("GUARDIAN_SECRET_KEY")

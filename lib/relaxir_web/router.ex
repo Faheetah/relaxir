@@ -30,11 +30,10 @@ defmodule RelaxirWeb.Router do
 
     scope "/" do
       pipe_through [:browser_auth]
-  
-      resources "/profile", ProfileController, only: [:show], singleton: true
-      
-      delete "/logout", SessionController, :delete
 
+      resources "/profile", ProfileController, only: [:show], singleton: true
+
+      delete "/logout", SessionController, :delete
     end
 
     scope "/" do

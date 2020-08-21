@@ -10,6 +10,5 @@ defmodule Relaxir.Repo.Migrations.CreateNutrients do
 
       timestamps()
     end
-
   end
 end

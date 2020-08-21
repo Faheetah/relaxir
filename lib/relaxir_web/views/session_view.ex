@@ -1,3 +1,3 @@
 defmodule RelaxirWeb.SessionView do
-    use RelaxirWeb, :view
+  use RelaxirWeb, :view
 end

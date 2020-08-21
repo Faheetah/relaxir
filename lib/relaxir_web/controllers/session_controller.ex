@@ -8,8 +8,8 @@ defmodule RelaxirWeb.SessionController do
       redirect(conn, to: Routes.profile_path(conn, :show))
     else
       render(
-        conn, 
-        :new, 
+        conn,
+        :new,
         changeset: Users.change_user(),
         action: Routes.session_path(conn, :create)
       )

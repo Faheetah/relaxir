@@ -9,24 +9,24 @@ defmodule Relaxir.RecipesTest do
     alias Relaxir.Recipes.Recipe
 
     @valid_attrs %{
-      "directions" => "some directions", 
-      "title" => "some title", 
-      "categories" => [], 
-      "ingredients" => [],
+      "directions" => "some directions",
+      "title" => "some title",
+      "categories" => [],
+      "ingredients" => []
     }
 
     @update_attrs %{
-      "directions" => "some updated directions", 
+      "directions" => "some updated directions",
       "title" => "some updated title",
-      "categories" => [], 
-      "ingredients" => [],
+      "categories" => [],
+      "ingredients" => []
     }
 
     @invalid_attrs %{
-      "directions" => nil, 
+      "directions" => nil,
       "title" => nil,
-      "categories" => [], 
-      "ingredients" => [],
+      "categories" => [],
+      "ingredients" => []
     }
 
     @ingredients ["cauliflower", "broccoli"]
@@ -46,7 +46,9 @@ defmodule Relaxir.RecipesTest do
       Recipes.create_recipe(@update_attrs)
       recipes = Recipes.list_recipes()
       assert length(recipes) == 2
-      assert Enum.sort([@valid_attrs["title"], @update_attrs["title"]]) == Enum.sort(Enum.map(recipes, fn r -> r.title end))
+
+      assert Enum.sort([@valid_attrs["title"], @update_attrs["title"]]) ==
+               Enum.sort(Enum.map(recipes, fn r -> r.title end))
     end
 
     test "get_recipe!/1 returns the recipe with given id" do
@@ -90,47 +92,61 @@ defmodule Relaxir.RecipesTest do
 
     test "create_recipe/1 includes ingredients" do
       assert {:ok, %Recipe{} = recipe} = Recipes.create_recipe(%{@valid_attrs | "ingredients" => @ingredients})
-      assert ["cauliflower", "broccoli"] == recipe.recipe_ingredients
-      |> Enum.map(fn i -> i.ingredient.name end)
+
+      assert ["cauliflower", "broccoli"] ==
+               recipe.recipe_ingredients
+               |> Enum.map(fn i -> i.ingredient.name end)
     end
 
     test "update_recipe/2 adds new ingredients" do
       {:ok, %Recipe{} = recipe} = Recipes.create_recipe(%{@valid_attrs | "ingredients" => @ingredients})
-      existing_ingredients = recipe.recipe_ingredients
-      |> Enum.map(fn i -> i.ingredient.name end)
+
+      existing_ingredients =
+        recipe.recipe_ingredients
+        |> Enum.map(fn i -> i.ingredient.name end)
 
       {:ok, %Recipe{} = updated_recipe} = Recipes.update_recipe(recipe, %{"ingredients" => ["kale" | existing_ingredients]})
 
-      ingredients = updated_recipe.recipe_ingredients
-      |> Enum.map(fn i -> i.ingredient.name end)
+      ingredients =
+        updated_recipe.recipe_ingredients
+        |> Enum.map(fn i -> i.ingredient.name end)
 
       assert length(["kale", "cauliflower", "broccoli"] -- ingredients)
     end
 
     test "update_recipe/2 retains existing ingredients" do
       {:ok, %Recipe{} = recipe} = Recipes.create_recipe(%{@valid_attrs | "ingredients" => @ingredients})
-      existing_ingredients = recipe.recipe_ingredients
-      |> Enum.map(fn i -> %{
-          "id" => i.id,
-          "ingredient" => %{
-            "name" => i.ingredient.name, "id" => i.ingredient.id
+
+      existing_ingredients =
+        recipe.recipe_ingredients
+        |> Enum.map(fn i ->
+          %{
+            "id" => i.id,
+            "ingredient" => %{
+              "name" => i.ingredient.name,
+              "id" => i.ingredient.id
+            }
           }
-        } end)
+        end)
 
       {:ok, new_ingredient} = Ingredients.create_ingredient(%{"name" => "kohlrabi"})
 
       recipe_ingredients = %{
-        "recipe_ingredients" => existing_ingredients ++ [
-          %{"recipe_id" => recipe.id, "ingredient_id" => new_ingredient.id}
-        ],
+        "recipe_ingredients" =>
+          existing_ingredients ++
+            [
+              %{"recipe_id" => recipe.id, "ingredient_id" => new_ingredient.id}
+            ],
         "recipe_categories" => []
       }
 
       Recipes.update_recipe(recipe, recipe_ingredients)
 
       recipe = Recipes.get_recipe!(recipe.id)
-      ingredients = recipe.recipe_ingredients
-      |> Enum.map(fn i -> i.ingredient.name end)
+
+      ingredients =
+        recipe.recipe_ingredients
+        |> Enum.map(fn i -> i.ingredient.name end)
 
       assert length(["kohlrabi", "cauliflower", "broccoli"] -- ingredients)
     end
@@ -156,6 +172,7 @@ defmodule Relaxir.RecipesTest do
   describe "parsing ingredients" do
     test "builds a list of new ingredients when it doesn't find an ingredient" do
       attrs = %{"ingredients" => ["kale", "kohlrabi"]}
+
       assert %{ingredient: %{name: "kale"}} in Recipes.map_ingredients(attrs)["recipe_ingredients"]
     end
 
@@ -163,6 +180,7 @@ defmodule Relaxir.RecipesTest do
       {:ok, cauliflower} = Ingredients.create_ingredient(%{name: "cauliflower"})
 
       attrs = %{"ingredients" => ["cauliflower", "kale"]}
+
       assert %{ingredient_id: cauliflower.id} in Recipes.map_ingredients(attrs)["recipe_ingredients"]
     end
   end

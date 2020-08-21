@@ -5,30 +5,43 @@ defmodule RelaxirWeb.RecipeControllerTest do
   alias Relaxir.Recipes
   # alias RelaxirWeb.RecipeController
 
-  @create_attrs %{"directions" => "some directions", "title" => "some title", "categories" => "", "ingredients" => ""}
-  @update_attrs %{"directions" => "updated directions", "title" => "updated title", "categories" => "", "ingredients" => ""}
+  @create_attrs %{
+    "directions" => "some directions",
+    "title" => "some title",
+    "categories" => "",
+    "ingredients" => ""
+  }
+  @update_attrs %{
+    "directions" => "updated directions",
+    "title" => "updated title",
+    "categories" => "",
+    "ingredients" => ""
+  }
   @invalid_attrs %{"directions" => nil, "title" => nil, "ingredients" => "", "categories" => ""}
   @defaults %{"categories" => [], "ingredients" => []}
   @ingredients %{"ingredients" => "cauliflower\nbroccoli"}
   @categories %{"categories" => "texmex, breakfast"}
 
-
   def create_recipe_with_associations(_) do
     ingredients = ["cauliflower", "broccoli"]
     categories = ["texmex", "breakfast"]
 
-    {:ok, recipe} = @create_attrs
-    |> Map.merge(@defaults)
-    |> Map.merge(%{"ingredients" => ingredients})
-    |> Map.merge(%{"categories" => categories})
-    |> Recipes.create_recipe()
+    {:ok, recipe} =
+      @create_attrs
+      |> Map.merge(@defaults)
+      |> Map.merge(%{"ingredients" => ingredients})
+      |> Map.merge(%{"categories" => categories})
+      |> Recipes.create_recipe()
+
     %{recipe: recipe}
   end
 
   def create_recipe(_) do
-    {:ok, recipe} = @create_attrs
-    |> Map.merge(@defaults)
-    |> Recipes.create_recipe()
+    {:ok, recipe} =
+      @create_attrs
+      |> Map.merge(@defaults)
+      |> Recipes.create_recipe()
+
     %{recipe: recipe}
   end
 
@@ -78,6 +91,7 @@ defmodule RelaxirWeb.RecipeControllerTest do
     @tag :only
     test "updates existing ingredients", %{conn: conn, recipe: recipe} do
       conn = put(conn, Routes.recipe_path(conn, :update, recipe), recipe: Map.merge(@update_attrs, @ingredients))
+
       assert redirected_to(conn) == Routes.recipe_path(conn, :show, recipe)
 
       conn = get(conn, Routes.recipe_path(conn, :show, recipe))
@@ -108,6 +122,7 @@ defmodule RelaxirWeb.RecipeControllerTest do
     test "deletes chosen recipe", %{conn: conn, recipe: recipe} do
       conn = delete(conn, Routes.recipe_path(conn, :delete, recipe))
       assert redirected_to(conn) == Routes.recipe_path(conn, :index)
+
       assert_error_sent 404, fn ->
         get(conn, Routes.recipe_path(conn, :show, recipe))
       end

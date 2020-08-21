@@ -8,17 +8,19 @@ defmodule Mix.Tasks.Relaxir.AddUser do
   def run(params) do
     [:postgrex, :ecto]
     |> Enum.each(&Application.ensure_all_started/1)
-    Repo.start_link
 
-    data = params 
-    |> Enum.map(&(String.split(&1, "="))) 
-    |> Map.new(fn [k, v] -> {k, v} end)
+    Repo.start_link()
+
+    data =
+      params
+      |> Enum.map(&String.split(&1, "="))
+      |> Map.new(fn [k, v] -> {k, v} end)
 
     %User{}
     |> User.changeset(%{
-      email: data["email"], 
-      password: data["password"], 
-      password_confirmation: data["password"], 
+      email: data["email"],
+      password: data["password"],
+      password_confirmation: data["password"],
       is_admin: data["admin"]
     })
     |> Repo.insert()

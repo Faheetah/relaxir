@@ -11,7 +11,7 @@ defmodule RelaxirWeb.RecipeView do
     Phoenix.HTML.Form.textarea(form, field, value: format_names_to_text(ingredients, "\n"))
   end
 
- def format_names_to_text(items, separator) do
+  def format_names_to_text(items, separator) do
     items
     |> Enum.map(fn i ->
       case i do

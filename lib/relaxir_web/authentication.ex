@@ -24,8 +24,15 @@ defmodule RelaxirWeb.Authentication do
 
   def require_admin(conn, _) do
     case get_current_user(conn) do
-      %Users.User{is_admin: true} -> conn
-      _ -> RelaxirWeb.Authentication.ErrorHandler.auth_error(conn, {:requires_admin, :requires_admin}, %{})
+      %Users.User{is_admin: true} ->
+        conn
+
+      _ ->
+        RelaxirWeb.Authentication.ErrorHandler.auth_error(
+          conn,
+          {:requires_admin, :requires_admin},
+          %{}
+        )
     end
   end
 
@@ -43,8 +50,8 @@ defmodule RelaxirWeb.Authentication do
 
   def authenticate(%User{} = user, password) do
     authenticate(
-      user, 
-      password, 
+      user,
+      password,
       Argon2.verify_pass(password, user.encrypted_password)
     )
   end

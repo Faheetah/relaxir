@@ -15,4 +15,3 @@ defmodule RelaxirWeb.Api.UsdaController do
     render(conn, "show.json", food: food)
   end
 end
-

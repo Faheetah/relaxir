@@ -40,13 +40,17 @@ defmodule Relaxir.IngredientsTest do
 
     test "update_ingredient/2 with valid data updates the ingredient" do
       ingredient = ingredient_fixture()
+
       assert {:ok, %Ingredient{} = ingredient} = Ingredients.update_ingredient(ingredient, @update_attrs)
+
       assert ingredient.name == "some updated name"
     end
 
     test "update_ingredient/2 with invalid data returns error changeset" do
       ingredient = ingredient_fixture()
+
       assert {:error, %Ecto.Changeset{}} = Ingredients.update_ingredient(ingredient, @invalid_attrs)
+
       assert Ingredients.get_ingredient!(ingredient.id).name == @valid_attrs.name
     end
 

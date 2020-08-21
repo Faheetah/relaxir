@@ -14,7 +14,7 @@ defmodule RelaxirWeb.AuthController do
         conn
         |> Authentication.log_in(user)
         |> redirect(to: Routes.profile_path(conn, :show))
-      
+
       {:error, _error_changeset} ->
         conn
         |> put_flash(:error, "Authentication failed.")

@@ -30,7 +30,8 @@ config :ueberauth, Ueberauth,
   providers: [
     google: {Ueberauth.Strategy.Google, []},
     identity: {
-      Ueberauth.Strategy.Identity, [
+      Ueberauth.Strategy.Identity,
+      [
         param_nesting: "user",
         request_path: "/register",
         callback_path: "/register",

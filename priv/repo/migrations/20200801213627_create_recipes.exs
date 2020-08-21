@@ -8,6 +8,5 @@ defmodule Relaxir.Repo.Migrations.CreateRecipes do
 
       timestamps()
     end
-
   end
 end

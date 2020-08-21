@@ -56,7 +56,7 @@ defmodule Relaxir.MixProject do
       {:earmark, "~> 1.4.10"},
       {:csv, "~> 2.3.1"},
       {:excoveralls, "~> 0.13.1", only: :test},
-      {:lcov_ex, "~> 0.1.0", runtime: false, only: :test},
+      {:lcov_ex, "~> 0.1.0", runtime: false, only: :test}
     ]
   end
 
@@ -70,10 +70,20 @@ defmodule Relaxir.MixProject do
     [
       setup: ["deps.get", "ecto.setup", "cmd npm install --prefix assets"],
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
-      "ecto.setup_dev": ["ecto.drop", "ecto.create", "ecto.migrate", "run priv/repo/dev_seeds.exs"],
+      "ecto.setup_dev": [
+        "ecto.drop",
+        "ecto.create",
+        "ecto.migrate",
+        "run priv/repo/dev_seeds.exs"
+      ],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      test: ["ecto.create --quiet", "ecto.migrate --quiet", "run priv/repo/test_seeds.exs", "test"],
-      "test.clean": ["ecto.drop", "ecto.create", "ecto.migrate", "run priv/repo/test_seeds.exs"],
+      test: [
+        "ecto.create --quiet",
+        "ecto.migrate --quiet",
+        "run priv/repo/test_seeds.exs",
+        "test"
+      ],
+      "test.clean": ["ecto.drop", "ecto.create", "ecto.migrate", "run priv/repo/test_seeds.exs"]
     ]
   end
 end

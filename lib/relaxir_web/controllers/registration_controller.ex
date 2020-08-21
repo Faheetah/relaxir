@@ -25,7 +25,7 @@ defmodule RelaxirWeb.RegistrationController do
         conn
         |> Authentication.log_in(user)
         |> redirect(to: Routes.recipe_path(conn, :index))
-      
+
       {:error, changeset} ->
         render(conn, :new,
           changeset: changeset,
