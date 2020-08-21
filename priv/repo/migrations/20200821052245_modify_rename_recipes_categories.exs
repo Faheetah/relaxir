@@ -1,4 +1,4 @@
-defmodule Relaxir.Repo.Migrations.ModifyRecipesCategoriesAddPrimaryKey do
+defmodule Relaxir.Repo.Migrations.ModifyRenameRecipesCategories do
   use Ecto.Migration
 
   def change do
