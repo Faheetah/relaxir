@@ -34,6 +34,12 @@ defmodule Relaxir.Ingredients do
     |> Repo.insert()
   end
 
+  def create_ingredients(attrs) do
+    now = NaiveDateTime.utc_now |> NaiveDateTime.truncate(:second)
+    timestamps = %{inserted_at: now, updated_at: now}
+    Repo.insert_all(Ingredient, Enum.map(attrs, &Map.merge(&1, timestamps)))
+  end
+
   def update_ingredient(%Ingredient{} = ingredient, attrs) do
     ingredient
     |> Ingredient.changeset(attrs)

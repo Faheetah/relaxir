@@ -65,8 +65,9 @@ defmodule RelaxirWeb.RecipeController do
 
   def parse_attrs(attrs) do
     attrs
-    |> split_field("ingredients", "\n")
     |> split_field("categories", ",")
+    |> split_field("ingredients", "\n")
+    |> parse_ingredients()
   end
 
   def split_field(attrs, name, separator) do
@@ -77,5 +78,13 @@ defmodule RelaxirWeb.RecipeController do
       |> Enum.reject(&(&1 == ""))
 
     Map.put(attrs, name, field)
+  end
+
+  def parse_ingredients(attrs) do
+    ingredients =
+      attrs["ingredients"]
+      |> Enum.map(&(%{name: &1}))
+
+    Map.put(attrs, "ingredients", ingredients)
   end
 end

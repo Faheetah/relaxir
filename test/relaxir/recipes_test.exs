@@ -29,7 +29,9 @@ defmodule Relaxir.RecipesTest do
       "ingredients" => []
     }
 
-    @ingredients ["cauliflower", "broccoli"]
+    @ingredients [%{name: "cauliflower"}, %{name: "broccoli"}]
+
+    @new_ingredient %{name: "kale"}
 
     def recipe_fixture(attrs \\ %{}) do
       {:ok, recipe} =
@@ -103,9 +105,9 @@ defmodule Relaxir.RecipesTest do
 
       existing_ingredients =
         recipe.recipe_ingredients
-        |> Enum.map(fn i -> i.ingredient.name end)
+        |> Enum.map(fn i -> %{name: i.ingredient.name} end)
 
-      {:ok, %Recipe{} = updated_recipe} = Recipes.update_recipe(recipe, %{"ingredients" => ["kale" | existing_ingredients]})
+      {:ok, %Recipe{} = updated_recipe} = Recipes.update_recipe(recipe, %{"ingredients" => [@new_ingredient | existing_ingredients]})
 
       ingredients =
         updated_recipe.recipe_ingredients
@@ -129,7 +131,7 @@ defmodule Relaxir.RecipesTest do
           }
         end)
 
-      {:ok, new_ingredient} = Ingredients.create_ingredient(%{"name" => "kohlrabi"})
+      {:ok, new_ingredient} = Ingredients.create_ingredient(@new_ingredient)
 
       recipe_ingredients = %{
         "recipe_ingredients" =>
@@ -148,7 +150,7 @@ defmodule Relaxir.RecipesTest do
         recipe.recipe_ingredients
         |> Enum.map(fn i -> i.ingredient.name end)
 
-      assert length(["kohlrabi", "cauliflower", "broccoli"] -- ingredients)
+      assert length(["kale", "cauliflower", "broccoli"] -- ingredients)
     end
 
     test "update_recipe/2 removes ingredients" do
@@ -171,15 +173,16 @@ defmodule Relaxir.RecipesTest do
 
   describe "parsing ingredients" do
     test "builds a list of new ingredients when it doesn't find an ingredient" do
-      attrs = %{"ingredients" => ["kale", "kohlrabi"]}
+      attrs = %{"ingredients" => [@new_ingredient]}
 
       assert %{ingredient: %{name: "kale"}} in Recipes.map_ingredients(attrs)["recipe_ingredients"]
     end
 
     test "finds existing ingredients" do
-      {:ok, cauliflower} = Ingredients.create_ingredient(%{name: "cauliflower"})
+      Ingredients.create_ingredients(@ingredients)
+      cauliflower = Ingredients.get_ingredient_by_name!("cauliflower")
 
-      attrs = %{"ingredients" => ["cauliflower", "kale"]}
+      attrs = %{"ingredients" => @ingredients ++ [@new_ingredient]}
 
       assert %{ingredient_id: cauliflower.id} in Recipes.map_ingredients(attrs)["recipe_ingredients"]
     end

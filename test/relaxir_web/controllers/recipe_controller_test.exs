@@ -23,7 +23,7 @@ defmodule RelaxirWeb.RecipeControllerTest do
   @categories %{"categories" => "texmex, breakfast"}
 
   def create_recipe_with_associations(_) do
-    ingredients = ["cauliflower", "broccoli"]
+    ingredients = [%{name: "cauliflower"}, %{name: "broccoli"}]
     categories = ["texmex", "breakfast"]
 
     {:ok, recipe} =

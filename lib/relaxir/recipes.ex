@@ -77,13 +77,16 @@ defmodule Relaxir.Recipes do
   def map_categories(attrs), do: attrs
 
   def map_ingredients(attrs) when is_map_key(attrs, "ingredients") do
-    fetched_ingredients = Ingredients.get_ingredients_by_name!(attrs["ingredients"])
+    fetched_ingredients =
+      attrs["ingredients"]
+      |> Enum.map(fn i -> i.name end)
+      |> Ingredients.get_ingredients_by_name!()
 
     ingredients =
       attrs["ingredients"]
-      |> Enum.map(fn name ->
-        case Enum.find(fetched_ingredients, fn i -> i.name == name end) do
-          nil -> %{ingredient: %{name: name}}
+      |> Enum.map(fn ingredient ->
+        case Enum.find(fetched_ingredients, fn i -> i.name == ingredient.name end) do
+          nil -> %{ingredient: ingredient}
           ingredient -> %{ingredient_id: ingredient.id}
         end
       end)
