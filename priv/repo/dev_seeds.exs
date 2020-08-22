@@ -7,6 +7,8 @@ case Relaxir.Users.get_by_email("test@test") do
   |> Relaxir.Repo.insert!()
 end
 
-Recipes.create_recipe(%{"title" => "Beef Fajitas", "ingredients" => ["beef", "onion", "peppers", "cheese"], "categories" => ["Texmex"]}) 
+Recipes.create_recipe(%{"title" => "Beef Fajitas", "ingredients" => ["beef", "onion", "peppers", "cheese"], "categories" => ["Texmex"]})
 Recipes.create_recipe(%{"title" => "Chicken Tacos", "ingredients" => ["chicken", "onion", "peppers", "tortillas"], "categories" => ["Texmex"]})
-Recipes.create_recipe(%{"title" => "Salsa", "ingredients" => ["tomatoes", "onion", "peppers"], "categories" => ["Texmex", "Mexican"]}) 
+Recipes.create_recipe(%{"title" => "Salsa", "ingredients" => ["tomatoes", "onion", "peppers"], "categories" => ["Texmex", "Mexican"]})
+
+Code.require_file("priv/repo/unit_seed.exs")

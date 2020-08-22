@@ -3,6 +3,7 @@ defmodule Relaxir.Ingredients do
   alias Relaxir.Repo
 
   alias Relaxir.Ingredients.Ingredient
+  alias Relaxir.Ingredients.Unit
 
   def list_ingredients do
     Repo.all(Ingredient)
@@ -52,5 +53,19 @@ defmodule Relaxir.Ingredients do
 
   def change_ingredient(%Ingredient{} = ingredient, attrs \\ %{}) do
     Ingredient.changeset(ingredient, attrs)
+  end
+
+  def create_unit(attrs) do
+    %Unit{}
+    |> Unit.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def delete_unit(%Unit{} = unit) do
+    Repo.delete(unit)
+  end
+
+  def list_units() do
+    Repo.all(Unit)
   end
 end
