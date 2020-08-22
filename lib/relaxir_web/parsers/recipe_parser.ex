@@ -19,7 +19,14 @@ defmodule RelaxirWeb.RecipeParser do
   def parse_ingredients(attrs) do
     ingredients =
       attrs["ingredients"]
-      |> Enum.map(&%{name: &1})
+      |> Enum.map(&extract_ingredient_fields/1)
+      |> Enum.map(fn ingredient ->
+        case ingredient do
+          {:ok, ingredient} -> ingredient
+          {:error, error} -> {:error, error}
+          [] -> []
+        end
+      end)
 
     Map.put(attrs, "ingredients", ingredients)
   end
@@ -34,6 +41,7 @@ defmodule RelaxirWeb.RecipeParser do
     case String.split(ingredient.name) do
       [amount, unit | name] ->
         parsed_amount = parse_amount(amount)
+
         case parsed_amount do
           :error ->
             {:ok, ingredient}
@@ -70,9 +78,11 @@ defmodule RelaxirWeb.RecipeParser do
   end
 
   def extract_ingredient_note({:ok, ingredient}) do
-    name = ingredient.name
-    |> String.split(",")
-    |> Enum.map(&String.trim/1)
+    name =
+      ingredient.name
+      |> String.split(",")
+      |> Enum.map(&String.trim/1)
+
     case name do
       [name, note] -> {:ok, Map.merge(ingredient, %{name: name, note: note})}
       _ -> {:ok, ingredient}
