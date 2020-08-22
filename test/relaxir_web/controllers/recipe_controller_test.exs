@@ -88,7 +88,6 @@ defmodule RelaxirWeb.RecipeControllerTest do
   describe "update recipe with ingredients" do
     setup [:create_recipe_with_associations]
 
-    @tag :only
     test "updates existing ingredients", %{conn: conn, recipe: recipe} do
       conn = put(conn, Routes.recipe_path(conn, :update, recipe), recipe: Map.merge(@update_attrs, @ingredients))
 

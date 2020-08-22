@@ -19,24 +19,34 @@ defmodule RelaxirWeb.RecipeParserTest do
       assert {:ok, %{name: "broccoli", amount: 0.5, unit: "cups"}} == extract_ingredient_fields("1/2 cups broccoli")
     end
 
-    test "recognizes amounts of ingredients without units" do
-      assert {:ok, %{name: "egg", amount: 1, unit: "egg"}} == extract_ingredient_fields("1 egg")
-    end
-
-    test "recognizes amounts of ingredients without units multi word" do
-      assert {:ok, %{name: "green banana", amount: 1, unit: "green banana"}} == extract_ingredient_fields("1 egg")
-    end
-
-    test "provides the user an error when a unit is not provided" do
-      assert {:error, _} = extract_ingredient_fields("1 flour")
-    end
-
     test "parses a note in parenthesis at the end" do
-      assert {:ok, %{name: "egg", note: "chopped"}} == extract_ingredient_fields("egg (chopped)")
+      assert {:ok, %{name: "egg", note: "chopped"}} == extract_ingredient_fields("egg, chopped")
     end
 
-    test "considers parenthesis a part of the ingredient name when not at the end" do
-      assert {:ok, %{name: "large (XXL) eggs"}} == extract_ingredient_fields("large (XXL) eggs")
+    test "ignores no note provided" do
+      assert {:ok, %{name: "egg", note: "chopped"}} == extract_ingredient_fields("egg, chopped")
+    end
+  end
+
+  describe "parse_amount/1" do
+    test "returns :error if nothing found" do
+      assert :error == parse_amount("a a")
+    end
+
+    test "returns amount found" do
+      assert 1 == parse_amount("1")
+    end
+
+    test "returns fraction found" do
+      assert 0.5 == parse_amount("1/2")
+    end
+
+    test "returns :error on bad numerator" do
+      assert :error == parse_amount("a/1")
+    end
+
+    test "returns :error on bad denominator" do
+      assert :error == parse_amount("1/a")
     end
   end
 end
