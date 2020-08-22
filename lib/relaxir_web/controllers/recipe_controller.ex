@@ -4,6 +4,7 @@ defmodule RelaxirWeb.RecipeController do
   alias Relaxir.Recipes
   alias Relaxir.Recipes.Recipe
   alias RelaxirWeb.Authentication
+  alias RelaxirWeb.RecipeParser
 
   def index(conn, _params) do
     current_user = Authentication.get_current_user(conn)
@@ -17,7 +18,7 @@ defmodule RelaxirWeb.RecipeController do
   end
 
   def create(conn, %{"recipe" => recipe_params}) do
-    case Recipes.create_recipe(parse_attrs(recipe_params)) do
+    case Recipes.create_recipe(RecipeParser.parse_attrs(recipe_params)) do
       {:ok, recipe} ->
         conn
         |> put_flash(:info, "Recipe created successfully.")
@@ -43,7 +44,7 @@ defmodule RelaxirWeb.RecipeController do
   def update(conn, %{"id" => id, "recipe" => recipe_params}) do
     recipe = Recipes.get_recipe!(id)
 
-    case Recipes.update_recipe(recipe, parse_attrs(recipe_params)) do
+    case Recipes.update_recipe(recipe, RecipeParser.parse_attrs(recipe_params)) do
       {:ok, recipe} ->
         conn
         |> put_flash(:info, "Recipe updated successfully.")
@@ -61,30 +62,5 @@ defmodule RelaxirWeb.RecipeController do
     conn
     |> put_flash(:info, "Recipe deleted successfully.")
     |> redirect(to: Routes.recipe_path(conn, :index))
-  end
-
-  def parse_attrs(attrs) do
-    attrs
-    |> split_field("categories", ",")
-    |> split_field("ingredients", "\n")
-    |> parse_ingredients()
-  end
-
-  def split_field(attrs, name, separator) do
-    field =
-      (attrs[name] || "")
-      |> String.split(separator)
-      |> Enum.map(&String.trim/1)
-      |> Enum.reject(&(&1 == ""))
-
-    Map.put(attrs, name, field)
-  end
-
-  def parse_ingredients(attrs) do
-    ingredients =
-      attrs["ingredients"]
-      |> Enum.map(&(%{name: &1}))
-
-    Map.put(attrs, "ingredients", ingredients)
   end
 end

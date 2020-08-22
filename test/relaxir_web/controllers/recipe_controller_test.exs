@@ -185,7 +185,6 @@ defmodule RelaxirWeb.RecipeControllerTest do
       assert html_response(conn, 200) =~ "breakfast"
     end
 
-    @tag :only
     test "uses an existing category", %{conn: conn, recipe: recipe} do
       existing_recipe = get(conn, Routes.recipe_path(conn, :show, recipe))
       assert html_response(existing_recipe, 200) =~ "texmex"
