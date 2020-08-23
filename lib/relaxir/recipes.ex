@@ -44,8 +44,10 @@ defmodule Relaxir.Recipes do
   def update_recipe(%Recipe{} = recipe, attrs) do
     attrs =
       attrs
-      |> map_categories
-      |> map_ingredients
+      |> map_categories()
+      |> map_existing_categories(recipe)
+      |> map_ingredients()
+      |> map_existing_ingredients(recipe)
 
     recipe
     |> Recipe.changeset(attrs)
@@ -84,6 +86,58 @@ defmodule Relaxir.Recipes do
 
   def map_categories(attrs), do: attrs
 
+  def map_existing_categories(attrs, recipe) do
+    current_recipe_categories = recipe.recipe_categories
+    |> Enum.reduce([],
+      fn (ri, acc) ->
+        [%{id: ri.id, category: %{id: ri.category.id}} | acc]
+      end
+    )
+
+    recipe_categories = (attrs["recipe_categories"] || [])
+    |> Enum.map(fn i ->
+      case i do
+        %{:category_id => id} -> Enum.find(
+          current_recipe_categories,
+          %{recipe_id: recipe.id, category_id: id},
+          fn cri ->
+            if cri.category.id == id do
+              cri
+            end
+          end)
+        _ -> i
+      end
+    end)
+
+    Map.merge(attrs, %{"recipe_categories" => recipe_categories})
+  end
+
+  def map_existing_ingredients(attrs, recipe) do
+    current_recipe_ingredients = recipe.recipe_ingredients
+    |> Enum.reduce([],
+      fn (ri, acc) ->
+        [%{id: ri.id, ingredient: %{id: ri.ingredient.id}} | acc]
+      end
+    )
+
+    recipe_ingredients = attrs["recipe_ingredients"]
+    |> Enum.map(fn i ->
+      case i do
+        %{:ingredient_id => id} -> Enum.find(
+          current_recipe_ingredients,
+          %{recipe_id: recipe.id, ingredient_id: id},
+          fn cri ->
+            if cri.ingredient.id == id do
+              cri
+            end
+          end)
+        _ -> i
+      end
+    end)
+
+    Map.merge(attrs, %{"recipe_ingredients" => recipe_ingredients})
+  end
+
   def map_ingredients(attrs) when is_map_key(attrs, "ingredients") do
     units = Ingredients.list_units()
 
@@ -119,6 +173,9 @@ defmodule Relaxir.Recipes do
       true -> attrs
     end
     |> case do
+      {:ok, nil} ->
+        {:error, "Unit \"#{unit_name}\" was not found"}
+
       {:ok, unit} ->
         attrs
         |> Map.merge(%{
@@ -136,6 +193,7 @@ defmodule Relaxir.Recipes do
 
       attrs ->
         attrs
+        |> Map.merge(%{note: Map.get(ingredient, :note)})
     end
   end
 end

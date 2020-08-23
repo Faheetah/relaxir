@@ -2,12 +2,11 @@ defmodule Relaxir.RecipesTest do
   use Relaxir.DataCase
 
   alias Relaxir.Recipes
+  alias Relaxir.Recipes.Recipe
   alias Relaxir.Ingredients
   alias Relaxir.Categories
 
   describe "recipes" do
-    alias Relaxir.Recipes.Recipe
-
     @valid_attrs %{
       "directions" => "some directions",
       "title" => "some title",
@@ -32,6 +31,8 @@ defmodule Relaxir.RecipesTest do
     @ingredients [%{name: "cauliflower"}, %{name: "broccoli"}]
 
     @new_ingredient %{name: "kale"}
+
+    @complex_ingredient %{name: "cheese", note: "shredded", amount: 2, unit: "cups"}
 
     def recipe_fixture(attrs \\ %{}) do
       {:ok, recipe} =
@@ -184,6 +185,7 @@ defmodule Relaxir.RecipesTest do
 
     test "finds an existing ingredient" do
       {:ok, new_ingredient} = Ingredients.create_ingredient(@new_ingredient)
+
       ingredients =
         %{"ingredients" => [@new_ingredient]}
         |> Recipes.map_ingredients()
@@ -204,6 +206,7 @@ defmodule Relaxir.RecipesTest do
 
     test "adds an amount and unit to an ingredient" do
       {:ok, unit} = Ingredients.create_unit(%{singular: "ton", plural: "tons"})
+
       ingredients =
         %{"ingredients" => [Map.merge(@new_ingredient, %{amount: 2, unit: "tons"})]}
         |> Recipes.map_ingredients()
@@ -211,6 +214,16 @@ defmodule Relaxir.RecipesTest do
 
       assert hd(ingredients).amount == 2
       assert hd(ingredients).unit_id == unit.id
+    end
+
+    test "creates a recipe using mapped units" do
+      assert {:ok, %Recipe{} = recipe} = Recipes.create_recipe(%{@valid_attrs | "ingredients" => [@complex_ingredient]})
+      recipe_ingredient = hd(recipe.recipe_ingredients)
+
+      assert recipe_ingredient.ingredient.name == "cheese"
+      assert recipe_ingredient.amount == 2
+      assert recipe_ingredient.unit.plural == "cups"
+      assert recipe_ingredient.note == "shredded"
     end
   end
 

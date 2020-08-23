@@ -14,10 +14,10 @@ end
     "title" => "Beef Fajitas",
     "categories" => ["Texmex"],
     "ingredients" => [
-      %{name: "beef"},
+      %{name: "beef", note: "browned"},
       %{name: "onion"},
       %{name: "peppers"},
-      %{name: "cheese"}
+      %{name: "cheese", amount: 2, unit: "cups", note: "shredded"}
     ]
   },
   %{
@@ -40,4 +40,4 @@ end
     ]
   }
 ]
-|> Enum.each(&Recipes.create_recipe/1)
+|> Enum.map(&Recipes.create_recipe/1)

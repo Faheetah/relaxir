@@ -14,8 +14,8 @@
   <%= error_tag f, :categories %>
 
   <%= label f, :ingredients %>
-  <%= ingredients_input f, :recipe_ingredients %>
-  <%= error_tag f, :recipe_ingredients %>
+  <%= ingredients_input f, :ingredients, @ingredients %>
+  <%= error_tag f, :ingredients %>
 
   <%= label f, :directions %>
   <%= textarea f, :directions %>

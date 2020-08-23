@@ -14,7 +14,7 @@ defmodule RelaxirWeb.RecipeController do
 
   def new(conn, _params) do
     changeset = Recipes.change_recipe(%Recipe{recipe_ingredients: [], categories: []})
-    render(conn, "new.html", changeset: changeset)
+    render(conn, "new.html", ingredients: [], changeset: changeset)
   end
 
   def create(conn, %{"recipe" => recipe_params}) do
@@ -25,7 +25,7 @@ defmodule RelaxirWeb.RecipeController do
         |> redirect(to: Routes.recipe_path(conn, :show, recipe))
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "new.html", changeset: changeset)
+        render(conn, "new.html", changeset: changeset, ingredients: [])
     end
   end
 
@@ -38,7 +38,7 @@ defmodule RelaxirWeb.RecipeController do
   def edit(conn, %{"id" => id}) do
     recipe = Recipes.get_recipe!(id)
     changeset = Recipes.change_recipe(recipe)
-    render(conn, "edit.html", recipe: recipe, changeset: changeset)
+    render(conn, "edit.html", recipe: recipe, ingredients: recipe.recipe_ingredients, changeset: changeset)
   end
 
   def update(conn, %{"id" => id, "recipe" => recipe_params}) do
@@ -51,7 +51,7 @@ defmodule RelaxirWeb.RecipeController do
         |> redirect(to: Routes.recipe_path(conn, :show, recipe))
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "edit.html", recipe: recipe, changeset: changeset)
+        render(conn, "edit.html", recipe: recipe, ingredients: recipe.recipe_ingredients, changeset: changeset)
     end
   end
 

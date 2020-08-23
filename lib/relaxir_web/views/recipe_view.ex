@@ -6,11 +6,12 @@ defmodule RelaxirWeb.RecipeView do
     Phoenix.HTML.Form.text_input(form, field, value: format_names_to_text(categories, ", "))
   end
 
-  def ingredients_input(form, field, _opts \\ []) do
+  def ingredients_input(form, field, ingredients, _opts \\ []) do
     ingredients =
-      Phoenix.HTML.Form.input_value(form, field)
-      |> format_ingredient_fields()
-      |> format_names_to_text("\n")
+      ingredients
+      |> Enum.map(&ingredients_output/1)
+      |> Enum.join("\n")
+
     Phoenix.HTML.Form.textarea(form, field, value: ingredients)
   end
 
@@ -19,28 +20,27 @@ defmodule RelaxirWeb.RecipeView do
     amount = recipe_ingredient.amount
     note = recipe_ingredient.note
 
-    unit = case unit do
-      nil -> nil
-      unit when amount == 1 -> unit.singular
-      unit when amount > 1 -> unit.plural
-    end
+    unit =
+      case unit do
+        nil -> nil
+        unit when amount == 1 -> unit.singular
+        unit when amount > 1 -> unit.plural
+      end
 
     [amount, unit, recipe_ingredient.ingredient.name]
-    |> Enum.reject(&(is_nil(&1)))
+    |> Enum.reject(&is_nil(&1))
     |> Enum.join(" ")
     |> (fn i ->
-      cond do
-        is_nil(note) -> i
-        true -> "#{i}, #{note}"
-      end
-    end).()
+          cond do
+            is_nil(note) -> i
+            true -> "#{i}, #{note}"
+          end
+        end).()
   end
 
   def format_ingredient_fields(fields) do
     fields
-    |> Enum.map(fn f ->
-      %{name: f.ingredient.name}
-    end)
+    |> Enum.map(&ingredients_output/1)
   end
 
   def format_names_to_text(items, separator) do
