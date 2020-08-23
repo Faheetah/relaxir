@@ -5,7 +5,6 @@ defmodule Relaxir.Ingredients.Unit do
   schema "units" do
     field :singular, :string
     field :plural, :string
-    belongs_to :ingredient, Relaxir.Ingredients.Ingredient
   end
 
   def changeset(unit, attrs) do

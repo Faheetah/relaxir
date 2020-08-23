@@ -1,5 +1,7 @@
 alias Relaxir.Recipes
 
+Code.require_file("priv/repo/unit_seed.exs")
+
 case Relaxir.Users.get_by_email("test@test") do
   %Relaxir.Users.User{} -> true
   _ -> %Relaxir.Users.User{}
@@ -7,8 +9,35 @@ case Relaxir.Users.get_by_email("test@test") do
   |> Relaxir.Repo.insert!()
 end
 
-Recipes.create_recipe(%{"title" => "Beef Fajitas", "ingredients" => ["beef", "onion", "peppers", "cheese"], "categories" => ["Texmex"]})
-Recipes.create_recipe(%{"title" => "Chicken Tacos", "ingredients" => ["chicken", "onion", "peppers", "tortillas"], "categories" => ["Texmex"]})
-Recipes.create_recipe(%{"title" => "Salsa", "ingredients" => ["tomatoes", "onion", "peppers"], "categories" => ["Texmex", "Mexican"]})
-
-Code.require_file("priv/repo/unit_seed.exs")
+[
+  %{
+    "title" => "Beef Fajitas",
+    "categories" => ["Texmex"],
+    "ingredients" => [
+      %{name: "beef"},
+      %{name: "onion"},
+      %{name: "peppers"},
+      %{name: "cheese"}
+    ]
+  },
+  %{
+    "title" => "Chicken Tacos",
+    "categories" => ["Texmex"],
+    "ingredients" => [
+      %{name: "chicken"},
+      %{name: "onion"},
+      %{name: "peppers"},
+      %{name: "tortillas"}
+    ]
+  },
+  %{
+    "title" => "Salsa",
+    "categories" => ["Texmex", "Mexican"],
+    "ingredients" => [
+      %{name: "tomatoes"},
+      %{name: "onion"},
+      %{name: "peppers"}
+    ]
+  }
+]
+|> Enum.each(&Recipes.create_recipe/1)

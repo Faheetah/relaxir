@@ -10,6 +10,7 @@ defmodule Relaxir.Recipes.Recipe do
     field :title, :string
     has_many :recipe_ingredients, RecipeIngredient, on_replace: :delete
     has_many :ingredients, through: [:recipe_ingredients, :ingredient]
+    has_many :units, through: [:recipe_ingredients, :unit]
     has_many :recipe_categories, RecipeCategory, on_replace: :delete
     has_many :categories, through: [:recipe_categories, :category]
 

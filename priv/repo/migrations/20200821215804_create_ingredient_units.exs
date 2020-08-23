@@ -7,6 +7,11 @@ defmodule Relaxir.Repo.Migrations.CreateIngredientUnits do
       add :plural, :string
     end
 
+    alter table(:recipe_ingredients) do
+      add :unit_id, references(:units)
+      add :note, :string
+    end
+
     create unique_index(:units, [:singular, :plural])
   end
 end

@@ -1,19 +1,19 @@
 <h1><%= @recipe.title %></h1>
-  
+
 <%= if @recipe.categories != [] do %>
 <strong>Categories:</strong>
 <%= for category <- @recipe.categories do %>
 <li>
-  <%= link category.name, to: Routes.category_path(@conn, :show, category)%> 
+  <%= link category.name, to: Routes.category_path(@conn, :show, category)%>
 </li>
 <% end %>
 <% end %>
 
-<%= if @recipe.ingredients != [] do %>
+<%= if @recipe.recipe_ingredients != [] do %>
 <strong>Ingredients:</strong>
-<%= for ingredient <- @recipe.ingredients do %>
+<%= for recipe_ingredient <- @recipe.recipe_ingredients do %>
 <li>
-  <%= link ingredient.name, to: Routes.ingredient_path(@conn, :show, ingredient)%> 
+  <%= link ingredients_output(recipe_ingredient), to: Routes.ingredient_path(@conn, :show, recipe_ingredient.ingredient)%>
 </li>
 <% end %>
 <% end %>

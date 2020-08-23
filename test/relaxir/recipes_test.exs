@@ -172,19 +172,45 @@ defmodule Relaxir.RecipesTest do
   end
 
   describe "parsing ingredients" do
-    test "builds a list of new ingredients when it doesn't find an ingredient" do
-      attrs = %{"ingredients" => [@new_ingredient]}
+    test "generates a new ingredient" do
+      ingredients =
+        %{"ingredients" => [@new_ingredient]}
+        |> Recipes.map_ingredients()
+        |> Map.get("recipe_ingredients")
+        |> Enum.map(fn i -> i.ingredient.name end)
 
-      assert %{ingredient: %{name: "kale"}} in Recipes.map_ingredients(attrs)["recipe_ingredients"]
+      assert @new_ingredient.name in ingredients
     end
 
-    test "finds existing ingredients" do
-      Ingredients.create_ingredients(@ingredients)
-      cauliflower = Ingredients.get_ingredient_by_name!("cauliflower")
+    test "finds an existing ingredient" do
+      {:ok, new_ingredient} = Ingredients.create_ingredient(@new_ingredient)
+      ingredients =
+        %{"ingredients" => [@new_ingredient]}
+        |> Recipes.map_ingredients()
+        |> Map.get("recipe_ingredients")
+        |> Enum.map(fn i -> i.ingredient_id end)
 
-      attrs = %{"ingredients" => @ingredients ++ [@new_ingredient]}
+      assert new_ingredient.id in ingredients
+    end
 
-      assert %{ingredient_id: cauliflower.id} in Recipes.map_ingredients(attrs)["recipe_ingredients"]
+    test "adds a note to an ingredient" do
+      ingredients =
+        %{"ingredients" => [Map.merge(@new_ingredient, %{note: "drained"})]}
+        |> Recipes.map_ingredients()
+        |> Map.get("recipe_ingredients")
+
+      assert hd(ingredients).ingredient.note == "drained"
+    end
+
+    test "adds an amount and unit to an ingredient" do
+      {:ok, unit} = Ingredients.create_unit(%{singular: "ton", plural: "tons"})
+      ingredients =
+        %{"ingredients" => [Map.merge(@new_ingredient, %{amount: 2, unit: "tons"})]}
+        |> Recipes.map_ingredients()
+        |> Map.get("recipe_ingredients")
+
+      assert hd(ingredients).amount == 2
+      assert hd(ingredients).unit_id == unit.id
     end
   end
 

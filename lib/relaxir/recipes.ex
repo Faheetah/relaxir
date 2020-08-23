@@ -6,13 +6,15 @@ defmodule Relaxir.Recipes do
   alias Relaxir.Ingredients
   alias Relaxir.Recipes.Recipe
 
+  @preload [:recipe_ingredients, :ingredients, :units, :recipe_categories, :categories]
+
   def list_recipes do
     Repo.all(Recipe)
   end
 
   def get_recipe!(id) do
     Recipe
-    |> preload([:recipe_ingredients, :ingredients, :recipe_categories, :categories])
+    |> preload(^@preload)
     |> Repo.get!(id)
   end
 
@@ -22,14 +24,17 @@ defmodule Relaxir.Recipes do
   end
 
   def create_recipe(attrs) do
-    attrs = attrs |> map_categories |> map_ingredients
+    attrs =
+      attrs
+      |> map_categories
+      |> map_ingredients
 
     %Recipe{}
     |> Recipe.changeset(attrs)
     |> Repo.insert()
     |> case do
       {:ok, recipe} ->
-        {:ok, Repo.preload(recipe, [:recipe_ingredients, :ingredients, :recipe_categories, :categories])}
+        {:ok, Repo.preload(recipe, @preload)}
 
       error ->
         error
@@ -37,7 +42,10 @@ defmodule Relaxir.Recipes do
   end
 
   def update_recipe(%Recipe{} = recipe, attrs) do
-    attrs = attrs |> map_categories |> map_ingredients
+    attrs =
+      attrs
+      |> map_categories
+      |> map_ingredients
 
     recipe
     |> Recipe.changeset(attrs)
@@ -77,6 +85,8 @@ defmodule Relaxir.Recipes do
   def map_categories(attrs), do: attrs
 
   def map_ingredients(attrs) when is_map_key(attrs, "ingredients") do
+    units = Ingredients.list_units()
+
     fetched_ingredients =
       attrs["ingredients"]
       |> Enum.map(fn i -> i.name end)
@@ -89,10 +99,43 @@ defmodule Relaxir.Recipes do
           nil -> %{ingredient: ingredient}
           ingredient -> %{ingredient_id: ingredient.id}
         end
+        |> map_recipe_ingredient_fields(ingredient, units)
       end)
 
     Map.put(attrs, "recipe_ingredients", ingredients)
   end
 
   def map_ingredients(attrs), do: attrs
+
+  def map_recipe_ingredient_fields(attrs, ingredient, units) do
+    amount = Map.get(ingredient, :amount)
+    unit_name = Map.get(ingredient, :unit)
+
+    cond do
+      amount == nil -> attrs
+      amount == 1 -> {:ok, Enum.find(units, fn u -> unit_name == u.singular end)}
+      amount > 1 -> {:ok, Enum.find(units, fn u -> unit_name == u.plural end)}
+      unit_name != nil -> {:error, "Unit \"#{unit_name}\" is invalid"}
+      true -> attrs
+    end
+    |> case do
+      {:ok, unit} ->
+        attrs
+        |> Map.merge(%{
+          amount: Map.get(ingredient, :amount),
+          unit_id: unit.id,
+          note: Map.get(ingredient, :note)
+        })
+
+      {:error, error} ->
+        {:error, error}
+
+      %{ingredient: %{note: note}} ->
+        attrs
+        |> Map.merge(%{note: note})
+
+      attrs ->
+        attrs
+    end
+  end
 end

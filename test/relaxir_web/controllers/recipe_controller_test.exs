@@ -20,6 +20,7 @@ defmodule RelaxirWeb.RecipeControllerTest do
   @invalid_attrs %{"directions" => nil, "title" => nil, "ingredients" => "", "categories" => ""}
   @defaults %{"categories" => [], "ingredients" => []}
   @ingredients %{"ingredients" => "cauliflower\nbroccoli"}
+  @ingredients_with_amounts %{"ingredients" => "2 cups flour\negg, hard boiled"}
   @categories %{"categories" => "texmex, breakfast"}
 
   def create_recipe_with_associations(_) do
@@ -139,6 +140,19 @@ defmodule RelaxirWeb.RecipeControllerTest do
       conn = get(conn, Routes.recipe_path(conn, :show, id))
       assert html_response(conn, 200) =~ "cauliflower"
       assert html_response(conn, 200) =~ "broccoli"
+    end
+
+    @tag :only
+    test "adds ingredients with amounts and notes from string", %{conn: conn} do
+      create_attrs = Map.merge(@create_attrs, @ingredients_with_amounts)
+      conn = post(conn, Routes.recipe_path(conn, :create), recipe: create_attrs)
+
+      assert %{id: id} = redirected_params(conn)
+      assert redirected_to(conn) == Routes.recipe_path(conn, :show, id)
+
+      conn = get(conn, Routes.recipe_path(conn, :show, id))
+      assert html_response(conn, 200) =~ "2 cups flour"
+      assert html_response(conn, 200) =~ "egg, hard boiled"
     end
   end
 
