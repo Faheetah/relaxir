@@ -3,7 +3,7 @@ defmodule Relaxir.RecipeIngredient do
   import Ecto.Changeset
 
   schema "recipe_ingredients" do
-    field :amount, :integer
+    field :amount, :float
     field :note, :string
     belongs_to :unit, Relaxir.Ingredients.Unit
     belongs_to :recipe, Relaxir.Recipes.Recipe

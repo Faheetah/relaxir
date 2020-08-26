@@ -23,11 +23,12 @@ defmodule RelaxirWeb.RecipeView do
     unit =
       case unit do
         nil -> nil
-        unit when amount == 1 -> unit.singular
         unit when amount > 1 -> unit.plural
+        unit when amount > 0 -> unit.singular
+        _ -> {:error, "invalid amount #{amount}"}
       end
 
-    [amount, unit, recipe_ingredient.ingredient.name]
+    [parse_fraction(amount), unit, recipe_ingredient.ingredient.name]
     |> Enum.reject(&is_nil(&1))
     |> Enum.join(" ")
     |> (fn i ->
@@ -36,6 +37,26 @@ defmodule RelaxirWeb.RecipeView do
             true -> "#{i}, #{note}"
           end
         end).()
+  end
+
+  def parse_fraction(nil), do: nil
+
+  def parse_fraction(amount) do
+    whole_number = floor(amount)
+
+    adjustment = case (amount - floor(amount)) do
+      0.0 -> 1
+      i -> i
+    end
+
+    fraction = floor(1 / adjustment)
+
+    [whole_number, fraction]
+    |> case do
+      [0, fraction] -> "1/#{fraction}"
+      [number, 1] -> number
+      [number, fraction] -> "#{number} 1/#{fraction}"
+    end
   end
 
   def format_ingredient_fields(fields) do

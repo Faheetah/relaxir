@@ -39,6 +39,50 @@ defmodule RelaxirWeb.RecipeParser do
 
   def extract_ingredient_amount({:ok, ingredient}) do
     case String.split(ingredient.name) do
+      # @todo needs heavy refactoring
+      [whole, fraction, unit | name] ->
+        cond do
+          Float.parse(fraction) != :error and hd(Tuple.to_list(Float.parse(fraction))) ->
+            parsed_amount = hd(Tuple.to_list(Float.parse(whole))) + parse_amount(fraction)
+
+            case parsed_amount do
+              :error ->
+                {:ok, ingredient}
+
+              _ ->
+                {:ok,
+                Map.merge(
+                  ingredient,
+                  %{
+                    amount: parsed_amount,
+                    unit: unit,
+                    name: Enum.join(name, " ")
+                  }
+                )}
+            end
+          true ->
+            name = [unit | name]
+            amount = whole
+            unit = fraction
+            parsed_amount = parse_amount(amount)
+
+            case parsed_amount do
+              :error ->
+                {:ok, ingredient}
+
+              _ ->
+                {:ok,
+                Map.merge(
+                  ingredient,
+                  %{
+                    amount: parsed_amount,
+                    unit: unit,
+                    name: Enum.join(name, " ")
+                  }
+                )}
+            end
+        end
+
       [amount, unit | name] ->
         parsed_amount = parse_amount(amount)
 

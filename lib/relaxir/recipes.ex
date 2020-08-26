@@ -41,23 +41,33 @@ defmodule Relaxir.Recipes do
     end
   end
 
-  def update_recipe(%Recipe{} = recipe, attrs) do
+  def update_recipe(%Recipe{} = recipe, original_attrs) do
     attrs =
-      attrs
+      original_attrs
       |> map_categories()
       |> map_existing_categories(recipe)
       |> map_ingredients()
       |> map_existing_ingredients(recipe)
 
-    recipe
-    |> Recipe.changeset(attrs)
-    |> Repo.update()
-    |> case do
-      {:ok, recipe} ->
-        {:ok, Repo.preload(recipe, [:recipe_ingredients, :ingredients, :recipe_categories, :categories])}
+    case attrs["errors"] do
+      {:error, error} ->
+        {
+          :error,
+          recipe
+          |> Recipe.changeset(Map.merge(original_attrs, %{"ingredients" => attrs["errors"]}))
+          |> Ecto.Changeset.add_error(:ingredients, error, validation: :required)
+        }
+      _ ->
+        recipe
+        |> Recipe.changeset(attrs)
+        |> Repo.update()
+        |> case do
+          {:ok, recipe} ->
+            {:ok, Repo.preload(recipe, [:recipe_ingredients, :ingredients, :recipe_categories, :categories])}
 
-      error ->
-        error
+          error ->
+            error
+        end
     end
   end
 
@@ -140,7 +150,20 @@ defmodule Relaxir.Recipes do
       end
     end)
 
-    Map.put(attrs, "recipe_ingredients", recipe_ingredients)
+    errors = Enum.find(
+      recipe_ingredients,
+      fn i ->
+        case i do
+          {:error, error} -> error
+          _ -> nil
+        end
+      end)
+
+    if errors != nil do
+      Map.put(attrs, "errors", errors)
+    else
+      Map.put(attrs, "recipe_ingredients", recipe_ingredients)
+    end
   end
 
   def map_ingredients(attrs) when is_map_key(attrs, "ingredients") do
