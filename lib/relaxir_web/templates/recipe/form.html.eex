@@ -10,10 +10,12 @@
   <%= error_tag f, :title %>
 
   <%= label f, :categories %>
+  <h6><i>Comma separated list of categories</i></h6>
   <%= categories_input f, :categories %>
   <%= error_tag f, :categories %>
 
   <%= label f, :ingredients %>
+  <h6><i>Ingredients with optional amounts and notes, i.e. "2 cups flour, sifted"</i></h6>
   <%= ingredients_input f, :ingredients, @ingredients %>
   <%= error_tag f, :ingredients %>
 
