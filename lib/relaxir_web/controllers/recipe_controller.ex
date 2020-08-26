@@ -51,7 +51,7 @@ defmodule RelaxirWeb.RecipeController do
         |> redirect(to: Routes.recipe_path(conn, :show, recipe))
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "edit.html", recipe: recipe, ingredients: recipe.recipe_ingredients, changeset: changeset)
+        render(conn, "edit.html", recipe: recipe, ingredients: recipe.recipe_ingredients, changeset: %{changeset | action: :insert})
     end
   end
 
