@@ -53,7 +53,7 @@ defmodule RelaxirWeb.RecipeParser do
                %{
                  amount: parsed_amount,
                  unit: unit,
-                 name: Enum.join(name)
+                 name: Enum.join(name, " ")
                }
              )}
         end
