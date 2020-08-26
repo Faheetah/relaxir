@@ -131,7 +131,11 @@ defmodule Relaxir.Recipes do
               cri
             end
           end)
-          |> Map.merge(%{note: i.note})
+          |> Map.merge(%{
+            note: Map.get(i, :note),
+            amount: Map.get(i, :amount),
+            unit_id: Map.get(i, :unit_id)
+          })
         _ -> i
       end
     end)
@@ -168,8 +172,8 @@ defmodule Relaxir.Recipes do
 
     cond do
       amount == nil -> attrs
-      amount == 1 -> {:ok, Enum.find(units, fn u -> unit_name == u.singular end)}
       amount > 1 -> {:ok, Enum.find(units, fn u -> unit_name == u.plural end)}
+      amount > 0 -> {:ok, Enum.find(units, fn u -> unit_name == u.singular end)}
       unit_name != nil -> {:error, "Unit \"#{unit_name}\" is invalid"}
       true -> attrs
     end
