@@ -109,7 +109,7 @@ defmodule Relaxir.Recipes do
       end
     end)
 
-    Map.merge(attrs, %{"recipe_categories" => recipe_categories})
+    Map.put(attrs, "recipe_categories", recipe_categories)
   end
 
   def map_existing_ingredients(attrs, recipe) do
@@ -131,11 +131,12 @@ defmodule Relaxir.Recipes do
               cri
             end
           end)
+          |> Map.merge(%{note: i.note})
         _ -> i
       end
     end)
 
-    Map.merge(attrs, %{"recipe_ingredients" => recipe_ingredients})
+    Map.put(attrs, "recipe_ingredients", recipe_ingredients)
   end
 
   def map_ingredients(attrs) when is_map_key(attrs, "ingredients") do
