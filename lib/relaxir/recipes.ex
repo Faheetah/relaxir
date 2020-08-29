@@ -130,7 +130,7 @@ defmodule Relaxir.Recipes do
       end
     )
 
-    recipe_ingredients = attrs["recipe_ingredients"]
+    recipe_ingredients = (attrs["recipe_ingredients"] || [])
     |> Enum.map(fn i ->
       case i do
         %{:ingredient_id => id} -> Enum.find(
