@@ -2,192 +2,166 @@ defmodule Relaxir.RecipesTest do
   use Relaxir.DataCase
 
   alias Relaxir.Recipes
-  alias Relaxir.Recipes.Recipe
+  # alias Relaxir.Recipes.Recipe
   alias Relaxir.Ingredients
   alias Relaxir.Categories
 
-  describe "recipes" do
-    @valid_attrs %{
-      "directions" => "some directions",
-      "title" => "some title",
-      "categories" => [],
-      "ingredients" => []
-    }
+  describe "list_recipes/0" do
+    setup [:recipe, :recipe_with_ingredients]
 
-    @update_attrs %{
-      "directions" => "some updated directions",
-      "title" => "some updated title",
-      "categories" => [],
-      "ingredients" => []
-    }
+    test "returns all recipes", fixtures do
+      recipes =
+        Recipes.list_recipes()
+        |> Enum.map(fn r -> r.title end)
+        |> Enum.into(MapSet.new())
 
-    @invalid_attrs %{
-      "directions" => nil,
-      "title" => nil,
-      "categories" => [],
-      "ingredients" => []
-    }
+      attrs =
+        [fixtures.recipe, fixtures.recipe_with_ingredients]
+        |> Enum.map(fn r -> r.recipe.title end)
+        |> Enum.into(MapSet.new())
 
-    @ingredients [%{name: "cauliflower"}, %{name: "broccoli"}]
-
-    @new_ingredient %{name: "kale"}
-
-    @complex_ingredient %{name: "cheese", note: "shredded", amount: 2, unit: "cups"}
-
-    def recipe_fixture(attrs \\ %{}) do
-      {:ok, recipe} =
-        attrs
-        |> Enum.into(@valid_attrs)
-        |> Recipes.create_recipe()
-
-      recipe
-      |> Repo.preload(:ingredients)
+      assert MapSet.intersection(recipes, attrs)
     end
+  end
 
-    test "list_recipes/0 returns all recipes" do
-      Recipes.create_recipe(@valid_attrs)
-      Recipes.create_recipe(@update_attrs)
-      recipes = Recipes.list_recipes()
-      assert length(recipes) == 2
+  describe "get_recipe/1" do
+    setup [:recipe]
 
-      assert Enum.sort([@valid_attrs["title"], @update_attrs["title"]]) ==
-               Enum.sort(Enum.map(recipes, fn r -> r.title end))
+    test "returns the recipe with given id", fixtures do
+      assert Recipes.get_recipe!(fixtures.recipe.recipe.id).title == fixtures.recipe.attrs["title"]
     end
+  end
 
-    test "get_recipe!/1 returns the recipe with given id" do
-      recipe = recipe_fixture()
-      assert Recipes.get_recipe!(recipe.id) == recipe
-    end
+  describe "create_recipe/1" do
+    setup [:ingredients]
 
     test "create_recipe/1 with valid data creates a recipe" do
-      assert {:ok, %Recipe{} = recipe} = Recipes.create_recipe(@valid_attrs)
-      assert recipe.directions == "some directions"
-      assert recipe.title == "some title"
+      attrs = %{title: "title", directions: "directions"}
+      {:ok, recipe} = Recipes.create_recipe(attrs)
+      assert recipe.title == attrs.title
+      assert recipe.directions == attrs.directions
     end
 
     test "create_recipe/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Recipes.create_recipe(@invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} = Recipes.create_recipe(%{})
     end
 
-    test "update_recipe/2 with valid data updates the recipe" do
-      recipe = recipe_fixture()
-      assert {:ok, %Recipe{} = recipe} = Recipes.update_recipe(recipe, @update_attrs)
-      assert recipe.directions == "some updated directions"
-      assert recipe.title == "some updated title"
-    end
+    test "create_recipe/1 includes ingredients", fixtures do
+      ingredient = fixtures.ingredients.ingredient
+      attrs = %{title: "title", recipe_ingredients: [%{ingredient: ingredient}]}
+      {:ok, recipe} = Recipes.create_recipe(attrs)
 
-    test "update_recipe/2 with invalid data returns error changeset" do
-      recipe = recipe_fixture()
-      assert {:error, %Ecto.Changeset{}} = Recipes.update_recipe(recipe, @invalid_attrs)
-      assert recipe == Recipes.get_recipe!(recipe.id)
-    end
-
-    test "delete_recipe/1 deletes the recipe" do
-      recipe = recipe_fixture()
-      assert {:ok, %Recipe{}} = Recipes.delete_recipe(recipe)
-      assert_raise Ecto.NoResultsError, fn -> Recipes.get_recipe!(recipe.id) end
-    end
-
-    test "change_recipe/1 returns a recipe changeset" do
-      recipe = recipe_fixture()
-      assert %Ecto.Changeset{} = Recipes.change_recipe(recipe)
-    end
-
-    test "create_recipe/1 includes ingredients" do
-      assert {:ok, %Recipe{} = recipe} = Recipes.create_recipe(%{@valid_attrs | "ingredients" => @ingredients})
-
-      assert ["cauliflower", "broccoli"] ==
+      assert [ingredient.name] ==
                recipe.recipe_ingredients
                |> Enum.map(fn i -> i.ingredient.name end)
     end
+  end
 
-    test "update_recipe/2 adds new ingredients" do
-      {:ok, %Recipe{} = recipe} = Recipes.create_recipe(%{@valid_attrs | "ingredients" => @ingredients})
+  describe "update_recipe/2" do
+    setup [:recipe, :recipe_with_ingredients]
+
+    test "with valid data updates the recipe", fixtures do
+      attrs = %{"title" => "updated title", "directions" => "updated directions"}
+      {:ok, recipe} = Recipes.update_recipe(fixtures.recipe.recipe, attrs)
+      assert recipe.directions == attrs["directions"]
+      assert recipe.title == attrs["title"]
+    end
+
+    test "with invalid data returns error changeset", fixtures do
+      attrs = %{"title" => nil}
+      assert {:error, recipe} = Recipes.update_recipe(fixtures.recipe.recipe, attrs)
+    end
+
+    test "adds new ingredients", fixtures do
+      recipe = fixtures.recipe.recipe
+      new_ingredient = "new ingredient"
+
+      existing_ingredients =
+        recipe.recipe_ingredients
+        |> Enum.map(fn i -> %{name: i.ingredient["name"]} end)
+
+      attrs = %{"ingredients" => [%{name: new_ingredient} | existing_ingredients]}
+
+      {:ok, recipe} = Recipes.update_recipe(recipe, attrs)
+
+      assert "new ingredient" in Enum.map(recipe.recipe_ingredients, fn i -> i.ingredient.name end)
+    end
+
+    test "retains existing ingredients", fixtures do
+      recipe = fixtures.recipe_with_ingredients.recipe
 
       existing_ingredients =
         recipe.recipe_ingredients
         |> Enum.map(fn i -> %{name: i.ingredient.name} end)
 
-      {:ok, %Recipe{} = updated_recipe} = Recipes.update_recipe(recipe, %{"ingredients" => [@new_ingredient | existing_ingredients]})
+      attrs = %{"ingredients" => [%{name: "_"} | existing_ingredients]}
 
-      ingredients =
-        updated_recipe.recipe_ingredients
-        |> Enum.map(fn i -> i.ingredient.name end)
-
-      assert length(["kale", "cauliflower", "broccoli"] -- ingredients)
-    end
-
-    test "update_recipe/2 retains existing ingredients" do
-      {:ok, %Recipe{} = recipe} = Recipes.create_recipe(%{@valid_attrs | "ingredients" => @ingredients})
-
-      existing_ingredients =
-        recipe.recipe_ingredients
-        |> Enum.map(fn i ->
-          %{
-            "id" => i.id,
-            "ingredient" => %{
-              "name" => i.ingredient.name,
-              "id" => i.ingredient.id
-            }
-          }
-        end)
-
-      {:ok, new_ingredient} = Ingredients.create_ingredient(@new_ingredient)
-
-      recipe_ingredients = %{
-        "recipe_ingredients" =>
-          existing_ingredients ++
-            [
-              %{"recipe_id" => recipe.id, "ingredient_id" => new_ingredient.id}
-            ],
-        "recipe_categories" => []
-      }
-
-      Recipes.update_recipe(recipe, recipe_ingredients)
-
-      recipe = Recipes.get_recipe!(recipe.id)
+      {:ok, recipe} = Recipes.update_recipe(recipe, attrs)
 
       ingredients =
         recipe.recipe_ingredients
         |> Enum.map(fn i -> i.ingredient.name end)
+        |> Enum.into(MapSet.new())
 
-      assert length(["kale", "cauliflower", "broccoli"] -- ingredients)
+      assert existing_ingredients
+             |> Enum.map(fn i -> i.name end)
+             |> Enum.into(MapSet.new())
+             |> MapSet.intersection(ingredients)
     end
 
-    test "update_recipe/2 removes ingredients" do
-      recipe = Recipes.create_recipe!(%{@valid_attrs | "ingredients" => @ingredients})
+    test "removes ingredients", fixtures do
+      recipe = fixtures.recipe_with_ingredients.recipe
 
-      recipe_ingredients = %{
-        "recipe_ingredients" => [],
-        "recipe_categories" => []
-      }
-
-      Recipes.update_recipe(recipe, recipe_ingredients)
+      Recipes.update_recipe(recipe, %{"ingredients" => []})
 
       recipe = Recipes.get_recipe!(recipe.id)
 
       assert recipe.recipe_ingredients == []
       # Ensure only the RecipeIngredient link was removed, do not cascade delete to ingredients
-      assert "cauliflower" in Enum.map(Relaxir.Ingredients.list_ingredients(), fn i -> i.name end)
+      assert length(Relaxir.Ingredients.list_ingredients()) > 0
     end
   end
 
-  describe "parsing ingredients" do
-    test "generates a new ingredient" do
+  describe "delete_recipe/1 recipes" do
+    setup [:recipe]
+
+    test "deletes the recipe", fixtures do
+      recipe = fixtures.recipe.recipe
+      assert {:ok, _} = Recipes.delete_recipe(recipe)
+      assert_raise Ecto.NoResultsError, fn -> Recipes.get_recipe!(recipe.id) end
+    end
+  end
+
+  describe "change_recipe/1" do
+    setup [:recipe]
+
+    test "returns a recipe changeset", fixtures do
+      recipe = fixtures.recipe.recipe
+      assert %Ecto.Changeset{} = Recipes.change_recipe(recipe)
+    end
+  end
+
+  describe "map_ingredients/1" do
+    setup [:ingredients]
+
+    test "generates a new ingredient", fixtures do
+      ingredient = fixtures.ingredients.ingredient
+
       ingredients =
-        %{"ingredients" => [@new_ingredient]}
+        %{"ingredients" => [fixtures.ingredients.ingredient]}
         |> Recipes.map_ingredients()
         |> Map.get("recipe_ingredients")
         |> Enum.map(fn i -> i.ingredient.name end)
 
-      assert @new_ingredient.name in ingredients
+      assert ingredient.name in ingredients
     end
 
-    test "finds an existing ingredient" do
-      {:ok, new_ingredient} = Ingredients.create_ingredient(@new_ingredient)
+    test "finds an existing ingredient", fixtures do
+      ingredient = fixtures.ingredients.ingredient
+      {:ok, new_ingredient} = Ingredients.create_ingredient(ingredient)
 
       ingredients =
-        %{"ingredients" => [@new_ingredient]}
+        %{"ingredients" => [ingredient]}
         |> Recipes.map_ingredients()
         |> Map.get("recipe_ingredients")
         |> Enum.map(fn i -> i.ingredient_id end)
@@ -195,20 +169,22 @@ defmodule Relaxir.RecipesTest do
       assert new_ingredient.id in ingredients
     end
 
-    test "adds a note to an ingredient" do
+    test "adds a note to an ingredient", fixtures do
+      ingredient = fixtures.ingredients.ingredient
       ingredients =
-        %{"ingredients" => [Map.merge(@new_ingredient, %{note: "drained"})]}
+        %{"ingredients" => [Map.merge(ingredient, %{note: "drained"})]}
         |> Recipes.map_ingredients()
         |> Map.get("recipe_ingredients")
 
       assert hd(ingredients).ingredient.note == "drained"
     end
 
-    test "adds an amount and unit to an ingredient" do
+    test "adds an amount and unit to an ingredient", fixtures do
+      ingredient = fixtures.ingredients.ingredient
       {:ok, unit} = Ingredients.create_unit(%{singular: "ton", plural: "tons"})
 
       ingredients =
-        %{"ingredients" => [Map.merge(@new_ingredient, %{amount: 2, unit: "tons"})]}
+        %{"ingredients" => [Map.merge(ingredient, %{amount: 2, unit: "tons"})]}
         |> Recipes.map_ingredients()
         |> Map.get("recipe_ingredients")
 
@@ -216,14 +192,15 @@ defmodule Relaxir.RecipesTest do
       assert hd(ingredients).unit_id == unit.id
     end
 
-    test "creates a recipe using mapped units" do
-      assert {:ok, %Recipe{} = recipe} = Recipes.create_recipe(%{@valid_attrs | "ingredients" => [@complex_ingredient]})
+    test "creates a recipe using mapped units", fixtures do
+      ingredient = fixtures.ingredients.ingredient_amount_unit_note
+      assert {:ok, recipe} = Recipes.create_recipe(%{"title" => "_", "ingredients" => [ingredient]})
       recipe_ingredient = hd(recipe.recipe_ingredients)
 
-      assert recipe_ingredient.ingredient.name == "cheese"
-      assert recipe_ingredient.amount == 2
-      assert recipe_ingredient.unit.plural == "cups"
-      assert recipe_ingredient.note == "shredded"
+      assert recipe_ingredient.ingredient.name == ingredient.name
+      assert recipe_ingredient.amount == ingredient.amount
+      assert recipe_ingredient.unit.singular == ingredient.unit
+      assert recipe_ingredient.note == ingredient.note
     end
   end
 
