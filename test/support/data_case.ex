@@ -24,6 +24,7 @@ defmodule Relaxir.DataCase do
       import Ecto.Changeset
       import Ecto.Query
       import Relaxir.DataCase
+      import Relaxir.DataHelpers
     end
   end
 
