@@ -19,8 +19,8 @@ defmodule RelaxirWeb.RecipeParserTest do
       assert {:ok, %{name: "broccoli", amount: 0.5, unit: "cups"}} == extract_ingredient_fields("1/2 cups broccoli")
     end
 
-    test "parses a note in parenthesis at the end" do
-      assert {:ok, %{name: "egg", note: "chopped"}} == extract_ingredient_fields("egg, chopped")
+    test "parses a note when starting with a number" do
+      assert {:ok, %{name: "egg", note: "1 times"}} == extract_ingredient_fields("egg, 1 times")
     end
 
     test "ignores no note provided" do

@@ -42,7 +42,7 @@ defmodule RelaxirWeb.RecipeParser do
       # @todo needs heavy refactoring
       [whole, fraction, unit | name] ->
         cond do
-          Float.parse(fraction) != :error and hd(Tuple.to_list(Float.parse(fraction))) ->
+          Float.parse(fraction) != :error and Float.parse(whole) != :error and hd(Tuple.to_list(Float.parse(fraction))) ->
             parsed_amount = hd(Tuple.to_list(Float.parse(whole))) + parse_amount(fraction)
 
             case parsed_amount do
@@ -51,15 +51,16 @@ defmodule RelaxirWeb.RecipeParser do
 
               _ ->
                 {:ok,
-                Map.merge(
-                  ingredient,
-                  %{
-                    amount: parsed_amount,
-                    unit: unit,
-                    name: Enum.join(name, " ")
-                  }
-                )}
+                 Map.merge(
+                   ingredient,
+                   %{
+                     amount: parsed_amount,
+                     unit: unit,
+                     name: Enum.join(name, " ")
+                   }
+                 )}
             end
+
           true ->
             name = [unit | name]
             amount = whole
@@ -72,14 +73,14 @@ defmodule RelaxirWeb.RecipeParser do
 
               _ ->
                 {:ok,
-                Map.merge(
-                  ingredient,
-                  %{
-                    amount: parsed_amount,
-                    unit: unit,
-                    name: Enum.join(name, " ")
-                  }
-                )}
+                 Map.merge(
+                   ingredient,
+                   %{
+                     amount: parsed_amount,
+                     unit: unit,
+                     name: Enum.join(name, " ")
+                   }
+                 )}
             end
         end
 
