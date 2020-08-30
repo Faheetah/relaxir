@@ -1,4 +1,4 @@
-<h1><%= @ingredient.name %></h1>
+<h1><%= String.capitalize(@ingredient.name) %></h1>
 
 <%= if @ingredient.recipes != [] do %>
 <strong>Recipes:</strong>

@@ -60,7 +60,7 @@ defmodule RelaxirWeb.CategoryControllerTest do
       assert redirected_to(conn) == Routes.category_path(conn, :show, category)
 
       conn = get(conn, Routes.category_path(conn, :show, category))
-      assert html_response(conn, 200) =~ "some updated name"
+      assert html_response(conn, 200) =~ "Some updated name"
     end
 
     test "renders errors when data is invalid", %{conn: conn, category: category} do

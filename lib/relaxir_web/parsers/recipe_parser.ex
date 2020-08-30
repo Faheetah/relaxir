@@ -12,6 +12,7 @@ defmodule RelaxirWeb.RecipeParser do
       |> String.split(separator)
       |> Enum.map(&String.trim/1)
       |> Enum.reject(&(&1 == ""))
+      |> Enum.map(&String.downcase/1)
 
     Map.put(attrs, name, field)
   end

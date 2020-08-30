@@ -24,7 +24,7 @@ defmodule RelaxirWeb.IngredientControllerTest do
 
       conn = get(conn, Routes.ingredient_path(conn, :show, id))
       response = html_response(conn, 200)
-      assert response =~ "ingredient fixture"
+      assert response =~ "Ingredient fixture"
       assert response =~ "description fixture"
     end
 
@@ -52,7 +52,7 @@ defmodule RelaxirWeb.IngredientControllerTest do
       assert redirected_to(conn) == Routes.ingredient_path(conn, :show, ingredient)
 
       conn = get(conn, Routes.ingredient_path(conn, :show, ingredient))
-      assert html_response(conn, 200) =~ "some updated name"
+      assert html_response(conn, 200) =~ "Some updated name"
     end
 
     test "renders errors when data is invalid", %{conn: conn, ingredient: ingredient} do

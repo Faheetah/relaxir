@@ -16,6 +16,13 @@ defmodule Relaxir.Ingredients.Ingredient do
   end
 
   def changeset(ingredient, attrs) do
+    attrs =
+      cond do
+        Map.get(attrs, "name") -> Map.update!(attrs, "name", &String.downcase/1)
+        Map.get(attrs, :name) -> Map.update!(attrs, :name, &String.downcase/1)
+        true -> attrs
+      end
+
     ingredient
     |> cast(attrs, [:name, :description])
     |> cast_assoc(:recipe_ingredients)

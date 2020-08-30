@@ -15,6 +15,13 @@ defmodule Relaxir.Categories.Category do
   end
 
   def changeset(category, attrs) do
+    attrs =
+      cond do
+        Map.get(attrs, "name") -> Map.update!(attrs, "name", &String.downcase/1)
+        Map.get(attrs, :name) -> Map.update!(attrs, :name, &String.downcase/1)
+        true -> attrs
+      end
+
     category
     |> cast(attrs, [:name])
     |> cast_assoc(:recipe_categories)

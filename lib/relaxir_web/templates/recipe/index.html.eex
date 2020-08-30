@@ -8,6 +8,6 @@
 
 <%= for recipe <- @recipes do %>
 <h4>
-  <%= link recipe.title, to: Routes.recipe_path(@conn, :show, recipe) %> 
+  <%= link String.capitalize(recipe.title), to: Routes.recipe_path(@conn, :show, recipe) %>
 </h4>
 <% end %>

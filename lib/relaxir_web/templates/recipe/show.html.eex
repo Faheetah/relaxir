@@ -1,4 +1,4 @@
-<h1><%= @recipe.title %></h1>
+<h1><%= String.capitalize(@recipe.title) %></h1>
 
 <%= if @recipe.categories != [] do %>
 <strong>Categories:</strong>

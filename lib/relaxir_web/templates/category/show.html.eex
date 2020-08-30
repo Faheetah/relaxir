@@ -1,10 +1,10 @@
-<h1><%= @category.name %></h1>
+<h1><%= String.capitalize(@category.name) %></h1>
 
 <%= if @category.recipes != [] do %>
 <strong>Recipes:</strong>
 <%= for recipe <- @category.recipes do %>
 <li>
-  <%= link recipe.title, to: Routes.recipe_path(@conn, :show, recipe)%> 
+  <%= link recipe.title, to: Routes.recipe_path(@conn, :show, recipe)%>
 </li>
 <% end %>
 <% end %>

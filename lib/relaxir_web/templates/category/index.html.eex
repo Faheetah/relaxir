@@ -8,7 +8,7 @@
 
 <%= for category <- @categories do %>
 <h4>
-  <%= link category.name, to: Routes.category_path(@conn, :show, category) %>
+  <%= link String.capitalize(category.name), to: Routes.category_path(@conn, :show, category) %>
 </h4>
 <% end %>
 
