@@ -5,7 +5,7 @@ defmodule Relaxir.Categories do
   alias Relaxir.Categories.Category
 
   def list_categories do
-    Repo.all(order_by(Category, desc: :updated_at))
+    Repo.all(order_by(Category, asc: :name))
   end
 
   def get_category!(id) do
