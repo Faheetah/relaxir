@@ -176,22 +176,26 @@ defmodule Relaxir.Recipes do
 
     ingredients =
       attrs["ingredients"]
-      |> Enum.map(fn ingredient ->
-        case Enum.find(fetched_ingredients, fn i -> i.name == ingredient.name end) do
-          nil -> %{ingredient: ingredient}
-          ingredient -> %{ingredient_id: ingredient.id}
-        end
-        |> map_recipe_ingredient_fields(ingredient, units)
-      end)
+      |> Enum.map(&(map_recipe_ingredient_fields(&1, units)))
+      |> Enum.map(&(match_existing_ingredients(&1, fetched_ingredients)))
 
     Map.put(attrs, "recipe_ingredients", ingredients)
   end
 
   def map_ingredients(attrs), do: attrs
 
-  def map_recipe_ingredient_fields(attrs, ingredient, units) do
-    amount = Map.get(ingredient, :amount)
-    unit_name = Map.get(ingredient, :unit)
+  defp match_existing_ingredients(ingredient, fetched_ingredients) do
+    case Enum.find(fetched_ingredients, fn i -> i.name == ingredient.name end) do
+      nil -> %{ingredient: ingredient}
+      ingredient -> %{ingredient_id: ingredient.id}
+    end
+    |> Map.merge(ingredient)
+    |> Map.delete(:name)
+  end
+
+  def map_recipe_ingredient_fields(attrs, units) do
+    amount = Map.get(attrs, :amount)
+    unit_name = Map.get(attrs, :unit)
 
     cond do
       amount == nil || unit_name == nil -> attrs
@@ -202,32 +206,32 @@ defmodule Relaxir.Recipes do
     end
     |> case do
       {:ok, nil} ->
-        %{
-          ingredient: %{
-            name: "#{unit_name} #{ingredient.name}",
-          },
-          amount: amount,
-          note: Map.get(ingredient, :note)
-        }
+        cond do
+          Map.get(attrs, :name) ->
+            attrs
+            |> Map.merge(
+              %{
+                name: "#{unit_name} #{attrs.name}",
+                amount: amount,
+              }
+            )
+            |> Map.delete(:unit)
+          true ->
+            Map.merge(attrs, %{amount: amount})
+        end
 
       {:ok, unit} ->
         attrs
         |> Map.merge(%{
-          amount: Map.get(ingredient, :amount),
+          amount: amount,
           unit_id: unit.id,
-          note: Map.get(ingredient, :note)
         })
 
       {:error, error} ->
         {:error, error}
 
-      %{ingredient: %{note: note}} ->
-        attrs
-        |> Map.merge(%{note: note})
-
       attrs ->
         attrs
-        |> Map.merge(%{note: Map.get(ingredient, :note)})
     end
   end
 end
