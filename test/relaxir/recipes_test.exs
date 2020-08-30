@@ -9,14 +9,14 @@ defmodule Relaxir.RecipesTest do
   describe "list_recipes/0" do
     setup [:recipe, :recipe_with_ingredients]
 
-    test "returns all recipes", fixtures do
+    test "returns all recipes", %{recipe: recipe, recipe_with_ingredients: recipe_with_ingredients} do
       recipes =
         Recipes.list_recipes()
         |> Enum.map(fn r -> r.title end)
         |> Enum.into(MapSet.new())
 
       attrs =
-        [fixtures.recipe, fixtures.recipe_with_ingredients]
+        [recipe, recipe_with_ingredients]
         |> Enum.map(fn r -> r.recipe.title end)
         |> Enum.into(MapSet.new())
 
@@ -27,8 +27,8 @@ defmodule Relaxir.RecipesTest do
   describe "get_recipe/1" do
     setup [:recipe]
 
-    test "returns the recipe with given id", fixtures do
-      assert Recipes.get_recipe!(fixtures.recipe.recipe.id).title == fixtures.recipe.attrs["title"]
+    test "returns the recipe with given id", %{recipe: recipe} do
+      assert Recipes.get_recipe!(recipe.recipe.id).title == recipe.attrs["title"]
     end
   end
 
@@ -46,8 +46,8 @@ defmodule Relaxir.RecipesTest do
       assert {:error, %Ecto.Changeset{}} = Recipes.create_recipe(%{})
     end
 
-    test "create_recipe/1 includes ingredients", fixtures do
-      ingredient = fixtures.ingredients.ingredient
+    test "create_recipe/1 includes ingredients", %{ingredients: ingredients} do
+      ingredient = ingredients.ingredient
       attrs = %{title: "title", recipe_ingredients: [%{ingredient: ingredient}]}
       {:ok, recipe} = Recipes.create_recipe(attrs)
 
@@ -60,20 +60,20 @@ defmodule Relaxir.RecipesTest do
   describe "update_recipe/2" do
     setup [:recipe, :recipe_with_ingredients]
 
-    test "with valid data updates the recipe", fixtures do
+    test "with valid data updates the recipe", %{recipe: recipe} do
       attrs = %{"title" => "updated title", "directions" => "updated directions"}
-      {:ok, recipe} = Recipes.update_recipe(fixtures.recipe.recipe, attrs)
+      {:ok, recipe} = Recipes.update_recipe(recipe.recipe, attrs)
       assert recipe.directions == attrs["directions"]
       assert recipe.title == attrs["title"]
     end
 
-    test "with invalid data returns error changeset", fixtures do
+    test "with invalid data returns error changeset", %{recipe: recipe} do
       attrs = %{"title" => nil}
-      assert {:error, recipe} = Recipes.update_recipe(fixtures.recipe.recipe, attrs)
+      assert {:error, recipe} = Recipes.update_recipe(recipe.recipe, attrs)
     end
 
-    test "adds new ingredients", fixtures do
-      recipe = fixtures.recipe.recipe
+    test "adds new ingredients", %{recipe: recipe} do
+      recipe = recipe.recipe
       new_ingredient = "new ingredient"
 
       existing_ingredients =
@@ -87,8 +87,8 @@ defmodule Relaxir.RecipesTest do
       assert "new ingredient" in Enum.map(recipe.recipe_ingredients, fn i -> i.ingredient.name end)
     end
 
-    test "retains existing ingredients", fixtures do
-      recipe = fixtures.recipe_with_ingredients.recipe
+    test "retains existing ingredients", %{recipe_with_ingredients: recipe_with_ingredients} do
+      recipe = recipe_with_ingredients.recipe
 
       existing_ingredients =
         recipe.recipe_ingredients
@@ -109,8 +109,8 @@ defmodule Relaxir.RecipesTest do
              |> MapSet.intersection(ingredients)
     end
 
-    test "removes ingredients", fixtures do
-      recipe = fixtures.recipe_with_ingredients.recipe
+    test "removes ingredients", %{recipe_with_ingredients: recipe_with_ingredients} do
+      recipe = recipe_with_ingredients.recipe
 
       Recipes.update_recipe(recipe, %{"ingredients" => []})
 
@@ -125,8 +125,8 @@ defmodule Relaxir.RecipesTest do
   describe "delete_recipe/1 recipes" do
     setup [:recipe]
 
-    test "deletes the recipe", fixtures do
-      recipe = fixtures.recipe.recipe
+    test "deletes the recipe", %{recipe: recipe} do
+      recipe = recipe.recipe
       assert {:ok, _} = Recipes.delete_recipe(recipe)
       assert_raise Ecto.NoResultsError, fn -> Recipes.get_recipe!(recipe.id) end
     end
@@ -135,8 +135,8 @@ defmodule Relaxir.RecipesTest do
   describe "change_recipe/1" do
     setup [:recipe]
 
-    test "returns a recipe changeset", fixtures do
-      recipe = fixtures.recipe.recipe
+    test "returns a recipe changeset", %{recipe: recipe} do
+      recipe = recipe.recipe
       assert %Ecto.Changeset{} = Recipes.change_recipe(recipe)
     end
   end
@@ -144,11 +144,11 @@ defmodule Relaxir.RecipesTest do
   describe "map_ingredients/1" do
     setup [:ingredients]
 
-    test "generates a new ingredient", fixtures do
-      ingredient = fixtures.ingredients.ingredient
+    test "generates a new ingredient", %{ingredients: ingredients} do
+      ingredient = ingredients.ingredient
 
       ingredients =
-        %{"ingredients" => [fixtures.ingredients.ingredient]}
+        %{"ingredients" => [ingredients.ingredient]}
         |> Recipes.map_ingredients()
         |> Map.get("recipe_ingredients")
         |> Enum.map(fn i -> i.ingredient.name end)
@@ -156,8 +156,8 @@ defmodule Relaxir.RecipesTest do
       assert ingredient.name in ingredients
     end
 
-    test "finds an existing ingredient", fixtures do
-      ingredient = fixtures.ingredients.ingredient
+    test "finds an existing ingredient", %{ingredients: ingredients} do
+      ingredient = ingredients.ingredient
       {:ok, new_ingredient} = Ingredients.create_ingredient(ingredient)
 
       ingredients =
@@ -169,8 +169,8 @@ defmodule Relaxir.RecipesTest do
       assert new_ingredient.id in ingredients
     end
 
-    test "adds a note to an ingredient", fixtures do
-      ingredient = fixtures.ingredients.ingredient
+    test "adds a note to an ingredient", %{ingredients: ingredients} do
+      ingredient = ingredients.ingredient
       ingredients =
         %{"ingredients" => [Map.merge(ingredient, %{note: "drained"})]}
         |> Recipes.map_ingredients()
@@ -179,8 +179,8 @@ defmodule Relaxir.RecipesTest do
       assert hd(ingredients).ingredient.note == "drained"
     end
 
-    test "adds an amount and unit to an ingredient", fixtures do
-      ingredient = fixtures.ingredients.ingredient
+    test "adds an amount and unit to an ingredient", %{ingredients: ingredients} do
+      ingredient = ingredients.ingredient
       {:ok, unit} = Ingredients.create_unit(%{singular: "ton", plural: "tons"})
 
       ingredients =
@@ -192,8 +192,8 @@ defmodule Relaxir.RecipesTest do
       assert hd(ingredients).unit_id == unit.id
     end
 
-    test "creates a recipe using mapped units", fixtures do
-      ingredient = fixtures.ingredients.ingredient_amount_unit_note
+    test "creates a recipe using mapped units", %{ingredients: ingredients} do
+      ingredient = ingredients.ingredient_amount_unit_note
       assert {:ok, recipe} = Recipes.create_recipe(%{"title" => "_", "ingredients" => [ingredient]})
       recipe_ingredient = hd(recipe.recipe_ingredients)
 
