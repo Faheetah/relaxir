@@ -194,15 +194,21 @@ defmodule Relaxir.Recipes do
     unit_name = Map.get(ingredient, :unit)
 
     cond do
-      amount == nil -> attrs
+      amount == nil || unit_name == nil -> attrs
       amount > 1 -> {:ok, Enum.find(units, fn u -> unit_name == u.plural end)}
       amount > 0 -> {:ok, Enum.find(units, fn u -> unit_name == u.singular end)}
-      unit_name != nil -> {:error, "Unit \"#{unit_name}\" is invalid"}
-      true -> attrs
+      # should never hit this condition
+      true -> {:error, "Unit \"#{unit_name}\" is invalid"}
     end
     |> case do
       {:ok, nil} ->
-        {:error, "Unit \"#{unit_name}\" was not found"}
+        %{
+          ingredient: %{
+            name: "#{unit_name} #{ingredient.name}",
+          },
+          amount: amount,
+          note: Map.get(ingredient, :note)
+        }
 
       {:ok, unit} ->
         attrs

@@ -186,6 +186,17 @@ defmodule Relaxir.RecipesTest do
       assert hd(ingredients).unit_id == unit.id
     end
 
+    test "adds an amount to a found ingredient when no unit specified" do
+      recipe_ingredient =
+        %{"ingredients" => [%{name: "second", unit: "first", amount: 1}]}
+        |> Recipes.map_ingredients()
+        |> Map.get("recipe_ingredients")
+        |> hd
+
+      assert recipe_ingredient.amount == 1
+      assert recipe_ingredient.ingredient.name == "first second"
+    end
+
     test "creates a recipe using mapped units", %{ingredients: ingredients} do
       ingredient = ingredients.ingredient_amount_unit_note
       assert {:ok, recipe} = Recipes.create_recipe(%{"title" => "_", "ingredients" => [ingredient]})
