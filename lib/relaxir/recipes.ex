@@ -169,14 +169,16 @@ defmodule Relaxir.Recipes do
   def map_ingredients(attrs) when is_map_key(attrs, "ingredients") do
     units = Ingredients.list_units()
 
-    fetched_ingredients =
-      attrs["ingredients"]
-      |> Enum.map(fn i -> i.name end)
-      |> Ingredients.get_ingredients_by_name!()
-
     ingredients =
       attrs["ingredients"]
       |> Enum.map(&(map_recipe_ingredient_fields(&1, units)))
+
+    fetched_ingredients =
+      ingredients
+      |> Enum.map(fn i -> i.name end)
+      |> Ingredients.get_ingredients_by_name!()
+
+    ingredients = ingredients
       |> Enum.map(&(match_existing_ingredients(&1, fetched_ingredients)))
 
     Map.put(attrs, "recipe_ingredients", ingredients)
