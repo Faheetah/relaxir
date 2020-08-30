@@ -1,4 +1,6 @@
 defmodule Relaxir.DataHelpers do
+  alias Relaxir.Categories
+  alias Relaxir.Ingredients
   alias Relaxir.Recipes
 
   @ingredients %{
@@ -15,6 +17,11 @@ defmodule Relaxir.DataHelpers do
     invalid_ingredient_unit_plural: %{name: "invalid_ingredient_unit_plural", amount: 1, unit: "cups"}
   }
 
+  @categories %{
+    category1: %{name: "category1"},
+    category2: %{name: "category2"}
+  }
+
   @recipe %{
     "title" => "recipe",
     "directions" => "recipe directions"
@@ -23,7 +30,7 @@ defmodule Relaxir.DataHelpers do
   @recipe_with_categories %{
     "title" => "recipe_with_categories",
     "directions" => "recipe with categories directions",
-    "categories" => ["category1", "category2"]
+    "categories" => Enum.map(@categories, fn {_, c} -> c.name end)
   }
 
   @recipe_with_ingredients %{
@@ -37,6 +44,22 @@ defmodule Relaxir.DataHelpers do
 
   def ingredients(_context) do
     %{ingredients: @ingredients}
+  end
+
+  def ingredient(_context) do
+    fixture = %{name: "new ingredient"}
+    {:ok, ingredient} = Ingredients.create_ingredient(fixture)
+    %{ingredient: Map.put(ingredient, :fixture, fixture)}
+  end
+
+  def categories(_context) do
+    %{categories: @categories}
+  end
+
+  def category(_context) do
+    fixture = %{name: "new category"}
+    {:ok, category} = Categories.create_category(fixture)
+    %{category: Map.put(category, :fixture, fixture)}
   end
 
   def recipes(_context) do

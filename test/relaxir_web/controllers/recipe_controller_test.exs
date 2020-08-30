@@ -76,7 +76,7 @@ defmodule RelaxirWeb.RecipeControllerTest do
   end
 
   describe "edit recipe" do
-    setup [:create_recipe]
+    setup [:recipe]
 
     test "renders form for editing chosen recipe", %{conn: conn, recipe: recipe} do
       conn = get(conn, Routes.recipe_path(conn, :edit, recipe))
@@ -85,9 +85,9 @@ defmodule RelaxirWeb.RecipeControllerTest do
   end
 
   describe "update recipe with ingredients" do
-    setup [:create_recipe_with_associations]
+    setup [:recipe_with_ingredients]
 
-    test "updates existing ingredients", %{conn: conn, recipe: recipe} do
+    test "updates existing ingredients", %{conn: conn, recipe_with_ingredients: recipe} do
       conn = put(conn, Routes.recipe_path(conn, :update, recipe), recipe: Map.merge(@update_attrs, @ingredients))
 
       assert redirected_to(conn) == Routes.recipe_path(conn, :show, recipe)
@@ -98,7 +98,7 @@ defmodule RelaxirWeb.RecipeControllerTest do
   end
 
   describe "update recipe" do
-    setup [:create_recipe]
+    setup [:recipe]
 
     test "redirects when data is valid", %{conn: conn, recipe: recipe} do
       conn = put(conn, Routes.recipe_path(conn, :update, recipe), recipe: @update_attrs)
@@ -115,7 +115,7 @@ defmodule RelaxirWeb.RecipeControllerTest do
   end
 
   describe "delete recipe" do
-    setup [:create_recipe]
+    setup [:recipe]
 
     test "deletes chosen recipe", %{conn: conn, recipe: recipe} do
       conn = delete(conn, Routes.recipe_path(conn, :delete, recipe))
@@ -167,21 +167,21 @@ defmodule RelaxirWeb.RecipeControllerTest do
   end
 
   describe "rendering ingredients" do
-    setup [:create_recipe_with_associations]
+    setup [:ingredient, :recipe_with_ingredients]
 
-    test "renders ingredients from list", %{conn: conn, recipe: recipe} do
+    test "renders ingredients from list", %{conn: conn, recipe_with_ingredients: recipe} do
       conn = get(conn, Routes.recipe_path(conn, :edit, recipe))
-      assert html_response(conn, 200) =~ "cauliflower"
-      assert html_response(conn, 200) =~ "broccoli"
+      response = html_response(conn, 200)
+      recipe.fixture["ingredients"]
+      |> Enum.each(fn i -> assert response =~ i.name end)
     end
 
-    test "uses an existing ingredient", %{conn: conn} do
-      create_attrs = Map.merge(@update_attrs, @ingredients)
-      conn = post(conn, Routes.recipe_path(conn, :create), recipe: create_attrs)
+    test "uses an existing ingredient", %{conn: conn, ingredient: ingredient} do
+      conn = post(conn, Routes.recipe_path(conn, :create), recipe: %{"title" => "_", "ingredients" => ingredient.name})
+
       %{id: id} = redirected_params(conn)
       conn = get(conn, Routes.recipe_path(conn, :show, id))
-      assert html_response(conn, 200) =~ "cauliflower"
-      assert html_response(conn, 200) =~ "broccoli"
+      assert html_response(conn, 200) =~ ingredient.name
     end
   end
 
@@ -200,24 +200,22 @@ defmodule RelaxirWeb.RecipeControllerTest do
   end
 
   describe "rendering categories" do
-    setup [:create_recipe_with_associations]
+    setup [:recipe_with_categories, :category]
 
-    test "renders categories from list", %{conn: conn, recipe: recipe} do
+    test "renders categories from list", %{conn: conn, recipe_with_categories: recipe} do
       conn = get(conn, Routes.recipe_path(conn, :edit, recipe))
-      assert html_response(conn, 200) =~ "texmex"
-      assert html_response(conn, 200) =~ "breakfast"
+      response = html_response(conn, 200)
+
+      recipe.fixture["categories"]
+      |> Enum.each(&(assert response =~ &1))
     end
 
-    test "uses an existing category", %{conn: conn, recipe: recipe} do
-      existing_recipe = get(conn, Routes.recipe_path(conn, :show, recipe))
-      assert html_response(existing_recipe, 200) =~ "texmex"
-
-      create_attrs = Map.merge(@update_attrs, @categories)
-      conn = post(conn, Routes.recipe_path(conn, :create), recipe: create_attrs)
+    test "uses an existing category", %{conn: conn, category: category} do
+      conn = post(conn, Routes.recipe_path(conn, :create), recipe: %{"title" => "_", "categories" => category.name})
 
       %{id: id} = redirected_params(conn)
       conn = get(conn, Routes.recipe_path(conn, :show, id))
-      assert html_response(conn, 200) =~ "texmex"
+      assert html_response(conn, 200) =~ category.name
     end
   end
 end
