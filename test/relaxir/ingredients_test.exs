@@ -6,7 +6,7 @@ defmodule Relaxir.IngredientsTest do
   describe "ingredients" do
     alias Relaxir.Ingredients.Ingredient
 
-    @valid_attrs %{name: "some name"}
+    @valid_attrs %{name: "some name", description: "some description"}
     @update_attrs %{name: "some updated name"}
     @invalid_attrs %{name: nil}
 
@@ -32,6 +32,7 @@ defmodule Relaxir.IngredientsTest do
     test "create_ingredient/1 with valid data creates a ingredient" do
       assert {:ok, %Ingredient{} = ingredient} = Ingredients.create_ingredient(@valid_attrs)
       assert ingredient.name == "some name"
+      assert ingredient.description == "some description"
     end
 
     test "create_ingredient/1 with invalid data returns error changeset" do

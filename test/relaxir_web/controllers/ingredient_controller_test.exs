@@ -1,21 +1,6 @@
 defmodule RelaxirWeb.IngredientControllerTest do
   use RelaxirWeb.ConnCase
 
-  alias Relaxir.Ingredients
-
-  @create_attrs %{
-    name: "some name"
-  }
-  @update_attrs %{
-    name: "some updated name"
-  }
-  @invalid_attrs %{name: nil}
-
-  def fixture(:ingredient) do
-    {:ok, ingredient} = Ingredients.create_ingredient(@create_attrs)
-    ingredient
-  end
-
   describe "index" do
     test "lists all ingredients", %{conn: conn} do
       conn = get(conn, Routes.ingredient_path(conn, :index))
@@ -32,23 +17,25 @@ defmodule RelaxirWeb.IngredientControllerTest do
 
   describe "create ingredient" do
     test "redirects to show when data is valid", %{conn: conn} do
-      conn = post(conn, Routes.ingredient_path(conn, :create), ingredient: @create_attrs)
+      conn = post(conn, Routes.ingredient_path(conn, :create), ingredient: %{name: "ingredient fixture", description: "description fixture"})
 
       assert %{id: id} = redirected_params(conn)
       assert redirected_to(conn) == Routes.ingredient_path(conn, :show, id)
 
       conn = get(conn, Routes.ingredient_path(conn, :show, id))
-      assert html_response(conn, 200) =~ "Ingredient"
+      response = html_response(conn, 200)
+      assert response =~ "ingredient fixture"
+      assert response =~ "description fixture"
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
-      conn = post(conn, Routes.ingredient_path(conn, :create), ingredient: @invalid_attrs)
+      conn = post(conn, Routes.ingredient_path(conn, :create), ingredient: %{name: nil})
       assert html_response(conn, 200) =~ "New Ingredient"
     end
   end
 
   describe "edit ingredient" do
-    setup [:create_ingredient]
+    setup [:ingredient]
 
     test "renders form for editing chosen ingredient", %{conn: conn, ingredient: ingredient} do
       conn = get(conn, Routes.ingredient_path(conn, :edit, ingredient))
@@ -57,10 +44,10 @@ defmodule RelaxirWeb.IngredientControllerTest do
   end
 
   describe "update ingredient" do
-    setup [:create_ingredient]
+    setup [:ingredient]
 
     test "redirects when data is valid", %{conn: conn, ingredient: ingredient} do
-      conn = put(conn, Routes.ingredient_path(conn, :update, ingredient), ingredient: @update_attrs)
+      conn = put(conn, Routes.ingredient_path(conn, :update, ingredient), ingredient: %{name: "some updated name"})
 
       assert redirected_to(conn) == Routes.ingredient_path(conn, :show, ingredient)
 
@@ -69,14 +56,14 @@ defmodule RelaxirWeb.IngredientControllerTest do
     end
 
     test "renders errors when data is invalid", %{conn: conn, ingredient: ingredient} do
-      conn = put(conn, Routes.ingredient_path(conn, :update, ingredient), ingredient: @invalid_attrs)
+      conn = put(conn, Routes.ingredient_path(conn, :update, ingredient), ingredient: %{name: nil})
 
       assert html_response(conn, 200) =~ "Edit Ingredient"
     end
   end
 
   describe "delete ingredient" do
-    setup [:create_ingredient]
+    setup [:ingredient]
 
     test "deletes chosen ingredient", %{conn: conn, ingredient: ingredient} do
       conn = delete(conn, Routes.ingredient_path(conn, :delete, ingredient))
@@ -86,10 +73,5 @@ defmodule RelaxirWeb.IngredientControllerTest do
         get(conn, Routes.ingredient_path(conn, :show, ingredient))
       end
     end
-  end
-
-  defp create_ingredient(_) do
-    ingredient = fixture(:ingredient)
-    %{ingredient: ingredient}
   end
 end
