@@ -39,26 +39,18 @@ defmodule Relaxir.DataHelpers do
     Map.put(context, :ingredients, @ingredients)
   end
 
-  def recipe(context \\ %{}) do
-    attrs = Map.get(context, :recipe, @recipe)
-    {:ok, recipe} = Recipes.create_recipe(attrs)
-    Map.put(context, :recipe, %{recipe: recipe, attrs: attrs})
+  def recipe(_context) do
+    {:ok, recipe} = Recipes.create_recipe(@recipe)
+    %{recipe: %{recipe: recipe, attrs: @recipe}}
   end
 
-  def recipe_with_categories(context \\ %{}) do
-    attrs = Map.get(context, :recipe_categories, @recipe_with_categories)
-    {:ok, recipe} = Recipes.create_recipe(attrs)
-    Map.put(context, :recipe_with_categories, %{recipe: recipe, attrs: attrs})
+  def recipe_with_categories(_context) do
+    {:ok, recipe} = Recipes.create_recipe(@recipe_with_categories)
+    %{recipe_with_categories: %{recipe: recipe, attrs: @recipe_with_categories}}
   end
 
-  def recipe_with_ingredients(context \\ %{}) do
-    attrs = Map.get(context, :recipe_ingredients, @recipe_with_ingredients)
-    {:ok, recipe} = Recipes.create_recipe(attrs)
-    Map.put(context, :recipe_with_ingredients, %{recipe: recipe, attrs: attrs})
-  end
-
-  defp append_to_recipes(recipe, context \\ %{}) do
-    recipes = Map.get(context, :recipes) || []
-    Map.put(context, :recipes, [recipe | recipes])
+  def recipe_with_ingredients(_context) do
+    {:ok, recipe} = Recipes.create_recipe(@recipe_with_ingredients)
+    %{recipe_with_ingredients: %{recipe: recipe, attrs: @recipe_with_ingredients}}
   end
 end
