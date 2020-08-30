@@ -6,7 +6,7 @@ defmodule Relaxir.Ingredients do
   alias Relaxir.Ingredients.Unit
 
   def list_ingredients do
-    Repo.all(Ingredient)
+    Repo.all(order_by(Ingredient, desc: :updated_at))
   end
 
   def get_ingredient!(id) do

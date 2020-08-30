@@ -9,7 +9,7 @@ defmodule Relaxir.Recipes do
   @preload [:recipe_ingredients, :ingredients, :units, :recipe_categories, :categories]
 
   def list_recipes do
-    Repo.all(Recipe)
+    Repo.all(order_by(Recipe, desc: :updated_at))
   end
 
   def get_recipe!(id) do
