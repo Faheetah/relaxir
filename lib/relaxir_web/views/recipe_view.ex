@@ -31,6 +31,7 @@ defmodule RelaxirWeb.RecipeView do
     [parse_fraction(amount), unit, recipe_ingredient.ingredient.name]
     |> Enum.reject(&is_nil(&1))
     |> Enum.join(" ")
+    |> String.trim
     |> (fn i ->
           cond do
             is_nil(note) -> i

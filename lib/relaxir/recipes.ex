@@ -213,7 +213,9 @@ defmodule Relaxir.Recipes do
             attrs
             |> Map.merge(
               %{
-                name: "#{unit_name} #{attrs.name}",
+                name: [unit_name, attrs.name]
+                  |> Enum.join(" ")
+                  |> String.trim(),
                 amount: amount,
               }
             )
