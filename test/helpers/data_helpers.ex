@@ -4,38 +4,38 @@ defmodule Relaxir.DataHelpers do
   alias Relaxir.Recipes
 
   @ingredients %{
-    ingredient: %{name: "ingredient"},
-    ingredient_note: %{name: "ingredient_note", note: "ingredient_note note"},
-    ingredient_amount: %{name: "ingredient_amount", amount: 2},
-    ingredient_amount_fraction: %{name: "ingredient_amount_fraction", amount: 0.5},
-    ingredient_amount_unit: %{name: "ingredient_amount_unit", amount: 0.25, unit: "cup"},
-    ingredient_amount_units: %{name: "ingredient_amount_units", amount: 2.5, unit: "cups"},
-    ingredient_amount_unit_note: %{name: "ingredient_amount_unit", amount: 1, unit: "cup", note: "ingredient_amount_unit note"},
+    ingredient: %{name: "ingredient fixture"},
+    ingredient_note: %{name: "ingredient_note fixture", note: "ingredient_note note"},
+    ingredient_amount: %{name: "ingredient_amount fixture", amount: 2},
+    ingredient_amount_fraction: %{name: "ingredient_amount_fraction fixture", amount: 0.5},
+    ingredient_amount_unit: %{name: "ingredient_amount_unit fixture", amount: 0.25, unit: "cup"},
+    ingredient_amount_units: %{name: "ingredient_amount_units fixture", amount: 2.5, unit: "cups"},
+    ingredient_amount_unit_note: %{name: "ingredient_amount_unit fixture", amount: 1, unit: "cup", note: "ingredient_amount_unit note"},
     invalid_ingredient: %{name: nil},
-    invalid_ingredient_unit_not_found: %{name: "invalid_ingredient_unit_not_found", amount: 1, unit: "invalid"},
-    invalid_ingredient_unit_singular: %{name: "invalid_ingredient_unit_singular", amount: 50, unit: "cup"},
-    invalid_ingredient_unit_plural: %{name: "invalid_ingredient_unit_plural", amount: 1, unit: "cups"}
+    invalid_ingredient_unit_not_found: %{name: "invalid_ingredient_unit_not_found fixture", amount: 1, unit: "invalid"},
+    invalid_ingredient_unit_singular: %{name: "invalid_ingredient_unit_singular fixture", amount: 50, unit: "cup"},
+    invalid_ingredient_unit_plural: %{name: "invalid_ingredient_unit_plural fixture", amount: 1, unit: "cups"}
   }
 
   @categories %{
-    category1: %{name: "category1"},
-    category2: %{name: "category2"}
+    category1: %{name: "category1 fixture"},
+    category2: %{name: "category2 fixture"}
   }
 
   @recipe %{
-    "title" => "recipe",
-    "directions" => "recipe directions"
+    "title" => "recipe fixture",
+    "directions" => "recipe directions fixture"
   }
 
   @recipe_with_categories %{
-    "title" => "recipe_with_categories",
-    "directions" => "recipe with categories directions",
+    "title" => "recipe_with_categories fixture",
+    "directions" => "recipe with categories directions fixture",
     "categories" => Enum.map(@categories, fn {_, c} -> c.name end)
   }
 
   @recipe_with_ingredients %{
-    "title" => "recipe_with_ingredients",
-    "directions" => "recipe with ingredients directions",
+    "title" => "recipe_with_ingredients fixture",
+    "directions" => "recipe with ingredients directions fixture",
     "ingredients" => [
       @ingredients.ingredient,
       @ingredients.ingredient_note
