@@ -17,7 +17,7 @@ defmodule Relaxir.RecipesTest do
 
       attrs =
         [recipe, recipe_with_ingredients]
-        |> Enum.map(fn r -> r.recipe.title end)
+        |> Enum.map(fn r -> r.recipe.fixture["title"] end)
         |> Enum.into(MapSet.new())
 
       assert MapSet.intersection(recipes, attrs)
@@ -115,6 +115,7 @@ defmodule Relaxir.RecipesTest do
       Recipes.update_recipe(recipe, %{"ingredients" => []})
 
       recipe = Recipes.get_recipe!(recipe.id)
+      Relaxir.Ingredients.list_ingredients()
 
       assert recipe.recipe_ingredients == []
       # Ensure only the RecipeIngredient link was removed, do not cascade delete to ingredients

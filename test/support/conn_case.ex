@@ -7,6 +7,7 @@ defmodule RelaxirWeb.ConnCase do
       import Plug.Conn
       import Phoenix.ConnTest
       import RelaxirWeb.ConnCase
+      import Relaxir.DataHelpers
 
       alias RelaxirWeb.Router.Helpers, as: Routes
 

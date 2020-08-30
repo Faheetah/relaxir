@@ -2,7 +2,7 @@ defmodule RelaxirWeb.RecipeParserTest do
   use ExUnit.Case, async: true
   import RelaxirWeb.RecipeParser
 
-  describe "parsing ingredients" do
+  describe "extract_ingredient_fields/1" do
     test "returns an ingredients when nothing else is provided" do
       assert {:ok, %{name: "broccoli"}} == extract_ingredient_fields("broccoli")
     end
@@ -20,10 +20,11 @@ defmodule RelaxirWeb.RecipeParserTest do
     end
 
     test "parses a note when starting with a number" do
+      # guards against false positives when parsing complex amounts i.e. "1 1/2 cups"
       assert {:ok, %{name: "egg", note: "1 times"}} == extract_ingredient_fields("egg, 1 times")
     end
 
-    test "ignores no note provided" do
+    test "ignores no amount provided" do
       assert {:ok, %{name: "egg", note: "chopped"}} == extract_ingredient_fields("egg, chopped")
     end
   end
