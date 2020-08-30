@@ -24,6 +24,16 @@ defmodule RelaxirWeb.RecipeParserTest do
       assert {:ok, %{name: "egg", note: "1 times"}} == extract_ingredient_fields("egg, 1 times")
     end
 
+    test "parses a note when amount and single word ingredient" do
+      # guards against false positives when parsing ingredients without units i.e. "1/4 onion, sliced"
+      assert {:ok, %{amount: 0.25, name: "", unit: "onion", note: "sliced"}} == extract_ingredient_fields("1/4 onion, sliced")
+    end
+
+    test "parses an ingredient without a unit" do
+      # guards against false positives when parsing complex amounts i.e. "1 1/2 cups"
+      assert {:ok, %{amount: 1, name: "", unit: "egg"}} == extract_ingredient_fields("1 egg")
+    end
+
     test "ignores no amount provided" do
       assert {:ok, %{name: "egg", note: "chopped"}} == extract_ingredient_fields("egg, chopped")
     end

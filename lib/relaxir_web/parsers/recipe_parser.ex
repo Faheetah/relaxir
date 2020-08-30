@@ -34,8 +34,8 @@ defmodule RelaxirWeb.RecipeParser do
 
   def extract_ingredient_fields(ingredient) do
     {:ok, %{name: ingredient}}
-    |> extract_ingredient_amount
     |> extract_ingredient_note
+    |> extract_ingredient_amount
   end
 
   def extract_ingredient_amount({:ok, ingredient}) do
