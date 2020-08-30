@@ -39,73 +39,38 @@ defmodule RelaxirWeb.RecipeParser do
 
   def extract_ingredient_amount({:ok, ingredient}) do
     case String.split(ingredient.name) do
-      # @todo needs heavy refactoring
       [whole, fraction, unit | name] ->
         cond do
           Float.parse(fraction) != :error and Float.parse(whole) != :error and hd(Tuple.to_list(Float.parse(fraction))) ->
             parsed_amount = hd(Tuple.to_list(Float.parse(whole))) + parse_amount(fraction)
-
-            case parsed_amount do
-              :error ->
-                {:ok, ingredient}
-
-              _ ->
-                {:ok,
-                 Map.merge(
-                   ingredient,
-                   %{
-                     amount: parsed_amount,
-                     unit: unit,
-                     name: Enum.join(name, " ")
-                   }
-                 )}
-            end
+            build_ingredient(parsed_amount, ingredient: ingredient, unit: unit, name: name)
 
           true ->
-            name = [unit | name]
-            amount = whole
-            unit = fraction
-            parsed_amount = parse_amount(amount)
-
-            case parsed_amount do
-              :error ->
-                {:ok, ingredient}
-
-              _ ->
-                {:ok,
-                 Map.merge(
-                   ingredient,
-                   %{
-                     amount: parsed_amount,
-                     unit: unit,
-                     name: Enum.join(name, " ")
-                   }
-                 )}
-            end
+            build_ingredient(parse_amount(whole), ingredient: ingredient, unit: fraction, name: [unit | name])
         end
 
       [amount, unit | name] ->
-        parsed_amount = parse_amount(amount)
-
-        case parsed_amount do
-          :error ->
-            {:ok, ingredient}
-
-          _ ->
-            {:ok,
-             Map.merge(
-               ingredient,
-               %{
-                 amount: parsed_amount,
-                 unit: unit,
-                 name: Enum.join(name, " ")
-               }
-             )}
-        end
+        build_ingredient(parse_amount(amount), ingredient: ingredient, unit: unit, name: name)
 
       _ ->
         {:ok, ingredient}
     end
+  end
+
+  defp build_ingredient(:error, ingredient: ingredient, unit: _unit, name: _name) do
+    {:ok, ingredient}
+  end
+
+  defp build_ingredient(amount, ingredient: ingredient, unit: unit, name: name) do
+    {:ok,
+      Map.merge(
+        ingredient,
+        %{
+          amount: amount,
+          unit: unit,
+          name: Enum.join(name, " ")
+        }
+      )}
   end
 
   def parse_amount(amount) do
