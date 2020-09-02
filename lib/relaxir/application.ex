@@ -14,9 +14,10 @@ defmodule Relaxir.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: Relaxir.PubSub},
       # Start the Endpoint (http/https)
-      RelaxirWeb.Endpoint
+      RelaxirWeb.Endpoint,
       # Start a worker by calling: Relaxir.Worker.start_link(arg)
       # {Relaxir.Worker, arg}
+      {Relaxir.Search, name: Relaxir.Search}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
