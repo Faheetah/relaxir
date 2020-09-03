@@ -64,14 +64,14 @@ defmodule RelaxirWeb.RecipeParser do
 
   defp build_ingredient(amount, ingredient: ingredient, unit: unit, name: name) do
     {:ok,
-      Map.merge(
-        ingredient,
-        %{
-          amount: amount,
-          unit: unit,
-          name: Enum.join(name, " ")
-        }
-      )}
+     Map.merge(
+       ingredient,
+       %{
+         amount: amount,
+         unit: unit,
+         name: Enum.join(name, " ")
+       }
+     )}
   end
 
   def parse_amount(amount) do
@@ -89,14 +89,27 @@ defmodule RelaxirWeb.RecipeParser do
   end
 
   def extract_ingredient_note({:ok, ingredient}) do
-    name =
-      ingredient.name
-      |> String.split(",")
-      |> Enum.map(&String.trim/1)
+    [name | note] = String.split(ingredient.name, ",")
 
-    case name do
-      [name, note] -> {:ok, Map.merge(ingredient, %{name: name, note: note})}
-      _ -> {:ok, ingredient}
+    note =
+      note
+      |> Enum.reject(&(&1 == nil))
+      |> Enum.join(",")
+      |> String.trim()
+
+    case note do
+      "" ->
+        {:ok, ingredient}
+
+      note ->
+        {:ok,
+         Map.merge(
+           ingredient,
+           %{
+             name: String.trim(name),
+             note: note
+           }
+         )}
     end
   end
 end
