@@ -1,8 +1,6 @@
 defmodule Relaxir.Search do
   use GenServer
 
-  alias Relaxir.Levenshtein
-
   def start_link(opts \\ []) do
     GenServer.start_link(__MODULE__, [
       {:ets_table_name, :relaxir_search_table},
