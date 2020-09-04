@@ -4,6 +4,7 @@ defmodule Relaxir.Ingredients do
 
   alias Relaxir.Ingredients.Ingredient
   alias Relaxir.Ingredients.Unit
+  alias Relaxir.Ingredients.Food
 
   def list_ingredients do
     Repo.all(order_by(Ingredient, asc: :name))
@@ -67,5 +68,9 @@ defmodule Relaxir.Ingredients do
 
   def list_units() do
     Repo.all(Unit)
+  end
+
+  def list_usda_food!() do
+    Repo.all(Food)
   end
 end

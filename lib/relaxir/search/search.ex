@@ -9,7 +9,7 @@ defmodule Relaxir.Search do
   end
 
   def get(item) do
-    case GenServer.call(__MODULE__, {:get, item}) do
+    case GenServer.call(__MODULE__, {:get, item}, 20000) do
       [] -> {:error, :not_found}
       results -> {:ok, results}
     end
@@ -19,14 +19,27 @@ defmodule Relaxir.Search do
     GenServer.call(__MODULE__, {:set, item})
   end
 
+  def compare(left, right) do
+    cond do
+      left == right -> {1.0, left}
+      String.contains?(left, right) -> {0.9, left}
+      true -> {String.bag_distance(left, right), left}
+    end
+  end
+
   def handle_call({:get, item}, _from, state) do
     %{ets_table_name: ets_table_name} = state
 
     results = :ets.match(ets_table_name, {:"$1"})
-    |> List.flatten
-    |> Enum.map(fn i -> {String.bag_distance(i, item), i} end)
+    |> Stream.flat_map(fn i -> i end)
+    |> Stream.reject(&(&1 == nil))
+    |> Stream.map(&String.downcase/1)
+    |> Stream.map(&(compare(&1, item)))
+    |> Stream.reject(fn {i, _} -> i < 0.7 end)
+    |> Stream.take(100)
+    |> Enum.reverse
     |> List.keysort(0)
-    |> Enum.reject(fn {i, _} -> i < 0.5 end)
+    |> Enum.take(5)
 
     {:reply, results, state}
   end
