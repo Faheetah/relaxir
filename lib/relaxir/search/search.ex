@@ -3,60 +3,90 @@ defmodule Relaxir.Search do
 
   def start_link(opts \\ []) do
     GenServer.start_link(__MODULE__, [
-      {:ets_table_name, :relaxir_search_table},
+      {:tables, opts[:tables]},
+      {:repo, opts[:repo]},
       {:log_limit, 1_000_000}
     ], opts)
   end
 
-  def get(item) do
-    case GenServer.call(__MODULE__, {:get, item}, 20000) do
+  def get(module, name, item) do
+    table = atom_from_module(module, name)
+    case GenServer.call(__MODULE__, {:get, table, item}, 20000) do
       [] -> {:error, :not_found}
       results -> {:ok, results}
     end
   end
 
-  def set(item) do
-    GenServer.call(__MODULE__, {:set, item})
+  def set(module, name, item) do
+    table = atom_from_module(module, name)
+    GenServer.call(__MODULE__, {:set, table, item})
   end
 
-  def compare(left, right) do
+  defp compare(left, right) do
     cond do
       left == right -> {1.0, left}
-      String.contains?(left, right) -> {0.9, left}
-      true -> {String.bag_distance(left, right), left}
+      String.contains?(left, right) -> {0.9 + (0.1 / abs(String.length(left) - String.length(right))), left}
+      true -> {String.jaro_distance(left, right), left}
     end
   end
 
-  def handle_call({:get, item}, _from, state) do
-    %{ets_table_name: ets_table_name} = state
-
-    results = :ets.match(ets_table_name, {:"$1"})
-    |> Stream.flat_map(fn i -> i end)
-    |> Stream.reject(&(&1 == nil))
-    |> Stream.map(&String.downcase/1)
-    |> Stream.map(&(compare(&1, item)))
-    |> Stream.reject(fn {i, _} -> i < 0.7 end)
-    |> Stream.take(100)
-    |> Enum.reverse
-    |> List.keysort(0)
-    |> Enum.take(5)
+  def handle_call({:get, table, item}, _from, state) do
+    results =
+      :ets.match(table, {:"$1"})
+      |> Stream.flat_map(fn i -> i end)
+      |> Stream.reject(&(&1 == nil))
+      |> Stream.map(&String.downcase/1)
+      |> Stream.map(&compare(&1, item))
+      |> Stream.reject(fn {i, _} -> i < 0.7 end)
+      |> Stream.take(100)
+      |> Enum.sort_by(fn {i, _} -> i end, :desc)
+      |> Enum.take(5)
 
     {:reply, results, state}
   end
 
-  def handle_call({:set, item}, _from, state) do
-    %{ets_table_name: ets_table_name} = state
-    true = :ets.insert(ets_table_name, {item})
-    {:reply, state}
+  def handle_call({:set, table, item}, _from, state) do
+    true = :ets.insert(table, {item})
+    {:reply, :ok, state}
   end
 
   def init(args) do
-    [{:ets_table_name, ets_table_name}, {:log_limit, log_limit}] = args
-    :ets.new(ets_table_name, [:named_table, :set, :private])
+    [{:tables, tables}, {:repo, repo}, {:log_limit, _}] = args
 
-    Relaxir.Ingredients.list_ingredients()
-    |> Enum.each(fn i -> :ets.insert(ets_table_name, {i.name}) end)
+    Enum.each(tables, fn {table, fields} ->
+      Enum.each(fields, fn field ->
+        table_name = String.to_atom("#{table}_#{field}")
+        :ets.new(table_name, [:named_table, :set, :private])
 
-    {:ok, %{log_limit: log_limit, ets_table_name: ets_table_name}}
+        module = module_from_atom(table)
+
+        repo.all(module)
+        |> Enum.each(fn i -> :ets.insert(table_name, {Map.get(i, field)}) end)
+      end)
+    end)
+
+    {:ok, args}
+
+  end
+
+  defp module_from_atom(table) do
+    table
+    |> Atom.to_string
+    |> String.split("_")
+    |> Enum.map(&String.capitalize/1)
+    |> List.insert_at(0, "Elixir")
+    |> Enum.join(".")
+    |> String.to_existing_atom
+  end
+
+  defp atom_from_module(module, name) do
+    module
+    |> Atom.to_string
+    |> String.split(".")
+    |> Enum.map(&String.downcase/1)
+    |> List.delete_at(0)
+    |> Enum.concat([Atom.to_string(name)])
+    |> Enum.join("_")
+    |> String.to_existing_atom
   end
 end

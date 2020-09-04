@@ -17,7 +17,15 @@ defmodule Relaxir.Application do
       RelaxirWeb.Endpoint,
       # Start a worker by calling: Relaxir.Worker.start_link(arg)
       # {Relaxir.Worker, arg}
-      {Relaxir.Search, name: Relaxir.Search}
+      {Relaxir.Search,
+       name: Relaxir.Search,
+       repo: Relaxir.Repo,
+       tables: [
+         relaxir_ingredients_ingredient: [:name],
+         relaxir_ingredients_food: [:description],
+         relaxir_categories_category: [:name],
+         relaxir_recipes_recipe: [:name]
+       ]}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
