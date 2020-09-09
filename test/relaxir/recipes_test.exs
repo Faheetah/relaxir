@@ -36,10 +36,10 @@ defmodule Relaxir.RecipesTest do
     setup [:ingredients]
 
     test "create_recipe/1 with valid data creates a recipe" do
-      attrs = %{title: "title", directions: "directions"}
+      attrs = %{"title" => "title", "directions" => "directions"}
       {:ok, recipe} = Recipes.create_recipe(attrs)
-      assert recipe.title == attrs.title
-      assert recipe.directions == attrs.directions
+      assert recipe.title == attrs["title"]
+      assert recipe.directions == attrs["directions"]
     end
 
     test "create_recipe/1 with invalid data returns error changeset" do
@@ -48,7 +48,7 @@ defmodule Relaxir.RecipesTest do
 
     test "create_recipe/1 includes ingredients", %{ingredients: ingredients} do
       ingredient = ingredients.ingredient
-      attrs = %{title: "title", recipe_ingredients: [%{ingredient: ingredient}]}
+      attrs = %{"title" => "title", "recipe_ingredients" => [%{ingredient: ingredient}]}
       {:ok, recipe} = Recipes.create_recipe(attrs)
 
       assert [ingredient.name] ==
