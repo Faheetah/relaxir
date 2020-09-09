@@ -17,6 +17,27 @@ defmodule RelaxirWeb.RecipeController do
     render(conn, "new.html", ingredients: [], changeset: changeset)
   end
 
+  def confirm(conn, params) do
+    changeset = Recipes.change_recipe(%Recipe{recipe_ingredients: [], categories: []})
+    IO.inspect %{params: params, changeset: changeset}
+
+    attrs =
+      params
+      |> Map.get("recipe")
+      |> RecipeParser.parse_attrs
+      |> Recipes.map_attrs
+
+    recipe = %Recipe{
+      title: attrs["title"],
+      directions: attrs["directions"],
+      recipe_categories: attrs["recipe_categories"],
+      recipe_ingredients: attrs["recipe_ingredients"]
+    }
+    |> IO.inspect
+
+    render(conn, "confirm.html", ingredients: [], changeset: changeset, recipe: recipe)
+  end
+
   def create(conn, %{"recipe" => recipe_params}) do
     case Recipes.create_recipe(RecipeParser.parse_attrs(recipe_params)) do
       {:ok, recipe} ->

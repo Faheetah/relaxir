@@ -39,6 +39,8 @@ defmodule RelaxirWeb.Router do
     scope "/" do
       pipe_through [:browser_auth, :require_admin]
       resources "/recipes", RecipeController, except: [:show, :index]
+      post "/recipes/confirm", RecipeController, :confirm
+      post "/recipes/confirm/:id", RecipeController, :confirm
       resources "/ingredients", IngredientController, except: [:show, :index]
       resources "/categories", CategoryController, except: [:show, :index]
       live_dashboard "/dashboard", metrics: RelaxirWeb.Telemetry

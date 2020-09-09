@@ -1,0 +1,26 @@
+<h1><%= String.capitalize(@recipe.title) %></h1>
+
+<%= if @recipe.recipe_categories != [] do %>
+<strong>Categories:</strong>
+<%= for category <- @recipe.recipe_categories do %>
+<li>
+  <%= link category.name, to: Routes.category_path(@conn, :show, category)%>
+</li>
+<% end %>
+<% end %>
+
+<%= if @recipe.recipe_ingredients != [] do %>
+<strong>Ingredients:</strong>
+<%= for recipe_ingredient <- @recipe.recipe_ingredients do %>
+<li>
+  <%= link ingredients_output(recipe_ingredient), to: Routes.ingredient_path(@conn, :show, recipe_ingredient.ingredient)%>
+</li>
+<% end %>
+<% end %>
+
+<%= render_markdown @recipe.directions %>
+
+<%= if @current_user && @current_user.is_admin do %>
+<span><%= link "Edit", to: Routes.recipe_path(@conn, :edit, @recipe) %></span>
+<span><%= link "Back", to: Routes.recipe_path(@conn, :index) %></span>
+<% end %>
