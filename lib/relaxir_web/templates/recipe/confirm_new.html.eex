@@ -1,0 +1,75 @@
+<h1>Changes</h1>
+
+<h1><%= String.capitalize(@changeset.changes.title) %></h1>
+
+<%= if @changeset.changes.recipe_categories != [] do %>
+<strong>Categories:</strong>
+<%= for recipe_category <- @changeset.changes.recipe_categories do %>
+<li>
+
+<%= if Map.get(recipe_category.changes, :category_id) do %>
+existing category id: <%= recipe_category.changes.category_id %>
+<% end %>
+
+<%= if Map.get(recipe_category.changes, :category) do %>
+new category: <%= recipe_category.changes.category.changes.name %>
+<% end %>
+
+</li>
+<% end %>
+<% end %>
+
+
+<%= if @changeset.changes.recipe_ingredients != [] do %>
+<strong>Ingredients:</strong>
+<li>AMOUNT :: UNIT_ID :: INGREDIENT OR INGREDIENT_ID :: NOTE</li>
+<%= for recipe_ingredient <- @changeset.changes.recipe_ingredients do %>
+<li>
+
+<%= if Map.get(recipe_ingredient.changes, :amount) do %>
+<%= recipe_ingredient.changes.amount %>
+ ::
+<%= if Map.get(recipe_ingredient.changes, :unit_id) do %>
+<%= recipe_ingredient.changes.unit_id %>
+ ::
+<% end %>
+
+<% end %>
+
+<%= if Map.get(recipe_ingredient.changes, :ingredient_id) do %>
+<%= recipe_ingredient.changes.ingredient_id %>
+<% end %>
+
+<%= if Map.get(recipe_ingredient.changes, :ingredient) do %>
+NEW <%= recipe_ingredient.changes.ingredient.changes.name %>
+<% end %>
+
+<%= if Map.get(recipe_ingredient.changes, :note) do %>
+
+ ::
+<%= recipe_ingredient.changes.note %>
+<% end %>
+
+</li>
+<% end %>
+<% end %>
+
+<%= if Map.get(@changeset.changes, :directions) do %>
+<%= render_markdown @changeset.changes.directions %>
+<% end %>
+
+<%= form_for @conn, Routes.recipe_path(@conn, :create), [as: :recipe], fn f -> %>
+  <%= hidden_input f, :title, value: @recipe_params["title"] %>
+  <%= hidden_input f, :directions, value: @recipe_params["directions"] %>
+  <%= hidden_input f, :categories, value: @recipe_params["categories"] %>
+  <%= hidden_input f, :ingredients, value: @recipe_params["ingredients"] %>
+  <%= submit "Save" %>
+<% end %>
+
+<%= form_for @conn, Routes.recipe_path(@conn, :new), [as: :recipe], fn f -> %>
+  <%= hidden_input f, :title, value: @recipe_params["title"] %>
+  <%= hidden_input f, :directions, value: @recipe_params["directions"] %>
+  <%= hidden_input f, :categories, value: @recipe_params["categories"] %>
+  <%= hidden_input f, :ingredients, value: @recipe_params["ingredients"] %>
+  <%= submit "Back" %>
+<% end %>

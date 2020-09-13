@@ -24,6 +24,6 @@
   <%= error_tag f, :directions %>
 
   <div>
-    <%= submit "Save" %>
+    <%= submit "Preview" %>
   </div>
 <% end %>

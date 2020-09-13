@@ -16,9 +16,9 @@ defmodule RelaxirWeb.RecipeView do
   end
 
   def ingredients_output(recipe_ingredient) do
-    unit = recipe_ingredient.unit
-    amount = recipe_ingredient.amount
-    note = recipe_ingredient.note
+    unit = Map.get(recipe_ingredient, :unit)
+    amount = Map.get(recipe_ingredient, :amount)
+    note = Map.get(recipe_ingredient, :note)
 
     unit =
       case unit do
@@ -47,6 +47,7 @@ defmodule RelaxirWeb.RecipeView do
 
     adjustment = case (amount - floor(amount)) do
       0.0 -> 1
+      0 -> 1
       i -> i
     end
 

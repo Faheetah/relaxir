@@ -68,7 +68,7 @@ defmodule Relaxir.Recipes do
   end
 
   def change_recipe(%Recipe{} = recipe, attrs \\ %{}) do
-    Recipe.changeset(recipe, attrs)
+    Recipe.changeset(recipe, map_attrs(attrs))
   end
 
   def map_attrs(attrs, recipe \\ %Recipe{recipe_categories: [], recipe_ingredients: []}) do
