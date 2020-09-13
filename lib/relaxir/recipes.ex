@@ -24,10 +24,7 @@ defmodule Relaxir.Recipes do
   end
 
   def create_recipe(attrs) do
-    attrs =
-      attrs
-      |> map_categories
-      |> map_ingredients
+    attrs = map_attrs(attrs)
 
     %Recipe{}
     |> Recipe.changeset(attrs)
@@ -42,12 +39,7 @@ defmodule Relaxir.Recipes do
   end
 
   def update_recipe(%Recipe{} = recipe, original_attrs) do
-    attrs =
-      original_attrs
-      |> map_categories()
-      |> map_existing_categories(recipe)
-      |> map_ingredients()
-      |> map_existing_ingredients(recipe)
+    attrs = map_attrs(original_attrs, recipe)
 
     case attrs["errors"] do
       {:error, error} ->
@@ -76,7 +68,15 @@ defmodule Relaxir.Recipes do
   end
 
   def change_recipe(%Recipe{} = recipe, attrs \\ %{}) do
-    Recipe.changeset(recipe, attrs)
+    Recipe.changeset(recipe, map_attrs(attrs))
+  end
+
+  def map_attrs(attrs, recipe \\ %Recipe{recipe_categories: [], recipe_ingredients: []}) do
+    attrs
+      |> map_categories()
+      |> map_existing_categories(recipe)
+      |> map_ingredients()
+      |> map_existing_ingredients(recipe)
   end
 
   def map_categories(attrs) when is_map_key(attrs, "categories") do

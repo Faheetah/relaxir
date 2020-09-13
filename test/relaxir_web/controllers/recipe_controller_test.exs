@@ -115,7 +115,6 @@ defmodule RelaxirWeb.RecipeControllerTest do
       assert html_response(conn, 200) =~ "1 cup #{ingredient.name}, diced"
     end
 
-    @tag :only
     test "creates an ingredient without a unit", %{conn: conn, ingredient: ingredient} do
       attrs = %{title: "_", ingredients: "1 #{ingredient.name}, diced"}
       conn = post(conn, Routes.recipe_path(conn, :create), recipe: attrs)

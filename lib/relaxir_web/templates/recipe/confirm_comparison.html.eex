@@ -1,0 +1,75 @@
+<h1>Changes</h1>
+
+<h1><%= String.capitalize(@changeset.changes.title) %></h1>
+
+<%= if @recipe_categories != [] do %>
+<h2>Categories:</h2>
+<%= for recipe_category <- @recipe_categories do %>
+<li>
+
+<%= unless Map.get(recipe_category.changes, :category_id) do %>
+<span style="color: green">
+<% end %>
+
+<%= recipe_category.changes.category.changes.name %>
+
+<%= unless Map.get(recipe_category.changes, :category_id) do %>
+</span>
+<% end %>
+
+</li>
+<% end %>
+<% end %>
+
+
+<%= if @recipe_ingredients != [] do %>
+<h2>Ingredients:</h2>
+<table>
+<tr>
+<th>Amount</th>
+<th>Unit</th>
+<th>Ingredient</th>
+<th>Note</th>
+</tr>
+<%= for recipe_ingredient <- @recipe_ingredients do %>
+<tr>
+  <th>
+    <%= if Map.get(recipe_ingredient.changes, :amount) do %>
+    <%= recipe_ingredient.changes.amount %>
+    <% end %>
+  </th>
+  <th>
+    <%= if Map.get(recipe_ingredient.changes, :unit) do %>
+    <%= recipe_ingredient.changes.unit %>
+    <% end %>
+  </th>
+
+  <th>
+    <%= unless Map.get(recipe_ingredient.changes, :ingredient_id) do %>
+    <span style="color: green">
+    <% end %>
+
+    <%= recipe_ingredient.changes.ingredient.changes.name %>
+
+    <%= unless Map.get(recipe_ingredient.changes, :ingredient_id) do %>
+    </span>
+    <% end %>
+  </th>
+
+  <th>
+    <%= if Map.get(recipe_ingredient.changes, :note) do %>
+
+    <%= recipe_ingredient.changes.note %>
+    <% end %>
+  </th>
+</tr>
+
+<% end %>
+</table>
+<% end %>
+
+<%= if Map.get(@changeset.changes, :directions) do %>
+<h2>Directions:</h2>
+<%= render_markdown @changeset.changes.directions %>
+<% end %>
+
