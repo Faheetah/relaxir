@@ -17,29 +17,25 @@ end %>
 <% end %>
 
 
-<%= if @changeset.changes.recipe_ingredients != [] do %>
+<%= if @recipe_ingredients != [] do %>
 <strong>Ingredients:</strong>
-<li>AMOUNT :: UNIT_ID :: INGREDIENT OR INGREDIENT_ID :: NOTE</li>
-<%= for recipe_ingredient <- @changeset.changes.recipe_ingredients do %>
+<%= for recipe_ingredient <- @recipe_ingredients do %>
 <li>
 
 <%= if Map.get(recipe_ingredient.changes, :amount) do %>
 <%= recipe_ingredient.changes.amount %>
  ::
-<%= if Map.get(recipe_ingredient.changes, :unit_id) do %>
-<%= recipe_ingredient.changes.unit_id %>
+<%= if Map.get(recipe_ingredient.changes, :unit) do %>
+<%= recipe_ingredient.changes.unit %>
  ::
 <% end %>
 
 <% end %>
 
-<%= if Map.get(recipe_ingredient.changes, :ingredient_id) do %>
-<%= recipe_ingredient.changes.ingredient_id %>
-<% end %>
-
-<%= if Map.get(recipe_ingredient.changes, :ingredient) do %>
-NEW <%= recipe_ingredient.changes.ingredient.changes.name %>
-<% end %>
+<%= case recipe_ingredient.changes do
+%{ingredient_id: _} -> recipe_ingredient.changes.ingredient.changes.name
+_ -> "NEW #{recipe_ingredient.changes.ingredient.changes.name}"
+end %>
 
 <%= if Map.get(recipe_ingredient.changes, :note) do %>
 

@@ -25,6 +25,35 @@ defmodule RelaxirWeb.RecipeController do
     render(conn, "new.html", ingredients: [], changeset: changeset)
   end
 
+  def get_recipe_ingredient_names(changeset) do
+    changeset
+    |> Map.get(:changes)
+    |> Map.get(:recipe_ingredients)
+    |> Enum.map(fn i ->
+      case i.changes do
+        %{ingredient_id: id} ->
+          name = Relaxir.Repo.get!(Relaxir.Ingredients.Ingredient, id).name
+          Map.merge(i, %{changes: %{ingredient: %{changes: %{name: name}}}}, fn _, m1, m2 -> Map.merge(m1, m2) end)
+
+        _ ->
+          i
+      end
+    end)
+    |> Enum.map(fn i ->
+      case i.changes do
+        %{unit_id: id} ->
+          unit = Relaxir.Repo.get!(Ingredients.Unit, id)
+          cond do
+            Map.get(i.changes, :amount) == nil -> i
+            i.changes.amount > 1 -> Map.merge(i, %{changes: %{unit: unit.plural}}, fn _, m1, m2 -> Map.merge(m1, m2) end)
+            i.changes.amount > 0 -> Map.merge(i, %{changes: %{unit: unit.singular}}, fn _, m1, m2 -> Map.merge(m1, m2) end)
+          end
+
+        _ -> i
+      end
+    end)
+  end
+
   def get_recipe_category_names(changeset) do
     changeset
     |> Map.get(:changes)
@@ -35,7 +64,6 @@ defmodule RelaxirWeb.RecipeController do
           name = Relaxir.Repo.get!(Relaxir.Categories.Category, id).name
 
           %{changes: %{category_id: id, category: %{changes: %{name: name}}}}
-          |> IO.inspect()
 
         _ ->
           c
@@ -50,6 +78,7 @@ defmodule RelaxirWeb.RecipeController do
 
     changeset = Recipes.change_recipe(%Recipe{}, attrs)
     recipe_categories = get_recipe_category_names(changeset)
+    recipe_ingredients = get_recipe_ingredient_names(changeset)
 
     case changeset do
       %{valid?: false} ->
@@ -57,7 +86,14 @@ defmodule RelaxirWeb.RecipeController do
         render(conn, "new.html", changeset: changeset, ingredients: ingredients)
 
       _ ->
-        render(conn, "confirm_new.html", recipe_categories: recipe_categories, recipe_params: recipe_params, changeset: changeset)
+        render(
+          conn,
+          "confirm_new.html",
+          recipe_categories: recipe_categories,
+          recipe_ingredients: recipe_ingredients,
+          recipe_params: recipe_params,
+          changeset: changeset
+        )
     end
   end
 
@@ -127,6 +163,7 @@ defmodule RelaxirWeb.RecipeController do
 
     changeset = Recipes.change_recipe(%Recipe{}, attrs)
     recipe_categories = get_recipe_category_names(changeset)
+    recipe_ingredients = get_recipe_ingredient_names(changeset)
 
     case changeset do
       %{valid?: false} ->
@@ -134,7 +171,13 @@ defmodule RelaxirWeb.RecipeController do
         render(conn, "new.html", changeset: changeset, ingredients: ingredients)
 
       _ ->
-        render(conn, "confirm_update.html", recipe_categories: recipe_categories, recipe: recipe, recipe_params: recipe_params, changeset: changeset)
+        render(conn, "confirm_update.html",
+          recipe_categories: recipe_categories,
+          recipe_ingredients: recipe_ingredients,
+          recipe: recipe,
+          recipe_params: recipe_params,
+          changeset: changeset
+        )
     end
   end
 
