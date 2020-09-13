@@ -2,18 +2,15 @@
 
 <h1><%= String.capitalize(@changeset.changes.title) %></h1>
 
-<%= if @changeset.changes.recipe_categories != [] do %>
+<%= if @recipe_categories != [] do %>
 <strong>Categories:</strong>
-<%= for recipe_category <- @changeset.changes.recipe_categories do %>
+<%= for recipe_category <- @recipe_categories do %>
 <li>
 
-<%= if Map.get(recipe_category.changes, :category_id) do %>
-existing category id: <%= recipe_category.changes.category_id %>
-<% end %>
-
-<%= if Map.get(recipe_category.changes, :category) do %>
-new category: <%= recipe_category.changes.category.changes.name %>
-<% end %>
+<%= case recipe_category.changes do
+%{category_id: _} -> recipe_category.changes.category.changes.name
+_ -> "NEW #{recipe_category.changes.category.changes.name}"
+end %>
 
 </li>
 <% end %>
