@@ -95,8 +95,9 @@ defmodule Relaxir.Search do
     # :ets.fun2ms(fn {keyword, full} -> {full} end)
     results =
       :ets.select(table, for(i <- items, do: {{i, :"$1"}, [], [:"$_"]}))
+      |> Enum.dedup()
       |> Enum.reduce(%{}, fn {_, name}, acc ->
-        length = 1 / String.length(name)
+        length = 1 + 1 / String.length(name)
         Map.update(acc, name, length, &(&1 + length))
       end)
       |> Enum.sort_by(fn {_, score} -> score end, :desc)
