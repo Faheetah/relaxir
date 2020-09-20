@@ -40,13 +40,9 @@ defmodule Relaxir.Search do
   end
 
   defp compare(left, right) do
-    # cond do
-    # left == right -> 1.0
-    # true -> String.jaro_distance(left, right)
-    # end
     cond do
       left == right -> 1.0
-      true -> 0.0
+      true -> String.jaro_distance(left, right)
     end
   end
 
@@ -93,16 +89,17 @@ defmodule Relaxir.Search do
       |> Enum.reject(&(&1 == "" || &1 == nil))
       |> Enum.map(&String.trim/1)
       |> Enum.map(&String.downcase/1)
+      |> Enum.map(&Inflex.singularize/1)
       |> Enum.reject(&(&1 == "" || &1 == nil))
 
     # :ets.fun2ms(fn {keyword, full} -> {full} end)
     results =
-      :ets.select(table, for(i <- items, do: {{i, :"$1"}, [], [{{:"$1"}}]}))
-      |> Enum.reduce(%{}, fn {name}, acc ->
-        Map.update(acc, name, 1, &(&1 + 100 / String.length(name)))
+      :ets.select(table, for(i <- items, do: {{i, :"$1"}, [], [:"$_"]}))
+      |> Enum.reduce(%{}, fn {_, name}, acc ->
+        length = 1 / String.length(name)
+        Map.update(acc, name, length, &(&1 + length))
       end)
       |> Enum.sort_by(fn {_, score} -> score end, :desc)
-      |> Enum.take(20)
 
     {:reply, results, state}
   end
@@ -135,7 +132,7 @@ defmodule Relaxir.Search do
             |> Enum.sort()
             |> Enum.dedup()
             |> Enum.each(fn v ->
-              :ets.insert(table_name, {String.downcase(v), value})
+              :ets.insert(table_name, {Inflex.singularize(String.downcase(v)), value})
             end)
           end
         end)
