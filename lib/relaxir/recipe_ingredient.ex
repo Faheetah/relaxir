@@ -8,6 +8,7 @@ defmodule Relaxir.RecipeIngredient do
     belongs_to :unit, Relaxir.Ingredients.Unit
     belongs_to :recipe, Relaxir.Recipes.Recipe
     belongs_to :ingredient, Relaxir.Ingredients.Ingredient
+    field :suggestion, :string, virtual: true
   end
 
   def changeset(recipe_ingredient, attrs) do

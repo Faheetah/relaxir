@@ -46,12 +46,20 @@
 
   <th>
     <%= unless Map.get(recipe_ingredient.changes, :ingredient_id) do %>
+    <%= if Map.get(recipe_ingredient.changes, :suggestion) && recipe_ingredient.changes.suggestion.type == "ingredient" do %>
+    <span style="color: orange">
+    <% else %>
     <span style="color: green">
+    <% end %>
     <% end %>
 
     <%= recipe_ingredient.changes.ingredient.changes.name %>
 
     <%= unless Map.get(recipe_ingredient.changes, :ingredient_id) do %>
+    <%= if Map.get(recipe_ingredient.changes, :suggestion) do %>
+    (<%= recipe_ingredient.changes.suggestion.name %> <%= recipe_ingredient.changes.suggestion.score %>)
+    <% end %>
+
     </span>
     <% end %>
   </th>
@@ -67,6 +75,14 @@
 <% end %>
 </table>
 <% end %>
+
+<p>
+Suggestion legend
+ingredient - found ingredient<br/>
+<span style="color: orange">ingredient (suggestion)</span> - similar ingredient<br/>
+<span style="color: green">ingredient (suggestion)</span> - similar ingredient from USDA database<br/>
+<span style="color: green">ingredient</span> - new ingredient
+</p>
 
 <%= if Map.get(@changeset.changes, :directions) do %>
 <h2>Directions:</h2>
