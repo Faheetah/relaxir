@@ -28,7 +28,7 @@ defmodule Relaxir.Search do
   def get(module, name, item) do
     table = atom_from_module(module, name)
 
-    case GenServer.call(__MODULE__, {:get, table, item}, 5000) do
+    case GenServer.call(__MODULE__, {:get, table, item}, 500) do
       [] -> {:error, :not_found}
       results -> {:ok, results}
     end

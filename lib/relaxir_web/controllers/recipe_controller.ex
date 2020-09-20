@@ -1,6 +1,8 @@
 defmodule RelaxirWeb.RecipeController do
   use RelaxirWeb, :controller
 
+  import Ecto.Changeset
+
   alias Relaxir.Recipes
   alias Relaxir.Ingredients
   alias Relaxir.Recipes.Recipe
@@ -43,13 +45,15 @@ defmodule RelaxirWeb.RecipeController do
       case i.changes do
         %{unit_id: id} ->
           unit = Relaxir.Repo.get!(Ingredients.Unit, id)
+
           cond do
             Map.get(i.changes, :amount) == nil -> i
             i.changes.amount > 1 -> Map.merge(i, %{changes: %{unit: unit.plural}}, fn _, m1, m2 -> Map.merge(m1, m2) end)
             i.changes.amount > 0 -> Map.merge(i, %{changes: %{unit: unit.singular}}, fn _, m1, m2 -> Map.merge(m1, m2) end)
           end
 
-        _ -> i
+        _ ->
+          i
       end
     end)
   end
@@ -78,7 +82,8 @@ defmodule RelaxirWeb.RecipeController do
 
     changeset = Recipes.change_recipe(%Recipe{}, attrs)
     recipe_categories = get_recipe_category_names(changeset)
-    recipe_ingredients = get_recipe_ingredient_names(changeset)
+
+    recipe_ingredients = get_recipe_ingredient_suggestions(changeset)
 
     case changeset do
       %{valid?: false} ->
@@ -154,6 +159,67 @@ defmodule RelaxirWeb.RecipeController do
     render(conn, "edit.html", recipe: recipe, ingredients: recipe.recipe_ingredients, changeset: changeset)
   end
 
+  def get_recipe_ingredient_suggestions(changeset) do
+    changeset
+    |> get_recipe_ingredient_names()
+    |> Enum.map(fn ingredient ->
+      ingredient_name =
+        ingredient
+        |> Map.get(:changes)
+        |> Map.get(:ingredient)
+        |> Map.get(:changes)
+        |> Map.get(:name)
+
+      cond do
+        ingredient_name == nil ->
+          ingredient
+
+        true ->
+          # in case of timeouts, don't handle suggestions
+          try do
+            case Relaxir.Search.get(Ingredients.Ingredient, :name, ingredient_name) do
+              {:ok, suggestion} ->
+                {s, score} = hd(suggestion)
+
+                cond do
+                  score > 1.2 -> put_change(ingredient, :suggestion, %{name: String.downcase(s), type: "ingredient", score: round(score * 10)})
+                  true ->
+                    case Relaxir.Search.get(Ingredients.Food, :description, ingredient_name) do
+                    {:ok, suggestion} ->
+                      {s, score} = hd(suggestion)
+
+                      cond do
+                        score > 1 -> put_change(ingredient, :suggestion, %{name: String.downcase(s), type: "USDA", score: round(score * 10)})
+                        true -> ingredient
+                      end
+
+                    {:error, :not_found} ->
+                      ingredient
+                    end
+                end
+
+              {:error, :not_found} ->
+                case Relaxir.Search.get(Ingredients.Food, :description, ingredient_name) do
+                  {:ok, suggestion} ->
+                    {s, score} = hd(suggestion)
+
+                    cond do
+                      score > 1 -> put_change(ingredient, :suggestion, %{name: String.downcase(s), type: "USDA", score: round(score * 10)})
+                      true -> ingredient
+                    end
+
+                  {:error, :not_found} ->
+                    ingredient
+                end
+            end
+          catch
+            :exit, {:noproc, _} -> ingredient
+            :exit, {:timeout, _} -> ingredient
+          end
+      end
+    end)
+  end
+
   def confirm_update(conn, %{"id" => id, "recipe" => recipe_params}) do
     recipe = Recipes.get_recipe!(id)
 
@@ -163,7 +229,7 @@ defmodule RelaxirWeb.RecipeController do
 
     changeset = Recipes.change_recipe(%Recipe{}, attrs)
     recipe_categories = get_recipe_category_names(changeset)
-    recipe_ingredients = get_recipe_ingredient_names(changeset)
+    recipe_ingredients = get_recipe_ingredient_suggestions(changeset)
 
     case changeset do
       %{valid?: false} ->
