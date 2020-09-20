@@ -182,7 +182,7 @@ defmodule RelaxirWeb.RecipeController do
                 {s, score} = hd(suggestion)
 
                 cond do
-                  score > 1.2 -> put_change(ingredient, :suggestion, %{name: String.downcase(s), type: "ingredient", score: round(score * 10)})
+                  score > 1 -> put_change(ingredient, :suggestion, %{name: String.downcase(s), type: "ingredient", score: round(score * 10)})
                   true ->
                     case Relaxir.Search.get(Ingredients.Food, :description, ingredient_name) do
                     {:ok, suggestion} ->
