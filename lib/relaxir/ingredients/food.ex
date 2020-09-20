@@ -16,5 +16,6 @@ defmodule Relaxir.Ingredients.Food do
   def changeset(food, attrs) do
     food
     |> cast(attrs, [:fdc_id, :data_type, :description, :food_category_id, :publication_date])
+    |> unique_constraint([:description])
   end
 end
