@@ -4,7 +4,7 @@ defmodule Relaxir.MixProject do
   def project do
     [
       app: :relaxir,
-      version: "0.3.10",
+      version: "0.3.13",
       url: "https://github.com/Faheetah/relaxir/",
       elixir: "~> 1.7",
       elixirc_paths: elixirc_paths(Mix.env()),
@@ -56,7 +56,8 @@ defmodule Relaxir.MixProject do
       {:earmark, "~> 1.4.10"},
       {:csv, "~> 2.3.1"},
       {:excoveralls, "~> 0.13.1", only: :test},
-      {:lcov_ex, "~> 0.1.0", runtime: false, only: :test}
+      {:lcov_ex, "~> 0.1.0", runtime: false, only: :test},
+      {:inflex, "~> 2.0.0"}
     ]
   end
 

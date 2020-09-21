@@ -2,7 +2,6 @@ defmodule Relaxir.RecipesTest do
   use Relaxir.DataCase
 
   alias Relaxir.Recipes
-  # alias Relaxir.Recipes.Recipe
   alias Relaxir.Ingredients
   alias Relaxir.Categories
 

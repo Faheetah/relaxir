@@ -7,6 +7,8 @@ config :relaxir, Relaxir.Repo,
   database: "relaxir_dev",
   hostname: "localhost",
   show_sensitive_data_on_connection_error: true,
+  # only for importing with mix, otherwise it spams debug SQL
+  # log: false,
   pool_size: 10
 
 # For development, we disable any cache and enable
@@ -66,7 +68,7 @@ config :relaxir, RelaxirWeb.Endpoint,
   ]
 
 # Do not include metadata nor timestamps in development logs
-config :logger, :console, format: "[$level] $message\n"
+# config :logger, :console, format: "[$level] $message\n"
 
 # Set a higher stacktrace during development. Avoid configuring such
 # in production as building large stacktraces may be expensive.
