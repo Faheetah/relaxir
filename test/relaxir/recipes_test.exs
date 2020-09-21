@@ -174,7 +174,7 @@ defmodule Relaxir.RecipesTest do
 
     test "adds an amount and unit to an ingredient", %{ingredients: ingredients} do
       ingredient = ingredients.ingredient
-      {:ok, unit} = Ingredients.create_unit(%{singular: "ton", plural: "tons"})
+      {:ok, unit} = Ingredients.create_unit(%{name: "ton"})
 
       ingredients =
         %{"ingredients" => [Map.merge(ingredient, %{amount: 2, unit: "tons"})]}
@@ -203,7 +203,7 @@ defmodule Relaxir.RecipesTest do
 
       assert recipe_ingredient.ingredient.name == ingredient.name
       assert recipe_ingredient.amount == ingredient.amount
-      assert recipe_ingredient.unit.singular == ingredient.unit
+      assert Inflex.singularize(recipe_ingredient.unit.name) == ingredient.unit
       assert recipe_ingredient.note == ingredient.note
     end
   end

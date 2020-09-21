@@ -21,11 +21,10 @@ defmodule RelaxirWeb.RecipeView do
     note = Map.get(recipe_ingredient, :note)
 
     unit =
-      case unit do
-        nil -> nil
-        unit when amount > 1 -> unit.plural
-        unit when amount > 0 -> unit.singular
-        _ -> {:error, "invalid amount #{amount}"}
+      cond do
+        unit == nil -> nil
+        amount > 1 -> Inflex.pluralize(unit.name)
+        true -> Inflex.singularize(unit.name)
       end
 
     [parse_fraction(amount), unit, recipe_ingredient.ingredient.name]

@@ -48,8 +48,8 @@ defmodule RelaxirWeb.RecipeController do
 
           cond do
             Map.get(i.changes, :amount) == nil -> i
-            i.changes.amount > 1 -> Map.merge(i, %{changes: %{unit: unit.plural}}, fn _, m1, m2 -> Map.merge(m1, m2) end)
-            i.changes.amount > 0 -> Map.merge(i, %{changes: %{unit: unit.singular}}, fn _, m1, m2 -> Map.merge(m1, m2) end)
+            i.changes.amount > 1 -> Map.merge(i, %{changes: %{unit: Inflex.pluralize(unit.name)}}, fn _, m1, m2 -> Map.merge(m1, m2) end)
+            true -> Map.merge(i, %{changes: %{unit: Inflex.singularize(unit.name)}}, fn _, m1, m2 -> Map.merge(m1, m2) end)
           end
 
         _ ->
