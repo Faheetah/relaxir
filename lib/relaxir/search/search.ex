@@ -83,26 +83,31 @@ defmodule Relaxir.Search do
   end
 
   def handle_call({:get, table, item}, _from, state) do
-    items =
-      Regex.scan(~r/[a-zA-Z]+/, item)
-      |> Enum.map(fn [i] -> i end)
-      |> Enum.reject(&(&1 == "" || &1 == nil))
-      |> Enum.map(&String.trim/1)
-      |> Enum.map(&String.downcase/1)
-      |> Enum.map(&Inflex.singularize/1)
-      |> Enum.reject(&(&1 == "" || &1 == nil))
+    {duration, return} = :timer.tc fn ->
+      items =
+        Regex.scan(~r/[a-zA-Z]+/, item)
+        |> Enum.map(fn [i] -> i end)
+        |> Enum.reject(&(&1 == "" || &1 == nil))
+        |> Enum.map(&String.trim/1)
+        |> Enum.map(&String.downcase/1)
+        |> Enum.map(&Inflex.singularize/1)
+        |> Enum.reject(&(&1 == "" || &1 == nil))
 
-    # :ets.fun2ms(fn {keyword, full} -> {full} end)
-    results =
-      :ets.select(table, for(i <- items, do: {{i, :"$1"}, [], [:"$_"]}))
-      |> Enum.dedup()
-      |> Enum.reduce(%{}, fn {_, name}, acc ->
-        length = 1 + 1 / String.length(name)
-        Map.update(acc, name, length, &(&1 + length))
-      end)
-      |> Enum.sort_by(fn {_, score} -> score end, :desc)
+      # :ets.fun2ms(fn {keyword, full} -> {full} end)
+      results =
+        :ets.select(table, for(i <- items, do: {{i, :"$1"}, [], [:"$_"]}))
+        |> Enum.dedup()
+        |> Enum.reduce(%{}, fn {_, name}, acc ->
+          length = 1 + 1 / String.length(name)
+          Map.update(acc, name, length, &(&1 + length))
+        end)
+        |> Enum.sort_by(fn {_, score} -> score end, :desc)
 
-    {:reply, results, state}
+      {:reply, results, state}
+    end
+
+    :telemetry.execute([:relaxir, :search, :query], %{total_time: duration})
+    return
   end
 
   def handle_call({:set, table, item}, _from, state) do

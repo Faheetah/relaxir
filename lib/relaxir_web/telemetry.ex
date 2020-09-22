@@ -37,6 +37,9 @@ defmodule RelaxirWeb.Telemetry do
       summary("relaxir.repo.query.queue_time", unit: {:native, :millisecond}),
       summary("relaxir.repo.query.idle_time", unit: {:native, :millisecond}),
 
+      # Caching Metrics
+      summary("relaxir.search.query.total_time", unit: {:native, :millisecond}),
+
       # VM Metrics
       summary("vm.memory.total", unit: {:byte, :kilobyte}),
       summary("vm.total_run_queue_lengths.total"),
