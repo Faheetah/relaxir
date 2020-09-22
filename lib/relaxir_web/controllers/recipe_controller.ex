@@ -48,8 +48,8 @@ defmodule RelaxirWeb.RecipeController do
 
           cond do
             Map.get(i.changes, :amount) == nil -> i
-            i.changes.amount > 1 -> Map.merge(i, %{changes: %{unit: unit.plural}}, fn _, m1, m2 -> Map.merge(m1, m2) end)
-            i.changes.amount > 0 -> Map.merge(i, %{changes: %{unit: unit.singular}}, fn _, m1, m2 -> Map.merge(m1, m2) end)
+            i.changes.amount > 1 -> Map.merge(i, %{changes: %{unit: Inflex.pluralize(unit.name)}}, fn _, m1, m2 -> Map.merge(m1, m2) end)
+            true -> Map.merge(i, %{changes: %{unit: Inflex.singularize(unit.name)}}, fn _, m1, m2 -> Map.merge(m1, m2) end)
           end
 
         _ ->
@@ -182,7 +182,7 @@ defmodule RelaxirWeb.RecipeController do
                 {s, score} = hd(suggestion)
 
                 cond do
-                  score > 1.2 -> put_change(ingredient, :suggestion, %{name: String.downcase(s), type: "ingredient", score: round(score * 10)})
+                  score > 1 -> put_change(ingredient, :suggestion, %{name: String.downcase(s), type: "ingredient", score: round(score * 10)})
                   true ->
                     case Relaxir.Search.get(Ingredients.Food, :description, ingredient_name) do
                     {:ok, suggestion} ->

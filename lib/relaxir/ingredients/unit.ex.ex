@@ -3,14 +3,13 @@ defmodule Relaxir.Ingredients.Unit do
   import Ecto.Changeset
 
   schema "units" do
-    field :singular, :string
-    field :plural, :string
+    field :name, :string
   end
 
   def changeset(unit, attrs) do
     unit
-    |> cast(attrs, [:singular, :plural])
-    |> validate_required([:singular, :plural])
-    |> unique_constraint([:singular, :plural])
+    |> cast(attrs, [:name])
+    |> validate_required([:name])
+    |> unique_constraint([:name])
   end
 end

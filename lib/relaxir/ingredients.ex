@@ -58,7 +58,7 @@ defmodule Relaxir.Ingredients do
 
   def create_unit(attrs) do
     %Unit{}
-    |> Unit.changeset(attrs)
+    |> Unit.changeset(%{name: Inflex.singularize(attrs.name)})
     |> Repo.insert()
   end
 

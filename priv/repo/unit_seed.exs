@@ -1,12 +1,12 @@
 alias Relaxir.Ingredients
 
 [
-  %{singular: "cup", plural: "cups"},
-  %{singular: "whole", plural: "whole"},
-  %{singular: "tablespoon", plural: "tablespoons"},
-  %{singular: "teaspoon", plural: "teaspoons"},
-  %{singular: "pound", plural: "pounds"},
-  %{singular: "ounce", plural: "ounces"},
-  %{singular: "gram", plural: "grams"},
+  %{name: "cup"},
+  %{name: "whole"},
+  %{name: "tablespoon"},
+  %{name: "teaspoon"},
+  %{name: "pound"},
+  %{name: "ounce"},
+  %{name: "gram"},
 ]
 |> Enum.each(&Ingredients.create_unit/1)

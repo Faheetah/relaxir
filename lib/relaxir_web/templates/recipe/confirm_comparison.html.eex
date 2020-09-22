@@ -35,7 +35,7 @@
 <tr>
   <th>
     <%= if Map.get(recipe_ingredient.changes, :amount) do %>
-    <%= recipe_ingredient.changes.amount %>
+    <%= parse_fraction(recipe_ingredient.changes.amount) %>
     <% end %>
   </th>
   <th>
