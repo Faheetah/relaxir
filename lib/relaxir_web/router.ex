@@ -44,6 +44,8 @@ defmodule RelaxirWeb.Router do
       post "/recipes/confirm", RecipeController, :confirm_new
       put "/recipes/:id/confirm", RecipeController, :confirm_update
       post "/recipes/:id/confirm", RecipeController, :confirm_update
+      get "/search", SearchController, :search
+      post "/search", SearchController, :search
       resources "/ingredients", IngredientController, except: [:show, :index]
       resources "/categories", CategoryController, except: [:show, :index]
       live_dashboard "/dashboard", metrics: RelaxirWeb.Telemetry

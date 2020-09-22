@@ -1,0 +1,14 @@
+<%= form_for @conn, Routes.search_path(@conn, :search), fn f -> %>
+  <%= label f, :terms %>
+  <%= text_input f, :terms %>
+  <div>
+    <%= submit "Search" %>
+  </div>
+<% end %>
+
+<%= for {category, results} <- @results do %>
+<h2><%= category %></h2>
+<%= for result <- results do %>
+<p><%= result %></p>
+<%= end %>
+<%= end %>
