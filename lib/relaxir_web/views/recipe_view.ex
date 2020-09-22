@@ -42,21 +42,25 @@ defmodule RelaxirWeb.RecipeView do
   def parse_fraction(nil), do: nil
 
   def parse_fraction(amount) do
-    whole_number = floor(amount)
+    denominator =
+      # covers up to 1..100/1..100 reliably
+      # can possibly cover up to 1/999999 reasonably well
+      # reducing this can improve performance in case of DoS since :timer.tc 1/999999 = ~600ms
+      1..9999999
+      |> Enum.find(1, fn f ->
+        # amount / 1 to force float, in case of amount = 1
+        Float.floor(f * (amount / 1)) == f * amount
+      end)
 
-    adjustment = case (amount - floor(amount)) do
-      0.0 -> 1
-      0 -> 1
-      i -> i
-    end
+    numerator = trunc(amount * denominator)
+    whole = trunc((numerator - rem(numerator, denominator)) / denominator)
+    gcd = Integer.gcd(numerator, denominator)
 
-    fraction = floor(1 / adjustment)
-
-    [whole_number, fraction]
+    [whole, trunc(rem(numerator, denominator) / gcd), trunc(denominator / gcd)]
     |> case do
-      [0, fraction] -> "1/#{fraction}"
-      [number, 1] -> number
-      [number, fraction] -> "#{number} 1/#{fraction}"
+      [0, n, d] when n > 0 and d > 0 -> "#{n}/#{d}"
+      [w, _, 1] -> w
+      [w, n, d] -> "#{w} #{n}/#{d}"
     end
   end
 
