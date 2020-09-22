@@ -22,9 +22,9 @@ defmodule Relaxir.Application do
        repo: Relaxir.Repo,
        tables: [
          relaxir_ingredients_ingredient: [:name],
-         relaxir_ingredients_food: [:description],
          relaxir_categories_category: [:name],
-         relaxir_recipes_recipe: [:name]
+         relaxir_recipes_recipe: [:title],
+         relaxir_ingredients_food: [:description]
        ]}
     ]
 

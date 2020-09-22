@@ -34,11 +34,6 @@ defmodule Relaxir.Search do
     end
   end
 
-  def set(module, name, item) do
-    table = atom_from_module(module, name)
-    GenServer.call(__MODULE__, {:set, table, item})
-  end
-
   defp compare(left, right) do
     cond do
       left == right -> 1.0
@@ -110,9 +105,38 @@ defmodule Relaxir.Search do
     return
   end
 
-  def handle_call({:set, table, item}, _from, state) do
-    true = :ets.insert(table, {item})
+  def handle_call({:set, table_name, value}, _from, state) do
+    parse_item(value)
+    |> Enum.each(fn v ->
+      :ets.insert(table_name, {Inflex.singularize(String.downcase(v)), value})
+    end)
     {:reply, :ok, state}
+  end
+
+  def handle_call({:delete, table_name, value}, _from, state) do
+    parse_item(value)
+    |> Enum.each(fn v ->
+      :ets.delete_object(table_name, {Inflex.singularize(String.downcase(v)), value})
+    end)
+    {:reply, :ok, state}
+  end
+
+  def delete(module, name, item) do
+    table = atom_from_module(module, name)
+    GenServer.call(__MODULE__, {:delete, table, item}, 500)
+  end
+
+  def set(module, name, item) do
+    table = atom_from_module(module, name)
+    GenServer.call(__MODULE__, {:set, table, item}, 500)
+  end
+
+  def parse_item(value) do
+    Regex.scan(~r/[a-zA-Z]+/, value)
+    |> Enum.map(fn [i] -> i end)
+    |> Enum.reject(&(&1 == "" || &1 == nil))
+    |> Enum.sort()
+    |> Enum.dedup()
   end
 
   def init(args) do
@@ -122,7 +146,12 @@ defmodule Relaxir.Search do
       Enum.each(fields, fn field ->
         table_name = String.to_atom("#{table}_#{field}")
         :ets.new(table_name, [:named_table, :duplicate_bag, :private])
+      end)
+    end)
 
+    Enum.each(tables, fn {table, fields} ->
+      Enum.each(fields, fn field ->
+        table_name = String.to_atom("#{table}_#{field}")
         module_from_atom(table)
         |> repo.all
         |> Enum.map(fn i ->
@@ -132,11 +161,7 @@ defmodule Relaxir.Search do
         |> Stream.dedup()
         |> Enum.each(fn value ->
           unless value == nil || value == "" do
-            Regex.scan(~r/[a-zA-Z]+/, value)
-            |> Enum.map(fn [i] -> i end)
-            |> Enum.reject(&(&1 == "" || &1 == nil))
-            |> Enum.sort()
-            |> Enum.dedup()
+            parse_item(value)
             |> Enum.each(fn v ->
               :ets.insert(table_name, {Inflex.singularize(String.downcase(v)), value})
             end)

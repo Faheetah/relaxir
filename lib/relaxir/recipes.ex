@@ -31,7 +31,21 @@ defmodule Relaxir.Recipes do
     |> Repo.insert()
     |> case do
       {:ok, recipe} ->
-        {:ok, Repo.preload(recipe, @preload)}
+        recipe = Repo.preload(recipe, @preload)
+        try do
+          Relaxir.Search.set(Relaxir.Recipes.Recipe, :title, recipe.title)
+        catch
+          :exit, _ -> nil
+        end
+        recipe.recipe_ingredients
+        |> Enum.each(fn i ->
+          try do
+            Relaxir.Search.set(Relaxir.Ingredients.Ingredient, :name, i.ingredient.name)
+          catch
+            :exit, _ -> nil
+          end
+        end)
+        {:ok, recipe}
 
       error ->
         error
@@ -53,6 +67,7 @@ defmodule Relaxir.Recipes do
       _ ->
         recipe
         |> Recipe.changeset(attrs)
+        |> do_changeset_update(recipe)
         |> Repo.update()
         |> case do
           {:ok, recipe} ->
@@ -64,7 +79,36 @@ defmodule Relaxir.Recipes do
     end
   end
 
+  def do_changeset_update(changeset, recipe) do
+    with %{title: title} <- changeset.changes do
+      try do
+        Relaxir.Search.delete(Relaxir.Recipes.Recipe, :title, recipe.title)
+        Relaxir.Search.set(Relaxir.Recipes.Recipe, :title, title)
+      catch
+        :exit, _ -> nil
+      end
+    end
+    with %{recipe_ingredients: recipe_ingredients} <- changeset.changes do
+      recipe_ingredients
+      |> Enum.each(fn i ->
+        with %{action: :insert, changes: %{ingredient: %{changes: %{name: name}}}} <- i do
+          try do
+            Relaxir.Search.set(Relaxir.Ingredients.Ingredient, :name, name)
+          catch
+            :exit, _ -> nil
+          end
+        end
+      end)
+    end
+    changeset
+  end
+
   def delete_recipe(%Recipe{} = recipe) do
+    try do
+      Relaxir.Search.delete(Relaxir.Recipes.Recipe, :title, recipe.title)
+    catch
+      :exit, _ -> nil
+    end
     Repo.delete(recipe)
   end
 

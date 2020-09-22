@@ -32,15 +32,45 @@ defmodule Relaxir.Categories do
     %Category{}
     |> Category.changeset(attrs)
     |> Repo.insert()
+    |> case do
+      {:ok, category} ->
+        try do
+          Relaxir.Search.set(Relaxir.Categories.Category, :name, category.name)
+        catch
+          :exit, _ -> nil
+        end
+        {:ok, category}
+
+      error ->
+        error
+      end
   end
 
   def update_category(%Category{} = category, attrs) do
     category
     |> Category.changeset(attrs)
+    |> do_changeset_update(category)
     |> Repo.update()
   end
 
+  def do_changeset_update(changeset, category) do
+    with %{name: name} <- changeset.changes do
+      try do
+        Relaxir.Search.delete(Relaxir.Categories.Category, :name, category.name)
+        Relaxir.Search.set(Relaxir.Categories.Category, :name, name)
+      catch
+        :exit, _ -> nil
+      end
+    end
+    changeset
+  end
+
   def delete_category(%Category{} = category) do
+    try do
+      Relaxir.Search.delete(Relaxir.Categories.Category, :name, category.name)
+    catch
+      :exit, _ -> nil
+    end
     Repo.delete(category)
   end
 
