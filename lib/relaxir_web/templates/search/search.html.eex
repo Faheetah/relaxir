@@ -10,5 +10,5 @@
 <h2><%= category %></h2>
 <%= for result <- results do %>
 <p><%= result %></p>
-<%= end %>
-<%= end %>
+<% end %>
+<% end %>
