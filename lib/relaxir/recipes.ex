@@ -4,7 +4,6 @@ defmodule Relaxir.Recipes do
 
   alias Relaxir.Categories
   alias Relaxir.Ingredients
-  alias Relaxir.IngredientParser
   alias Relaxir.Recipes.Recipe
 
   @preload [:recipe_ingredients, :ingredients, :units, :recipe_categories, :categories]
@@ -119,59 +118,9 @@ defmodule Relaxir.Recipes do
 
   def map_attrs(attrs, recipe \\ %Recipe{recipe_categories: [], recipe_ingredients: []}) do
     attrs
-    |> map_categories()
-    |> map_existing_categories(recipe)
-    |> IngredientParser.map_ingredients()
-    |> IngredientParser.map_existing_ingredients(recipe)
-  end
-
-  def map_categories(attrs) when is_map_key(attrs, "categories") do
-    fetched_categories = Categories.get_categories_by_name!(attrs["categories"])
-
-    categories =
-      attrs["categories"]
-      |> Enum.map(fn name ->
-        case Enum.find(fetched_categories, fn c -> c.name == name end) do
-          nil -> %{category: %{name: name}}
-          category -> %{category_id: category.id}
-        end
-      end)
-
-    Map.put(attrs, "recipe_categories", categories)
-  end
-
-  def map_categories(attrs), do: attrs
-
-  def map_existing_categories(attrs, recipe) do
-    current_recipe_categories =
-      recipe.recipe_categories
-      |> Enum.reduce(
-        [],
-        fn ri, acc ->
-          [%{id: ri.id, category: %{id: ri.category.id}} | acc]
-        end
-      )
-
-    recipe_categories =
-      (attrs["recipe_categories"] || [])
-      |> Enum.map(fn i ->
-        case i do
-          %{:category_id => id} ->
-            Enum.find(
-              current_recipe_categories,
-              %{recipe_id: recipe.id, category_id: id},
-              fn cri ->
-                if cri.category.id == id do
-                  cri
-                end
-              end
-            )
-
-          _ ->
-            i
-        end
-      end)
-
-    Map.put(attrs, "recipe_categories", recipe_categories)
+    |> Categories.Parser.map_categories()
+    |> Categories.Parser.map_existing_categories(recipe)
+    |> Ingredients.Parser.map_ingredients()
+    |> Ingredients.Parser.map_existing_ingredients(recipe)
   end
 end

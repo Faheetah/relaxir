@@ -5,7 +5,7 @@ defmodule RelaxirWeb.RecipeController do
 
   alias Relaxir.Recipes
   alias Relaxir.Ingredients
-  alias Relaxir.IngredientParser
+  alias Relaxir.Ingredients.Parser
   alias Relaxir.Recipes.Recipe
   alias RelaxirWeb.Authentication
   alias RelaxirWeb.RecipeParser
@@ -105,7 +105,7 @@ defmodule RelaxirWeb.RecipeController do
 
   def map_ingredients(attrs) do
     attrs
-    |> IngredientParser.map_ingredients()
+    |> Ingredients.Parser.map_ingredients()
     |> Map.get("recipe_ingredients", [])
     |> Enum.map(fn i ->
       case i do

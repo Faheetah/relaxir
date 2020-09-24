@@ -3,7 +3,6 @@ defmodule Relaxir.RecipesTest do
 
   alias Relaxir.Recipes
   alias Relaxir.Ingredients
-  alias Relaxir.IngredientParser
   alias Relaxir.Units
   alias Relaxir.Categories
 
@@ -144,7 +143,7 @@ defmodule Relaxir.RecipesTest do
 
       ingredients =
         %{"ingredients" => [ingredients.ingredient]}
-        |> IngredientParser.map_ingredients()
+        |> Ingredients.Parser.map_ingredients()
         |> Map.get("recipe_ingredients")
         |> Enum.map(fn i -> i.ingredient.name end)
 
@@ -157,7 +156,7 @@ defmodule Relaxir.RecipesTest do
 
       ingredients =
         %{"ingredients" => [ingredient]}
-        |> IngredientParser.map_ingredients()
+        |> Ingredients.Parser.map_ingredients()
         |> Map.get("recipe_ingredients")
         |> Enum.map(fn i -> i.ingredient_id end)
 
@@ -168,7 +167,7 @@ defmodule Relaxir.RecipesTest do
       ingredient = ingredients.ingredient
       ingredients =
         %{"ingredients" => [Map.merge(ingredient, %{note: "drained"})]}
-        |> IngredientParser.map_ingredients()
+        |> Ingredients.Parser.map_ingredients()
         |> Map.get("recipe_ingredients")
 
       assert hd(ingredients).ingredient.note == "drained"
@@ -180,7 +179,7 @@ defmodule Relaxir.RecipesTest do
 
       ingredients =
         %{"ingredients" => [Map.merge(ingredient, %{amount: 2, unit: "tons"})]}
-        |> IngredientParser.map_ingredients()
+        |> Ingredients.Parser.map_ingredients()
         |> Map.get("recipe_ingredients")
 
       assert hd(ingredients).amount == 2
@@ -190,7 +189,7 @@ defmodule Relaxir.RecipesTest do
     test "adds an amount to a found ingredient when no unit specified" do
       recipe_ingredient =
         %{"ingredients" => [%{name: "second", unit: "first", amount: 1}]}
-        |> IngredientParser.map_ingredients()
+        |> Ingredients.Parser.map_ingredients()
         |> Map.get("recipe_ingredients")
         |> hd
 
@@ -213,14 +212,14 @@ defmodule Relaxir.RecipesTest do
   describe "parsing categories" do
     test "builds a list of new categories when it doesn't find an category" do
       attrs = %{"categories" => ["texmex", "breakfast"]}
-      assert %{category: %{name: "texmex"}} in Recipes.map_categories(attrs)["recipe_categories"]
+      assert %{category: %{name: "texmex"}} in Categories.Parser.map_categories(attrs)["recipe_categories"]
     end
 
     test "finds existing categories" do
       {:ok, texmex} = Categories.create_category(%{name: "texmex"})
 
       attrs = %{"categories" => ["texmex", "italian"]}
-      assert %{category_id: texmex.id} in Recipes.map_categories(attrs)["recipe_categories"]
+      assert %{category_id: texmex.id} in Categories.Parser.map_categories(attrs)["recipe_categories"]
     end
   end
 end

@@ -1,4 +1,4 @@
-defmodule Relaxir.IngredientParser do
+defmodule Relaxir.Ingredients.Parser do
   alias Relaxir.Ingredients
   alias Relaxir.Units
 
