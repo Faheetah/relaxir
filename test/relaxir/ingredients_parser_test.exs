@@ -1,6 +1,6 @@
 defmodule RelaxirWeb.RecipeParserTest do
   use ExUnit.Case, async: true
-  import RelaxirWeb.RecipeParser
+  import Relaxir.Ingredients.Parser
 
   describe "extract_ingredient_fields/1" do
     test "returns an ingredients when nothing else is provided" do
