@@ -206,19 +206,15 @@ defmodule Relaxir.Ingredients.Parser do
       |> Enum.join(",")
       |> String.trim()
 
-    case note do
-      "" ->
-        {:ok, ingredient}
-
-      note ->
-        {:ok,
-         Map.merge(
-           ingredient,
-           %{
-             name: String.trim(name),
-             note: note
-           }
-         )}
-    end
+    {
+      :ok,
+      Map.merge(
+        ingredient,
+        case note do
+          "" -> %{name: String.trim(name)}
+          _ -> %{name: String.trim(name), note: note}
+        end
+      )
+    }
   end
 end
