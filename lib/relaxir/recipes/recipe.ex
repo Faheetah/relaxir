@@ -19,10 +19,19 @@ defmodule Relaxir.Recipes.Recipe do
 
   def changeset(recipe, attrs) do
     recipe
-    |> cast(attrs, [:title, :directions])
+    |> cast(strip_description(attrs), [:title, :directions])
     |> cast_assoc(:recipe_categories)
     |> cast_assoc(:recipe_ingredients)
     |> validate_required([:title])
     |> unique_constraint([:title])
+  end
+
+  def strip_description(attrs) do
+    Map.merge(
+      attrs,
+      %{
+        "directions" => String.trim(Map.get(attrs, "directions", ""))
+      }
+    )
   end
 end
