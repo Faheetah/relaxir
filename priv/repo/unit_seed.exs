@@ -1,4 +1,4 @@
-alias Relaxir.Ingredients
+alias Relaxir.Units
 
 [
   %{name: "cup"},
@@ -9,4 +9,4 @@ alias Relaxir.Ingredients
   %{name: "ounce"},
   %{name: "gram"},
 ]
-|> Enum.each(&Ingredients.create_unit/1)
+|> Enum.each(&Units.create_unit/1)

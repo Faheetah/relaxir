@@ -100,20 +100,6 @@ defmodule Relaxir.Ingredients do
     Ingredient.changeset(ingredient, attrs)
   end
 
-  def create_unit(attrs) do
-    %Unit{}
-    |> Unit.changeset(%{name: Inflex.singularize(attrs.name)})
-    |> Repo.insert()
-  end
-
-  def delete_unit(%Unit{} = unit) do
-    Repo.delete(unit)
-  end
-
-  def list_units() do
-    Repo.all(Unit)
-  end
-
   def list_usda_food!() do
     Repo.all(Food)
   end

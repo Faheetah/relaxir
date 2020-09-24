@@ -3,6 +3,7 @@ defmodule Relaxir.RecipesTest do
 
   alias Relaxir.Recipes
   alias Relaxir.Ingredients
+  alias Relaxir.Units
   alias Relaxir.Categories
 
   describe "list_recipes/0" do
@@ -174,7 +175,7 @@ defmodule Relaxir.RecipesTest do
 
     test "adds an amount and unit to an ingredient", %{ingredients: ingredients} do
       ingredient = ingredients.ingredient
-      {:ok, unit} = Ingredients.create_unit(%{name: "ton"})
+      {:ok, unit} = Units.create_unit(%{name: "ton"})
 
       ingredients =
         %{"ingredients" => [Map.merge(ingredient, %{amount: 2, unit: "tons"})]}

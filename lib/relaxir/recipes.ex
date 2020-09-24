@@ -4,6 +4,7 @@ defmodule Relaxir.Recipes do
 
   alias Relaxir.Categories
   alias Relaxir.Ingredients
+  alias Relaxir.Units
   alias Relaxir.Recipes.Recipe
 
   @preload [:recipe_ingredients, :ingredients, :units, :recipe_categories, :categories]
@@ -228,7 +229,7 @@ defmodule Relaxir.Recipes do
   end
 
   def map_ingredients(attrs) when is_map_key(attrs, "ingredients") do
-    units = Ingredients.list_units()
+    units = Units.list_units()
 
     ingredients =
       attrs["ingredients"]
