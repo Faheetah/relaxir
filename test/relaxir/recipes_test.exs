@@ -3,6 +3,7 @@ defmodule Relaxir.RecipesTest do
 
   alias Relaxir.Recipes
   alias Relaxir.Ingredients
+  alias Relaxir.IngredientParser
   alias Relaxir.Units
   alias Relaxir.Categories
 
@@ -143,7 +144,7 @@ defmodule Relaxir.RecipesTest do
 
       ingredients =
         %{"ingredients" => [ingredients.ingredient]}
-        |> Recipes.map_ingredients()
+        |> IngredientParser.map_ingredients()
         |> Map.get("recipe_ingredients")
         |> Enum.map(fn i -> i.ingredient.name end)
 
@@ -156,7 +157,7 @@ defmodule Relaxir.RecipesTest do
 
       ingredients =
         %{"ingredients" => [ingredient]}
-        |> Recipes.map_ingredients()
+        |> IngredientParser.map_ingredients()
         |> Map.get("recipe_ingredients")
         |> Enum.map(fn i -> i.ingredient_id end)
 
@@ -167,7 +168,7 @@ defmodule Relaxir.RecipesTest do
       ingredient = ingredients.ingredient
       ingredients =
         %{"ingredients" => [Map.merge(ingredient, %{note: "drained"})]}
-        |> Recipes.map_ingredients()
+        |> IngredientParser.map_ingredients()
         |> Map.get("recipe_ingredients")
 
       assert hd(ingredients).ingredient.note == "drained"
@@ -179,7 +180,7 @@ defmodule Relaxir.RecipesTest do
 
       ingredients =
         %{"ingredients" => [Map.merge(ingredient, %{amount: 2, unit: "tons"})]}
-        |> Recipes.map_ingredients()
+        |> IngredientParser.map_ingredients()
         |> Map.get("recipe_ingredients")
 
       assert hd(ingredients).amount == 2
@@ -189,7 +190,7 @@ defmodule Relaxir.RecipesTest do
     test "adds an amount to a found ingredient when no unit specified" do
       recipe_ingredient =
         %{"ingredients" => [%{name: "second", unit: "first", amount: 1}]}
-        |> Recipes.map_ingredients()
+        |> IngredientParser.map_ingredients()
         |> Map.get("recipe_ingredients")
         |> hd
 
