@@ -5,7 +5,6 @@ defmodule RelaxirWeb.RecipeController do
 
   alias Relaxir.Recipes
   alias Relaxir.Ingredients
-  alias Relaxir.Ingredients.Parser
   alias Relaxir.Recipes.Recipe
   alias RelaxirWeb.Authentication
   alias RelaxirWeb.RecipeParser
