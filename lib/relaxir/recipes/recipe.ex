@@ -37,22 +37,32 @@ defmodule Relaxir.Recipes.Recipe do
   end
 
   def find_ingredient_errors(%{valid?: false} = changeset) do
-      traverse_errors(changeset, fn _, _field, {msg, _} ->
-        msg
-      end)
-      |> Enum.reduce(changeset, fn {field, errors}, acc ->
-        add_error(
-          acc,
-          field,
-          Enum.find(errors, &(&1 != %{}))
-          |> Enum.reduce([], &find_error/2)
-          |> hd
-          |> Enum.join(", ")
-        )
-      end)
+    traverse_errors(changeset, fn _, _field, {msg, _} ->
+      msg
+    end)
+    # does not work with anything but recipe_ingredients apparently
+    |> Map.get(:recipe_ingredients, [])
+    |> Enum.find([], &(&1 != %{}))
+    |> Enum.reduce(changeset, fn errors, acc ->
+      add_error(
+        acc,
+        :recipe_ingredients,
+        find_error(errors)
+        |> Enum.join(", ")
+      )
+    end)
   end
 
   def find_ingredient_errors(c), do: c
+
+  def find_error(error) do
+    case error do
+      {_, [{i, _}]} -> i
+      {_, [i]} -> [i]
+      {_, i} -> Enum.map(i, &find_error(&1))
+      i -> i
+    end
+  end
 
   def find_error(error, acc) do
     case error do

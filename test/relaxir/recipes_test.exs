@@ -46,6 +46,12 @@ defmodule Relaxir.RecipesTest do
       assert {:error, %Ecto.Changeset{}} = Recipes.create_recipe(%{})
     end
 
+    test "create_recipe/1 with invalid recipe_ingredients returns error changeset", %{ingredients: ingredients} do
+      ingredient = ingredients.ingredient
+      attrs = %{"title" => "title", "recipe_ingredients" => [%{ingredient: ingredient}, %{ingredient: ingredient}]}
+      assert {:error, %Ecto.Changeset{}} = Recipes.create_recipe(attrs)
+    end
+
     test "create_recipe/1 includes ingredients", %{ingredients: ingredients} do
       ingredient = ingredients.ingredient
       attrs = %{"title" => "title", "recipe_ingredients" => [%{ingredient: ingredient}]}

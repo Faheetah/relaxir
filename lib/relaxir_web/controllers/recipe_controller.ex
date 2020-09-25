@@ -135,7 +135,11 @@ defmodule RelaxirWeb.RecipeController do
         |> redirect(to: Routes.recipe_path(conn, :show, recipe))
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "new.html", changeset: changeset, ingredients: map_ingredients(recipe_params))
+        ingredients = recipe_params
+        |> RecipeParser.parse_attrs()
+        |> map_ingredients()
+
+        render(conn, "new.html", changeset: changeset, ingredients: ingredients)
     end
   end
 
