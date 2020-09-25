@@ -253,7 +253,6 @@ defmodule RelaxirWeb.RecipeController do
     ingredients = recipe_params
     |> RecipeParser.parse_attrs()
     |> map_ingredients()
-    |> IO.inspect
 
     case Recipes.update_recipe(recipe, RecipeParser.parse_attrs(recipe_params)) do
       {:ok, recipe} ->
