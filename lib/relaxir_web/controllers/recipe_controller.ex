@@ -234,7 +234,7 @@ defmodule RelaxirWeb.RecipeController do
     case changeset do
       %{valid?: false} ->
         ingredients = map_ingredients(attrs)
-        render(conn, "new.html", changeset: changeset, ingredients: ingredients)
+        render(conn, "edit.html", recipe: recipe, changeset: %{changeset | action: :insert}, ingredients: ingredients)
 
       _ ->
         render(conn, "confirm_update.html",
@@ -250,6 +250,11 @@ defmodule RelaxirWeb.RecipeController do
   def update(conn, %{"id" => id, "recipe" => recipe_params}) do
     recipe = Recipes.get_recipe!(id)
 
+    ingredients = recipe_params
+    |> RecipeParser.parse_attrs()
+    |> map_ingredients()
+    |> IO.inspect
+
     case Recipes.update_recipe(recipe, RecipeParser.parse_attrs(recipe_params)) do
       {:ok, recipe} ->
         conn
@@ -257,7 +262,7 @@ defmodule RelaxirWeb.RecipeController do
         |> redirect(to: Routes.recipe_path(conn, :show, recipe))
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "edit.html", recipe: recipe, ingredients: recipe.recipe_ingredients, changeset: %{changeset | action: :insert})
+        render(conn, "edit.html", recipe: recipe, ingredients: ingredients, changeset: %{changeset | action: :insert})
     end
   end
 

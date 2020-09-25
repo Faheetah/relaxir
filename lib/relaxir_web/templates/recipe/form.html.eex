@@ -17,7 +17,7 @@
   <%= label f, :ingredients %>
   <h6><i>Ingredients with optional amounts and notes, i.e. "2 cups flour, sifted"</i></h6>
   <%= ingredients_input f, :ingredients, @ingredients %>
-  <%= error_tag f, :ingredients %>
+  <%= error_tag f, :recipe_ingredients %>
 
   <%= label f, :directions %>
   <%= textarea f, :directions %>
