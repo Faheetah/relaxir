@@ -36,6 +36,8 @@ defmodule Relaxir.Ingredients.Parser do
             i
         end
       end)
+      |> Enum.with_index
+      |> Enum.map(fn {ingredient, index} -> Map.merge(ingredient, %{order: index}) end)
 
     errors =
       Enum.find(
@@ -137,6 +139,7 @@ defmodule Relaxir.Ingredients.Parser do
           [] -> []
         end
       end)
+      |> Enum.sort_by(fn i -> Map.get(i, :order) end)
 
     Map.put(attrs, "ingredients", ingredients)
   end
