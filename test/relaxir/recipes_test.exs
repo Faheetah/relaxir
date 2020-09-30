@@ -22,6 +22,13 @@ defmodule Relaxir.RecipesTest do
 
       assert MapSet.intersection(recipes, attrs)
     end
+
+    test "returns all published recipes" do
+      Recipes.create_recipe(%{"title" => "not published"})
+      Recipes.create_recipe(%{"title" => "published", "published" => true})
+
+      assert length(Recipes.list_published_recipes()) == 1
+    end
   end
 
   describe "get_recipe/1" do

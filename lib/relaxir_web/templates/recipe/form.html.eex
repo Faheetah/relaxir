@@ -9,6 +9,10 @@
   <%= text_input f, :title %>
   <%= error_tag f, :title %>
 
+  <%= label f, :published %>
+  <%= checkbox f, :published %>
+  <%= error_tag f, :published %>
+
   <%= label f, :categories %>
   <h6><i>Comma separated list of categories</i></h6>
   <%= categories_input f, :categories %>

@@ -1,5 +1,11 @@
 <h1>Recipes</h1>
 
+<%= if @draft == "true" do %>
+<%= link "hide drafts", to: Routes.recipe_path(@conn, :index, draft: false) %>
+<% else %>
+<%= link "show drafts", to: Routes.recipe_path(@conn, :index, draft: true) %>
+<% end %>
+
 <%= if @current_user && @current_user.is_admin do %>
 <h4>
   <%= link "+ New Recipe", to: Routes.recipe_path(@conn, :new) %>

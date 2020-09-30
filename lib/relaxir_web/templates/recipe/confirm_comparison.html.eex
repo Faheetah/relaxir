@@ -2,6 +2,10 @@
 
 <h1><%= String.capitalize(@changeset.changes.title) %></h1>
 
+<%= if @changeset.changes.published == true do %>
+<p>published</p>
+<% end %>
+
 <%= if @recipe_categories != [] do %>
 <h2>Categories:</h2>
 <%= for recipe_category <- @recipe_categories do %>

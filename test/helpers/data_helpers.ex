@@ -23,8 +23,14 @@ defmodule Relaxir.DataHelpers do
   }
 
   @recipe %{
-    "title" => "recipe fixture",
+    "title" => "draft recipe fixture",
     "directions" => "recipe directions fixture"
+  }
+
+  @recipe_published %{
+    "title" => "published recipe fixture",
+    "directions" => "published recipe directions fixture",
+    "published" => true
   }
 
   @recipe_with_categories %{
@@ -66,6 +72,7 @@ defmodule Relaxir.DataHelpers do
     %{
       recipes: %{
         recipe: @recipe,
+        recipe_published: @recipe_published,
         recipe_with_categories: @recipe_with_categories,
         recipe_with_ingredients: @recipe_with_ingredients
       }
@@ -75,6 +82,11 @@ defmodule Relaxir.DataHelpers do
   def recipe(_context) do
     {:ok, recipe} = Recipes.create_recipe(@recipe)
     %{recipe: Map.put(recipe, :fixture, @recipe)}
+  end
+
+  def recipe_published(_context) do
+    {:ok, recipe} = Recipes.create_recipe(@recipe_published)
+    %{recipe: Map.put(recipe, :fixture, @recipe_published)}
   end
 
   def recipe_with_categories(_context) do

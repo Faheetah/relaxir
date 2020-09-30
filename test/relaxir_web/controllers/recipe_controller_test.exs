@@ -2,9 +2,20 @@ defmodule RelaxirWeb.RecipeControllerTest do
   use RelaxirWeb.ConnCase
 
   describe "index" do
-    test "lists all recipes", %{conn: conn} do
-      conn = get(conn, Routes.recipe_path(conn, :index))
-      assert html_response(conn, 200) =~ "Recipes"
+    setup [:recipe, :recipe_published, :recipes]
+
+    test "lists all recipes including drafts", %{conn: conn, recipes: recipes} do
+      conn = get(conn, Routes.recipe_path(conn, :index, draft: true))
+      response = html_response(conn, 200)
+      assert response =~ String.capitalize(recipes.recipe_published["title"])
+      assert response =~ String.capitalize(recipes.recipe["title"])
+    end
+
+    test "lists all published recipes does not include drafts", %{conn: conn, recipes: recipes} do
+      conn = get(conn, Routes.recipe_path(conn, :index, draft: false))
+      response = html_response(conn, 200)
+      assert response =~ String.capitalize(recipes.recipe_published["title"])
+      refute response =~ String.capitalize(recipes.recipe["title"])
     end
   end
 

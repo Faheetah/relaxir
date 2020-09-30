@@ -9,10 +9,20 @@ defmodule RelaxirWeb.RecipeController do
   alias RelaxirWeb.Authentication
   alias RelaxirWeb.RecipeParser
 
-  def index(conn, _params) do
+  def index(conn, %{"draft" => draft}) do
     current_user = Authentication.get_current_user(conn)
-    recipes = Recipes.list_recipes()
-    render(conn, "index.html", recipes: recipes, current_user: current_user)
+
+    recipes =
+      case draft do
+        "false" -> Recipes.list_published_recipes()
+        _ -> Recipes.list_recipes()
+      end
+
+    render(conn, "index.html", recipes: recipes, current_user: current_user, draft: draft)
+  end
+
+  def index(conn, _params) do
+    index(conn, %{"draft" => "false"})
   end
 
   def new(conn, %{"recipe" => recipe}) do
@@ -135,9 +145,10 @@ defmodule RelaxirWeb.RecipeController do
         |> redirect(to: Routes.recipe_path(conn, :show, recipe))
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        ingredients = recipe_params
-        |> RecipeParser.parse_attrs()
-        |> map_ingredients()
+        ingredients =
+          recipe_params
+          |> RecipeParser.parse_attrs()
+          |> map_ingredients()
 
         render(conn, "new.html", changeset: changeset, ingredients: ingredients)
     end
@@ -186,19 +197,24 @@ defmodule RelaxirWeb.RecipeController do
                 {s, score} = hd(suggestion)
 
                 cond do
-                  score > 1 -> put_change(ingredient, :suggestion, %{name: String.downcase(s), type: "ingredient", score: round(score * 10)})
+                  score > 1 ->
+                    put_change(ingredient, :suggestion, %{name: String.downcase(s), type: "ingredient", score: round(score * 10)})
+
                   true ->
                     case Relaxir.Search.get(Ingredients.Food, :description, ingredient_name) do
-                    {:ok, suggestion} ->
-                      {s, score} = hd(suggestion)
+                      {:ok, suggestion} ->
+                        {s, score} = hd(suggestion)
 
-                      cond do
-                        score > 1 -> put_change(ingredient, :suggestion, %{name: String.downcase(s), type: "USDA", score: round(score * 10)})
-                        true -> ingredient
-                      end
+                        cond do
+                          score > 1 ->
+                            put_change(ingredient, :suggestion, %{name: String.downcase(s), type: "USDA", score: round(score * 10)})
 
-                    {:error, :not_found} ->
-                      ingredient
+                          true ->
+                            ingredient
+                        end
+
+                      {:error, :not_found} ->
+                        ingredient
                     end
                 end
 
@@ -254,9 +270,10 @@ defmodule RelaxirWeb.RecipeController do
   def update(conn, %{"id" => id, "recipe" => recipe_params}) do
     recipe = Recipes.get_recipe!(id)
 
-    ingredients = recipe_params
-    |> RecipeParser.parse_attrs()
-    |> map_ingredients()
+    ingredients =
+      recipe_params
+      |> RecipeParser.parse_attrs()
+      |> map_ingredients()
 
     case Recipes.update_recipe(recipe, RecipeParser.parse_attrs(recipe_params)) do
       {:ok, recipe} ->
