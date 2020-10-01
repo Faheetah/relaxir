@@ -9,20 +9,22 @@ defmodule RelaxirWeb.RecipeController do
   alias RelaxirWeb.Authentication
   alias RelaxirWeb.RecipeParser
 
-  def index(conn, %{"draft" => draft}) do
+  def index(conn, %{"show" => show}) do
     current_user = Authentication.get_current_user(conn)
 
     recipes =
-      case draft do
-        "false" -> Recipes.list_published_recipes()
-        _ -> Recipes.list_recipes()
+      case show do
+        "all" -> Recipes.list_recipes()
+        "drafts" -> Recipes.list_draft_recipes()
+        "draft" -> Recipes.list_draft_recipes()
+        _ -> Recipes.list_published_recipes()
       end
 
-    render(conn, "index.html", recipes: recipes, current_user: current_user, draft: draft)
+    render(conn, "index.html", recipes: recipes, current_user: current_user, show: show)
   end
 
   def index(conn, _params) do
-    index(conn, %{"draft" => "false"})
+    index(conn, %{"show" => "published"})
   end
 
   def new(conn, %{"recipe" => recipe}) do

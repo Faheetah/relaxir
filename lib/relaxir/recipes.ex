@@ -12,6 +12,11 @@ defmodule Relaxir.Recipes do
     Repo.all(order_by(Recipe, desc: :updated_at))
   end
 
+  def list_draft_recipes do
+    query = from r in Recipe, where: r.published == false or is_nil(r.published), order_by: [desc: r.updated_at]
+    Repo.all(query)
+  end
+
   def list_published_recipes do
     query = from r in Recipe, where: r.published == true, order_by: [desc: r.updated_at]
     Repo.all(query)

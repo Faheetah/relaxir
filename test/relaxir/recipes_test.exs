@@ -7,9 +7,10 @@ defmodule Relaxir.RecipesTest do
   alias Relaxir.Categories
 
   describe "list_recipes/0" do
-    setup [:recipe, :recipe_with_ingredients]
+    test "returns all recipes" do
+      %{recipe: recipe} = Relaxir.DataHelpers.recipe(%{})
+      %{recipe_with_ingredients: recipe_with_ingredients} = Relaxir.DataHelpers.recipe_with_ingredients(%{})
 
-    test "returns all recipes", %{recipe: recipe, recipe_with_ingredients: recipe_with_ingredients} do
       recipes =
         Recipes.list_recipes()
         |> Enum.map(fn r -> r.title end)
@@ -21,6 +22,13 @@ defmodule Relaxir.RecipesTest do
         |> Enum.into(MapSet.new())
 
       assert MapSet.intersection(recipes, attrs)
+    end
+
+    test "returns all draft recipes" do
+      Recipes.create_recipe(%{"title" => "not published"})
+      Recipes.create_recipe(%{"title" => "published", "published" => true})
+
+      assert length(Recipes.list_draft_recipes()) == 1
     end
 
     test "returns all published recipes" do
