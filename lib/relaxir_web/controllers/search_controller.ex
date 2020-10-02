@@ -44,6 +44,6 @@ defmodule RelaxirWeb.SearchController do
   end
 
   def search(conn, _params) do
-    render(conn, "search.html", results: [])
+    render(conn, "search.html", count: :na, results: [])
   end
 end

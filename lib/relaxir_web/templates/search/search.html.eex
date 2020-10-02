@@ -6,10 +6,10 @@
   </div>
 <% end %>
 
-<%= if @count == 0 do %>
-  <p>No results found<p>
-<% else %>
-  <p><%= @count %> results found</p>
+<%= case @count do %>
+  <% :na -> %>
+  <% 0 -> %><p>No results found<p>
+  <% _ -> %><p><%= @count %> results found</p>
 <% end %>
 
 <%= for {category, results} <- @results do %>
