@@ -21,10 +21,10 @@ defmodule Relaxir.Application do
        name: Relaxir.Search,
        repo: Relaxir.Repo,
        tables: [
-         relaxir_ingredients_ingredient: [:name],
-         relaxir_categories_category: [:name],
-         relaxir_recipes_recipe: [:title],
-         relaxir_ingredients_food: [:description]
+         relaxir_ingredients_ingredient: [:name, :id],
+         relaxir_categories_category: [:name, :id],
+         relaxir_recipes_recipe: [:title, :id],
+         relaxir_ingredients_food: [:description, :fdc_id]
        ]}
     ]
 

@@ -6,9 +6,22 @@
   </div>
 <% end %>
 
-<%= for {category, results} <- @results do %>
-<h2><%= category %></h2>
-<%= for result <- results do %>
-<p><%= result %></p>
+<%= if @count == 0 do %>
+  <p>No results found<p>
+<% else %>
+  <p><%= @count %> results found</p>
 <% end %>
+
+<%= for {category, results} <- @results do %>
+  <%= if length(results) > 0 do %>
+    <h2><%= String.capitalize(category) %></h2>
+  <% end %>
+
+  <%= for {_, result, id} <- results do %>
+    <%= if route_exists("#{category}/#{id}") do %>
+      <p><%= link result, to: "#{category}/#{id}"%></p>
+    <% else %>
+      <p><%= result %></p>
+    <% end %>
+  <% end %>
 <% end %>

@@ -88,13 +88,16 @@ defmodule Relaxir.Search do
         |> Enum.map(&Inflex.singularize/1)
         |> Enum.reject(&(&1 == "" || &1 == nil))
 
-      # :ets.fun2ms(fn {keyword, full} -> {full} end)
       results =
-        :ets.select(table, for(i <- items, do: {{i, :"$1"}, [], [:"$_"]}))
-        |> Enum.dedup()
-        |> Enum.reduce(%{}, fn {_, name}, acc ->
+        Enum.map(items, fn item ->
+          :ets.lookup(table, item)
+        end)
+        |> hd
+        |> Enum.dedup_by(&(elem(&1, 1)))
+        |> Enum.reduce(%{}, fn item, acc ->
+          name = elem(item, 1)
           length = 1 + 1 / String.length(name)
-          Map.update(acc, name, length, &(&1 + length))
+          Map.update(acc, item, length, &(&1 + length))
         end)
         |> Enum.sort_by(fn {_, score} -> score end, :desc)
 
@@ -143,30 +146,29 @@ defmodule Relaxir.Search do
     [{:tables, tables}, {:repo, repo}, {:log_limit, _}] = args
 
     Enum.each(tables, fn {table, fields} ->
-      Enum.each(fields, fn field ->
-        table_name = String.to_atom("#{table}_#{field}")
-        :ets.new(table_name, [:named_table, :duplicate_bag, :private])
-      end)
+      field = hd(fields)
+      table_name = String.to_atom("#{table}_#{field}")
+      :ets.new(table_name, [:named_table, :duplicate_bag, :private])
     end)
 
     Enum.each(tables, fn {table, fields} ->
-      Enum.each(fields, fn field ->
-        table_name = String.to_atom("#{table}_#{field}")
-        module_from_atom(table)
-        |> repo.all
-        |> Enum.map(fn i ->
-          Map.get(i, field)
-        end)
-        |> Enum.sort()
-        |> Stream.dedup()
-        |> Enum.each(fn value ->
-          unless value == nil || value == "" do
-            parse_item(value)
-            |> Enum.each(fn v ->
-              :ets.insert(table_name, {Inflex.singularize(String.downcase(v)), value})
-            end)
-          end
-        end)
+      field = hd(fields)
+      table_name = String.to_atom("#{table}_#{field}")
+      module_from_atom(table)
+      |> repo.all
+      |> Enum.map(fn record ->
+        Enum.map(fields, fn f -> Map.get(record, f) end)
+      end)
+      |> Enum.sort_by(&(hd(&1)))
+      |> Stream.dedup_by(&(hd(&1)))
+      |> Enum.each(fn fields ->
+        key = hd(fields)
+        unless key == nil || key == "" do
+          parse_item(key)
+          |> Enum.each(fn k ->
+            :ets.insert(table_name, List.to_tuple([Inflex.singularize(String.downcase(k)) | fields]))
+          end)
+        end
       end)
     end)
 
