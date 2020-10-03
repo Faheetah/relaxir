@@ -20,7 +20,7 @@ defmodule Relaxir.Recipes.Recipe do
 
   def changeset(recipe, attrs) do
     recipe
-    |> cast(strip_description(attrs), [:title, :directions, :published])
+    |> cast(strip_directions(attrs), [:title, :directions, :published])
     |> cast_assoc(:recipe_categories)
     |> cast_assoc(:recipe_ingredients)
     |> validate_required([:title])
@@ -28,13 +28,16 @@ defmodule Relaxir.Recipes.Recipe do
     |> find_ingredient_errors()
   end
 
-  def strip_description(attrs) do
-    Map.merge(
-      attrs,
-      %{
-        "directions" => String.trim(Map.get(attrs, "directions", ""))
-      }
-    )
+  def strip_directions(attrs) do
+    case Map.get(attrs, "directions") do
+      nil -> attrs
+      directions -> Map.merge(
+        attrs,
+        %{
+          "directions" => String.trim(directions)
+        }
+      )
+    end
   end
 
   def find_ingredient_errors(%{valid?: false} = changeset) do
