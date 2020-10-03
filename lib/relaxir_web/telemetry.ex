@@ -30,15 +30,19 @@ defmodule RelaxirWeb.Telemetry do
         unit: {:native, :millisecond}
       ),
 
+      # Caching Metrics
+      summary("search.items.relaxir_recipes_recipe_title.total", description: "Recipes"),
+      summary("search.items.relaxir_categories_category_name.total", description: "Categories"),
+      summary("search.items.relaxir_ingredients_ingredient_name.total", description: "Ingredients"),
+      summary("search.items.relaxir_ingredients_food_description.total", description: "USDA Food"),
+      summary("search.query.total_time", unit: {:native, :nanosecond}),
+
       # Database Metrics
       summary("relaxir.repo.query.total_time", unit: {:native, :millisecond}),
       summary("relaxir.repo.query.decode_time", unit: {:native, :millisecond}),
       summary("relaxir.repo.query.query_time", unit: {:native, :millisecond}),
       summary("relaxir.repo.query.queue_time", unit: {:native, :millisecond}),
       summary("relaxir.repo.query.idle_time", unit: {:native, :millisecond}),
-
-      # Caching Metrics
-      summary("relaxir.search.query.total_time", unit: {:native, :millisecond}),
 
       # VM Metrics
       summary("vm.memory.total", unit: {:byte, :kilobyte}),
@@ -49,10 +53,7 @@ defmodule RelaxirWeb.Telemetry do
   end
 
   defp periodic_measurements do
-    [
-      # A module, function and arguments to be invoked periodically.
-      # This function must call :telemetry.execute/3 and a metric must be added above.
-      # {RelaxirWeb, :count_users, []}
-    ]
+    Relaxir.Application.get_cache_tables()
+    |> Enum.map(fn t -> {Relaxir.Search, :get_count, Tuple.to_list(t)} end)
   end
 end

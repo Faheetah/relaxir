@@ -5,6 +5,15 @@ defmodule Relaxir.Application do
 
   use Application
 
+  @cache_tables [
+    {Relaxir.Ingredients.Ingredient, :name, [:name, :id]},
+    {Relaxir.Categories.Category, :name, [:name, :id]},
+    {Relaxir.Recipes.Recipe, :title, [:name, :id]},
+    {Relaxir.Ingredients.Food, :description, [:description, :fdc_id]}
+  ]
+
+  def get_cache_tables(), do: @cache_tables
+
   def start(_type, _args) do
     children = [
       # Start the Ecto repository
@@ -17,15 +26,12 @@ defmodule Relaxir.Application do
       RelaxirWeb.Endpoint,
       # Start a worker by calling: Relaxir.Worker.start_link(arg)
       # {Relaxir.Worker, arg}
-      {Relaxir.Search,
+      {
+       Relaxir.Search,
        name: Relaxir.Search,
        repo: Relaxir.Repo,
-       tables: [
-         relaxir_ingredients_ingredient: [:name, :id],
-         relaxir_categories_category: [:name, :id],
-         relaxir_recipes_recipe: [:title, :id],
-         relaxir_ingredients_food: [:description, :fdc_id]
-       ]}
+       tables: @cache_tables
+      }
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

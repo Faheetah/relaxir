@@ -196,7 +196,7 @@ defmodule RelaxirWeb.RecipeController do
           try do
             case Relaxir.Search.get(Ingredients.Ingredient, :name, ingredient_name) do
               {:ok, suggestion} ->
-                {s, score} = hd(suggestion)
+                {{_, s, _}, score} = hd(suggestion)
 
                 cond do
                   score > 1 ->
@@ -205,7 +205,7 @@ defmodule RelaxirWeb.RecipeController do
                   true ->
                     case Relaxir.Search.get(Ingredients.Food, :description, ingredient_name) do
                       {:ok, suggestion} ->
-                        {s, score} = hd(suggestion)
+                        {{_, s, _}, score} = hd(suggestion)
 
                         cond do
                           score > 1 ->
@@ -223,7 +223,7 @@ defmodule RelaxirWeb.RecipeController do
               {:error, :not_found} ->
                 case Relaxir.Search.get(Ingredients.Food, :description, ingredient_name) do
                   {:ok, suggestion} ->
-                    {s, score} = hd(suggestion)
+                    {{_, s, _}, score} = hd(suggestion)
 
                     cond do
                       score > 1 -> put_change(ingredient, :suggestion, %{name: String.downcase(s), type: "USDA", score: round(score * 10)})
