@@ -42,18 +42,10 @@ defmodule Relaxir.Recipes do
     |> case do
       {:ok, recipe} ->
         recipe = Repo.preload(recipe, @preload)
-        try do
-          Relaxir.Search.set(Relaxir.Recipes.Recipe, :title, recipe.title)
-        catch
-          :exit, _ -> nil
-        end
+        insert_cache(recipe)
         recipe.recipe_ingredients
-        |> Enum.each(fn i ->
-          try do
-            Relaxir.Search.set(Relaxir.Ingredients.Ingredient, :name, i.ingredient.name)
-          catch
-            :exit, _ -> nil
-          end
+        |> Enum.each(fn recipe_ingredient ->
+          Relaxir.Ingredients.insert_cache(recipe_ingredient.ingredient)
         end)
         {:ok, recipe}
 
@@ -91,22 +83,14 @@ defmodule Relaxir.Recipes do
 
   def do_changeset_update(changeset, recipe) do
     with %{title: title} <- changeset.changes do
-      try do
-        Relaxir.Search.delete(Relaxir.Recipes.Recipe, :title, recipe.title)
-        Relaxir.Search.set(Relaxir.Recipes.Recipe, :title, title)
-      catch
-        :exit, _ -> nil
-      end
+      insert_cache(recipe)
+      delete_cache(%{title: title, id: recipe.id})
     end
     with %{recipe_ingredients: recipe_ingredients} <- changeset.changes do
       recipe_ingredients
-      |> Enum.each(fn i ->
-        with %{action: :insert, changes: %{ingredient: %{changes: %{name: name}}}} <- i do
-          try do
-            Relaxir.Search.set(Relaxir.Ingredients.Ingredient, :name, name)
-          catch
-            :exit, _ -> nil
-          end
+      |> Enum.each(fn ingredient ->
+        with %{action: :insert, changes: %{ingredient_id: ingredient_id, ingredient: %{changes: %{name: name}}}} <- ingredient do
+          Relaxir.Ingredients.insert_cache(%{name: name, id: ingredient_id})
         end
       end)
     end
@@ -114,11 +98,7 @@ defmodule Relaxir.Recipes do
   end
 
   def delete_recipe(%Recipe{} = recipe) do
-    try do
-      Relaxir.Search.delete(Relaxir.Recipes.Recipe, :title, recipe.title)
-    catch
-      :exit, _ -> nil
-    end
+    delete_cache(recipe)
     Repo.delete(recipe)
   end
 
@@ -132,5 +112,21 @@ defmodule Relaxir.Recipes do
     |> Categories.Parser.map_existing_categories(recipe)
     |> Ingredients.Parser.map_ingredients()
     |> Ingredients.Parser.map_existing_ingredients(recipe)
+  end
+
+  def insert_cache(recipe) do
+    try do
+      Relaxir.Search.set(Relaxir.Recipes.Recipe, :title, {recipe.title, [recipe.title, recipe.id]})
+    catch
+      :exit, _ -> nil
+    end
+  end
+
+  def delete_cache(recipe) do
+    try do
+      Relaxir.Search.delete(Relaxir.Recipes.Recipe, :title, {recipe.title, [recipe.title, recipe.id]})
+    catch
+      :exit, _ -> nil
+    end
   end
 end

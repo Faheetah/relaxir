@@ -18,7 +18,7 @@
   <% end %>
 
   <%= for {_, result, id} <- results do %>
-    <%= if route_exists("#{category}/#{id}") do %>
+    <%= if route_exists("#{category}/#{id}") and id != nil do %>
       <p><%= link result, to: "#{category}/#{id}"%></p>
     <% else %>
       <p><%= result %></p>

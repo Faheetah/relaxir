@@ -35,11 +35,7 @@ defmodule Relaxir.Ingredients do
     |> Repo.insert()
     |> case do
       {:ok, ingredient} ->
-        try do
-          Relaxir.Search.set(Relaxir.Ingredients.Ingredient, :name, ingredient.name)
-        catch
-          :exit, _ -> nil
-        end
+        insert_cache(ingredient)
         {:ok, ingredient}
 
       error ->
@@ -54,11 +50,7 @@ defmodule Relaxir.Ingredients do
     |> Enum.map(fn ingredient ->
       case ingredient do
         {:ok, ingredient} ->
-          try do
-            Relaxir.Search.set(Relaxir.Ingredients.Ingredient, :name, ingredient.name)
-          catch
-            :exit, _ -> nil
-          end
+          insert_cache(ingredient)
           {:ok, ingredient}
 
         error ->
@@ -76,22 +68,14 @@ defmodule Relaxir.Ingredients do
 
   def do_changeset_update(changeset, ingredient) do
     with %{name: name} <- changeset.changes do
-      try do
-        Relaxir.Search.delete(Relaxir.Ingredients.Ingredient, :name, ingredient.name)
-        Relaxir.Search.set(Relaxir.Ingredients.Ingredient, :name, name)
-      catch
-        :exit, _ -> nil
-      end
+      delete_cache(ingredient)
+      insert_cache(%{name: name, id: ingredient.id})
     end
     changeset
   end
 
   def delete_ingredient(%Ingredient{} = ingredient) do
-    try do
-      Relaxir.Search.delete(Relaxir.Ingredients.Ingredient, :name, ingredient.name)
-    catch
-      :exit, _ -> nil
-    end
+    delete_cache(ingredient)
     Repo.delete(ingredient)
   end
 
@@ -101,5 +85,21 @@ defmodule Relaxir.Ingredients do
 
   def list_usda_food!() do
     Repo.all(Food)
+  end
+
+  def insert_cache(ingredient) do
+    try do
+      Relaxir.Search.set(Relaxir.Ingredients.Ingredient, :name, {ingredient.name, [ingredient.name, ingredient.id]})
+    catch
+      :exit, _ -> nil
+    end
+  end
+
+  def delete_cache(ingredient) do
+    try do
+      Relaxir.Search.delete(Relaxir.Ingredients.Ingredient, :name, {ingredient.name, [ingredient.name, ingredient.id]})
+    catch
+      :exit, _ -> nil
+    end
   end
 end

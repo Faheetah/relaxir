@@ -8,7 +8,7 @@ defmodule Relaxir.Application do
   @cache_tables [
     {Relaxir.Ingredients.Ingredient, :name, [:name, :id]},
     {Relaxir.Categories.Category, :name, [:name, :id]},
-    {Relaxir.Recipes.Recipe, :title, [:name, :id]},
+    {Relaxir.Recipes.Recipe, :title, [:title, :id]},
     {Relaxir.Ingredients.Food, :description, [:description, :fdc_id]}
   ]
 

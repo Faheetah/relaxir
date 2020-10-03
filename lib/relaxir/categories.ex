@@ -34,11 +34,7 @@ defmodule Relaxir.Categories do
     |> Repo.insert()
     |> case do
       {:ok, category} ->
-        try do
-          Relaxir.Search.set(Relaxir.Categories.Category, :name, category.name)
-        catch
-          :exit, _ -> nil
-        end
+        insert_cache(category)
         {:ok, category}
 
       error ->
@@ -55,26 +51,34 @@ defmodule Relaxir.Categories do
 
   def do_changeset_update(changeset, category) do
     with %{name: name} <- changeset.changes do
-      try do
-        Relaxir.Search.delete(Relaxir.Categories.Category, :name, category.name)
-        Relaxir.Search.set(Relaxir.Categories.Category, :name, name)
-      catch
-        :exit, _ -> nil
-      end
+      delete_cache(category)
+      insert_cache(%{name: name, id: category.id})
     end
     changeset
   end
 
   def delete_category(%Category{} = category) do
-    try do
-      Relaxir.Search.delete(Relaxir.Categories.Category, :name, category.name)
-    catch
-      :exit, _ -> nil
-    end
+    delete_cache(category)
     Repo.delete(category)
   end
 
   def change_category(%Category{} = category, attrs \\ %{}) do
     Category.changeset(category, attrs)
+  end
+
+  def insert_cache(category) do
+    try do
+      Relaxir.Search.set(Relaxir.Categories.Category, :name, {category.name, [category.name, category.id]})
+    catch
+      :exit, _ -> nil
+    end
+  end
+
+  def delete_cache(category) do
+    try do
+      Relaxir.Search.delete(Relaxir.Categories.Category, :name, {category.name, [category.name, category.id]})
+    catch
+      :exit, _ -> nil
+    end
   end
 end
