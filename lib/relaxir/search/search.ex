@@ -1,6 +1,8 @@
 defmodule Relaxir.Search do
   use GenServer
 
+  alias Relaxir.Search.Cache
+
   ## Public API
 
   # Relaxir.Search.delete(Relaxir.Ingredients.Food, :description, {"Green Tomatoes", ["Green Tomatoes", 1]})
@@ -19,7 +21,8 @@ defmodule Relaxir.Search do
   def get(module, name, item) do
     table = atom_from_module(module, name)
 
-    case GenServer.call(__MODULE__, {:get, table, item}, 500) do
+    call = GenServer.call(__MODULE__, {:get, table, item}, 500)
+    case call do
       [] -> {:error, :not_found}
       results -> {:ok, results}
     end
@@ -29,11 +32,7 @@ defmodule Relaxir.Search do
 
   def get_count(module, field, _) do
     table = new_atom_from_module(module, field)
-    total = case :ets.info(table) do
-      :undefined -> 0
-      t -> t[:size]
-    end
-
+    total = Relaxir.Search.Cache.size(table)
     :telemetry.execute([:search, :items, table], %{total: total})
   end
 
@@ -86,6 +85,11 @@ defmodule Relaxir.Search do
   end
 
   def init(args) do
+    [{:tables, tables}, _, _] = args
+    tables
+    |> Enum.map(fn {t, f, _} -> new_atom_from_module(t, f) end)
+    |> Cache.start_link
+
     Process.send_after(self(), :hydrate, 0)
 
     {:ok, args}
@@ -95,9 +99,6 @@ defmodule Relaxir.Search do
     [{:tables, tables}, {:repo, repo}, {:log_limit, _}] = args
 
     Enum.each(tables, fn {table, indexed_field, fields} ->
-      table_name = new_atom_from_module(table, indexed_field)
-      :ets.new(table_name, [:named_table, :duplicate_bag, :private])
-
       table_name = atom_from_module(table, indexed_field)
 
       table
@@ -130,7 +131,7 @@ defmodule Relaxir.Search do
     # :ets.fun2ms(fn {"letter", word, full} -> {word, full} end)
     # Where "letter" is being passed in as k
     results =
-      :ets.select(table, for(k <- prefixes, do: {{k, :"$1", :"$2"}, [], [{{:"$1", :"$2"}}]}))
+      Cache.get_fuzzy(table, for(k <- prefixes, do: {{k, :"$1", :"$2"}, [], [{{:"$1", :"$2"}}]}))
       |> Stream.map(fn {k, v} -> {compare_multiple(k, items), v} end)
       |> Stream.reject(fn {{i, _}, _} -> i < 0.85 end)
       |> Enum.reduce(%{}, fn i, acc ->
@@ -157,7 +158,7 @@ defmodule Relaxir.Search do
 
         results =
           Enum.map(items, fn item ->
-            :ets.lookup(table, item)
+            Cache.get(table, item)
           end)
           |> hd
           |> Enum.dedup_by(&elem(&1, 1))
@@ -209,11 +210,11 @@ defmodule Relaxir.Search do
     |> Enum.dedup()
   end
 
-  defp insert_item(table_name, {indexed_item, items}) do
+  defp insert_item(table, {indexed_item, items}) do
     unless indexed_item == nil || indexed_item == "" do
       parse_item(indexed_item)
       |> Enum.each(fn i ->
-        :ets.insert(table_name, List.to_tuple([Inflex.singularize(String.downcase(i)) | items]))
+        Cache.insert(table, List.to_tuple([Inflex.singularize(String.downcase(i)) | items]))
       end)
     end
   end
@@ -222,7 +223,7 @@ defmodule Relaxir.Search do
     unless indexed_item == nil || indexed_item == "" do
       parse_item(indexed_item)
       |> Enum.each(fn i ->
-        :ets.delete_object(table_name, List.to_tuple([Inflex.singularize(String.downcase(i)) | items]))
+        Cache.delete(table_name, List.to_tuple([Inflex.singularize(String.downcase(i)) | items]))
       end)
     end
   end

@@ -18,12 +18,6 @@ defmodule Relaxir.Application do
     children = [
       # Start the Ecto repository
       Relaxir.Repo,
-      # Start the Telemetry supervisor
-      RelaxirWeb.Telemetry,
-      # Start the PubSub system
-      {Phoenix.PubSub, name: Relaxir.PubSub},
-      # Start the Endpoint (http/https)
-      RelaxirWeb.Endpoint,
       # Start a worker by calling: Relaxir.Worker.start_link(arg)
       # {Relaxir.Worker, arg}
       {
@@ -31,7 +25,13 @@ defmodule Relaxir.Application do
        name: Relaxir.Search,
        repo: Relaxir.Repo,
        tables: @cache_tables
-      }
+      },
+      # Start the Telemetry supervisor
+      RelaxirWeb.Telemetry,
+      # Start the PubSub system
+      {Phoenix.PubSub, name: Relaxir.PubSub},
+      # Start the Endpoint (http/https)
+      RelaxirWeb.Endpoint
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
