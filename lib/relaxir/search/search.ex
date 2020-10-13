@@ -86,14 +86,18 @@ defmodule Relaxir.Search do
   end
 
   def init(args) do
+    Process.send_after(self(), :hydrate, 0)
+
+    {:ok, args}
+  end
+
+  def handle_info(:hydrate, args) do
     [{:tables, tables}, {:repo, repo}, {:log_limit, _}] = args
 
-    Enum.each(tables, fn {table, indexed_field, _} ->
+    Enum.each(tables, fn {table, indexed_field, fields} ->
       table_name = new_atom_from_module(table, indexed_field)
       :ets.new(table_name, [:named_table, :duplicate_bag, :private])
-    end)
 
-    Enum.each(tables, fn {table, indexed_field, fields} ->
       table_name = atom_from_module(table, indexed_field)
 
       table
@@ -106,7 +110,7 @@ defmodule Relaxir.Search do
       |> Enum.each(&insert_item(table_name, &1))
     end)
 
-    {:ok, args}
+    {:noreply, args}
   end
 
   # this search takes an absurdly long time the longer the search terms are
