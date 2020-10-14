@@ -2,7 +2,9 @@ defmodule Relaxir.Search.Cache do
   use GenServer
 
   def start_link(tables) do
-    GenServer.start_link(__MODULE__, tables, name: __MODULE__)
+    table_names = tables
+    |> Enum.map(fn {t, f, _} -> Relaxir.Search.new_atom_from_module(t, f) end)
+    GenServer.start_link(__MODULE__, table_names, name: __MODULE__)
   end
 
   def insert(table, item) do

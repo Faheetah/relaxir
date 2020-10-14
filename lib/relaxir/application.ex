@@ -6,10 +6,10 @@ defmodule Relaxir.Application do
   use Application
 
   @cache_tables [
+    {Relaxir.Ingredients.Food, :description, [:description, :fdc_id]},
     {Relaxir.Ingredients.Ingredient, :name, [:name, :id]},
     {Relaxir.Categories.Category, :name, [:name, :id]},
-    {Relaxir.Recipes.Recipe, :title, [:title, :id]},
-    {Relaxir.Ingredients.Food, :description, [:description, :fdc_id]}
+    {Relaxir.Recipes.Recipe, :title, [:title, :id]}
   ]
 
   def get_cache_tables(), do: @cache_tables
@@ -18,14 +18,9 @@ defmodule Relaxir.Application do
     children = [
       # Start the Ecto repository
       Relaxir.Repo,
-      # Start a worker by calling: Relaxir.Worker.start_link(arg)
-      # {Relaxir.Worker, arg}
-      {
-       Relaxir.Search,
-       name: Relaxir.Search,
-       repo: Relaxir.Repo,
-       tables: @cache_tables
-      },
+      {Relaxir.Search.Cache, @cache_tables},
+      {Relaxir.Search, tables: @cache_tables},
+      {Relaxir.Search.Hydrator, repo: Relaxir.Repo, tables: @cache_tables},
       # Start the Telemetry supervisor
       RelaxirWeb.Telemetry,
       # Start the PubSub system

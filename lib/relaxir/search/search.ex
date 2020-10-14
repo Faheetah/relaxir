@@ -1,6 +1,7 @@
 defmodule Relaxir.Search do
   use GenServer
 
+  require Logger
   alias Relaxir.Search.Cache
 
   ## Public API
@@ -55,12 +56,12 @@ defmodule Relaxir.Search do
     |> String.to_existing_atom()
   end
 
-  defp new_atom_from_module(module, name) do
+  def new_atom_from_module(module, name) do
     parse_atom_from_module(module, name)
     |> String.to_atom()
   end
 
-  defp parse_atom_from_module(module, name) do
+  def parse_atom_from_module(module, name) do
     module
     |> Atom.to_string()
     |> String.split(".")
@@ -72,46 +73,20 @@ defmodule Relaxir.Search do
 
   ## Genserver
 
-  def start_link(opts \\ []) do
+  def start_link([tables: tables]) do
     GenServer.start_link(
       __MODULE__,
       [
-        {:tables, opts[:tables]},
-        {:repo, opts[:repo]},
+        {:tables, tables},
         {:log_limit, 1_000_000}
       ],
-      opts
+      name: __MODULE__
     )
   end
 
   def init(args) do
-    [{:tables, tables}, _, _] = args
-    tables
-    |> Enum.map(fn {t, f, _} -> new_atom_from_module(t, f) end)
-    |> Cache.start_link
-
-    Process.send_after(self(), :hydrate, 0)
-
+    Logger.info "Search core started"
     {:ok, args}
-  end
-
-  def handle_info(:hydrate, args) do
-    [{:tables, tables}, {:repo, repo}, {:log_limit, _}] = args
-
-    Enum.each(tables, fn {table, indexed_field, fields} ->
-      table_name = atom_from_module(table, indexed_field)
-
-      table
-      |> repo.all
-      |> Enum.map(fn record ->
-        {Map.get(record, indexed_field), Enum.map(fields, fn f -> Map.get(record, f) end)}
-      end)
-      |> Enum.sort_by(fn {indexed_field, _} -> indexed_field end)
-      |> Enum.dedup_by(fn {indexed_field, _} -> indexed_field end)
-      |> Enum.each(&insert_item(table_name, &1))
-    end)
-
-    {:noreply, args}
   end
 
   # this search takes an absurdly long time the longer the search terms are
@@ -210,7 +185,7 @@ defmodule Relaxir.Search do
     |> Enum.dedup()
   end
 
-  defp insert_item(table, {indexed_item, items}) do
+  def insert_item(table, {indexed_item, items}) do
     unless indexed_item == nil || indexed_item == "" do
       parse_item(indexed_item)
       |> Enum.each(fn i ->
@@ -219,7 +194,7 @@ defmodule Relaxir.Search do
     end
   end
 
-  defp delete_item(table_name, {indexed_item, items}) do
+  def delete_item(table_name, {indexed_item, items}) do
     unless indexed_item == nil || indexed_item == "" do
       parse_item(indexed_item)
       |> Enum.each(fn i ->
