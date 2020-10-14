@@ -115,18 +115,10 @@ defmodule Relaxir.Recipes do
   end
 
   def insert_cache(recipe) do
-    try do
-      Relaxir.Search.set(Relaxir.Recipes.Recipe, :title, {recipe.title, [recipe.title, recipe.id]})
-    catch
-      :exit, _ -> nil
-    end
+    Relaxir.Search.set(Relaxir.Recipes.Recipe, :title, {recipe.title, [recipe.title, recipe.id]})
   end
 
   def delete_cache(recipe) do
-    try do
-      Relaxir.Search.delete(Relaxir.Recipes.Recipe, :title, {recipe.title, [recipe.title, recipe.id]})
-    catch
-      :exit, _ -> nil
-    end
+    Relaxir.Search.delete(Relaxir.Recipes.Recipe, :title, {recipe.title, [recipe.title, recipe.id]})
   end
 end

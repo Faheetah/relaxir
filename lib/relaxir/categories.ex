@@ -67,18 +67,10 @@ defmodule Relaxir.Categories do
   end
 
   def insert_cache(category) do
-    try do
-      Relaxir.Search.set(Relaxir.Categories.Category, :name, {category.name, [category.name, category.id]})
-    catch
-      :exit, _ -> nil
-    end
+    Relaxir.Search.set(Relaxir.Categories.Category, :name, {category.name, [category.name, category.id]})
   end
 
   def delete_cache(category) do
-    try do
-      Relaxir.Search.delete(Relaxir.Categories.Category, :name, {category.name, [category.name, category.id]})
-    catch
-      :exit, _ -> nil
-    end
+    Relaxir.Search.delete(Relaxir.Categories.Category, :name, {category.name, [category.name, category.id]})
   end
 end

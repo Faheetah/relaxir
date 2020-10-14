@@ -192,51 +192,45 @@ defmodule RelaxirWeb.RecipeController do
           ingredient
 
         true ->
-          # in case of timeouts, don't handle suggestions
-          try do
-            case Relaxir.Search.get(Ingredients.Ingredient, :name, ingredient_name) do
-              {:ok, suggestion} ->
-                {{_, s, _}, score} = hd(suggestion)
+          case Relaxir.Search.get(Ingredients.Ingredient, :name, ingredient_name) do
+            {:ok, suggestion} ->
+              {{_, s, _}, score} = hd(suggestion)
 
-                cond do
-                  score > 1 ->
-                    put_change(ingredient, :suggestion, %{name: String.downcase(s), type: "ingredient", score: round(score * 10)})
+              cond do
+                score > 1 ->
+                  put_change(ingredient, :suggestion, %{name: String.downcase(s), type: "ingredient", score: round(score * 10)})
 
-                  true ->
-                    case Relaxir.Search.get(Ingredients.Food, :description, ingredient_name) do
-                      {:ok, suggestion} ->
-                        {{_, s, _}, score} = hd(suggestion)
+                true ->
+                  case Relaxir.Search.get(Ingredients.Food, :description, ingredient_name) do
+                    {:ok, suggestion} ->
+                      {{_, s, _}, score} = hd(suggestion)
 
-                        cond do
-                          score > 1 ->
-                            put_change(ingredient, :suggestion, %{name: String.downcase(s), type: "USDA", score: round(score * 10)})
+                      cond do
+                        score > 1 ->
+                          put_change(ingredient, :suggestion, %{name: String.downcase(s), type: "USDA", score: round(score * 10)})
 
-                          true ->
-                            ingredient
-                        end
+                        true ->
+                          ingredient
+                      end
 
-                      {:error, :not_found} ->
-                        ingredient
-                    end
-                end
+                    {:error, :not_found} ->
+                      ingredient
+                  end
+              end
 
-              {:error, :not_found} ->
-                case Relaxir.Search.get(Ingredients.Food, :description, ingredient_name) do
-                  {:ok, suggestion} ->
-                    {{_, s, _}, score} = hd(suggestion)
+            {:error, :not_found} ->
+              case Relaxir.Search.get(Ingredients.Food, :description, ingredient_name) do
+                {:ok, suggestion} ->
+                  {{_, s, _}, score} = hd(suggestion)
 
-                    cond do
-                      score > 1 -> put_change(ingredient, :suggestion, %{name: String.downcase(s), type: "USDA", score: round(score * 10)})
-                      true -> ingredient
-                    end
+                  cond do
+                    score > 1 -> put_change(ingredient, :suggestion, %{name: String.downcase(s), type: "USDA", score: round(score * 10)})
+                    true -> ingredient
+                  end
 
-                  {:error, :not_found} ->
-                    ingredient
-                end
-            end
-          catch
-            :exit, {:noproc, _} -> ingredient
-            :exit, {:timeout, _} -> ingredient
+                {:error, :not_found} ->
+                  ingredient
+              end
           end
       end
     end)

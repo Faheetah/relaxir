@@ -12,29 +12,10 @@ defmodule RelaxirWeb.SearchController do
   def search(conn, %{"terms" => terms}) do
     current_user = RelaxirWeb.Authentication.get_current_user(conn)
 
-    recipes = try do
-      search_for(Relaxir.Recipes.Recipe, :title, terms)
-    catch
-      :exit, _ -> [{nil, "SEARCH TIMEOUT", nil}]
-    end
-
-    categories = try do
-      search_for(Relaxir.Categories.Category, :name, terms)
-    catch
-      :exit, _ -> [{nil, "SEARCH TIMEOUT", nil}]
-    end
-
-    ingredients = try do
-      search_for(Relaxir.Ingredients.Ingredient, :name, terms)
-    catch
-      :exit, _ -> [{nil, "SEARCH TIMEOUT", nil}]
-    end
-
-    food = try do
-      search_for(Relaxir.Ingredients.Food, :description, terms)
-    catch
-      :exit, _ -> [{nil, "SEARCH TIMEOUT", nil}]
-    end
+    recipes = search_for(Relaxir.Recipes.Recipe, :title, terms)
+    categories = search_for(Relaxir.Categories.Category, :name, terms)
+    ingredients = search_for(Relaxir.Ingredients.Ingredient, :name, terms)
+    food = search_for(Relaxir.Ingredients.Food, :description, terms)
 
     count = Enum.reduce([recipes, categories, ingredients, food], 0, fn i, acc -> acc + length(i) end)
     render(conn, "search.html", current_user: current_user, count: count, results: %{

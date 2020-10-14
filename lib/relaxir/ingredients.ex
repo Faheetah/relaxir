@@ -88,18 +88,10 @@ defmodule Relaxir.Ingredients do
   end
 
   def insert_cache(ingredient) do
-    try do
-      Relaxir.Search.set(Relaxir.Ingredients.Ingredient, :name, {ingredient.name, [ingredient.name, ingredient.id]})
-    catch
-      :exit, _ -> nil
-    end
+    Relaxir.Search.set(Relaxir.Ingredients.Ingredient, :name, {ingredient.name, [ingredient.name, ingredient.id]})
   end
 
   def delete_cache(ingredient) do
-    try do
-      Relaxir.Search.delete(Relaxir.Ingredients.Ingredient, :name, {ingredient.name, [ingredient.name, ingredient.id]})
-    catch
-      :exit, _ -> nil
-    end
+    Relaxir.Search.delete(Relaxir.Ingredients.Ingredient, :name, {ingredient.name, [ingredient.name, ingredient.id]})
   end
 end
