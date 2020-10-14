@@ -19,7 +19,7 @@ defmodule Relaxir.Search.Hydrator do
     table_name = Search.atom_from_module(table, indexed_field)
 
     table
-    |> repo.all
+    |> repo.stream
     |> Enum.map(fn record ->
       {Map.get(record, indexed_field), Enum.map(fields, fn f -> Map.get(record, f) end)}
     end)
