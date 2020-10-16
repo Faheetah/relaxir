@@ -83,10 +83,6 @@ defmodule Relaxir.Ingredients do
     Ingredient.changeset(ingredient, attrs)
   end
 
-  def list_usda_food!() do
-    Repo.all(Food)
-  end
-
   def insert_cache(ingredient) do
     Relaxir.Search.set(Relaxir.Ingredients.Ingredient, :name, {ingredient.name, [ingredient.name, ingredient.id]})
   end

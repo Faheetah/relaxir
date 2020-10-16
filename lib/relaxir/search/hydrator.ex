@@ -1,5 +1,6 @@
 defmodule Relaxir.Search.Hydrator do
   use Task
+  import Ecto.Query
 
   require Logger
   alias Relaxir.Search
@@ -18,13 +19,27 @@ defmodule Relaxir.Search.Hydrator do
     Logger.info "#{table}.#{indexed_field} hydration start"
     table_name = Search.atom_from_module(table, indexed_field)
 
-    table
-    |> repo.stream
-    |> Enum.map(fn record ->
+    query = from(table, order_by: [^indexed_field])
+    chunk_size = 5000
+
+    Stream.resource(
+      fn -> 0 end,
+      fn
+        :stop -> {:halt, :stop}
+        offset ->
+          rows =
+            repo.all(from(query, limit: ^chunk_size, offset: ^offset))
+            if Enum.count(rows) < chunk_size do
+              {rows, :stop}
+            else
+              {rows, offset + chunk_size}
+            end
+          end,
+          fn _ -> :ok end
+    )
+    |> Stream.map(fn record ->
       {Map.get(record, indexed_field), Enum.map(fields, fn f -> Map.get(record, f) end)}
     end)
-    |> Enum.sort_by(fn {indexed_field, _} -> indexed_field end)
-    |> Enum.dedup_by(fn {indexed_field, _} -> indexed_field end)
     |> Enum.each(&Search.insert_item(table_name, &1))
     Logger.info "#{table}.#{indexed_field} hydrated"
   end
