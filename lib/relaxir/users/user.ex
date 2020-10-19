@@ -7,6 +7,7 @@ defmodule Relaxir.Users.User do
     field :password, :string, virtual: true
     field :encrypted_password, :string
     field :is_admin, :boolean
+    has_many :recipes, Relaxir.Recipes.Recipe
 
     timestamps()
   end

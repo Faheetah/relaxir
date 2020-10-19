@@ -14,13 +14,14 @@ defmodule Relaxir.Recipes.Recipe do
     has_many :units, through: [:recipe_ingredients, :unit]
     has_many :recipe_categories, RecipeCategory, on_replace: :delete
     has_many :categories, through: [:recipe_categories, :category]
+    belongs_to :user, Relaxir.Users.User
 
     timestamps()
   end
 
   def changeset(recipe, attrs) do
     recipe
-    |> cast(strip_directions(attrs), [:title, :directions, :published])
+    |> cast(strip_directions(attrs), [:title, :directions, :published, :user_id])
     |> cast_assoc(:recipe_categories)
     |> cast_assoc(:recipe_ingredients)
     |> validate_required([:title])

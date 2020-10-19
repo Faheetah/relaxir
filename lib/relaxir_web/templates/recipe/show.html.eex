@@ -2,6 +2,11 @@
 <%= if @recipe.published == true do %>
 <p>Published</p>
 <% end %>
+<%= if Map.get(@recipe, :user) do %>
+<p>by
+<%= hd(String.split(@recipe.user.email, "@")) %>
+</p>
+<% end %>
 
 <%= if @recipe.categories != [] do %>
 <strong>Categories:</strong>

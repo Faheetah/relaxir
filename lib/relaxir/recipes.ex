@@ -6,7 +6,7 @@ defmodule Relaxir.Recipes do
   alias Relaxir.Ingredients
   alias Relaxir.Recipes.Recipe
 
-  @preload [:recipe_ingredients, :ingredients, :units, :recipe_categories, :categories]
+  @preload [:recipe_ingredients, :ingredients, :units, :recipe_categories, :categories, :user]
 
   def list_recipes do
     Repo.all(order_by(Recipe, desc: :updated_at))
