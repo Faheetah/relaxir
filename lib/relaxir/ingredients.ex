@@ -3,7 +3,6 @@ defmodule Relaxir.Ingredients do
   alias Relaxir.Repo
 
   alias Relaxir.Ingredients.Ingredient
-  alias Relaxir.Ingredients.Food
 
   def list_ingredients do
     Repo.all(order_by(Ingredient, asc: :name))

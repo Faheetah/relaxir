@@ -4,12 +4,14 @@ defmodule Relaxir.Units.Unit do
 
   schema "units" do
     field :name, :string
+    field :abbreviation, :string
   end
 
   def changeset(unit, attrs) do
     unit
-    |> cast(attrs, [:name])
+    |> cast(attrs, [:name, :abbreviation])
     |> validate_required([:name])
     |> unique_constraint([:name])
+    |> unique_constraint([:abbreviation])
   end
 end

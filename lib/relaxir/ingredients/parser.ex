@@ -93,7 +93,7 @@ defmodule Relaxir.Ingredients.Parser do
 
     cond do
       amount == nil || unit_name == nil -> attrs
-      true -> {:ok, Enum.find(units, fn u -> Inflex.singularize(unit_name) == u.name end)}
+      true -> {:ok, Enum.find(units, fn u -> Inflex.singularize(unit_name) == u.name or Inflex.singularize(unit_name) == u.abbreviation end)}
     end
     |> case do
       {:ok, nil} ->
