@@ -1,0 +1,4 @@
+<h1>Tools</h1>
+
+<h4><%= link "Dishers", to: Routes.tool_path(@conn, :show, "dishers") %></h4>
+<h4><%= link "Conversions", to: Routes.tool_path(@conn, :show, "conversions") %></h4>
