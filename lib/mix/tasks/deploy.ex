@@ -1,7 +1,7 @@
 defmodule Mix.Tasks.Relaxir.Deploy do
   use Mix.Task
 
-  @shortdoc "Create a tagged release"
+  @shortdoc "Deploy to the server"
   def run([host]) do
     project = Relaxir.MixProject.project()
     version = project[:version]
