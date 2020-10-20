@@ -16,10 +16,10 @@ Code.require_file("priv/repo/test_user_seeds.exs")
   },
   %{
     "title" => "Chicken Tacos",
-    "categories" => ["Texmex"],
+    "categories" => ["texmex"],
     "ingredients" => [
       %{name: "chicken"},
-      %{name: "onion"},
+      %{name: "Onion"},
       %{name: "peppers"},
       %{name: "tortillas"}
     ]
@@ -29,9 +29,9 @@ Code.require_file("priv/repo/test_user_seeds.exs")
     "categories" => ["Texmex", "Mexican"],
     "ingredients" => [
       %{name: "tomatoes"},
-      %{name: "onion"},
+      %{name: "Onion"},
       %{name: "peppers"}
     ]
   }
 ]
-|> Enum.map(&Recipes.create_recipe/1)
+|> Enum.each(&Recipes.create_recipe/1)

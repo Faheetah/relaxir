@@ -12,6 +12,11 @@ defmodule Relaxir.Recipes do
     Repo.all(order_by(Recipe, desc: :updated_at))
   end
 
+  def list_recipes(user_id) do
+    query = from r in Recipe, where: r.user_id == ^user_id, order_by: [desc: r.updated_at]
+    Repo.all(query)
+  end
+
   def list_draft_recipes do
     query = from r in Recipe, where: r.published == false or is_nil(r.published), order_by: [desc: r.updated_at]
     Repo.all(query)
@@ -108,8 +113,10 @@ defmodule Relaxir.Recipes do
 
   def map_attrs(attrs, recipe \\ %Recipe{recipe_categories: [], recipe_ingredients: []}) do
     attrs
+    |> Categories.Parser.downcase_categories()
     |> Categories.Parser.map_categories()
     |> Categories.Parser.map_existing_categories(recipe)
+    |> Ingredients.Parser.downcase_ingredients()
     |> Ingredients.Parser.map_ingredients()
     |> Ingredients.Parser.map_existing_ingredients(recipe)
   end
