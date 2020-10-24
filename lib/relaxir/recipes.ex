@@ -116,6 +116,31 @@ defmodule Relaxir.Recipes do
     Recipe.changeset(recipe, map_attrs(attrs))
   end
 
+  def map_ingredients(attrs) do
+    attrs
+    |> Ingredients.Parser.map_ingredients()
+    |> Map.get("recipe_ingredients", [])
+    |> Enum.map(fn i ->
+      case i do
+        %{ingredient_id: id} ->
+          Map.put(
+            i,
+            :ingredient,
+            Relaxir.Repo.get!(Ingredients.Ingredient, id)
+          )
+
+        i ->
+          i
+      end
+    end)
+    |> Enum.map(fn i ->
+      case i do
+        %{unit_id: id} -> Map.put(i, :unit, Relaxir.Repo.get!(Ingredients.Unit, id))
+        i -> i
+      end
+    end)
+  end
+
   def map_attrs(attrs, recipe \\ %Recipe{recipe_categories: [], recipe_ingredients: []}) do
     attrs
     |> Categories.Parser.downcase_categories()

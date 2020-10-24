@@ -2,7 +2,6 @@ defmodule RelaxirWeb.RecipeController do
   use RelaxirWeb, :controller
 
   alias Relaxir.Recipes
-  alias Relaxir.Ingredients
   alias Relaxir.Recipes.Recipe
   alias RelaxirWeb.Authentication
   alias RelaxirWeb.RecipeParser
@@ -28,7 +27,7 @@ defmodule RelaxirWeb.RecipeController do
   def new(conn, %{"recipe" => recipe}) do
     attrs = RecipeParser.parse_attrs(recipe)
     changeset = Recipes.change_recipe(%Recipe{}, attrs)
-    ingredients = map_ingredients(attrs)
+    ingredients = Recipes.map_ingredients(attrs)
     render(conn, "new.html", ingredients: ingredients, changeset: changeset)
   end
 
@@ -48,7 +47,7 @@ defmodule RelaxirWeb.RecipeController do
 
     case changeset do
       %{valid?: false} ->
-        ingredients = map_ingredients(attrs)
+        ingredients = Recipes.map_ingredients(attrs)
         render(conn, "new.html", changeset: changeset, ingredients: ingredients)
 
       _ ->
@@ -61,31 +60,6 @@ defmodule RelaxirWeb.RecipeController do
           changeset: changeset
         )
     end
-  end
-
-  def map_ingredients(attrs) do
-    attrs
-    |> Ingredients.Parser.map_ingredients()
-    |> Map.get("recipe_ingredients", [])
-    |> Enum.map(fn i ->
-      case i do
-        %{ingredient_id: id} ->
-          Map.put(
-            i,
-            :ingredient,
-            Relaxir.Repo.get!(Ingredients.Ingredient, id)
-          )
-
-        i ->
-          i
-      end
-    end)
-    |> Enum.map(fn i ->
-      case i do
-        %{unit_id: id} -> Map.put(i, :unit, Relaxir.Repo.get!(Ingredients.Unit, id))
-        i -> i
-      end
-    end)
   end
 
   def create(conn, %{"recipe" => recipe_params}) do
@@ -106,7 +80,7 @@ defmodule RelaxirWeb.RecipeController do
         ingredients =
           recipe_params
           |> RecipeParser.parse_attrs()
-          |> map_ingredients()
+          |> Recipes.map_ingredients()
 
         render(conn, "new.html", changeset: changeset, ingredients: ingredients)
     end
@@ -121,7 +95,7 @@ defmodule RelaxirWeb.RecipeController do
   def edit(conn, %{"id" => id, "recipe" => recipe}) do
     attrs = RecipeParser.parse_attrs(recipe)
     changeset = Recipes.change_recipe(%Recipe{}, attrs)
-    ingredients = map_ingredients(attrs)
+    ingredients = Recipes.map_ingredients(attrs)
     recipe = Recipes.get_recipe!(id)
     render(conn, "edit.html", recipe: recipe, ingredients: ingredients, changeset: changeset)
   end
@@ -145,7 +119,7 @@ defmodule RelaxirWeb.RecipeController do
 
     case changeset do
       %{valid?: false} ->
-        ingredients = map_ingredients(attrs)
+        ingredients = Recipes.map_ingredients(attrs)
         render(conn, "edit.html", recipe: recipe, changeset: %{changeset | action: :insert}, ingredients: ingredients)
 
       _ ->
@@ -165,7 +139,7 @@ defmodule RelaxirWeb.RecipeController do
     ingredients =
       recipe_params
       |> RecipeParser.parse_attrs()
-      |> map_ingredients()
+      |> Recipes.map_ingredients()
 
     case Recipes.update_recipe(recipe, RecipeParser.parse_attrs(recipe_params)) do
       {:ok, recipe} ->
