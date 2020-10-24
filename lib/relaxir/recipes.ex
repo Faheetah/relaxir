@@ -1,6 +1,7 @@
 defmodule Relaxir.Recipes do
   import Ecto.Query
   alias Relaxir.Repo
+  import Ecto.Changeset
 
   alias Relaxir.Categories
   alias Relaxir.Ingredients
@@ -48,10 +49,12 @@ defmodule Relaxir.Recipes do
       {:ok, recipe} ->
         recipe = Repo.preload(recipe, @preload)
         insert_cache(recipe)
+
         recipe.recipe_ingredients
         |> Enum.each(fn recipe_ingredient ->
           Relaxir.Ingredients.insert_cache(recipe_ingredient.ingredient)
         end)
+
         {:ok, recipe}
 
       error ->
@@ -91,6 +94,7 @@ defmodule Relaxir.Recipes do
       insert_cache(recipe)
       delete_cache(%{title: title, id: recipe.id})
     end
+
     with %{recipe_ingredients: recipe_ingredients} <- changeset.changes do
       recipe_ingredients
       |> Enum.each(fn ingredient ->
@@ -99,6 +103,7 @@ defmodule Relaxir.Recipes do
         end
       end)
     end
+
     changeset
   end
 
@@ -127,5 +132,113 @@ defmodule Relaxir.Recipes do
 
   def delete_cache(recipe) do
     Relaxir.Search.delete(Relaxir.Recipes.Recipe, :title, {recipe.title, [recipe.title, recipe.id]})
+  end
+
+  def get_recipe_ingredient_suggestions(changeset) do
+    changeset
+    |> get_recipe_ingredient_names()
+    |> Enum.map(fn ingredient ->
+      ingredient_name =
+        ingredient
+        |> Map.get(:changes)
+        |> Map.get(:ingredient)
+        |> Map.get(:changes)
+        |> Map.get(:name)
+
+      cond do
+        ingredient_name == nil ->
+          ingredient
+
+        true ->
+          case Relaxir.Search.get(Ingredients.Ingredient, :name, ingredient_name) do
+            {:ok, suggestion} ->
+              {{_, s, _}, score} = hd(suggestion)
+
+              cond do
+                score > 1 ->
+                  put_change(ingredient, :suggestion, %{name: String.downcase(s), type: "ingredient", score: round(score * 10)})
+
+                true ->
+                  case Relaxir.Search.get(Ingredients.Food, :description, ingredient_name) do
+                    {:ok, suggestion} ->
+                      {{_, s, _}, score} = hd(suggestion)
+
+                      cond do
+                        score > 1 ->
+                          put_change(ingredient, :suggestion, %{name: String.downcase(s), type: "USDA", score: round(score * 10)})
+
+                        true ->
+                          ingredient
+                      end
+
+                    {:error, :not_found} ->
+                      ingredient
+                  end
+              end
+
+            {:error, :not_found} ->
+              case Relaxir.Search.get(Ingredients.Food, :description, ingredient_name) do
+                {:ok, suggestion} ->
+                  {{_, s, _}, score} = hd(suggestion)
+
+                  cond do
+                    score > 1 -> put_change(ingredient, :suggestion, %{name: String.downcase(s), type: "USDA", score: round(score * 10)})
+                    true -> ingredient
+                  end
+
+                {:error, :not_found} ->
+                  ingredient
+              end
+          end
+      end
+    end)
+  end
+
+  def get_recipe_ingredient_names(changeset) do
+    changeset
+    |> Map.get(:changes)
+    |> Map.get(:recipe_ingredients)
+    |> Enum.map(fn i ->
+      case i.changes do
+        %{ingredient_id: id} ->
+          name = Relaxir.Repo.get!(Relaxir.Ingredients.Ingredient, id).name
+          Map.merge(i, %{changes: %{ingredient: %{changes: %{name: name}}}}, fn _, m1, m2 -> Map.merge(m1, m2) end)
+
+        _ ->
+          i
+      end
+    end)
+    |> Enum.map(fn i ->
+      case i.changes do
+        %{unit_id: id} ->
+          unit = Relaxir.Repo.get!(Ingredients.Unit, id)
+
+          cond do
+            Map.get(i.changes, :amount) == nil -> i
+            i.changes.amount > 1 -> Map.merge(i, %{changes: %{unit: Inflex.pluralize(unit.name)}}, fn _, m1, m2 -> Map.merge(m1, m2) end)
+            true -> Map.merge(i, %{changes: %{unit: Inflex.singularize(unit.name)}}, fn _, m1, m2 -> Map.merge(m1, m2) end)
+          end
+
+        _ ->
+          i
+      end
+    end)
+  end
+
+  def get_recipe_category_names(changeset) do
+    changeset
+    |> Map.get(:changes)
+    |> Map.get(:recipe_categories)
+    |> Enum.map(fn c ->
+      case c.changes do
+        %{category_id: id} ->
+          name = Relaxir.Repo.get!(Relaxir.Categories.Category, id).name
+
+          %{changes: %{category_id: id, category: %{changes: %{name: name}}}}
+
+        _ ->
+          c
+      end
+    end)
   end
 end

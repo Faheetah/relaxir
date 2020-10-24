@@ -31,13 +31,16 @@ defmodule Relaxir.Recipes.Recipe do
 
   def strip_directions(attrs) do
     case Map.get(attrs, "directions") do
-      nil -> attrs
-      directions -> Map.merge(
-        attrs,
-        %{
-          "directions" => String.trim(directions)
-        }
-      )
+      nil ->
+        attrs
+
+      directions ->
+        Map.merge(
+          attrs,
+          %{
+            "directions" => String.trim(directions)
+          }
+        )
     end
   end
 
