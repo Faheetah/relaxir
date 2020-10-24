@@ -3,7 +3,6 @@ defmodule Relaxir.Ingredients.Parser do
   alias Relaxir.Units
 
   def downcase_ingredients(attrs) do
-    IO.inspect attrs
     ingredients = Map.get(attrs, "ingredients", [])
     |> Enum.map(fn i -> Map.put(i, :name, String.downcase(i[:name])) end)
     Map.put(attrs, "ingredients", ingredients)

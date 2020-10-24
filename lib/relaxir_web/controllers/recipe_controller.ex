@@ -144,7 +144,6 @@ defmodule RelaxirWeb.RecipeController do
     recipe = recipe_params
     |> RecipeParser.parse_attrs()
     |> Map.put("user_id", Map.get(current_user, :id))
-    |> IO.inspect
 
     case Recipes.create_recipe(recipe) do
       {:ok, recipe} ->
@@ -165,7 +164,6 @@ defmodule RelaxirWeb.RecipeController do
   def show(conn, %{"id" => id}) do
     current_user = Authentication.get_current_user(conn)
     recipe = Recipes.get_recipe!(id)
-    |> IO.inspect
     render(conn, "show.html", recipe: recipe, current_user: current_user)
   end
 
