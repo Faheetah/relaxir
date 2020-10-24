@@ -4,7 +4,10 @@ defmodule Relaxir.Categories.Parser do
   def downcase_categories(attrs) do
     categories = Map.get(attrs, "categories", [])
     |> Enum.map(&(String.downcase(&1)))
-    Map.put(attrs, "categories", categories)
+    case categories do
+      [] -> attrs
+      _ -> Map.put(attrs, "categories", categories)
+    end
   end
 
   def map_categories(attrs) when is_map_key(attrs, "categories") do

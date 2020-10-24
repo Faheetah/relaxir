@@ -5,7 +5,10 @@ defmodule Relaxir.Ingredients.Parser do
   def downcase_ingredients(attrs) do
     ingredients = Map.get(attrs, "ingredients", [])
     |> Enum.map(fn i -> Map.put(i, :name, String.downcase(i[:name])) end)
-    Map.put(attrs, "ingredients", ingredients)
+    case ingredients do
+      [] -> attrs
+      _ -> Map.put(attrs, "ingredients", ingredients)
+    end
   end
 
   def map_existing_ingredients(attrs, recipe) do
