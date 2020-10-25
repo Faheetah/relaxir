@@ -63,9 +63,10 @@ defmodule RelaxirWeb.RecipeControllerTest do
     setup [:recipe_with_ingredients]
 
     test "retains existing ingredients", %{conn: conn, recipe_with_ingredients: recipe} do
-      ingredients = recipe.fixture["ingredients"]
-      |> Enum.map(fn i -> i.name end)
-      |> Enum.join("\n")
+      ingredients =
+        recipe.fixture["ingredients"]
+        |> Enum.map(fn i -> i.name end)
+        |> Enum.join("\n")
 
       conn = put(conn, Routes.recipe_path(conn, :update, recipe), recipe: %{ingredients: ingredients})
 
@@ -151,6 +152,7 @@ defmodule RelaxirWeb.RecipeControllerTest do
     test "renders ingredients from list", %{conn: conn, recipe_with_ingredients: recipe} do
       conn = get(conn, Routes.recipe_path(conn, :edit, recipe))
       response = html_response(conn, 200)
+
       recipe.fixture["ingredients"]
       |> Enum.each(fn i -> assert response =~ i.name end)
     end
@@ -174,8 +176,9 @@ defmodule RelaxirWeb.RecipeControllerTest do
 
       conn = get(conn, Routes.recipe_path(conn, :show, id))
       response = html_response(conn, 200)
+
       ["category1", "category2"]
-      |> Enum.each(&(assert response =~ &1))
+      |> Enum.each(&assert response =~ &1)
     end
   end
 
@@ -187,7 +190,7 @@ defmodule RelaxirWeb.RecipeControllerTest do
       response = html_response(conn, 200)
 
       recipe.fixture["categories"]
-      |> Enum.each(&(assert response =~ &1))
+      |> Enum.each(&assert response =~ &1)
     end
 
     test "uses an existing category", %{conn: conn, category: category} do

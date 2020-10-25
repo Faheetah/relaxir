@@ -23,7 +23,7 @@ defmodule RelaxirWeb.ConnCase do
       Ecto.Adapters.SQL.Sandbox.mode(Relaxir.Repo, {:shared, self()})
     end
 
-    user = Relaxir.Users.get_by_email("test@test")
+    user = Relaxir.Users.get_user(1)
 
     conn =
       Phoenix.ConnTest.build_conn()

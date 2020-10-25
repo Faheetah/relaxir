@@ -29,6 +29,9 @@
                 <li class="navigation-item">
                   <a href="/tools" title="Tools">Tools</a>
                 </li>
+                <li class="navigation-item">
+                  <a href="/recipelists" title="Recipe Lists">Recipe Lists</a>
+                </li>
                 <%= if @conn.assigns[:current_user] do %>
                   <%= if function_exported?(Routes, :live_dashboard_path, 2) do %>
                     <li class="navigation-item"><%= link "LiveDashboard", to: Routes.live_dashboard_path(@conn, :home) %></li>

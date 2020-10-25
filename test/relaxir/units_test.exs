@@ -5,8 +5,8 @@ defmodule Relaxir.UnitsTest do
 
   @singular "tinyspoon"
   @plural "tinyspoons"
-  @abbreviation "tsp"
-  @abbreviation_plural "tsps"
+  @abbreviation "tiny"
+  @abbreviation_plural "tinys"
 
   describe "units" do
     test "creates a unit" do
