@@ -96,6 +96,7 @@ defmodule RelaxirWeb.GroceryListControllerTest do
     end
 
     test "shows a list selection when adding an ingredient", %{conn: conn, grocery_list: grocery_list} do
+      GroceryLists.create_grocery_list(%{name: "extra list", user_id: 1})
       conn = get(conn, Routes.grocery_list_path(conn, :select_list, grocery_list))
       assert html_response(conn, 200) =~ grocery_list.name
     end
@@ -118,7 +119,6 @@ defmodule RelaxirWeb.GroceryListControllerTest do
       assert redirected_to(delete) == Routes.grocery_list_path(delete, :show, id)
 
       show = get(conn, Routes.grocery_list_path(conn, :show, id))
-      IO.inspect html_response(show, 200)
       assert !(html_response(show, 200) =~ ingredient.name)
     end
   end

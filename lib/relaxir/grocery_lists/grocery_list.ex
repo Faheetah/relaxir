@@ -17,6 +17,5 @@ defmodule Relaxir.GroceryLists.GroceryList do
     |> cast_assoc(:ingredient_grocery_lists)
     |> validate_required([:name, :user_id])
     |> unique_constraint([:name])
-    |> foreign_key_constraint([:ingredient_id])
   end
 end

@@ -97,6 +97,7 @@ defmodule RelaxirWeb.RecipeListControllerTest do
     end
 
     test "shows a list selection when adding a recipe", %{conn: conn, recipe_list: recipe_list} do
+      RecipeLists.create_recipe_list(%{name: "extra list", user_id: 1})
       conn = get(conn, Routes.recipe_list_path(conn, :select_list, recipe_list))
       assert html_response(conn, 200) =~ recipe_list.name
     end
