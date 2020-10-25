@@ -34,6 +34,10 @@ defmodule Relaxir.Recipes do
     |> Repo.get!(id)
   end
 
+  def get_recipe_by_name!(title) do
+    Repo.get_by(Relaxir.Recipes.Recipe, title: title)
+  end
+
   def create_recipe!(attrs) do
     {:ok, recipe} = create_recipe(attrs)
     recipe

@@ -5,8 +5,8 @@ defmodule Relaxir.RecipeLists.RecipeList do
   schema "recipe_lists" do
     field :name, :string
     belongs_to :user, Relaxir.Users.User
-    has_many :recipe_recipe_lists, Relaxir.RecipeRecipeList
-    has_many :recipes, through: [:recipe_recipe_lists, :recipe], on_replace: :delete
+    has_many :recipe_recipe_lists, Relaxir.RecipeRecipeList, on_replace: :delete
+    has_many :recipes, through: [:recipe_recipe_lists, :recipe]
 
     timestamps()
   end

@@ -26,6 +26,24 @@ defmodule Relaxir.RecipeLists do
     end
   end
 
+  def add_to_recipe_list(%RecipeList{} = recipe_list, recipe_name) do
+    recipe = Relaxir.Recipes.get_recipe_by_name!(recipe_name)
+    recipe_recipe_lists = [%{recipe_id: recipe.id} | recipe_list.recipe_recipe_lists]
+    |> IO.inspect
+    recipe_list
+    |> RecipeList.changeset(%{recipe_recipe_lists: recipe_recipe_lists})
+    |> Repo.update()
+  end
+
+  def remove_from_recipe_list(%RecipeList{} = recipe_list, recipe_name) do
+    recipe_recipe_lists =
+      recipe_list.recipe_recipe_lists
+      |> Enum.filter(fn r -> r.recipe.title != recipe_name end)
+    recipe_list
+    |> RecipeList.changeset(%{recipe_recipe_lists: recipe_recipe_lists})
+    |> Repo.update()
+  end
+
   def update_recipe_list(%RecipeList{} = recipe_list, attrs) do
     recipe_list
     |> RecipeList.changeset(attrs)
