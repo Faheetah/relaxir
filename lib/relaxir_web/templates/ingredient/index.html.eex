@@ -9,5 +9,6 @@
 <%= for ingredient <- @ingredients do %>
 <h4>
   <%= link String.capitalize(ingredient.name), to: Routes.ingredient_path(@conn, :show, ingredient) %>
+  <span><%= button "+", to: Routes.grocery_list_path(@conn, :select_list, ingredient), method: :get %></span>
 </h4>
 <% end %>
