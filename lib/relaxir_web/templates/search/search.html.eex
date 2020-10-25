@@ -21,10 +21,10 @@
     <%= if route_exists("#{category}/#{id}") and id != nil do %>
       <p><%= link result, to: "#{category}/#{id}"%>
       <%= if category == "recipes" do %>
-        <span><%= button "+", to: Routes.recipe_list_path(@conn, :select_list, id), method: :get %></span>
+        <span><%= button "+", to: Routes.recipe_list_path(@conn, :select_list, id), method: :get, class: "btn-tiny" %></span>
       <% end %>
       <%= if category == "ingredients" do %>
-        <span><%= button "+", to: Routes.grocery_list_path(@conn, :select_list, id), method: :get %></span>
+        <span><%= button "+", to: Routes.grocery_list_path(@conn, :select_list, id), method: :get, class: "btn-tiny" %></span>
       <% end %>
       </p>
     <% else %>

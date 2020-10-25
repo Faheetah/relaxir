@@ -3,7 +3,7 @@
 <ul>
 <%= for grocery_list <- @grocery_lists do %>
   <li>
-    <%= button grocery_list.name, to: Routes.grocery_list_path(@conn, :add_ingredient, grocery_list.id, @ingredient_id) %>
+    <%= button grocery_list.name, to: Routes.grocery_list_path(@conn, :add_ingredient, grocery_list.id, @ingredient_id), class: "btn-tiny" %>
   </li>
 <% end %>
 </ul>

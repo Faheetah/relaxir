@@ -2,11 +2,13 @@
 
 <%= if @ingredient.recipes != [] do %>
 <strong>Recipes:</strong>
+<ul>
 <%= for recipe <- @ingredient.recipes do %>
 <li>
   <%= link recipe.title, to: Routes.recipe_path(@conn, :show, recipe)%>
 </li>
 <% end %>
+</ul>
 <% end %>
 
 <%= if @ingredient.description do %>
@@ -14,7 +16,7 @@
 <% end %>
 
 <%= if @current_user && @current_user.is_admin do %>
-<div><%= button "Add to Grocery List", to: Routes.grocery_list_path(@conn, :select_list, @ingredient), method: :get %></div>
+<div><%= button "Add to Grocery List", to: Routes.grocery_list_path(@conn, :select_list, @ingredient), method: :get, class: "btn-tiny" %></div>
 <div><%= link "Edit", to: Routes.ingredient_path(@conn, :edit, @ingredient) %></div>
 <div><%= link "Back", to: Routes.ingredient_path(@conn, :index) %></div>
 <% end %>

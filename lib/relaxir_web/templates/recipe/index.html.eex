@@ -13,6 +13,6 @@
 <%= for recipe <- @recipes do %>
 <h4>
   <%= link String.capitalize(recipe.title), to: Routes.recipe_path(@conn, :show, recipe) %>
-  <span><%= button "+", to: Routes.recipe_list_path(@conn, :select_list, recipe), method: :get %></span>
+  <span><%= button "+", to: Routes.recipe_list_path(@conn, :select_list, recipe), method: :get, class: "btn-tiny" %></span>
 </h4>
 <% end %>

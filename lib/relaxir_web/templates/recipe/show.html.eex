@@ -10,27 +10,31 @@
 
 <%= if @recipe.categories != [] do %>
 <strong>Categories:</strong>
+<ul>
 <%= for category <- @recipe.categories do %>
 <li>
   <%= link category.name, to: Routes.category_path(@conn, :show, category)%>
 </li>
 <% end %>
+</ul>
 <% end %>
 
 <%= if @recipe.recipe_ingredients != [] do %>
 <strong>Ingredients:</strong>
+<ul>
 <%= for recipe_ingredient <- @recipe.recipe_ingredients do %>
 <li>
   <%= link ingredients_output(recipe_ingredient), to: Routes.ingredient_path(@conn, :show, recipe_ingredient.ingredient)%>
-  <span><%= button "+", to: Routes.grocery_list_path(@conn, :select_list, recipe_ingredient.ingredient), method: :get %></span>
+  <span><%= button "+", to: Routes.grocery_list_path(@conn, :select_list, recipe_ingredient.ingredient), method: :get, class: "btn-tiny" %></span>
 </li>
 <% end %>
+</ul>
 <% end %>
 
 <%= render_markdown @recipe.directions %>
 
 <%= if @current_user && @current_user.is_admin do %>
-<div><%= button "Add to List", to: Routes.recipe_list_path(@conn, :select_list, @recipe), method: :get %></div>
+<div><%= button "Add to List", to: Routes.recipe_list_path(@conn, :select_list, @recipe), method: :get, class: "btn-tiny" %></div>
 <div><%= link "Edit", to: Routes.recipe_path(@conn, :edit, @recipe) %></div>
 <div><%= link "Back", to: Routes.recipe_path(@conn, :index) %></div>
 <% end %>
