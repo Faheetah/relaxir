@@ -67,7 +67,16 @@
 }
 
 main.container {
-  padding-top: 13rem;
+  padding-top: 8rem;
+}
+
+.navigation .navigation-list, .navigation .navigation-title {
+  display: block;
+}
+
+.navigation-item {
+  margin: 1px;
+  padding: 0 1em 0 1em;
 }
 
 textarea {
@@ -78,6 +87,49 @@ textarea {
   height: 17px;
   line-height: normal;
   padding: 1px 6px 1px 6px;
+}
+
+.hamburger {
+  background-color: transparent;
+  border: transparent;
+  font-size: 3rem;
+  padding: 1rem;
+  line-height: 2rem;
+  display: none;
+}
+
+#hamburger-toggle {
+  display: none;
+}
+
+#hamburger-toggle:checked ~ .full-menu {
+  display: initial;
+}
+
+@media (max-width: 768px) {
+  .navigation-item, .navigation-item a {
+    background-color: #444444;
+    color: #EEEEEE;
+    width: 100%;
+    margin-left: 0 !important;
+  }
+
+  .navigation-list {
+    margin: 0;
+  }
+
+  .hamburger {
+    display: block;
+  }
+
+  .full-menu {
+    display: none;
+  }
+
+  .navigation-item {
+    float: none !important;
+    text-align: center;
+  }
 }
 
 ul {

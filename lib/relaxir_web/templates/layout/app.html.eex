@@ -12,47 +12,54 @@
     <header>
       <section class="container">
         <nav class="navigation" role="navigation">
-          <section class="container">
-              <ul class="navigation-list">
-                <li class="navigation-item">
-                  <a href="/" title="Recipes">Recipes</a>
-                </li>
-                <li class="navigation-item">
-                  <a href="/ingredients" title="Ingredients">Ingredients</a>
-                </li>
-                <li class="navigation-item">
-                  <a href="/categories" title="Categories">Categories</a>
-                </li>
-                <li class="navigation-item">
-                  <a href="/search" title="Search">Search</a>
-                </li>
-                <li class="navigation-item">
-                  <a href="/tools" title="Tools">Tools</a>
-                </li>
-                <li class="navigation-item">
-                  <a href="/recipelists" title="Recipe Lists">Recipe Lists</a>
-                </li>
-                <li class="navigation-item">
-                  <a href="/grocerylists" title="Grocery Lists">Grocery Lists</a>
-                </li>
-                <%= if @conn.assigns[:current_user] do %>
-                  <%= if function_exported?(Routes, :live_dashboard_path, 2) do %>
-                    <li class="navigation-item"><%= link "LiveDashboard", to: Routes.live_dashboard_path(@conn, :home) %></li>
-                  <% end %>
-                  <li class="navigation-item">
-                    <%= @current_user.email %>
-                  </li>
-                  <li class="navigation-item">
-                    <%= link("Log Out", to: Routes.session_path(@conn, :delete), method: :delete) %>
-                  </li>
-                <% else %>
-                  <li class="navigation-item">
-                    <%= link("Login", to: Routes.session_path(@conn, :create)) %>
-                  </li>
+          <label class="hamburger" data-menu-toggle for="hamburger-toggle">
+            🍔
+          </label>
+          <input id="hamburger-toggle" type="checkbox" />
+
+
+
+          <section class="full-menu">
+            <ul class="navigation-list">
+              <li class="navigation-item">
+                <a href="/" title="Recipes">Recipes</a>
+              </li>
+              <li class="navigation-item">
+                <a href="/ingredients" title="Ingredients">Ingredients</a>
+              </li>
+              <li class="navigation-item">
+                <a href="/categories" title="Categories">Categories</a>
+              </li>
+              <li class="navigation-item">
+                <a href="/search" title="Search">Search</a>
+              </li>
+              <li class="navigation-item">
+                <a href="/tools" title="Tools">Tools</a>
+              </li>
+              <li class="navigation-item">
+                <a href="/recipelists" title="Recipe Lists">Recipe Lists</a>
+              </li>
+              <li class="navigation-item">
+                <a href="/grocerylists" title="Grocery Lists">Grocery Lists</a>
+              </li>
+              <%= if @conn.assigns[:current_user] do %>
+                <%= if function_exported?(Routes, :live_dashboard_path, 2) do %>
+                  <li class="navigation-item"><%= link "LiveDashboard", to: Routes.live_dashboard_path(@conn, :home) %></li>
                 <% end %>
-              </ul>
-            </section>
-          </nav>
+                <li class="navigation-item">
+                  <%= @current_user.email %>
+                </li>
+                <li class="navigation-item">
+                  <%= link("Log Out", to: Routes.session_path(@conn, :delete), method: :delete) %>
+                </li>
+              <% else %>
+                <li class="navigation-item">
+                  <%= link("Login", to: Routes.session_path(@conn, :create)) %>
+                </li>
+              <% end %>
+            </ul>
+          </section>
+        </nav>
       </section>
     </header>
     <main role="main" class="container">
