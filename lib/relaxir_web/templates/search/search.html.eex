@@ -19,7 +19,14 @@
 
   <%= for {_, result, id} <- results do %>
     <%= if route_exists("#{category}/#{id}") and id != nil do %>
-      <p><%= link result, to: "#{category}/#{id}"%></p>
+      <p><%= link result, to: "#{category}/#{id}"%>
+      <%= if category == "recipes" do %>
+        <span><%= button "+", to: Routes.recipe_list_path(@conn, :select_list, id), method: :get %></span>
+      <% end %>
+      <%= if category == "ingredients" do %>
+        <span><%= button "+", to: Routes.grocery_list_path(@conn, :select_list, id), method: :get %></span>
+      <% end %>
+      </p>
     <% else %>
       <p><%= result %></p>
     <% end %>
