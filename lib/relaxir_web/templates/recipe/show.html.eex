@@ -22,6 +22,9 @@
 <%= for recipe_ingredient <- @recipe.recipe_ingredients do %>
 <li>
   <%= link ingredients_output(recipe_ingredient), to: Routes.ingredient_path(@conn, :show, recipe_ingredient.ingredient)%>
+  <span>
+  <%= button "+", to: Routes.grocery_list_path(@conn, :select_list, recipe_ingredient.ingredient), method: :get %>
+  </span>
 </li>
 <% end %>
 <% end %>
