@@ -66,4 +66,32 @@ defmodule RelaxirWeb.RecipeListController do
     |> put_flash(:info, "Recipe list deleted successfully.")
     |> redirect(to: Routes.recipe_list_path(conn, :index))
   end
+
+  def remove_recipe(conn, %{"id" => id, "recipe_id" => recipe_id}) do
+    recipe_list = RecipeLists.get_recipe_list!(id)
+
+    RecipeLists.remove_recipe(recipe_list, String.to_integer(recipe_id))
+    conn
+    |> put_flash(:info, "Recipe removed successfully.")
+    |> redirect(to: Routes.recipe_list_path(conn, :show, recipe_list))
+  end
+
+  def select_list(conn, %{"recipe_id" => recipe_id}) do
+    recipe_lists = RecipeLists.list_recipe_lists()
+    render(conn, "select_list.html", recipe_lists: recipe_lists, recipe_id: recipe_id)
+  end
+
+  def add_recipe(conn, %{"id" => id, "recipe_id" => recipe_id}) do
+    recipe_list = RecipeLists.get_recipe_list!(id)
+
+    case RecipeLists.add_recipe(recipe_list, String.to_integer(recipe_id)) do
+      :ok ->
+        conn
+        |> put_flash(:info, "Recipe added successfully.")
+        |> redirect(to: Routes.recipe_list_path(conn, :show, recipe_list))
+      _ ->
+        conn
+        |> redirect(to: Routes.recipe_list_path(conn, :show, recipe_list))
+    end
+  end
 end

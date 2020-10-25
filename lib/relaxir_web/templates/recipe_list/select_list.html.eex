@@ -1,0 +1,11 @@
+<h1>Select a list</h1>
+
+<ul>
+<%= for recipe_list <- @recipe_lists do %>
+  <li>
+    <%= button recipe_list.name, to: Routes.recipe_list_path(@conn, :add_recipe, recipe_list.id, @recipe_id) %>
+  </li>
+<% end %>
+</ul>
+
+<span><%= link "Back", to: Routes.recipe_list_path(@conn, :index) %></span>
