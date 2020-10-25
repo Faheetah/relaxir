@@ -44,7 +44,7 @@ defmodule Relaxir.RecipeLists do
   def remove_recipe(%RecipeList{} = recipe_list, recipe_id) do
     recipe_recipe_lists =
       recipe_list.recipe_recipe_lists
-      |> Enum.filter(fn r -> r.id != recipe_id end)
+      |> Enum.filter(fn r -> r.recipe.id != recipe_id end)
 
     recipe_list
     |> Ecto.Changeset.change()

@@ -83,6 +83,45 @@ defmodule RelaxirWeb.RecipeListControllerTest do
     end
   end
 
+  describe "add a recipe to a list" do
+    setup [:create_recipe_list, :recipe]
+
+    test "adds a recipe to the list", %{conn: conn, recipe_list: recipe_list, recipe: recipe} do
+      create = post(conn, Routes.recipe_list_path(conn, :add_recipe, recipe_list.id, recipe.id))
+
+      assert %{id: id} = redirected_params(create)
+      assert redirected_to(create) == Routes.recipe_list_path(create, :show, id)
+
+      show = get(conn, Routes.recipe_list_path(conn, :show, id))
+      assert html_response(show, 200) =~ recipe.title
+    end
+
+    test "shows a list selection when adding a recipe", %{conn: conn, recipe_list: recipe_list} do
+      conn = get(conn, Routes.recipe_list_path(conn, :select_list, recipe_list))
+      assert html_response(conn, 200) =~ recipe_list.name
+    end
+  end
+
+  describe "remove a recipe from a list" do
+    setup [:recipe]
+
+    test "removes a recipe from the list", %{conn: conn, recipe: recipe} do
+      {:ok, recipe_list} =
+        @create_attrs
+        |> Map.merge(%{user_id: 1, recipe_recipe_lists: [%{recipe_id: recipe.id}]})
+        |> RecipeLists.create_recipe_list()
+      assert hd(recipe_list.recipes).title == recipe.title
+
+      delete = delete(conn, Routes.recipe_list_path(conn, :remove_recipe, recipe_list.id, recipe.id))
+
+      assert %{id: id} = redirected_params(delete)
+      assert redirected_to(delete) == Routes.recipe_list_path(delete, :show, id)
+
+      show = get(conn, Routes.recipe_list_path(conn, :show, id))
+      assert !(html_response(show, 200) =~ recipe.title)
+    end
+  end
+
   defp create_recipe_list(_) do
     recipe_list = fixture(:recipe_list)
     %{recipe_list: recipe_list}
