@@ -11,7 +11,7 @@ defmodule Relaxir.Repo.Migrations.CreateGroceryLists do
 
     create table(:ingredient_grocery_lists) do
       add :ingredient_id, references(:ingredients)
-      add :grocery_list_id, references(:grocery_lists)
+      add :grocery_list_id, references(:grocery_lists, on_delete: :delete_all)
     end
 
     create index(:grocery_lists, [:user_id])
