@@ -7,5 +7,10 @@
   </li>
 <% end %>
 </ul>
+<%= if @recipe_lists == [] do %>
+<h2>
+  Oops, it looks like you do not have any lists yet. You can <%= link "Add a List", to: Routes.recipe_list_path(@conn, :new) %>
+</h2>
+<% end %>
 
 <span><%= link "Back", to: Routes.recipe_list_path(@conn, :index) %></span>

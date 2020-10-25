@@ -35,7 +35,7 @@ defmodule Relaxir.RecipeListsTest do
 
     test "create_recipe_list/1 with valid data creates a recipe_list" do
       assert {:ok, %RecipeList{} = recipe_list} = RecipeLists.create_recipe_list(@valid_attrs)
-      assert recipe_list.name == "some name"
+      assert recipe_list.name == @valid_attrs.name
     end
 
     test "create_recipe_list/1 with invalid data returns error changeset" do
@@ -45,7 +45,7 @@ defmodule Relaxir.RecipeListsTest do
     test "update_recipe_list/2 with valid data updates the recipe_list" do
       recipe_list = recipe_list_fixture()
       assert {:ok, %RecipeList{} = recipe_list} = RecipeLists.update_recipe_list(recipe_list, @update_attrs)
-      assert recipe_list.name == "some updated name"
+      assert recipe_list.name == @update_attrs.name
     end
 
     test "update_recipe_list/2 with invalid data returns error changeset" do
@@ -63,6 +63,20 @@ defmodule Relaxir.RecipeListsTest do
     test "change_recipe_list/1 returns a recipe_list changeset" do
       recipe_list = recipe_list_fixture()
       assert %Ecto.Changeset{} = RecipeLists.change_recipe_list(recipe_list)
+    end
+
+    test "add_recipe/2 adds a recipe by id" do
+      recipe_list = recipe_list_fixture()
+      {:ok, recipe} = Relaxir.Recipes.create_recipe(%{"title" => "F"})
+      assert :ok = RecipeLists.add_recipe(recipe_list, recipe.id)
+      assert hd(RecipeLists.get_recipe_list!(recipe_list.id).recipe_recipe_lists).recipe.title == recipe.title
+    end
+
+    test "remove_recipe/2 removes a recipe by id" do
+      recipe_list = recipe_list_fixture()
+      {:ok, recipe} = Relaxir.Recipes.create_recipe(%{"title" => "F"})
+      RecipeLists.remove_recipe(recipe_list, recipe.id)
+      assert RecipeLists.get_recipe_list!(recipe_list.id).recipe_recipe_lists == []
     end
   end
 end

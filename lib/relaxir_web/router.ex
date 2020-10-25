@@ -43,6 +43,10 @@ defmodule RelaxirWeb.Router do
       delete "/recipelists/:id/recipe/:recipe_id", RecipeListController, :remove_recipe
       get "/recipes/:recipe_id/addToList", RecipeListController, :select_list
       post "/recipelists/:id/recipe/:recipe_id", RecipeListController, :add_recipe
+      resources "/grocerylists", GroceryListController
+      delete "/grocerylists/:id/ingredient/:ingredient_id", GroceryListController, :remove_ingredient
+      get "/ingredients/:ingredient_id/addToGroceryList", GroceryListController, :select_list
+      post "/grocerylists/:id/ingredient/:ingredient_id", GroceryListController, :add_ingredient
       post "/recipes/new", RecipeController, :new
       post "/recipes/:id/edit", RecipeController, :edit
       post "/recipes/confirm", RecipeController, :confirm_new

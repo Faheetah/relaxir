@@ -78,7 +78,12 @@ defmodule RelaxirWeb.RecipeListController do
 
   def select_list(conn, %{"recipe_id" => recipe_id}) do
     recipe_lists = RecipeLists.list_recipe_lists()
-    render(conn, "select_list.html", recipe_lists: recipe_lists, recipe_id: recipe_id)
+    case recipe_lists do
+      [recipe_list] ->
+        add_recipe(conn, %{"id" => recipe_list.id, "recipe_id" => recipe_id})
+      _ ->
+        render(conn, "select_list.html", recipe_lists: recipe_lists, recipe_id: recipe_id)
+    end
   end
 
   def add_recipe(conn, %{"id" => id, "recipe_id" => recipe_id}) do

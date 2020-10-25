@@ -33,8 +33,8 @@ defmodule RelaxirWeb.RecipeListControllerTest do
       assert %{id: id} = redirected_params(create)
       assert redirected_to(create) == Routes.recipe_list_path(create, :show, id)
 
-      show = get(conn, Routes.recipe_list_path(conn, :show, id))
-      assert html_response(show, 200) =~ @create_attrs.name
+      conn = get(conn, Routes.recipe_list_path(conn, :show, id))
+      assert html_response(conn, 200) =~ @create_attrs.name
     end
 
     test "renders errors when data is invalid", %{conn: conn} do

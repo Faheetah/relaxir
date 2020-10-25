@@ -14,6 +14,7 @@
 <% end %>
 
 <%= if @current_user && @current_user.is_admin do %>
-<span><%= link "Edit", to: Routes.ingredient_path(@conn, :edit, @ingredient) %></span>
-<span><%= link "Back", to: Routes.ingredient_path(@conn, :index) %></span>
+<div><%= link "Add To Grocery List", to: Routes.grocery_list_path(@conn, :select_list, @ingredient) %></div>
+<div><%= link "Edit", to: Routes.ingredient_path(@conn, :edit, @ingredient) %></div>
+<div><%= link "Back", to: Routes.ingredient_path(@conn, :index) %></div>
 <% end %>
