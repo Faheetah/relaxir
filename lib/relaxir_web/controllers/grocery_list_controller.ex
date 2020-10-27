@@ -76,16 +76,6 @@ defmodule RelaxirWeb.GroceryListController do
     |> redirect(to: Routes.grocery_list_path(conn, :show, grocery_list))
   end
 
-  def select_list(conn, %{"ingredient_id" => ingredient_id}) do
-    grocery_lists = GroceryLists.list_grocery_lists()
-    case grocery_lists do
-      [grocery_list] ->
-        add_ingredient(conn, %{"id" => grocery_list.id, "ingredient_id" => ingredient_id})
-      _ ->
-        render(conn, "select_list.html", grocery_lists: grocery_lists, ingredient_id: ingredient_id)
-    end
-  end
-
   def add_ingredient(conn, %{"id" => id, "ingredient_id" => ingredient_id}) do
     grocery_list = GroceryLists.get_grocery_list!(id)
 

@@ -39,20 +39,27 @@ defmodule RelaxirWeb.Router do
     scope "/" do
       pipe_through [:browser_auth, :require_admin]
       resources "/recipes", RecipeController, except: [:show, :index]
+
       resources "/recipelists", RecipeListController
       delete "/recipelists/:id/recipe/:recipe_id", RecipeListController, :remove_recipe
       get "/recipes/:recipe_id/addToList", RecipeListController, :select_list
       post "/recipelists/:id/recipe/:recipe_id", RecipeListController, :add_recipe
+
       resources "/grocerylists", GroceryListController
       delete "/grocerylists/:id/ingredient/:ingredient_id", GroceryListController, :remove_ingredient
-      get "/ingredients/:ingredient_id/addToGroceryList", GroceryListController, :select_list
       post "/grocerylists/:id/ingredient/:ingredient_id", GroceryListController, :add_ingredient
+
+      resources "/inventorylists", InventoryListController
+      delete "/inventorylists/:id/ingredient/:ingredient_id", InventoryListController, :remove_ingredient
+      post "/inventorylists/:id/ingredient/:ingredient_id", InventoryListController, :add_ingredient
+
       post "/recipes/new", RecipeController, :new
       post "/recipes/:id/edit", RecipeController, :edit
       post "/recipes/confirm", RecipeController, :confirm_new
       put "/recipes/:id/confirm", RecipeController, :confirm_update
       post "/recipes/:id/confirm", RecipeController, :confirm_update
       resources "/ingredients", IngredientController, except: [:show, :index]
+      get "/ingredients/:ingredient_id/addToList", IngredientController, :select_list
       resources "/categories", CategoryController, except: [:show, :index]
       live_dashboard "/dashboard", metrics: RelaxirWeb.Telemetry
     end

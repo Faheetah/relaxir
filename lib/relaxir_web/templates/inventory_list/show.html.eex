@@ -1,0 +1,25 @@
+<h1><%= @inventory_list.name %></h1>
+
+<%= form_for @conn, Routes.search_path(@conn, :search, ingredients: true, usda: true), fn f -> %>
+  <%= label f, "Search for ingredients" %>
+  <%= text_input f, :terms %>
+  <div>
+    <%= submit "Search" %>
+  </div>
+<% end %>
+
+<%= if @inventory_list.ingredients != [] do %>
+<p>Ingredients:</p>
+<ul>
+<%= for ingredient_inventory_list <- @inventory_list.ingredient_inventory_lists do %>
+
+  <li>
+    <%= link ingredient_inventory_list.ingredient.name, to: Routes.ingredient_path(@conn, :show, ingredient_inventory_list.ingredient) %>
+    <%= button "-", to: Routes.inventory_list_path(@conn, :remove_ingredient, @inventory_list.id, ingredient_inventory_list.ingredient.id), method: :delete, class: "btn-tiny" %>
+  </li>
+<% end %>
+</ul>
+<% end %>
+
+<span><%= link "Edit", to: Routes.inventory_list_path(@conn, :edit, @inventory_list) %></span>
+<span><%= link "Back", to: Routes.inventory_list_path(@conn, :index) %></span>

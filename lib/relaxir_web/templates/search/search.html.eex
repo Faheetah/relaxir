@@ -44,7 +44,7 @@
         <span><%= button "+", to: Routes.recipe_list_path(@conn, :select_list, id), method: :get, class: "btn-tiny" %></span>
       <% end %>
       <%= if category == "ingredients" do %>
-        <span><%= button "+", to: Routes.grocery_list_path(@conn, :select_list, id), method: :get, class: "btn-tiny" %></span>
+        <span><%= button "+", to: Routes.ingredient_path(@conn, :select_list, id), method: :get, class: "btn-tiny" %></span>
       <% end %>
       </p>
     <% else %>
