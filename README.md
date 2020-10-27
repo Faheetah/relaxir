@@ -37,3 +37,7 @@ Push with tags
 Wait for the build job
 
 `mix relaxir.deploy`
+
+# USDA Data
+
+Can be found at https://fdc.nal.usda.gov/portal-data/external/dataDictionary
