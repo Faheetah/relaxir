@@ -48,7 +48,12 @@
       <% end %>
       </p>
     <% else %>
-      <p><%= result %></p>
+      <p>
+        <%= result %>
+        <%= if category == "usda" do %>
+          <span><%= button "+", to: Routes.ingredient_path(@conn, :create, ingredient: %{"name" => result}), class: "btn-tiny" %></span>
+        <% end %>
+      </p>
     <% end %>
   <% end %>
 <% end %>
