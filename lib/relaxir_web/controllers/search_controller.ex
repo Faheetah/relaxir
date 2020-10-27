@@ -24,7 +24,6 @@ defmodule RelaxirWeb.SearchController do
 
   # search results
   def search(conn, params) do
-    IO.inspect params
     terms = params["terms"]
     current_user = RelaxirWeb.Authentication.get_current_user(conn)
 
