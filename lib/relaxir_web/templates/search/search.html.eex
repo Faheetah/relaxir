@@ -4,6 +4,26 @@
   <div>
     <%= submit "Search" %>
   </div>
+  <table>
+    <tr>
+      <td>
+      <%= label f, :recipes %>
+      <%= checkbox f, :recipes, value: @checkboxes.recipes %>
+      </td>
+      <td>
+      <%= label f, :categories %>
+      <%= checkbox f, :categories, value: @checkboxes.categories %>
+      </td>
+      <td>
+      <%= label f, :ingredients %>
+      <%= checkbox f, :ingredients, value: @checkboxes.ingredients %>
+      </td>
+      <td>
+      <%= label f, :usda %>
+      <%= checkbox f, :usda, value: @checkboxes.usda %>
+      </td>
+    </tr>
+  </table>
 <% end %>
 
 <%= case @count do %>
