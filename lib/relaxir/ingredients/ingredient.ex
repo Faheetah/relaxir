@@ -3,6 +3,7 @@ defmodule Relaxir.Ingredients.Ingredient do
   import Ecto.Changeset
 
   alias Relaxir.RecipeIngredient
+  alias Relaxir.Ingredients.Food
 
   @derive {Jason.Encoder, only: [:id, :name]}
 
@@ -11,6 +12,7 @@ defmodule Relaxir.Ingredients.Ingredient do
     field :description, :string
     has_many :recipe_ingredients, RecipeIngredient
     has_many :recipes, through: [:recipe_ingredients, :recipe], on_replace: :delete
+    belongs_to :food, Food
 
     timestamps()
   end
@@ -26,6 +28,7 @@ defmodule Relaxir.Ingredients.Ingredient do
     ingredient
     |> cast(attrs, [:name, :description])
     |> cast_assoc(:recipe_ingredients)
+    |> cast_assoc(:food)
     |> validate_required([:name])
     |> unique_constraint([:name])
   end

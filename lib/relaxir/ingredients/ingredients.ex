@@ -10,7 +10,7 @@ defmodule Relaxir.Ingredients do
 
   def get_ingredient!(id) do
     Ingredient
-    |> preload(:recipes)
+    |> preload([:recipes, :food])
     |> Repo.get!(id)
   end
 
