@@ -14,35 +14,35 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    
+
     - name: Download elixir
       run: wget https://packages.erlang-solutions.com/erlang/debian/pool/elixir_1.10.4-1~ubuntu~focal_all.deb
-    
+
     - name: Download elixir
       run: sudo dpkg -i elixir_1.10.4-1~ubuntu~focal_all.deb
-    
+
     - name: Install hex
       run: mix local.hex --force
-          
+
     - name: Install rebar
       run: mix local.rebar --force
-    
+
     - name: Build dependencies
       run: mix deps.get --only prod && mix compile
 
     - name: Build web assets
       run: npm install --prefix ./assets && npm run deploy --prefix ./assets && mix phx.digest
-      
+
     - name: Build release
       run: mix release
-      
+
     - name: Bundle project
       run: tar -zcvf relaxir.tar.gz relaxir/
       working-directory: _build/prod/rel/
-    
+
     - name: Get project version
-      run: echo "::set-env name=mix_version::$(mix relaxir.version)"
-      
+      run: echo "mix_version=$(mix relaxir.version)" >> $GITHUB_ENV
+
     - name: Create Github release
       uses: actions/create-release@v1
       id: create_release
@@ -51,7 +51,7 @@ jobs:
       with:
         tag_name: ${{ env.mix_version }}
         release_name: ${{ env.mix_version }}
-      
+
     - name: Upload release bundle
       id: upload-release-asset
       uses: actions/upload-release-asset@v1.0.2
