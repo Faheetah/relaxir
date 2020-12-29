@@ -41,7 +41,8 @@ defmodule RelaxirWeb.Authentication do
   end
 
   def log_in(conn, user) do
-    __MODULE__.Plug.sign_in(conn, user)
+    conn
+    |> __MODULE__.Plug.sign_in(user, %{}, ttl: Application.get_env(:relaxir, __MODULE__)[:ttl])
   end
 
   def log_out(conn) do

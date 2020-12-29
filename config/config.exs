@@ -18,6 +18,17 @@ config :relaxir, RelaxirWeb.Endpoint,
   pubsub_server: Relaxir.PubSub,
   live_view: [signing_salt: "HNKcYMPI"]
 
+config :relaxir, RelaxirWeb.Authentication,
+  ttl: {4, :weeks}
+
+config :relaxir, Relaxir.Application,
+  cache_tables: [
+    {Relaxir.Ingredients.Food, :description, [:description, :fdc_id]},
+    {Relaxir.Ingredients.Ingredient, :name, [:name, :id]},
+    {Relaxir.Categories.Category, :name, [:name, :id]},
+    {Relaxir.Recipes.Recipe, :title, [:title, :id]}
+  ]
+
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
