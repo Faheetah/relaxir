@@ -3,6 +3,7 @@ defmodule Relaxir.IngredientInventoryList do
   import Ecto.Changeset
 
   schema "ingredient_inventory_lists" do
+    field :note, :string
     belongs_to :ingredient, Relaxir.Ingredients.Ingredient
     belongs_to :inventory_list, Relaxir.InventoryLists.InventoryList
   end
