@@ -26,7 +26,7 @@ defmodule Relaxir.InventoryLists do
     end
   end
 
-  def add_ingredient(%InventoryList{} = inventory_list, ingredient_id, note) do
+  def add_ingredient(%InventoryList{} = inventory_list, ingredient_id) do
     case Enum.find(inventory_list.ingredient_inventory_lists, fn igl -> igl.ingredient.id == ingredient_id end) do
       nil ->
         ingredient_inventory_lists = [%{ingredient_id: ingredient_id} | inventory_list.ingredient_inventory_lists]
