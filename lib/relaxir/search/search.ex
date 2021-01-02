@@ -46,7 +46,7 @@ defmodule Relaxir.Search do
 
   def get_count(module, field, _) do
     table = Helpers.new_atom_from_module(module, field)
-    total = Relaxir.Search.Cache.size(table)
+    total = Cache.size(table)
     :telemetry.execute([:search, :items, table], %{total: total})
   end
 end
