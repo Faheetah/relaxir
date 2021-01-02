@@ -134,7 +134,7 @@ defmodule Relaxir.Search do
   end
 
   def handle_call({:get, table, item}, _from, state) do
-    {duration, return} =
+    {duration, results} =
       :timer.tc(fn ->
         items =
           Regex.scan(~r/[a-zA-Z]+/, item)
@@ -145,7 +145,7 @@ defmodule Relaxir.Search do
           |> Enum.map(&Inflex.singularize/1)
           |> Enum.reject(&(&1 == "" || &1 == nil))
 
-        results =
+        found =
           Enum.map(items, fn item ->
             Cache.get(table, item)
           end)
@@ -158,11 +158,11 @@ defmodule Relaxir.Search do
           end)
           |> Enum.sort_by(fn {_, score} -> score end, :desc)
 
-        {:reply, results, state}
+        {:reply, found, state}
       end)
 
     :telemetry.execute([:search, :query], %{total_time: duration})
-    return
+    results
   end
 
   def handle_call({:set, table_name, {indexed_item, items}}, _from, state) do
