@@ -85,13 +85,25 @@ defmodule Relaxir.Search.Server do
     results
   end
 
-  def handle_call({:set, table_name, {indexed_item, items}}, _from, state) do
-    insert_item(table_name, {indexed_item, items})
+  def handle_call({:set, table, {indexed_item, items}}, _from, state) do
+    unless indexed_item == nil || indexed_item == "" do
+      parse_item(indexed_item)
+      |> Enum.each(fn i ->
+        Cache.insert(table, List.to_tuple([Inflex.singularize(String.downcase(i)) | items]))
+      end)
+    end
+
     {:reply, :ok, state}
   end
 
-  def handle_call({:delete, table_name, {indexed_item, items}}, _from, state) do
-    delete_item(table_name, {indexed_item, items})
+  def handle_call({:delete, table, {indexed_item, items}}, _from, state) do
+    unless indexed_item == nil || indexed_item == "" do
+      parse_item(indexed_item)
+      |> Enum.each(fn i ->
+        Cache.delete(table, List.to_tuple([Inflex.singularize(String.downcase(i)) | items]))
+      end)
+    end
+
     {:reply, :ok, state}
   end
 
@@ -117,23 +129,5 @@ defmodule Relaxir.Search.Server do
     |> Enum.reject(&(&1 == "" || &1 == nil))
     |> Enum.sort()
     |> Enum.dedup()
-  end
-
-  def insert_item(table, {indexed_item, items}) do
-    unless indexed_item == nil || indexed_item == "" do
-      parse_item(indexed_item)
-      |> Enum.each(fn i ->
-        Cache.insert(table, List.to_tuple([Inflex.singularize(String.downcase(i)) | items]))
-      end)
-    end
-  end
-
-  def delete_item(table_name, {indexed_item, items}) do
-    unless indexed_item == nil || indexed_item == "" do
-      parse_item(indexed_item)
-      |> Enum.each(fn i ->
-        Cache.delete(table_name, List.to_tuple([Inflex.singularize(String.downcase(i)) | items]))
-      end)
-    end
   end
 end
