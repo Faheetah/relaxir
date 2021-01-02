@@ -3,7 +3,8 @@ defmodule Relaxir.Search.Hydrator do
   import Ecto.Query
 
   require Logger
-  alias Relaxir.Search
+  alias Relaxir.Search.Server
+  alias Relaxir.Search.Helpers
 
   def start_link([repo: repo, tables: tables]) do
     Task.start_link(__MODULE__, :start_hydrate, [repo, tables])
@@ -17,7 +18,7 @@ defmodule Relaxir.Search.Hydrator do
 
   def hydrate(repo, table, indexed_field, fields) do
     Logger.info "#{table}.#{indexed_field} hydration start"
-    table_name = Search.atom_from_module(table, indexed_field)
+    table_name = Helpers.atom_from_module(table, indexed_field)
 
     query = from(table, order_by: [^indexed_field])
     chunk_size = 5000
@@ -40,7 +41,7 @@ defmodule Relaxir.Search.Hydrator do
     |> Stream.map(fn record ->
       {Map.get(record, indexed_field), Enum.map(fields, fn f -> Map.get(record, f) end)}
     end)
-    |> Enum.each(&Search.insert_item(table_name, &1))
+    |> Enum.each(&Server.insert_item(table_name, &1))
     Logger.info "#{table}.#{indexed_field} hydrated"
   end
 end

@@ -14,7 +14,7 @@ defmodule Relaxir.Application do
       # Start the Ecto repository
       Relaxir.Repo,
       {Relaxir.Search.Cache, cache_tables},
-      {Relaxir.Search, tables: cache_tables},
+      {Relaxir.Search.Server, tables: cache_tables},
       {Relaxir.Search.Hydrator, repo: Relaxir.Repo, tables: cache_tables},
       # Start the Telemetry supervisor
       RelaxirWeb.Telemetry,

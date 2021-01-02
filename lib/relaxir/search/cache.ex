@@ -1,9 +1,11 @@
 defmodule Relaxir.Search.Cache do
   use GenServer
 
+  alias Relaxir.Search.Helpers
+
   def start_link(tables) do
     table_names = tables
-    |> Enum.map(fn {t, f, _} -> Relaxir.Search.new_atom_from_module(t, f) end)
+    |> Enum.map(fn {t, f, _} -> Helpers.new_atom_from_module(t, f) end)
     GenServer.start_link(__MODULE__, table_names, name: __MODULE__)
   end
 
