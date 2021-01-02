@@ -20,9 +20,23 @@ defmodule Relaxir.Search do
 
   # Relaxir.Search.get(Relaxir.Ingredients.Food, :description, "green tomatoes")
   def get(module, name, item) do
-    table = atom_from_module(module, name)
+    call =
+      try do
+        table = atom_from_module(module, name)
+        GenServer.call(__MODULE__, {:get, table, item}, 500)
+      rescue
+        ArgumentError ->
+          atom = parse_atom_from_module(module, name)
 
-    call = GenServer.call(__MODULE__, {:get, table, item}, 500)
+          Logger.error("
+            Table #{atom} does not exist in ETS.
+            Is #{module}/#{name} configured in the cache?
+            Verify the Relaxir.Search.Hydrator application is configured with cache_tables.
+          ")
+
+          []
+      end
+
     case call do
       [] -> {:error, :not_found}
       results -> {:ok, results}
@@ -73,7 +87,7 @@ defmodule Relaxir.Search do
 
   ## Genserver
 
-  def start_link([tables: tables]) do
+  def start_link(tables: tables) do
     GenServer.start_link(
       __MODULE__,
       [
@@ -85,7 +99,7 @@ defmodule Relaxir.Search do
   end
 
   def init(args) do
-    Logger.info "Search core started"
+    Logger.info("Search core started")
     {:ok, args}
   end
 
