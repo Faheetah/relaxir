@@ -1,13 +1,14 @@
 defmodule Relaxir.Recipes do
   import Ecto.Query
-  alias Relaxir.Repo
   import Ecto.Changeset
 
+  alias Relaxir.Repo
   alias Relaxir.Categories
   alias Relaxir.Ingredients
+  alias Relaxir.RecipeIngredient
   alias Relaxir.Recipes.Recipe
 
-  @preload [:recipe_ingredients, :ingredients, :units, :recipe_categories, :categories, :user]
+  @preload [[recipe_ingredients: from(ri in RecipeIngredient, order_by: ri.order)], :ingredients, :units, :recipe_categories, :categories, :user]
 
   def list_recipes do
     Repo.all(order_by(Recipe, desc: :updated_at))
