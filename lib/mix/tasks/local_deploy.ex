@@ -31,7 +31,7 @@ defmodule Mix.Tasks.Relaxir.LocalDeploy do
     |> ssh(host, "sudo rsync -av --chown=relaxir:relaxir _build/prod/rel/relaxir/ /home/relaxir/relaxir/")
     |> ssh(host, "sudo -u relaxir bash -c 'cd /home/relaxir && source secrets.source && ./relaxir/bin/relaxir eval Relaxir.Release.migrate'")
     |> ssh(host, "sudo systemctl restart relaxir")
-    |> ssh(host, "sudo rsync -av --delete --chown=relaxir:relaxir relaxir/prod/rel/relaxir /home/relaxir/relaxir/")
+    |> ssh(host, "sudo rsync -av --delete --chown=relaxir:relaxir _build/prod/rel/relaxir/ /home/relaxir/relaxir/")
     cmd("rm", ["relaxir.tar.gz"])
   end
 
