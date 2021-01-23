@@ -41,7 +41,7 @@ defmodule Relaxir.Search.Hydrator do
     |> Stream.map(fn record ->
       {Map.get(record, indexed_field), Enum.map(fields, fn f -> Map.get(record, f) end)}
     end)
-    |> Enum.each(&Server.insert_item(table_name, &1))
+    |> Enum.each(&GenServer.call(Server, {:set, table_name, &1}, 500))
     Logger.info "#{table}.#{indexed_field} hydrated"
   end
 end
