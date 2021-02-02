@@ -81,7 +81,7 @@ defmodule RelaxirWeb.RecipeController do
           recipe_params
           |> RecipeParser.parse_attrs()
           |> Recipes.map_ingredients()
-
+        IO.inspect changeset
         render(conn, "new.html", changeset: changeset, ingredients: ingredients)
     end
   end
@@ -148,6 +148,7 @@ defmodule RelaxirWeb.RecipeController do
         |> redirect(to: Routes.recipe_path(conn, :show, recipe))
 
       {:error, %Ecto.Changeset{} = changeset} ->
+        IO.inspect changeset
         render(conn, "edit.html", recipe: recipe, ingredients: ingredients, changeset: %{changeset | action: :insert})
     end
   end
