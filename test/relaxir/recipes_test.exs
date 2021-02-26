@@ -90,7 +90,7 @@ defmodule Relaxir.RecipesTest do
 
     test "with invalid data returns error changeset", %{recipe: recipe} do
       attrs = %{"title" => nil}
-      assert {:error, recipe} = Recipes.update_recipe(recipe, attrs)
+      assert {:error, _recipe} = Recipes.update_recipe(recipe, attrs)
     end
 
     test "adds new ingredients", %{recipe: recipe} do
