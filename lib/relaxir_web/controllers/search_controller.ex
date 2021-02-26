@@ -60,10 +60,15 @@ defmodule RelaxirWeb.SearchController do
 
     count = Enum.reduce([recipes, categories, ingredients, usda], 0, fn i, acc -> acc + length(i) end)
 
+    terms_for = Map.get(params, "for")
+    list_id = Map.get(params, "id")
+
     render(conn, "search.html",
       current_user: current_user,
       count: count,
       checkboxes: checkboxes,
+      for: terms_for,
+      list_id: list_id,
       results: %{
         "recipes" => Enum.take(recipes, 20),
         "categories" => Enum.take(categories, 20),

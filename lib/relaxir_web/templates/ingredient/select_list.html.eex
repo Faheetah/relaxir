@@ -1,5 +1,6 @@
 <h1>Select a list</h1>
 
+<%= if @for == nil or @for == "groceries" do %>
 <h2>Grocery Lists</h2>
 <ul>
 <%= for grocery_list <- @grocery_lists do %>
@@ -8,7 +9,9 @@
   </li>
 <% end %>
 </ul>
+<% end %>
 
+<%= if @for == nil or @for == "ingredients" do %>
 <h2>Inventory Lists</h2>
 <ul>
 <%= for inventory_list <- @inventory_lists do %>
@@ -17,13 +20,28 @@
   </li>
 <% end %>
 </ul>
+<% end %>
 
 <%= if @list_count == 0 do %>
 <h2>
-  Oops, it looks like you do not have any lists yet. You can add a list to:
+  Oops, it looks like you do not have any lists yet. You can add a list to
   <%= link "Groceries", to: Routes.grocery_list_path(@conn, :new) %>
   or
   <%= link "Inventories", to: Routes.inventory_list_path(@conn, :new) %>
+</h2>
+<% end %>
+
+<%= if @for == "ingredients" and Kernel.length(@inventory_lists) == 0 do %>
+<h2>
+  Oops, it looks like you do not have any inventory lists yet. You can add a list to
+  <%= link "Inventories", to: Routes.inventory_list_path(@conn, :new) %>
+</h2>
+<% end %>
+
+<%= if @for == "groceries" and Kernel.length(@grocery_lists) == 0 do %>
+<h2>
+  Oops, it looks like you do not have any grocery lists yet. You can add a list to
+  <%= link "Groceries", to: Routes.grocery_list_path(@conn, :new) %>
 </h2>
 <% end %>
 

@@ -1,4 +1,4 @@
-<%= form_for @conn, Routes.search_path(@conn, :search), fn f -> %>
+<%= form_for @conn, Routes.search_path(@conn, :search, @conn.query_params), fn f -> %>
   <%= label f, "Search" %>
   <div class="search">
     <%= text_input f, :terms %>
@@ -32,10 +32,28 @@
     <%= if route_exists("#{category}/#{id}") and id != nil do %>
       <p><%= link result, to: "#{category}/#{id}"%>
       <%= if category == "recipes" do %>
-        <span><%= button "+", to: Routes.recipe_list_path(@conn, :select_list, id), method: :get, class: "btn-tiny" %></span>
+        <%= if @for == "recipes" do %>
+          <%= if @list_id == nil do %>
+            <span><%= link "+", to: Routes.recipe_list_path(@conn, :select_list, id), method: :get, class: "btn-tiny" %></span>
+          <% else %>
+            <span><%= button "+", to: Routes.recipe_list_path(@conn, :add_recipe, @list_id, id), class: "btn-tiny" %></span>
+          <% end %>
+        <% else %>
+          <span><%= link "+", to: Routes.recipe_list_path(@conn, :select_list, id), method: :get, class: "btn-tiny button" %></span>
+        <% end %>
       <% end %>
+
       <%= if category == "ingredients" do %>
-        <span><%= button "+", to: Routes.ingredient_path(@conn, :select_list, id), method: :get, class: "btn-tiny" %></span>
+        <%= if @list_id != nil do %>
+          <%= case @for do %>
+          <% "groceries" -> %>
+            <span><%= button "+", to: Routes.grocery_list_path(@conn, :add_ingredient, @list_id, id), class: "btn-tiny button" %></span>
+          <% "ingredients" -> %>
+            <span><%= button "+", to: Routes.inventory_list_path(@conn, :add_ingredient, @list_id, id), class: "btn-tiny button" %></span>
+          <% end %>
+        <% else %>
+          <span><%= link "+", to: Routes.ingredient_path(@conn, :select_list, id, for: @for), method: :get, class: "btn-tiny button" %></span>
+        <% end %>
       <% end %>
       </p>
     <% else %>
