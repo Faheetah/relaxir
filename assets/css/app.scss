@@ -135,3 +135,41 @@ textarea {
 ul {
   list-style-type: none;
 }
+
+.search {
+  display: flex;
+  flex-direction: row;
+}
+
+.search button {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.search input {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.grey {
+  -webkit-filter: grayscale(100%);
+   filter: grayscale(100%);
+    font-size: 2em;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.toggle-button {
+  width: 24%;
+  background-color: #606c76;
+}
+
+.checkbox:checked + .toggle-button {
+  background-color: #0069d9 !important;
+}
+
+.search-checkboxes {
+  text-align: center;
+}

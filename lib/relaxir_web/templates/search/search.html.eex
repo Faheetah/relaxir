@@ -1,29 +1,20 @@
 <%= form_for @conn, Routes.search_path(@conn, :search), fn f -> %>
-  <%= label f, :terms %>
-  <%= text_input f, :terms %>
-  <div>
-    <%= submit "Search" %>
+  <%= label f, "Search" %>
+  <div class="search">
+    <%= text_input f, :terms %>
+    <button type="submit"><span class="grey">🔍</span></button>
   </div>
-  <table>
-    <tr>
-      <td>
-      <%= label f, :recipes %>
-      <%= checkbox f, :recipes, value: @checkboxes.recipes %>
+  <div class="search-checkboxes">
+      <%= checkbox f, :recipes, value: @checkboxes.recipes, class: "hidden checkbox" %>
+      <%= label f, :recipes, class: "button toggle-button" %>
+      <%= checkbox f, :categories, value: @checkboxes.categories, class: "hidden checkbox" %>
+      <%= label f, :categories, class: "button toggle-button" %>
+      <%= checkbox f, :ingredients, value: @checkboxes.ingredients, class: "hidden checkbox" %>
+      <%= label f, :ingredients, class: "button toggle-button" %>
+      <%= checkbox f, :usda, value: @checkboxes.usda, class: "hidden checkbox" %>
+      <%= label f, :usda, class: "button toggle-button" %>
       </td>
-      <td>
-      <%= label f, :categories %>
-      <%= checkbox f, :categories, value: @checkboxes.categories %>
-      </td>
-      <td>
-      <%= label f, :ingredients %>
-      <%= checkbox f, :ingredients, value: @checkboxes.ingredients %>
-      </td>
-      <td>
-      <%= label f, :usda %>
-      <%= checkbox f, :usda, value: @checkboxes.usda %>
-      </td>
-    </tr>
-  </table>
+  </div>
 <% end %>
 
 <%= case @count do %>

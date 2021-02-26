@@ -1,5 +1,14 @@
 <h1>Recipes</h1>
 
+<div>
+<%= form_for @conn, Routes.search_path(@conn, :search), fn f -> %>
+  <div class="search">
+    <%= text_input f, :terms %>
+    <button type="submit"><span class="grey">🔍</span></button>
+  </div>
+<% end %>
+</div>
+
 <span><%= link "all", to: Routes.recipe_path(@conn, :index, show: "all") %></span>
 <span><%= link "drafts", to: Routes.recipe_path(@conn, :index, show: "drafts") %></span>
 <span><%= link "published", to: Routes.recipe_path(@conn, :index, show: "published") %></span>

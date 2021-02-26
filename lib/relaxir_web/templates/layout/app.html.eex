@@ -17,8 +17,6 @@
           </label>
           <input id="hamburger-toggle" type="checkbox" />
 
-
-
           <section class="full-menu">
             <ul class="navigation-list">
               <li class="navigation-item">
