@@ -10,7 +10,7 @@ defmodule Relaxir.IngredientImporter do
     "Nutrient" => Ingredients.Nutrient
   }
 
-  Logger.configure(log: :info)
+  Logger.configure(level: :info)
 
   def import(module_name, path) do
     module = @structs[module_name]
@@ -37,8 +37,8 @@ defmodule Relaxir.IngredientImporter do
 
   def get_error(msg) do
     case msg do
-      # {:error, 
-      # #Ecto.Changeset<action: nil, changes: %{derivation_id: 71, fdc_id: 344604, id: 6320396, nutrient_id: 1003}, errors: [amount: {"is invalid", [type: :integer, validation: :cast]}], data: #Relaxir.Ingredients.FoodNutrient<>, valid?: false>, #Ecto.Changeset<action: :insert, changes: %{derivation_id: 71, fdc_id: 344604, id: 6320396, nutrient_id: 1003}, errors: [amount: {"is invalid", [type: :integer, validation: :cast]}], data: #Relaxir.Ingredients.FoodNutrient<>, valid?: false>, 
+      # {:error,
+      # #Ecto.Changeset<action: nil, changes: %{derivation_id: 71, fdc_id: 344604, id: 6320396, nutrient_id: 1003}, errors: [amount: {"is invalid", [type: :integer, validation: :cast]}], data: #Relaxir.Ingredients.FoodNutrient<>, valid?: false>, #Ecto.Changeset<action: :insert, changes: %{derivation_id: 71, fdc_id: 344604, id: 6320396, nutrient_id: 1003}, errors: [amount: {"is invalid", [type: :integer, validation: :cast]}], data: #Relaxir.Ingredients.FoodNutrient<>, valid?: false>,
       #  %{}
       # }
       {:error, err, _, _} -> IO.inspect(err)
