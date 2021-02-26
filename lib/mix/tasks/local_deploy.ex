@@ -4,8 +4,6 @@ defmodule Mix.Tasks.Relaxir.LocalDeploy do
 
   @shortdoc "Deploy to the server from local install"
   def run([host]) do
-    project = Relaxir.MixProject.project()
-
     :ssh.start()
     {:ok, conn} = :ssh.connect(to_charlist(host), 22, silently_accept_hosts: true)
 
