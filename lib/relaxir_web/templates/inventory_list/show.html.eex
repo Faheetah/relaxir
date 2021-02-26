@@ -13,8 +13,8 @@
 <%= for ingredient_inventory_list <- @inventory_list.ingredient_inventory_lists do %>
 
   <li>
-    <%= link ingredient_inventory_list.ingredient.name, to: Routes.ingredient_path(@conn, :show, ingredient_inventory_list.ingredient) %>
     <%= button "-", to: Routes.inventory_list_path(@conn, :remove_ingredient, @inventory_list.id, ingredient_inventory_list.ingredient.id), method: :delete, class: "btn-tiny" %>
+    <%= link ingredient_inventory_list.ingredient.name, to: Routes.ingredient_path(@conn, :show, ingredient_inventory_list.ingredient) %>
   </li>
 <% end %>
 </ul>

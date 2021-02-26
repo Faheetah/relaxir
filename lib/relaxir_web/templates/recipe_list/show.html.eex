@@ -12,8 +12,8 @@
 <ul>
 <%= for recipe_recipe_list <- @recipe_list.recipe_recipe_lists do %>
   <li>
-    <%= link recipe_recipe_list.recipe.title, to: Routes.recipe_path(@conn, :show, recipe_recipe_list.recipe) %>
     <%= button "-", to: Routes.recipe_list_path(@conn, :remove_recipe, @recipe_list.id, recipe_recipe_list.recipe.id), method: :delete, class: "btn-tiny" %>
+    <%= link recipe_recipe_list.recipe.title, to: Routes.recipe_path(@conn, :show, recipe_recipe_list.recipe) %>
   </li>
 <% end %>
 </ul>

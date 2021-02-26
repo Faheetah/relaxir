@@ -12,8 +12,8 @@
 <ul>
 <%= for ingredient_grocery_list <- @grocery_list.ingredient_grocery_lists do %>
   <li>
-    <%= link ingredient_grocery_list.ingredient.name, to: Routes.ingredient_path(@conn, :show, ingredient_grocery_list.ingredient) %>
     <%= button "-", to: Routes.grocery_list_path(@conn, :remove_ingredient, @grocery_list.id, ingredient_grocery_list.ingredient.id), method: :delete, class: "btn-tiny" %>
+    <%= link ingredient_grocery_list.ingredient.name, to: Routes.ingredient_path(@conn, :show, ingredient_grocery_list.ingredient) %>
   </li>
 <% end %>
 </ul>
