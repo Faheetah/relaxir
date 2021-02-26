@@ -1,7 +1,7 @@
 <h1>Recipes</h1>
 
 <div>
-<%= form_for @conn, Routes.search_path(@conn, :search), fn f -> %>
+<%= form_for @conn, Routes.search_path(@conn, :search, recipes: true, categories: true, ingredients: true, usda: true), fn f -> %>
   <div class="search">
     <%= text_input f, :terms %>
     <button type="submit"><span class="grey">🔍</span></button>
