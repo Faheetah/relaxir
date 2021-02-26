@@ -30,7 +30,7 @@
 
   <%= for {_, result, id} <- results do %>
     <%= if route_exists("#{category}/#{id}") and id != nil do %>
-      <p><%= link result, to: "#{category}/#{id}"%>
+      <p>
       <%= if category == "recipes" do %>
         <%= if @for == "recipes" do %>
           <%= if @list_id == nil do %>
@@ -55,13 +55,18 @@
           <span><%= link "+", to: Routes.ingredient_path(@conn, :select_list, id, for: @for), method: :get, class: "btn-tiny button" %></span>
         <% end %>
       <% end %>
+      <%= link result, to: "#{category}/#{id}"%>
       </p>
     <% else %>
       <p>
-        <%= result %>
         <%= if category == "usda" do %>
-          <span><%= button "+", to: Routes.ingredient_path(@conn, :create, ingredient: %{"name" => result}), class: "btn-tiny" %></span>
+          <%= if @list_id do %>
+          <span><%= button "+", to: Routes.ingredient_path(@conn, :create, ingredient: %{"name" => result}, for: @for, list_id: @list_id), class: "btn-tiny" %></span>
+          <% else %>
+          <span><%= button "+", to: Routes.ingredient_path(@conn, :create, ingredient: %{"name" => result}, for: @for, list_id: @list_id), class: "btn-tiny" %></span>
+          <% end %>
         <% end %>
+        <%= result %>
       </p>
     <% end %>
   <% end %>

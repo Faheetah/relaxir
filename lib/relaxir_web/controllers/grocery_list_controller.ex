@@ -71,18 +71,20 @@ defmodule RelaxirWeb.GroceryListController do
     grocery_list = GroceryLists.get_grocery_list!(id)
 
     GroceryLists.remove_ingredient(grocery_list, String.to_integer(ingredient_id))
-    conn
-    |> put_flash(:info, "Ingredient removed successfully.")
-    |> redirect(to: Routes.grocery_list_path(conn, :show, grocery_list))
+    redirect(conn, to: Routes.grocery_list_path(conn, :show, grocery_list))
   end
 
   def add_ingredient(conn, %{"id" => id, "ingredient_id" => ingredient_id}) do
     grocery_list = GroceryLists.get_grocery_list!(id)
 
-    case GroceryLists.add_ingredient(grocery_list, String.to_integer(ingredient_id)) do
+    ingredient_id = cond do
+      is_integer(ingredient_id) -> ingredient_id
+      is_binary(ingredient_id) -> String.to_integer(ingredient_id)
+    end
+
+    case GroceryLists.add_ingredient(grocery_list, ingredient_id) do
       :ok ->
         conn
-        |> put_flash(:info, "Ingredient added successfully.")
         |> redirect(to: Routes.grocery_list_path(conn, :show, grocery_list))
       _ ->
         conn

@@ -16,6 +16,29 @@ defmodule RelaxirWeb.IngredientController do
     render(conn, "new.html", changeset: changeset)
   end
 
+  def create(conn, %{"ingredient" => ingredient_params, "for" => list_for, "list_id" => list_id}) do
+    case Ingredients.create_ingredient(ingredient_params) do
+      {:ok, ingredient} ->
+        case list_for do
+          "groceries" -> RelaxirWeb.GroceryListController.add_ingredient(conn, %{"id" => list_id, "ingredient_id" => ingredient.id})
+          "inventories" -> RelaxirWeb.InventoryListController.add_ingredient(conn, %{"id" => list_id, "ingredient_id" => ingredient.id})
+        end
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        render(conn, "new.html", changeset: changeset)
+    end
+  end
+
+  def create(conn, %{"ingredient" => ingredient_params, "for" => list_for}) do
+    case Ingredients.create_ingredient(ingredient_params) do
+      {:ok, ingredient} ->
+        select_list(conn, %{"ingredient_id" => ingredient.id, "for" => list_for})
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        render(conn, "new.html", changeset: changeset)
+    end
+  end
+
   def create(conn, %{"ingredient" => ingredient_params}) do
     case Ingredients.create_ingredient(ingredient_params) do
       {:ok, ingredient} ->

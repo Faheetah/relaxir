@@ -70,9 +70,7 @@ defmodule RelaxirWeb.InventoryListController do
     inventory_list = InventoryLists.get_inventory_list!(id)
 
     InventoryLists.remove_ingredient(inventory_list, String.to_integer(ingredient_id))
-    conn
-    |> put_flash(:info, "Ingredient removed successfully.")
-    |> redirect(to: Routes.inventory_list_path(conn, :show, inventory_list))
+    redirect(conn, to: Routes.inventory_list_path(conn, :show, inventory_list))
   end
 
   def add_ingredient(conn, %{"id" => id, "ingredient_id" => ingredient_id}) do
@@ -81,7 +79,6 @@ defmodule RelaxirWeb.InventoryListController do
     case InventoryLists.add_ingredient(inventory_list, String.to_integer(ingredient_id)) do
       :ok ->
         conn
-        |> put_flash(:info, "Ingredient added successfully.")
         |> redirect(to: Routes.inventory_list_path(conn, :show, inventory_list))
       _ ->
         conn
