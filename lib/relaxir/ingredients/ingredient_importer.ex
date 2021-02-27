@@ -1,6 +1,5 @@
 defmodule Relaxir.IngredientImporter do
   import Ecto.Query, warn: false
-  alias Ecto.Multi
   alias Relaxir.Repo
   alias Relaxir.Ingredients
 
@@ -14,36 +13,25 @@ defmodule Relaxir.IngredientImporter do
 
   def import(module_name, path) do
     module = @structs[module_name]
+    now = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
 
     do_import(path)
     |> Stream.map(&module.changeset(struct(module, %{}), &1))
+    |> Stream.filter(fn entry -> entry.valid? == true end)
+    |> Stream.map(&Ecto.Changeset.apply_changes/1)
+    |> Stream.map(&Map.take(&1, module.__schema__(:fields)))
+    |> Stream.map(fn entry ->
+      entry
+      |> Map.drop([:id])
+      |> Map.merge(%{inserted_at: now, updated_at: now})
+    end)
     |> Stream.chunk_every(1000)
     |> Stream.with_index()
-    |> Enum.each(&insert_multiple(&1))
-  end
-
-  def insert_multiple({entries, index}) do
-    IO.write("Batch #{index + 1}")
-
-    entries
-    |> Enum.reduce(Multi.new(), fn entry, multi ->
-      Multi.insert(multi, entry, entry, on_conflict: :nothing)
+    |> Stream.map(fn {chunk, index} ->
+      IO.puts("Inserted records: #{index + 1}k")
+      chunk
     end)
-    |> Repo.transaction()
-    |> get_error
-
-    IO.write(".. done\n")
-  end
-
-  def get_error(msg) do
-    case msg do
-      # {:error,
-      # #Ecto.Changeset<action: nil, changes: %{derivation_id: 71, fdc_id: 344604, id: 6320396, nutrient_id: 1003}, errors: [amount: {"is invalid", [type: :integer, validation: :cast]}], data: #Relaxir.Ingredients.FoodNutrient<>, valid?: false>, #Ecto.Changeset<action: :insert, changes: %{derivation_id: 71, fdc_id: 344604, id: 6320396, nutrient_id: 1003}, errors: [amount: {"is invalid", [type: :integer, validation: :cast]}], data: #Relaxir.Ingredients.FoodNutrient<>, valid?: false>,
-      #  %{}
-      # }
-      {:error, err, _, _} -> IO.inspect(err)
-      _ -> true
-    end
+    |> Enum.each(fn chunk -> Repo.insert_all(module, chunk, on_conflict: :nothing) end)
   end
 
   def do_import(path) do
