@@ -41,4 +41,10 @@ defmodule Relaxir.Users do
   def get_by_email(email) do
     Repo.get_by(User, email: email)
   end
+
+  def reset_password(user, password, password_confirmation) do
+    user
+    |> User.changeset(%{password: password, password_confirmation: password_confirmation})
+    |> Repo.insert()
+  end
 end
