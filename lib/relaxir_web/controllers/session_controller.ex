@@ -3,27 +3,36 @@ defmodule RelaxirWeb.SessionController do
   alias Relaxir.Users
   alias RelaxirWeb.Authentication
 
-  def new(conn, _params) do
+  def new(conn, params) do
     if Authentication.get_current_user(conn) do
-      redirect(conn, to: Routes.profile_path(conn, :show))
+      case Map.fetch(params, "redirected_from") do
+        {:ok, path} -> redirect(conn, to: path)
+        _ -> redirect(conn, to: Routes.profile_path(conn, :show))
+      end
     else
       render(
         conn,
         :new,
         changeset: Users.change_user(),
-        action: Routes.session_path(conn, :create)
+        action: Routes.session_path(
+          conn,
+          :create,
+          redirected_from: Map.get(params, "redirected_from")
+        )
       )
     end
   end
 
-  def create(conn, %{"user" => %{"email" => email, "password" => password}}) do
+  def create(conn, params = %{"user" => %{"email" => email, "password" => password}}) do
     case email
          |> Users.get_by_email()
          |> Authentication.authenticate(password) do
       {:ok, user} ->
-        conn
-        |> Authentication.log_in(user)
-        |> redirect(to: Routes.profile_path(conn, :show))
+        conn = Authentication.log_in(conn, user)
+        case Map.fetch(params, "redirected_from") do
+          {:ok, path} -> redirect(conn, to: path)
+          _ -> redirect(conn, to: Routes.profile_path(conn, :show))
+        end
 
       {:error, :invalid_credentials} ->
         conn

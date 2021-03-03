@@ -34,16 +34,16 @@
               <li class="navigation-item">
                 <a href="/tools" title="Tools">Tools</a>
               </li>
-              <li class="navigation-item">
-                <a href="/recipelists" title="Recipe Lists">Recipe Lists</a>
-              </li>
-              <li class="navigation-item">
-                <a href="/grocerylists" title="Grocery Lists">Grocery Lists</a>
-              </li>
-              <li class="navigation-item">
-                <a href="/inventorylists" title="Inventory Lists">Inventory Lists</a>
-              </li>
               <%= if @conn.assigns[:current_user] do %>
+                <li class="navigation-item">
+                  <a href="/recipelists" title="Recipe Lists">Recipe Lists</a>
+                </li>
+                <li class="navigation-item">
+                  <a href="/grocerylists" title="Grocery Lists">Grocery Lists</a>
+                </li>
+                <li class="navigation-item">
+                  <a href="/inventorylists" title="Inventory Lists">Inventory Lists</a>
+                </li>
                 <%= if function_exported?(Routes, :live_dashboard_path, 2) do %>
                   <li class="navigation-item"><%= link "LiveDashboard", to: Routes.live_dashboard_path(@conn, :home) %></li>
                 <% end %>

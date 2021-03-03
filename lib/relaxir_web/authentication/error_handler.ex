@@ -13,7 +13,7 @@ defmodule RelaxirWeb.Authentication.ErrorHandler do
 
     conn
     |> RelaxirWeb.Authentication.log_out()
-    |> put_flash(:error, "Authentication error. #{error_message}")
-    |> redirect(to: Routes.recipe_path(conn, :index))
+    |> put_flash(:error, "Authentication error. Please log back in. #{error_message}")
+    |> redirect(to: Routes.session_path(conn, :new, redirected_from: conn.request_path))
   end
 end
