@@ -11,7 +11,7 @@ defmodule Relaxir.Users do
   end
 
   def get_or_register(%Ueberauth.Auth{info: %{email: email}} = params) do
-    if user = get_by_email(email) do
+    if user = get_by_email(String.downcase(email)) do
       {:ok, user}
     else
       register(params)
@@ -39,7 +39,7 @@ defmodule Relaxir.Users do
   end
 
   def get_by_email(email) do
-    Repo.get_by(User, email: email)
+    Repo.get_by(User, email: String.downcase(email))
   end
 
   def reset_password(user, password, password_confirmation) do

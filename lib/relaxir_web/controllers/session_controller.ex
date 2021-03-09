@@ -25,12 +25,13 @@ defmodule RelaxirWeb.SessionController do
 
   def create(conn, params = %{"user" => %{"email" => email, "password" => password}}) do
     case email
+         |> String.downcase()
          |> Users.get_by_email()
          |> Authentication.authenticate(password) do
       {:ok, user} ->
         conn = Authentication.log_in(conn, user)
         case Map.fetch(params, "redirected_from") do
-          {:ok, path} -> redirect(conn, to: path)
+          {:ok, path} when path != "" -> redirect(conn, to: path)
           _ -> redirect(conn, to: Routes.profile_path(conn, :show))
         end
 

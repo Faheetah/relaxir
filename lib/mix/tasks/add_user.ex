@@ -18,7 +18,7 @@ defmodule Mix.Tasks.Relaxir.AddUser do
 
     %User{}
     |> User.changeset(%{
-      email: data["email"],
+      email: String.downcase(data["email"]),
       password: data["password"],
       password_confirmation: data["password"],
       is_admin: data["admin"]
