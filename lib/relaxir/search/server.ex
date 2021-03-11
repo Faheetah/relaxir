@@ -71,10 +71,10 @@ defmodule Relaxir.Search.Server do
           end)
           |> hd
           |> Enum.dedup_by(&elem(&1, 1))
-          |> Enum.reduce(%{}, fn item, acc ->
-            name = elem(item, 1)
-            length = 1 + 1 / String.length(name)
-            Map.update(acc, item, length, &(&1 + length))
+          |> Enum.reduce(%{}, fn found_item, acc ->
+            name = String.downcase(elem(found_item, 1))
+            length = (1 / (Enum.count(items -- items -- String.split(name, " ")) + 1) + item_contains_full_term(name, item)) / String.length(name)
+            Map.update(acc, found_item, length, &(&1 + length))
           end)
           |> Enum.sort_by(fn {_, score} -> score end, :desc)
 
@@ -108,6 +108,20 @@ defmodule Relaxir.Search.Server do
   end
 
   ## Private logic
+
+  defp items_in_name(name, items) do
+    Enum.filter(items, fn item ->
+      String.contains?(name, item)
+    end)
+    |> Enum.count()
+  end
+
+  defp item_contains_full_term(name, term) do
+    cond do
+      name =~ term -> 5
+      true -> 0
+    end
+  end
 
   defp compare(left, right) do
     cond do
