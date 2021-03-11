@@ -109,13 +109,6 @@ defmodule Relaxir.Search.Server do
 
   ## Private logic
 
-  defp items_in_name(name, items) do
-    Enum.filter(items, fn item ->
-      String.contains?(name, item)
-    end)
-    |> Enum.count()
-  end
-
   defp item_contains_full_term(name, term) do
     cond do
       name =~ term -> 5
