@@ -25,10 +25,6 @@ defmodule Relaxir.Search.Cache do
     GenServer.call(__MODULE__, {:get, table, item}, 500)
   end
 
-  def get_fuzzy(table, items) do
-    GenServer.cast(__MODULE__, {:get_fuzzy, table, items})
-  end
-
   def init(tables) do
     Enum.each(tables, fn table ->
       :ets.new(table, [:named_table, :duplicate_bag, :private])
@@ -56,11 +52,6 @@ defmodule Relaxir.Search.Cache do
 
   def handle_call({:get, table, item}, _from, state) do
     results = :ets.lookup(table, item)
-    {:reply, results, state}
-  end
-
-  def handle_call({:get_fuzzy, table, items}, _from, state) do
-    results = :ets.select(table, for(k <- items, do: {{k, :"$1", :"$2"}, [], [{{:"$1", :"$2"}}]}))
     {:reply, results, state}
   end
 end
