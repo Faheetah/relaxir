@@ -24,7 +24,7 @@ defmodule Relaxir.Search do
     call =
       try do
         table = Helpers.atom_from_module(module, name)
-        GenServer.call(Server, {:get, table, item}, 500)
+        GenServer.call(Server, {:get, table, item}, 5000)
       rescue
         ArgumentError ->
           atom = Helpers.parse_atom_from_module(module, name)

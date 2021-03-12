@@ -34,6 +34,7 @@ defmodule Relaxir.Search.Server do
           |> Enum.map(&String.downcase/1)
           |> Enum.map(&Inflex.singularize/1)
           |> Enum.reject(&(&1 == "" || &1 == nil))
+          |> Enum.sort()
 
         found =
           Enum.map(items, fn item ->
@@ -42,8 +43,18 @@ defmodule Relaxir.Search.Server do
           |> hd
           |> Enum.dedup_by(&elem(&1, 1))
           |> Enum.reduce(%{}, fn found_item, acc ->
-            name = String.downcase(elem(found_item, 1))
-            length = (1 / (Enum.count(items -- items -- String.split(name, " ")) + 1) + item_contains_full_term(name, item)) / String.length(name)
+            name =
+              Regex.scan(~r/[a-zA-Z]+/, elem(found_item, 1))
+              |> Enum.map(fn [i] -> i end)
+              |> Enum.reject(&(&1 == "" || &1 == nil))
+              |> Enum.map(&String.trim/1)
+              |> Enum.map(&String.downcase/1)
+              |> Enum.map(&Inflex.singularize/1)
+              |> Enum.reject(&(&1 == "" || &1 == nil))
+              |> Enum.sort()
+
+            length = Enum.count(items -- items -- name) + (1 / String.length(elem(found_item, 1)))
+
             Map.update(acc, found_item, length, &(&1 + length))
           end)
           |> Enum.sort_by(fn {_, score} -> score end, :desc)
@@ -81,8 +92,8 @@ defmodule Relaxir.Search.Server do
 
   defp item_contains_full_term(name, term) do
     cond do
-      name =~ term -> 5
-      true -> 0
+      name =~ term -> 2
+      true -> 1
     end
   end
 

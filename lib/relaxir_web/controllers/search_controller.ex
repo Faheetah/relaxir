@@ -5,7 +5,7 @@ defmodule RelaxirWeb.SearchController do
     recipes: true,
     categories: true,
     ingredients: true,
-    usda: true
+    usda: false
   }
 
   def search_for(module, name, terms) do
