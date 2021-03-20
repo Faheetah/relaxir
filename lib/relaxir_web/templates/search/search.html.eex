@@ -48,7 +48,7 @@
           <%= case @for do %>
           <% "groceries" -> %>
             <span><%= button "+", to: Routes.grocery_list_path(@conn, :add_ingredient, @list_id, id), class: "btn-tiny button" %></span>
-          <% "ingredients" -> %>
+          <% "inventories" -> %>
             <span><%= button "+", to: Routes.inventory_list_path(@conn, :add_ingredient, @list_id, id), class: "btn-tiny button" %></span>
           <% end %>
         <% else %>

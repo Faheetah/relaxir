@@ -1,6 +1,6 @@
 <h1><%= @inventory_list.name %></h1>
 
-<%= form_for @conn, Routes.search_path(@conn, :search, ingredients: true, usda: true, for: :ingredients, id: @inventory_list.id), fn f -> %>
+<%= form_for @conn, Routes.search_path(@conn, :search, ingredients: true, usda: true, for: :inventories, id: @inventory_list.id), fn f -> %>
   <div class="search">
     <%= text_input f, :terms %>
     <button type="submit"><span class="grey">🔍</span></button>
