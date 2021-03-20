@@ -2,4 +2,4 @@
 
 <%= render "form.html", Map.put(assigns, :action, Routes.grocery_list_path(@conn, :update, @grocery_list)) %>
 
-<span><%= link "Back", to: Routes.grocery_list_path(@conn, :index) %></span>
+<span><%= link "Back", to: Routes.grocery_list_path(@conn, :show, @grocery_list) %></span>

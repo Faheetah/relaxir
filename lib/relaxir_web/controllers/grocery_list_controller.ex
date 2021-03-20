@@ -49,9 +49,7 @@ defmodule RelaxirWeb.GroceryListController do
 
     case GroceryLists.update_grocery_list(grocery_list, grocery_list_params) do
       {:ok, grocery_list} ->
-        conn
-        |> put_flash(:info, "Grocery list updated successfully.")
-        |> redirect(to: Routes.grocery_list_path(conn, :show, grocery_list))
+        redirect(conn, to: Routes.grocery_list_path(conn, :show, grocery_list))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "edit.html", grocery_list: grocery_list, changeset: changeset)

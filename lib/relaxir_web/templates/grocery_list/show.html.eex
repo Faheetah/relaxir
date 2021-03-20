@@ -1,6 +1,7 @@
 <h1><%= @grocery_list.name %></h1>
 
 <%= form_for @conn, Routes.search_path(@conn, :search, ingredients: true, usda: true, for: :groceries, id: @grocery_list.id), fn f -> %>
+  <%= label f, :add_ingredient %>
   <div class="search">
     <%= text_input f, :terms %>
     <button type="submit"><span class="grey">🔍</span></button>
@@ -18,6 +19,8 @@
 <% end %>
 </ul>
 <% end %>
+
+<%= render_markdown @grocery_list.note %>
 
 <span><%= link "Edit", to: Routes.grocery_list_path(@conn, :edit, @grocery_list) %></span>
 <span><%= link "Back", to: Routes.grocery_list_path(@conn, :index) %></span>
