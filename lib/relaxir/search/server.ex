@@ -90,13 +90,6 @@ defmodule Relaxir.Search.Server do
 
   ## Private logic
 
-  defp item_contains_full_term(name, term) do
-    cond do
-      name =~ term -> 2
-      true -> 1
-    end
-  end
-
   defp parse_item(value) do
     Regex.scan(~r/[a-zA-Z]+/, value)
     |> Enum.map(fn [i] -> i end)
