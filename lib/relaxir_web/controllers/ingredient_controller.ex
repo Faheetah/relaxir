@@ -22,6 +22,7 @@ defmodule RelaxirWeb.IngredientController do
         case list_for do
           "groceries" -> RelaxirWeb.GroceryListController.add_ingredient(conn, %{"id" => list_id, "ingredient_id" => ingredient.id})
           "inventories" -> RelaxirWeb.InventoryListController.add_ingredient(conn, %{"id" => list_id, "ingredient_id" => ingredient.id})
+          _ -> redirect(conn, to: Routes.ingredient_path(conn, :show, ingredient))
         end
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -42,9 +43,7 @@ defmodule RelaxirWeb.IngredientController do
   def create(conn, %{"ingredient" => ingredient_params}) do
     case Ingredients.create_ingredient(ingredient_params) do
       {:ok, ingredient} ->
-        conn
-        |> put_flash(:info, "Ingredient created successfully.")
-        |> redirect(to: Routes.ingredient_path(conn, :show, ingredient))
+        redirect(conn, to: Routes.ingredient_path(conn, :show, ingredient))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "new.html", changeset: changeset)
