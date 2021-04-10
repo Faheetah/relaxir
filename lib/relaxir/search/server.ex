@@ -26,38 +26,13 @@ defmodule Relaxir.Search.Server do
   def handle_call({:get, table, item}, _from, state) do
     {duration, results} =
       :timer.tc(fn ->
-        items =
-          Regex.scan(~r/[a-zA-Z]+/, item)
-          |> Enum.map(fn [i] -> i end)
-          |> Enum.reject(&(&1 == "" || &1 == nil))
-          |> Enum.map(&String.trim/1)
-          |> Enum.map(&String.downcase/1)
-          |> Enum.map(&Inflex.singularize/1)
-          |> Enum.reject(&(&1 == "" || &1 == nil))
-          |> Enum.sort()
+        items = split_terms(item)
 
         found =
-          Enum.map(items, fn item ->
-            Cache.get(table, item)
-          end)
+          items
+          |> Enum.map(fn item -> Cache.get(table, item) end)
           |> hd
-          |> Enum.dedup_by(&elem(&1, 1))
-          |> Enum.reduce(%{}, fn found_item, acc ->
-            name =
-              Regex.scan(~r/[a-zA-Z]+/, elem(found_item, 1))
-              |> Enum.map(fn [i] -> i end)
-              |> Enum.reject(&(&1 == "" || &1 == nil))
-              |> Enum.map(&String.trim/1)
-              |> Enum.map(&String.downcase/1)
-              |> Enum.map(&Inflex.singularize/1)
-              |> Enum.reject(&(&1 == "" || &1 == nil))
-              |> Enum.sort()
-
-            length = Enum.count(items -- items -- name) + (1 / String.length(elem(found_item, 1)))
-
-            Map.update(acc, found_item, length, &(&1 + length))
-          end)
-          |> Enum.sort_by(fn {_, score} -> score end, :desc)
+          |> filter_items(items)
 
         {:reply, found, state}
       end)
@@ -89,6 +64,39 @@ defmodule Relaxir.Search.Server do
   end
 
   ## Private logic
+
+  defp split_terms(item) do
+    Regex.scan(~r/[a-zA-Z]+/, item)
+    |> Enum.map(fn [i] -> i end)
+    |> Enum.reject(&(&1 == "" || &1 == nil))
+    |> Enum.map(&String.trim/1)
+    |> Enum.map(&String.downcase/1)
+    |> Enum.map(&Inflex.singularize/1)
+    |> Enum.reject(&(&1 == "" || &1 == nil))
+    |> Enum.sort()
+  end
+
+  defp filter_items(results, items) do
+    results
+    |> Enum.dedup_by(&elem(&1, 1))
+    |> Enum.reduce(%{}, fn found_item, acc ->
+      name = parse_item_name(found_item)
+      length = Enum.count(items -- items -- name) + 1 / String.length(elem(found_item, 1))
+      Map.update(acc, found_item, length, &(&1 + length))
+    end)
+    |> Enum.sort_by(fn {_, score} -> score end, :desc)
+  end
+
+  defp parse_item_name(item) do
+    Regex.scan(~r/[a-zA-Z]+/, elem(item, 1))
+    |> Enum.map(fn [i] -> i end)
+    |> Enum.reject(&(&1 == "" || &1 == nil))
+    |> Enum.map(&String.trim/1)
+    |> Enum.map(&String.downcase/1)
+    |> Enum.map(&Inflex.singularize/1)
+    |> Enum.reject(&(&1 == "" || &1 == nil))
+    |> Enum.sort()
+  end
 
   defp parse_item(value) do
     Regex.scan(~r/[a-zA-Z]+/, value)
