@@ -65,8 +65,8 @@ defmodule RelaxirWeb.Router do
     end
 
     get "/", RecipeController, :index
-    get "/register", RegistrationController, :new
-    post "/register", RegistrationController, :create
+    # get "/register", RegistrationController, :new
+    # post "/register", RegistrationController, :create
 
     get "/login", SessionController, :new
     post "/login", SessionController, :create
