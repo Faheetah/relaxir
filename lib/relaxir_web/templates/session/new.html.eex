@@ -14,16 +14,3 @@
     <% end %>
   </div>
 </div>
-<div class="row">
-  <div class="column column-50 column-offset-25">
-    <p>
-      Need an user?
-      <%= link "Register here", to: Routes.registration_path(@conn, :new) %>
-    </p>
-  </div>
-</div>
-<div class="row">
-  <div class="column column-50 column-offset-25">
-    <%= render(RelaxirWeb.SessionView, "social_links.html", assigns) %>
-  </div>
-</div>

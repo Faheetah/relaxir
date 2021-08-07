@@ -41,3 +41,9 @@ Wait for the build job
 # USDA Data
 
 Can be found at https://fdc.nal.usda.gov/portal-data/external/dataDictionary
+
+Load it in with:
+
+```
+mix relaxir.import Food ../../food-data/food.csv
+```
