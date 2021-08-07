@@ -18,13 +18,13 @@ defmodule RelaxirWeb.AuthController do
       {:error, _error_changeset} ->
         conn
         |> put_flash(:error, "Authentication failed.")
-        |> redirect(to: Routes.registration_path(conn, :new))
+        |> redirect(to: Routes.session_path(conn, :new, redirected_from: conn.request_path))
     end
   end
 
   def callback(%{assigns: %{ueberauth_failure: _}} = conn, _params) do
     conn
     |> put_flash(:error, "Authentication failed.")
-    |> redirect(to: Routes.registration_path(conn, :new))
+    |> redirect(to: Routes.session_path(conn, :new, redirected_from: conn.request_path))
   end
 end
