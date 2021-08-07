@@ -7,24 +7,24 @@ defmodule Relaxir.Search do
 
   ## Public API
 
-  # Relaxir.Search.delete(Relaxir.Ingredients.Food, :description, {"Green Tomatoes", ["Green Tomatoes", 1]})
+  # Invert.delete(Relaxir.Ingredients.Food, :description, {"Green Tomatoes", ["Green Tomatoes", 1]})
   def delete(module, name, item) do
     table = Helpers.atom_from_module(module, name)
     GenServer.call(Server, {:delete, table, item}, 500)
   end
 
-  # Relaxir.Search.set(Relaxir.Ingredients.Food, :description, {"Green Tomatoes", ["Green Tomatoes", 1]})
+  # Invert.set(Relaxir.Ingredients.Food, :description, {"Green Tomatoes", ["Green Tomatoes", 1]})
   def set(module, name, item) do
     table = Helpers.atom_from_module(module, name)
     GenServer.call(Server, {:set, table, item}, 500)
   end
 
-  # Relaxir.Search.get(Relaxir.Ingredients.Food, :description, "green tomatoes")
+  # Invert.get(Relaxir.Ingredients.Food, :description, "green tomatoes")
   def get(module, name, item) do
     call =
       try do
         table = Helpers.atom_from_module(module, name)
-        GenServer.call(Server, {:get, table, item}, 5000)
+        GenServer.call(Server, {:get, table, item}, 25000)
       rescue
         ArgumentError ->
           atom = Helpers.parse_atom_from_module(module, name)

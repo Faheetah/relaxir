@@ -3,8 +3,8 @@ defmodule Relaxir.Search.Hydrator do
   import Ecto.Query
 
   require Logger
-  alias Relaxir.Search.Server
-  alias Relaxir.Search.Helpers
+  alias Invert.Server
+  alias Invert.Helpers
 
   def start_link([repo: repo, tables: tables]) do
     Task.start_link(__MODULE__, :start_hydrate, [repo, tables])

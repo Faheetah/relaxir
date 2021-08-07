@@ -9,7 +9,7 @@ defmodule RelaxirWeb.SearchController do
   }
 
   def search_for(module, name, terms) do
-    case Relaxir.Search.get(module, name, terms) do
+    case Invert.get(module, name, terms) do
       {:ok, results} -> results
       {:error, :not_found} -> []
     end

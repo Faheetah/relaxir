@@ -54,6 +54,6 @@ defmodule RelaxirWeb.Telemetry do
 
   defp periodic_measurements do
     Relaxir.Application.get_cache_tables()
-    |> Enum.map(fn t -> {Relaxir.Search, :get_count, Tuple.to_list(t)} end)
+    |> Enum.map(fn t -> {Invert, :get_count, Tuple.to_list(t)} end)
   end
 end

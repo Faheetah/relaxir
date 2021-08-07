@@ -5,16 +5,14 @@ defmodule Relaxir.Application do
 
   use Application
 
-  def get_cache_tables(), do: Application.get_env(:relaxir, __MODULE__)[:cache_tables]
+  def get_cache_tables(), do: Application.get_env(:invert, Invert)[:tables]
 
   def start(_type, _args) do
-    cache_tables = Application.get_env(:relaxir, __MODULE__)[:cache_tables]
+    cache_tables = Application.get_env(:invert, Invert)[:tables]
 
     children = [
       # Start the Ecto repository
       Relaxir.Repo,
-      {Relaxir.Search.Cache, cache_tables},
-      {Relaxir.Search.Server, tables: cache_tables},
       {Relaxir.Search.Hydrator, repo: Relaxir.Repo, tables: cache_tables},
       # Start the Telemetry supervisor
       RelaxirWeb.Telemetry,

@@ -21,8 +21,8 @@ config :relaxir, RelaxirWeb.Endpoint,
 config :relaxir, RelaxirWeb.Authentication,
   ttl: {4, :weeks}
 
-config :relaxir, Relaxir.Application,
-  cache_tables: [
+config :invert, Invert,
+  tables: [
     {Relaxir.Ingredients.Food, :description, [:description, :fdc_id]},
     {Relaxir.Ingredients.Ingredient, :name, [:name, :id]},
     {Relaxir.Categories.Category, :name, [:name, :id]},

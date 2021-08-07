@@ -157,11 +157,11 @@ defmodule Relaxir.Recipes do
   end
 
   def insert_cache(recipe) do
-    Relaxir.Search.set(Relaxir.Recipes.Recipe, :title, {recipe.title, [recipe.title, recipe.id]})
+    Invert.set(Relaxir.Recipes.Recipe, :title, {recipe.title, [recipe.title, recipe.id]})
   end
 
   def delete_cache(recipe) do
-    Relaxir.Search.delete(Relaxir.Recipes.Recipe, :title, {recipe.title, [recipe.title, recipe.id]})
+    Invert.delete(Relaxir.Recipes.Recipe, :title, {recipe.title, [recipe.title, recipe.id]})
   end
 
   def get_recipe_ingredient_suggestions(changeset) do
@@ -180,7 +180,7 @@ defmodule Relaxir.Recipes do
           ingredient
 
         true ->
-          case Relaxir.Search.get(Ingredients.Ingredient, :name, ingredient_name) do
+          case Invert.get(Ingredients.Ingredient, :name, ingredient_name) do
             {:ok, suggestion} ->
               {{_, s, _}, score} = hd(suggestion)
 
@@ -189,7 +189,7 @@ defmodule Relaxir.Recipes do
                   put_change(ingredient, :suggestion, %{name: String.downcase(s), type: "ingredient", score: round(score * 10)})
 
                 true ->
-                  case Relaxir.Search.get(Ingredients.Food, :description, ingredient_name) do
+                  case Invert.get(Ingredients.Food, :description, ingredient_name) do
                     {:ok, suggestion} ->
                       {{_, s, _}, score} = hd(suggestion)
 
@@ -207,7 +207,7 @@ defmodule Relaxir.Recipes do
               end
 
             {:error, :not_found} ->
-              case Relaxir.Search.get(Ingredients.Food, :description, ingredient_name) do
+              case Invert.get(Ingredients.Food, :description, ingredient_name) do
                 {:ok, suggestion} ->
                   {{_, s, _}, score} = hd(suggestion)
 
