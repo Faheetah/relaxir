@@ -28,7 +28,10 @@
     <h2><%= String.capitalize(category) %></h2>
   <% end %>
 
-  <%= for {_, result, id} <- results do %>
+  <%= for {[result, id], score} <- results do %>
+    <%= if Mix.env() == :dev do %>
+      Score <%= score %>
+    <% end %>
     <%= if route_exists("#{category}/#{id}") and id != nil do %>
       <p>
       <%= if category == "recipes" do %>
