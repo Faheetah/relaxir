@@ -14,7 +14,7 @@ defmodule Mix.Tasks.Relaxir.LocalDeploy do
       "npm run deploy --prefix ./assets",
       "mix phx.digest",
       "mix release --overwrite",
-      "tar -zcvf relaxir.tar.gz _build/prod/rel/relaxir/",
+      "tar -zcf relaxir.tar.gz _build/prod/rel/relaxir/",
       "scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null relaxir.tar.gz #{host}:relaxir.tar.gz"
     ]
     |> Enum.each(fn(command) ->
@@ -25,7 +25,7 @@ defmodule Mix.Tasks.Relaxir.LocalDeploy do
 
 
     conn
-    |> ssh(host, "tar -zvxf relaxir.tar.gz")
+    |> ssh(host, "tar -zxf relaxir.tar.gz")
     |> ssh(host, "sudo rsync -av --chown=relaxir:relaxir _build/prod/rel/relaxir/ /home/relaxir/relaxir/")
     |> ssh(host, "sudo -u relaxir bash -c 'cd /home/relaxir && source secrets.source && ./relaxir/bin/relaxir eval Relaxir.Release.migrate'")
     |> ssh(host, "sudo systemctl restart relaxir")
