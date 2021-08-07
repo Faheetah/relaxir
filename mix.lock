@@ -25,7 +25,7 @@
   "httpoison": {:hex, :httpoison, "1.7.0", "abba7d086233c2d8574726227b6c2c4f6e53c4deae7fe5f6de531162ce9929a0", [:mix], [{:hackney, "~> 1.16", [hex: :hackney, repo: "hexpm", optional: false]}], "hexpm", "975cc87c845a103d3d1ea1ccfd68a2700c211a434d8428b10c323dc95dc5b980"},
   "idna": {:hex, :idna, "6.1.1", "8a63070e9f7d0c62eb9d9fcb360a7de382448200fbbd1b106cc96d3d8099df8d", [:rebar3], [{:unicode_util_compat, "~>0.7.0", [hex: :unicode_util_compat, repo: "hexpm", optional: false]}], "hexpm", "92376eb7894412ed19ac475e4a86f7b413c1b9fbb5bd16dccd57934157944cea"},
   "inflex": {:hex, :inflex, "2.1.0", "a365cf0821a9dacb65067abd95008ca1b0bb7dcdd85ae59965deef2aa062924c", [:mix], [], "hexpm", "14c17d05db4ee9b6d319b0bff1bdf22aa389a25398d1952c7a0b5f3d93162dd8"},
-  "invert": {:git, "https://github.com/faheetah/invert", "aabb7a1debd286af981b862399d4ea11464c8f88", [tag: "0.1.0"]},
+  "invert": {:git, "https://github.com/faheetah/invert", "ef7a6b87482960e0ddb155926b235c94c5f2555b", [tag: "0.2.1"]},
   "jason": {:hex, :jason, "1.2.2", "ba43e3f2709fd1aa1dce90aaabfd039d000469c05c56f0b8e31978e03fa39052", [:mix], [{:decimal, "~> 1.0 or ~> 2.0", [hex: :decimal, repo: "hexpm", optional: true]}], "hexpm", "18a228f5f0058ee183f29f9eae0805c6e59d61c3b006760668d8d18ff0d12179"},
   "jose": {:hex, :jose, "1.11.2", "f4c018ccf4fdce22c71e44d471f15f723cb3efab5d909ab2ba202b5bf35557b3", [:mix, :rebar3], [], "hexpm", "98143fbc48d55f3a18daba82d34fe48959d44538e9697c08f34200fa5f0947d2"},
   "jsone": {:hex, :jsone, "1.5.7", "036ec290bf3b2b3348b2eec199a0fcda62ce296ab6b736a403a6a440c5203618", [:rebar3], [], "hexpm", "5f146cbf953469667eee145fb066d6ee6b9b181bcfd547295317526e7464d732"},

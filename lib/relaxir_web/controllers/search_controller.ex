@@ -13,7 +13,9 @@ defmodule RelaxirWeb.SearchController do
       {:ok, results} -> results
       {:error, :not_found} -> []
     end
-    |> Enum.map(fn {i, _} -> i end)
+    |> Enum.sort_by(fn {[term, _], score} ->
+      score - (String.length(term) / 1000)
+    end, :desc)
   end
 
   # default search page

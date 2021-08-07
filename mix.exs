@@ -58,7 +58,7 @@ defmodule Relaxir.MixProject do
       {:excoveralls, "~> 0.13.1", only: :test},
       {:lcov_ex, "~> 0.1.0", runtime: false, only: :test},
       {:inflex, "~> 2.1.0"},
-      {:invert, git: "https://github.com/faheetah/invert", tag: "0.1.0"},
+      {:invert, git: "https://github.com/faheetah/invert", tag: "0.2.1"},
     ]
   end
 
