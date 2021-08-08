@@ -28,7 +28,7 @@
     <h2><%= String.capitalize(category) %></h2>
   <% end %>
 
-  <%= for {[result, id], score} <- results do %>
+  <%= for {[result, id], _} <- results do %>
     <%= if route_exists("#{category}/#{id}") and id != nil do %>
       <p>
       <%= if category == "recipes" do %>

@@ -1,27 +1,19 @@
 defmodule RelaxirWeb.SearchController do
   use RelaxirWeb, :controller
 
-  @checkboxes %{
+  alias Relaxir.Search
+
+  @default_checkboxes %{
     recipes: true,
     categories: true,
     ingredients: true,
     usda: false
   }
 
-  def search_for(module, name, terms) do
-    case Invert.get(module, name, terms) do
-      {:ok, results} -> results
-      {:error, :not_found} -> []
-    end
-    |> Enum.sort_by(fn {[term, _], score} ->
-      score - (String.length(term) / 1000)
-    end, :desc)
-  end
-
   # default search page
   def search(conn, params) when map_size(params) == 0 do
     current_user = RelaxirWeb.Authentication.get_current_user(conn)
-    render(conn, "search.html", current_user: current_user, count: :na, checkboxes: @checkboxes, results: [])
+    render(conn, "search.html", current_user: current_user, count: :na, checkboxes: @default_checkboxes, results: [])
   end
 
   # search results
@@ -38,25 +30,25 @@ defmodule RelaxirWeb.SearchController do
 
     recipes =
       case checkboxes.recipes do
-        true -> search_for(Relaxir.Recipes.Recipe, :title, terms)
+        true -> Search.search_for(Relaxir.Recipes.Recipe, :title, terms)
         _ -> []
       end
 
     categories =
       case checkboxes.categories do
-        true -> search_for(Relaxir.Categories.Category, :name, terms)
+        true -> Search.search_for(Relaxir.Categories.Category, :name, terms)
         _ -> []
       end
 
     ingredients =
       case checkboxes.ingredients do
-        true -> search_for(Relaxir.Ingredients.Ingredient, :name, terms)
+        true -> Search.search_for(Relaxir.Ingredients.Ingredient, :name, terms)
         _ -> []
       end
 
     usda =
       case checkboxes.usda do
-        true -> search_for(Relaxir.Ingredients.Food, :description, terms)
+        true -> Search.search_for(Relaxir.Ingredients.Food, :description, terms)
         _ -> []
       end
 
