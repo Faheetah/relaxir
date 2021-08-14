@@ -29,17 +29,16 @@ defmodule Relaxir.Mix.Helpers do
   defp get_flag(arg) do
     [key | val] = arg
 
-    cond do
-      String.starts_with?(key, "--") ->
-        "--" <> rest = key
+    if String.starts_with?(key, "--") do
+      "--" <> rest = key
 
-        case val do
-          [] -> [rest, true]
-          _ -> [rest, List.first(val)]
-        end
+      case val do
+        [] -> [rest, true]
+        _ -> [rest, List.first(val)]
+      end
 
-      true ->
-        arg
+    else
+      arg
     end
   end
 end

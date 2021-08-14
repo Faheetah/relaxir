@@ -16,16 +16,17 @@ defmodule Relaxir.Categories.Parser do
     categories =
       attrs["categories"]
       |> Enum.map(fn name ->
-        case Enum.find(fetched_categories, fn c -> c.name == name end) do
-          nil -> %{category: %{name: name}}
-          category -> %{category_id: category.id}
-        end
+        Enum.find(fetched_categories, fn c -> c.name == name end)
+        |> map_category(name)
       end)
 
     Map.put(attrs, "recipe_categories", categories)
   end
 
   def map_categories(attrs), do: attrs
+
+  defp map_category(nil, name), do: %{category: %{name: name}}
+  defp map_category(category, _name), do: %{category_id: category.id}
 
   def map_existing_categories(attrs, recipe) do
     current_recipe_categories =

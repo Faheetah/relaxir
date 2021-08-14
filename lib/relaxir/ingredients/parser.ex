@@ -26,15 +26,7 @@ defmodule Relaxir.Ingredients.Parser do
       |> Enum.map(fn i ->
         case i do
           %{:ingredient_id => id} ->
-            Enum.find(
-              current_recipe_ingredients,
-              %{recipe_id: recipe.id, ingredient_id: id},
-              fn cri ->
-                if cri.ingredient.id == id do
-                  cri
-                end
-              end
-            )
+            find_ingredient(current_recipe_ingredients, recipe, id)
             |> Map.merge(%{
               note: Map.get(i, :note),
               amount: Map.get(i, :amount),
@@ -64,6 +56,14 @@ defmodule Relaxir.Ingredients.Parser do
     else
       Map.put(attrs, "recipe_ingredients", recipe_ingredients)
     end
+  end
+
+  def find_ingredient(ingredients, recipe, ingredient_id) do
+    Enum.find(ingredients, %{recipe_id: recipe.id, ingredient_id: ingredient_id}, fn cri ->
+      if cri.ingredient.id == ingredient_id do
+        cri
+      end
+    end)
   end
 
   def map_ingredients(attrs) when is_map_key(attrs, "ingredients") do

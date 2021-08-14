@@ -185,7 +185,7 @@ defmodule Relaxir.Recipes do
   defp get_recipe_ingredient_suggestion(ingredient, ingredient_name) do
     case Invert.get(Ingredients.Ingredient, :name, ingredient_name) do
       {:ok, suggestion} ->
-        {{_, s, _}, score} = hd(suggestion)
+        {[s, _], score} = hd(suggestion)
 
         if score > 1 do
           put_change(ingredient, :suggestion, %{name: String.downcase(s), type: "ingredient", score: round(score * 10)})
@@ -193,13 +193,8 @@ defmodule Relaxir.Recipes do
         else
           case Invert.get(Ingredients.Food, :description, ingredient_name) do
             {:ok, suggestion} ->
-              {{_, s, _}, score} = hd(suggestion)
-
-              if score > 1 do
-                put_change(ingredient, :suggestion, %{name: String.downcase(s), type: "USDA", score: round(score * 10)})
-              else
-                ingredient
-              end
+              {[s, _], score} = hd(suggestion)
+              score_ingredient(ingredient, score, s, "USDA")
 
             {:error, :not_found} ->
               ingredient
@@ -209,13 +204,8 @@ defmodule Relaxir.Recipes do
       {:error, :not_found} ->
         case Invert.get(Ingredients.Food, :description, ingredient_name) do
           {:ok, suggestion} ->
-            {{_, s, _}, score} = hd(suggestion)
-
-            if score > 1 do
-              put_change(ingredient, :suggestion, %{name: String.downcase(s), type: "USDA", score: round(score * 10)})
-            else
-              ingredient
-            end
+            {[s, _], score} = hd(suggestion)
+            score_ingredient(ingredient, score, s, "USDA")
 
           {:error, :not_found} ->
             ingredient
@@ -223,35 +213,40 @@ defmodule Relaxir.Recipes do
     end
   end
 
+  defp score_ingredient(ingredient, score, suggestion, type) do
+    if score > 1 do
+      put_change(ingredient, :suggestion, %{name: String.downcase(suggestion), type: type, score: round(score * 10)})
+    else
+      ingredient
+    end
+  end
+
   def get_recipe_ingredient_names(changeset) do
     changeset
     |> Map.get(:changes)
     |> Map.get(:recipe_ingredients)
-    |> Enum.map(fn i ->
-      case i.changes do
-        %{ingredient_id: id} ->
-          name = Relaxir.Repo.get!(Relaxir.Ingredients.Ingredient, id).name
-          Map.merge(i, %{changes: %{ingredient: %{changes: %{name: name}}}}, fn _, m1, m2 -> Map.merge(m1, m2) end)
+    |> Enum.map(&get_ingredient_name/1)
+  end
 
-        _ ->
-          i
-      end
-    end)
-    |> Enum.map(fn i ->
-      case i.changes do
-        %{unit_id: id} ->
-          unit = Relaxir.Repo.get!(Ingredients.Unit, id)
+  defp get_ingredient_name(%{changes: %{ingredient_id: id}} = ingredient) do
+    name = Relaxir.Repo.get!(Relaxir.Ingredients.Ingredient, id).name
+    Map.merge(ingredient, %{changes: %{ingredient: %{changes: %{name: name}}}}, fn _, m1, m2 -> Map.merge(m1, m2) end)
+  end
 
-          cond do
-            Map.get(i.changes, :amount) == nil -> i
-            i.changes.amount > 1 -> Map.merge(i, %{changes: %{unit: Inflex.pluralize(unit.name)}}, fn _, m1, m2 -> Map.merge(m1, m2) end)
-            true -> Map.merge(i, %{changes: %{unit: Inflex.singularize(unit.name)}}, fn _, m1, m2 -> Map.merge(m1, m2) end)
-          end
+  defp get_ingredient_name(%{changes: %{unit_id: id}} = ingredient) do
+    unit = Relaxir.Repo.get!(Ingredients.Unit, id)
 
-        _ ->
-          i
-      end
-    end)
+    cond do
+      Map.get(ingredient.changes, :amount) == nil -> ingredient
+      ingredient.changes.amount > 1 -> merge_ingredient_changes(ingredient, Inflex.pluralize(unit.name))
+      true -> merge_ingredient_changes(ingredient, Inflex.singularize(unit.name))
+    end
+  end
+
+  defp get_ingredient_name(ingredient), do: ingredient
+
+  defp merge_ingredient_changes(ingredient, unit_name) do
+    Map.merge(ingredient, %{changes: %{unit: unit_name}}, fn _, m1, m2 -> Map.merge(m1, m2) end)
   end
 
   def get_recipe_category_names(changeset) do
