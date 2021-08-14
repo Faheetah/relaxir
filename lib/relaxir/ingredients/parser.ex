@@ -87,6 +87,18 @@ defmodule Relaxir.Ingredients.Parser do
 
   def map_ingredients(attrs), do: attrs
 
+  def map_recipe_ingredient_fields(attrs, units) do
+    amount = Map.get(attrs, :amount)
+    unit_name = Map.get(attrs, :unit)
+
+    if amount == nil || unit_name == nil do
+      attrs
+    else
+      find_unit(units, unit_name)
+      |> map_unit(attrs, unit_name, amount)
+    end
+  end
+
   defp match_existing_ingredients(ingredient, fetched_ingredients) do
     case Enum.find(fetched_ingredients, fn i -> i.name == ingredient.name end) do
       nil -> %{ingredient: ingredient}
@@ -96,46 +108,37 @@ defmodule Relaxir.Ingredients.Parser do
     |> Map.delete(:name)
   end
 
-  def map_recipe_ingredient_fields(attrs, units) do
-    amount = Map.get(attrs, :amount)
-    unit_name = Map.get(attrs, :unit)
+  defp singularize_unit(unit, name) do
+    singularized = Inflex.singularize(name)
+    singularized == unit.name or singularized == unit.abbreviation
+  end
 
-    cond do
-      amount == nil || unit_name == nil -> attrs
-      true -> {:ok, Enum.find(units, fn u -> Inflex.singularize(unit_name) == u.name or Inflex.singularize(unit_name) == u.abbreviation end)}
-    end
-    |> case do
-      {:ok, nil} ->
-        cond do
-          Map.get(attrs, :name) ->
-            attrs
-            |> Map.merge(%{
-              name:
-                [unit_name, attrs.name]
-                |> Enum.join(" ")
-                |> String.trim(),
-              amount: amount
-            })
-            |> Map.delete(:unit)
+  defp find_unit(units, unit_name) do
+    {:ok, Enum.find(units, &(singularize_unit(&1, unit_name)))}
+  end
 
-          true ->
-            Map.merge(attrs, %{amount: amount})
-        end
+  defp map_unit({:ok, nil}, attrs, unit_name, amount) do
+    if Map.get(attrs, :name) do
+      attrs
+      |> Map.merge(%{
+        name:
+          [unit_name, attrs.name]
+          |> Enum.join(" ")
+          |> String.trim(),
+        amount: amount
+      })
+      |> Map.delete(:unit)
 
-      {:ok, unit} ->
-        attrs
-        |> Map.merge(%{
-          amount: amount,
-          unit_id: unit.id
-        })
-
-      {:error, error} ->
-        {:error, error}
-
-      attrs ->
-        attrs
+    else
+      Map.merge(attrs, %{amount: amount})
     end
   end
+
+  defp map_unit({:ok, unit}, attrs, _unit_name, amount) do
+    Map.merge(attrs, %{amount: amount, unit_id: unit.id})
+  end
+
+  defp map_unit({:error, error}, _attrs, _unit_name, _amount), do: {:error, error}
 
   def parse_ingredients(attrs) do
     ingredients =
@@ -162,12 +165,10 @@ defmodule Relaxir.Ingredients.Parser do
   def extract_ingredient_amount({:ok, ingredient}) do
     case String.split(ingredient.name) do
       [whole, fraction, unit | name] ->
-        cond do
-          Float.parse(fraction) != :error and Float.parse(whole) != :error and hd(Tuple.to_list(Float.parse(fraction))) ->
+        if Float.parse(fraction) != :error and Float.parse(whole) != :error and hd(Tuple.to_list(Float.parse(fraction))) do
             parsed_amount = hd(Tuple.to_list(Float.parse(whole))) + parse_amount(fraction)
             build_ingredient(parsed_amount, ingredient: ingredient, unit: unit, name: name)
-
-          true ->
+        else
             build_ingredient(parse_amount(whole), ingredient: ingredient, unit: fraction, name: [unit | name])
         end
 

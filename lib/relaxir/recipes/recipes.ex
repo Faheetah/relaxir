@@ -176,52 +176,51 @@ defmodule Relaxir.Recipes do
         |> Map.get(:ingredient)
         |> Map.get(:changes)
         |> Map.get(:name)
+      get_recipe_ingredient_suggestion(ingredient, ingredient_name)
+    end)
+  end
 
-      cond do
-        ingredient_name == nil ->
-          ingredient
+  defp get_recipe_ingredient_suggestion(ingredient, nil), do: ingredient
 
-        true ->
-          case Invert.get(Ingredients.Ingredient, :name, ingredient_name) do
+  defp get_recipe_ingredient_suggestion(ingredient, ingredient_name) do
+    case Invert.get(Ingredients.Ingredient, :name, ingredient_name) do
+      {:ok, suggestion} ->
+        {{_, s, _}, score} = hd(suggestion)
+
+        if score > 1 do
+          put_change(ingredient, :suggestion, %{name: String.downcase(s), type: "ingredient", score: round(score * 10)})
+
+        else
+          case Invert.get(Ingredients.Food, :description, ingredient_name) do
             {:ok, suggestion} ->
               {{_, s, _}, score} = hd(suggestion)
 
-              if score > 1
-                put_change(ingredient, :suggestion, %{name: String.downcase(s), type: "ingredient", score: round(score * 10)})
-
+              if score > 1 do
+                put_change(ingredient, :suggestion, %{name: String.downcase(s), type: "USDA", score: round(score * 10)})
               else
-                case Invert.get(Ingredients.Food, :description, ingredient_name) do
-                  {:ok, suggestion} ->
-                    {{_, s, _}, score} = hd(suggestion)
-
-                    if score > 1 do
-                      put_change(ingredient, :suggestion, %{name: String.downcase(s), type: "USDA", score: round(score * 10)})
-                    else
-                      ingredient
-                    end
-
-                  {:error, :not_found} ->
-                    ingredient
-                end
+                ingredient
               end
 
             {:error, :not_found} ->
-              case Invert.get(Ingredients.Food, :description, ingredient_name) do
-                {:ok, suggestion} ->
-                  {{_, s, _}, score} = hd(suggestion)
-
-                  if score > 1 do
-                    put_change(ingredient, :suggestion, %{name: String.downcase(s), type: "USDA", score: round(score * 10)})
-                  else
-                    ingredient
-                  end
-
-                {:error, :not_found} ->
-                  ingredient
-              end
+              ingredient
           end
-      end
-    end)
+        end
+
+      {:error, :not_found} ->
+        case Invert.get(Ingredients.Food, :description, ingredient_name) do
+          {:ok, suggestion} ->
+            {{_, s, _}, score} = hd(suggestion)
+
+            if score > 1 do
+              put_change(ingredient, :suggestion, %{name: String.downcase(s), type: "USDA", score: round(score * 10)})
+            else
+              ingredient
+            end
+
+          {:error, :not_found} ->
+            ingredient
+        end
+    end
   end
 
   def get_recipe_ingredient_names(changeset) do

@@ -42,9 +42,10 @@ defmodule RelaxirWeb.RecipeView do
     |> Enum.join(" ")
     |> String.trim
     |> (fn i ->
-          cond do
-            is_nil(note) -> i
-            true -> "#{i}, #{note}"
+          if is_nil(note) do
+            i
+          else
+            "#{i}, #{note}"
           end
         end).()
   end
@@ -56,7 +57,7 @@ defmodule RelaxirWeb.RecipeView do
       # covers up to 1..100/1..100 reliably
       # can possibly cover up to 1/999999 reasonably well
       # reducing this can improve performance in case of DoS since :timer.tc 1/999999 = ~600ms
-      1..9999999
+      1..9_999_999
       |> Enum.find(1, fn f ->
         # amount / 1 to force float, in case of amount = 1
         Float.floor(f * (amount / 1)) == f * amount
