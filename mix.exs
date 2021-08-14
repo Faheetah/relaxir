@@ -55,6 +55,7 @@ defmodule Relaxir.MixProject do
       {:guardian, "~> 2.1"},
       {:earmark, "~> 1.4.10"},
       {:csv, "~> 2.3.1"},
+      {:credo, "~> 1.5", only: :dev},
       {:excoveralls, "~> 0.13.1", only: :test},
       {:lcov_ex, "~> 0.1.0", runtime: false, only: :test},
       {:inflex, "~> 2.1.0"},

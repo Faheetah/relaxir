@@ -1,4 +1,6 @@
 defmodule Relaxir.Recipes do
+  @moduledoc false
+
   import Ecto.Query
   import Ecto.Changeset
 
@@ -184,26 +186,23 @@ defmodule Relaxir.Recipes do
             {:ok, suggestion} ->
               {{_, s, _}, score} = hd(suggestion)
 
-              cond do
-                score > 1 ->
-                  put_change(ingredient, :suggestion, %{name: String.downcase(s), type: "ingredient", score: round(score * 10)})
+              if score > 1
+                put_change(ingredient, :suggestion, %{name: String.downcase(s), type: "ingredient", score: round(score * 10)})
 
-                true ->
-                  case Invert.get(Ingredients.Food, :description, ingredient_name) do
-                    {:ok, suggestion} ->
-                      {{_, s, _}, score} = hd(suggestion)
+              else
+                case Invert.get(Ingredients.Food, :description, ingredient_name) do
+                  {:ok, suggestion} ->
+                    {{_, s, _}, score} = hd(suggestion)
 
-                      cond do
-                        score > 1 ->
-                          put_change(ingredient, :suggestion, %{name: String.downcase(s), type: "USDA", score: round(score * 10)})
-
-                        true ->
-                          ingredient
-                      end
-
-                    {:error, :not_found} ->
+                    if score > 1 do
+                      put_change(ingredient, :suggestion, %{name: String.downcase(s), type: "USDA", score: round(score * 10)})
+                    else
                       ingredient
-                  end
+                    end
+
+                  {:error, :not_found} ->
+                    ingredient
+                end
               end
 
             {:error, :not_found} ->
@@ -211,9 +210,10 @@ defmodule Relaxir.Recipes do
                 {:ok, suggestion} ->
                   {{_, s, _}, score} = hd(suggestion)
 
-                  cond do
-                    score > 1 -> put_change(ingredient, :suggestion, %{name: String.downcase(s), type: "USDA", score: round(score * 10)})
-                    true -> ingredient
+                  if score > 1 do
+                    put_change(ingredient, :suggestion, %{name: String.downcase(s), type: "USDA", score: round(score * 10)})
+                  else
+                    ingredient
                   end
 
                 {:error, :not_found} ->

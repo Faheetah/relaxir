@@ -1,4 +1,6 @@
 defmodule Relaxir.Users do
+  @moduledoc false
+
   import Ecto.Changeset
 
   alias Relaxir.Repo

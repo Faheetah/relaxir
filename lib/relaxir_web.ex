@@ -1,4 +1,6 @@
 defmodule RelaxirWeb do
+  @moduledoc false
+
   def controller do
     quote do
       use Phoenix.Controller, namespace: RelaxirWeb

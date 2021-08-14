@@ -23,7 +23,7 @@ defmodule RelaxirWeb.SessionController do
     end
   end
 
-  def create(conn, params = %{"user" => %{"email" => email, "password" => password}}) do
+  def create(conn, %{"user" => %{"email" => email, "password" => password}} = params) do
     case email
          |> String.downcase()
          |> Users.get_by_email()

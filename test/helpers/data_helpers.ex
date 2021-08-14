@@ -1,4 +1,6 @@
 defmodule Relaxir.DataHelpers do
+  @moduledoc false
+
   alias Relaxir.Categories
   alias Relaxir.Ingredients
   alias Relaxir.Recipes
