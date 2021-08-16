@@ -84,3 +84,6 @@ config :phoenix, :stacktrace_depth, 20
 
 # Initialize plugs at runtime for faster development compilation
 config :phoenix, :plug_init_mode, :runtime
+
+config :relaxir, RelaxirWeb.Authentication,
+  secret_key: "PXqHaM2ZyRSldcH0roFOkRUHL/QM/ADXp1Zi9vtG8MX3kZjiUE/hl14Ej2E++H7A"

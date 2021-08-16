@@ -1,5 +1,8 @@
 use Mix.Config
 
+# Only in tests, remove the complexity from the password hashing algorithm
+config :bcrypt_elixir, :log_rounds, 1
+
 # Configure your database
 #
 # The MIX_TEST_PARTITION environment variable can be used
@@ -20,3 +23,6 @@ config :relaxir, RelaxirWeb.Endpoint,
 
 # Print only warnings and errors during test
 config :logger, level: :warn
+
+config :relaxir, RelaxirWeb.Authentication,
+  secret_key: "PXqHaM2ZyRSldcH0roFOkRUHL/QM/ADXp1Zi9vtG8MX3kZjiUE/hl14Ej2E++H7A"

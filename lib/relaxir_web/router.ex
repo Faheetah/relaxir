@@ -9,7 +9,7 @@ defmodule RelaxirWeb.Router do
     plug :fetch_session
     plug :fetch_flash
     plug :protect_from_forgery
-    plug :put_secure_browser_headers
+    plug :put_secure_browser_headers, %{"content-security-policy" => "default-src 'self'"}
     plug :load_current_user
   end
 
@@ -69,7 +69,7 @@ defmodule RelaxirWeb.Router do
     get "/login", SessionController, :new
     post "/login", SessionController, :create
 
-    get "/search", SearchController, :search
+    get "/search", SearchController, :new
     post "/search", SearchController, :search
     resources "/recipes", RecipeController, only: [:show, :index]
     get "/tools", ToolController, :index
@@ -90,5 +90,37 @@ defmodule RelaxirWeb.Router do
 
     resources "/ingredients", IngredientController, only: [:show, :index]
     resources "/food", UsdaController, [:show, :index]
+  end
+
+  ## Authentication routes
+
+  scope "/", RelaxirWeb do
+    pipe_through [:browser, :redirect_if_user_is_authenticated]
+
+    get "/users/register", UserRegistrationController, :new
+    post "/users/register", UserRegistrationController, :create
+    get "/users/log_in", UserSessionController, :new
+    post "/users/log_in", UserSessionController, :create
+    get "/users/reset_password", UserResetPasswordController, :new
+    post "/users/reset_password", UserResetPasswordController, :create
+    get "/users/reset_password/:token", UserResetPasswordController, :edit
+    put "/users/reset_password/:token", UserResetPasswordController, :update
+  end
+
+  scope "/", RelaxirWeb do
+    pipe_through [:browser, :require_authenticated_user]
+
+    get "/users/settings", UserSettingsController, :edit
+    put "/users/settings", UserSettingsController, :update
+    get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
+  end
+
+  scope "/", RelaxirWeb do
+    pipe_through [:browser]
+
+    delete "/users/log_out", UserSessionController, :delete
+    get "/users/confirm", UserConfirmationController, :new
+    post "/users/confirm", UserConfirmationController, :create
+    get "/users/confirm/:token", UserConfirmationController, :confirm
   end
 end

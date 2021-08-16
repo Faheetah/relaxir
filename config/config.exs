@@ -56,8 +56,7 @@ config :ueberauth, Ueberauth.Strategy.Google.OAuth,
   client_secret: System.get_env("GOOGLE_CLIENT_SECRET")
 
 config :relaxir, RelaxirWeb.Authentication,
-  issuer: "relaxir",
-  secret_key: "PXqHaM2ZyRSldcH0roFOkRUHL/QM/ADXp1Zi9vtG8MX3kZjiUE/hl14Ej2E++H7A"
+  issuer: "relaxir"
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

@@ -11,7 +11,7 @@ defmodule RelaxirWeb.SearchController do
   }
 
   # default search page
-  def search(conn, params) when map_size(params) == 0 do
+  def new(conn, params) when map_size(params) == 0 do
     current_user = RelaxirWeb.Authentication.get_current_user(conn)
     render(conn, "search.html", current_user: current_user, count: :na, checkboxes: @default_checkboxes, results: [])
   end
