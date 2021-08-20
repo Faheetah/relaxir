@@ -27,6 +27,7 @@ defmodule Mix.Tasks.Relaxir.AddUser do
   end
 
   def print_result({:ok, _}), do: IO.puts("User created successfully")
+
   def print_result({:error, changeset}) do
     changeset
     |> Ecto.Changeset.traverse_errors(fn {msg, opts} ->

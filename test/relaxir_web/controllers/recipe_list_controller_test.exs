@@ -111,6 +111,7 @@ defmodule RelaxirWeb.RecipeListControllerTest do
         @create_attrs
         |> Map.merge(%{user_id: 1, recipe_recipe_lists: [%{recipe_id: recipe.id}]})
         |> RecipeLists.create_recipe_list()
+
       assert hd(recipe_list.recipes).title == recipe.title
 
       delete = delete(conn, Routes.recipe_list_path(conn, :remove_recipe, recipe_list.id, recipe.id))

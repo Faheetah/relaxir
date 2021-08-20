@@ -80,6 +80,7 @@ defmodule RelaxirWeb.RecipeController do
           recipe_params
           |> RecipeParser.parse_attrs()
           |> Recipes.map_ingredients()
+
         render(conn, "new.html", changeset: changeset, ingredients: ingredients)
     end
   end

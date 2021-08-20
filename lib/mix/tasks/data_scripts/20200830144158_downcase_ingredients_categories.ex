@@ -16,12 +16,12 @@ defmodule Mix.Tasks.Relaxir.DowncaseIngredientsCategories do
     |> Enum.each(fn i ->
       if i.name =~ ~r(^[A-Z].*) do
         {result, _} = Ingredients.update_ingredient(i, %{name: String.downcase(i.name)})
-        IO.puts "#{i.name}:#{i.id} -> #{result}"
+        IO.puts("#{i.name}:#{i.id} -> #{result}")
       end
 
       if i.name =~ ~r(^.*\s$) do
         {result, _} = Ingredients.update_ingredient(i, %{name: String.trim(i.name)})
-        IO.puts "#{i.name}:#{i.id} -> #{result}"
+        IO.puts("#{i.name}:#{i.id} -> #{result}")
       end
     end)
 
@@ -29,12 +29,12 @@ defmodule Mix.Tasks.Relaxir.DowncaseIngredientsCategories do
     |> Enum.each(fn i ->
       if i.name =~ ~r(^[A-Z].*) do
         {result, _} = Categories.update_category(i, %{name: String.downcase(i.name)})
-        IO.puts "#{i.name}:#{i.id} -> #{result}"
+        IO.puts("#{i.name}:#{i.id} -> #{result}")
       end
 
       if i.name =~ ~r(^.*\s$) do
         {result, _} = Categories.update_category(i, %{name: String.trim(i.name)})
-        IO.puts "#{i.name}:#{i.id} -> #{result}"
+        IO.puts("#{i.name}:#{i.id} -> #{result}")
       end
     end)
   end

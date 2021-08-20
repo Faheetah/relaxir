@@ -74,15 +74,17 @@ defmodule RelaxirWeb.GroceryListController do
   def add_ingredient(conn, %{"id" => id, "ingredient_id" => ingredient_id}) do
     grocery_list = GroceryLists.get_grocery_list!(id)
 
-    ingredient_id = cond do
-      is_integer(ingredient_id) -> ingredient_id
-      is_binary(ingredient_id) -> String.to_integer(ingredient_id)
-    end
+    ingredient_id =
+      cond do
+        is_integer(ingredient_id) -> ingredient_id
+        is_binary(ingredient_id) -> String.to_integer(ingredient_id)
+      end
 
     case GroceryLists.add_ingredient(grocery_list, ingredient_id) do
       :ok ->
         conn
         |> redirect(to: Routes.grocery_list_path(conn, :show, grocery_list))
+
       _ ->
         conn
         |> redirect(to: Routes.grocery_list_path(conn, :show, grocery_list))

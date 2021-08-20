@@ -40,7 +40,7 @@ defmodule RelaxirWeb.RecipeView do
     [parse_fraction(amount), unit, recipe_ingredient.ingredient.name]
     |> Enum.reject(&is_nil(&1))
     |> Enum.join(" ")
-    |> String.trim
+    |> String.trim()
     |> (fn i ->
           if is_nil(note) do
             i
@@ -53,10 +53,10 @@ defmodule RelaxirWeb.RecipeView do
   def parse_fraction(nil), do: nil
 
   def parse_fraction(amount) do
+    # covers up to 1..100/1..100 reliably
+    # can possibly cover up to 1/999999 reasonably well
+    # reducing this can improve performance in case of DoS since :timer.tc 1/999999 = ~600ms
     denominator =
-      # covers up to 1..100/1..100 reliably
-      # can possibly cover up to 1/999999 reasonably well
-      # reducing this can improve performance in case of DoS since :timer.tc 1/999999 = ~600ms
       1..9_999_999
       |> Enum.find(1, fn f ->
         # amount / 1 to force float, in case of amount = 1

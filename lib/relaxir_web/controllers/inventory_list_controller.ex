@@ -75,15 +75,17 @@ defmodule RelaxirWeb.InventoryListController do
   def add_ingredient(conn, %{"id" => id, "ingredient_id" => ingredient_id}) do
     inventory_list = InventoryLists.get_inventory_list!(id)
 
-    ingredient_id = cond do
-      is_integer(ingredient_id) -> ingredient_id
-      is_binary(ingredient_id) -> String.to_integer(ingredient_id)
-    end
+    ingredient_id =
+      cond do
+        is_integer(ingredient_id) -> ingredient_id
+        is_binary(ingredient_id) -> String.to_integer(ingredient_id)
+      end
 
     case InventoryLists.add_ingredient(inventory_list, ingredient_id) do
       :ok ->
         conn
         |> redirect(to: Routes.inventory_list_path(conn, :show, inventory_list))
+
       _ ->
         conn
         |> redirect(to: Routes.inventory_list_path(conn, :show, inventory_list))

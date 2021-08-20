@@ -21,6 +21,7 @@ defmodule Relaxir.InventoryLists do
     |> case do
       {:ok, inventory_list} ->
         {:ok, Repo.preload(inventory_list, :ingredients)}
+
       error ->
         error
     end
@@ -35,7 +36,9 @@ defmodule Relaxir.InventoryLists do
         |> Ecto.Changeset.change()
         |> Ecto.Changeset.put_assoc(:ingredient_inventory_lists, ingredient_inventory_lists)
         |> Repo.update()
+
         :ok
+
       _ ->
         {:error, "Already added"}
     end
@@ -59,6 +62,7 @@ defmodule Relaxir.InventoryLists do
     |> case do
       {:ok, inventory_list} ->
         {:ok, Repo.preload(inventory_list, :ingredients)}
+
       error ->
         error
     end
@@ -72,4 +76,3 @@ defmodule Relaxir.InventoryLists do
     InventoryList.changeset(inventory_list, attrs)
   end
 end
-

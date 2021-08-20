@@ -186,6 +186,7 @@ defmodule Relaxir.RecipesTest do
 
     test "adds a note to an ingredient", %{ingredients: ingredients} do
       ingredient = ingredients.ingredient
+
       ingredients =
         %{"ingredients" => [Map.merge(ingredient, %{note: "drained"})]}
         |> Ingredients.Parser.map_ingredients()

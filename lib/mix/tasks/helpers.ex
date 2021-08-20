@@ -36,7 +36,6 @@ defmodule Relaxir.Mix.Helpers do
         [] -> [rest, true]
         _ -> [rest, List.first(val)]
       end
-
     else
       arg
     end

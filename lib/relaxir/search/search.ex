@@ -4,8 +4,11 @@ defmodule Relaxir.Search do
       {:ok, results} -> results
       {:error, :not_found} -> []
     end
-    |> Enum.sort_by(fn {[term, _], score} ->
-      score - (String.length(term) / 1000)
-    end, :desc)
+    |> Enum.sort_by(
+      fn {[term, _], score} ->
+        score - String.length(term) / 1000
+      end,
+      :desc
+    )
   end
 end

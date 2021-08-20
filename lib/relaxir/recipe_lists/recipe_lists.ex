@@ -21,6 +21,7 @@ defmodule Relaxir.RecipeLists do
     |> case do
       {:ok, recipe_list} ->
         {:ok, Repo.preload(recipe_list, :recipes)}
+
       error ->
         error
     end
@@ -35,7 +36,9 @@ defmodule Relaxir.RecipeLists do
         |> Ecto.Changeset.change()
         |> Ecto.Changeset.put_assoc(:recipe_recipe_lists, recipe_recipe_lists)
         |> Repo.update()
+
         :ok
+
       _ ->
         {:error, "Already added"}
     end
@@ -59,6 +62,7 @@ defmodule Relaxir.RecipeLists do
     |> case do
       {:ok, recipe_list} ->
         {:ok, Repo.preload(recipe_list, :recipes)}
+
       error ->
         error
     end

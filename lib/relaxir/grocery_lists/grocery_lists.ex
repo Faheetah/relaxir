@@ -21,6 +21,7 @@ defmodule Relaxir.GroceryLists do
     |> case do
       {:ok, grocery_list} ->
         {:ok, Repo.preload(grocery_list, :ingredients)}
+
       error ->
         error
     end
@@ -35,7 +36,9 @@ defmodule Relaxir.GroceryLists do
         |> Ecto.Changeset.change()
         |> Ecto.Changeset.put_assoc(:ingredient_grocery_lists, ingredient_grocery_lists)
         |> Repo.update()
+
         :ok
+
       _ ->
         {:error, "Already added"}
     end
@@ -59,6 +62,7 @@ defmodule Relaxir.GroceryLists do
     |> case do
       {:ok, grocery_list} ->
         {:ok, Repo.preload(grocery_list, :ingredients)}
+
       error ->
         error
     end

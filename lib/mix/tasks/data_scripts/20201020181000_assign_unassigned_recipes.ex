@@ -12,6 +12,7 @@ defmodule Mix.Tasks.Relaxir.AssignUnassignedRecipes do
 
     Repo.start_link()
     query = from r in Recipe, where: is_nil(r.user_id)
+
     Repo.all(query)
     |> Enum.each(fn recipe ->
       recipe

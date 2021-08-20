@@ -10,7 +10,14 @@ defmodule Relaxir.Recipes do
   alias Relaxir.RecipeIngredient
   alias Relaxir.Recipes.Recipe
 
-  @preload [[recipe_ingredients: from(ri in RecipeIngredient, order_by: ri.order)], :ingredients, :units, :recipe_categories, :categories, :user]
+  @preload [
+    [recipe_ingredients: from(ri in RecipeIngredient, order_by: ri.order)],
+    :ingredients,
+    :units,
+    :recipe_categories,
+    :categories,
+    :user
+  ]
 
   def list_recipes do
     Repo.all(order_by(Recipe, desc: :updated_at))
@@ -176,6 +183,7 @@ defmodule Relaxir.Recipes do
         |> Map.get(:ingredient)
         |> Map.get(:changes)
         |> Map.get(:name)
+
       get_recipe_ingredient_suggestion(ingredient, ingredient_name)
     end)
   end
@@ -189,7 +197,6 @@ defmodule Relaxir.Recipes do
 
         if score > 1 do
           put_change(ingredient, :suggestion, %{name: String.downcase(s), type: "ingredient", score: round(score * 10)})
-
         else
           case Invert.get(Ingredients.Food, :description, ingredient_name) do
             {:ok, suggestion} ->
