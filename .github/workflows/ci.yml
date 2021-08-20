@@ -2,7 +2,6 @@ name: Elixir CI
 
 env:
   MIX_ENV: dev
-  DATABASE_URL: postgres
 
 on:
   push:
@@ -47,3 +46,6 @@ jobs:
 
     - name: Unit tests
       run: mix test
+      env:
+        DATABASE_URL: postgres
+        DATABASE_PORT: ${{ job.services.postgres.ports[5432] }}
