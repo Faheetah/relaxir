@@ -4,8 +4,8 @@
   skip: true,
   router: "",
   exit: "false",
-  format: "txt",
-  out: "",
+  format: "serif",
+  out: "results.serif",
   threshold: "low",
   ignore: ["Config.HTTPS"],
   ignore_files: [""]
