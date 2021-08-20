@@ -39,7 +39,7 @@ jobs:
       run: mix deps.get && mix compile
 
     - name: Code scan
-      run: mix sobelow --config
+      run: mix sobelow --config && ls
 
     - uses: github/codeql-action/upload-sarif@v1
       with:
