@@ -43,7 +43,7 @@ defmodule RelaxirWeb.UserConfirmationControllerTest do
       refute Repo.get_by(Accounts.UserToken, user_id: user.id)
     end
 
-    @tag skip: "fix this"
+    @tag skip: "Assertion with == failed %Relaxir.Accounts.UserToken{__meta__: #Ecto.S"
     test "does not send confirmation token if email is invalid", %{conn: conn} do
       conn =
         post(conn, Routes.user_confirmation_path(conn, :create), %{
@@ -57,7 +57,7 @@ defmodule RelaxirWeb.UserConfirmationControllerTest do
   end
 
   describe "GET /users/confirm/:token" do
-    @tag skip: "suppose to return false"
+    @tag skip: "Expected false or nil, got <<"
     test "confirms the given token once", %{conn: conn, user: user} do
       token =
         extract_user_token(fn url ->

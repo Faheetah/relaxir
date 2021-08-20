@@ -92,7 +92,7 @@ defmodule RelaxirWeb.UserAuthTest do
       assert conn.assigns.current_user.id == user.id
     end
 
-    @tag skip: "lot of gibberish that doesn't match"
+    @tag skip: "Assertion with == failed \a\xD4K\xB4\xF4"
     test "authenticates user from cookies", %{conn: conn, user: user} do
       logged_in_conn =
         conn |> fetch_cookies() |> UserAuth.log_in_user(user, %{"remember_me" => "true"})
@@ -109,7 +109,7 @@ defmodule RelaxirWeb.UserAuthTest do
       assert conn.assigns.current_user.id == user.id
     end
 
-    @tag skip: "should not be returning back a binary"
+    @tag skip: "Expected false or nil, got <<"
     test "does not authenticate if data is missing", %{conn: conn, user: user} do
       _ = Accounts.generate_user_session_token(user)
       conn = UserAuth.fetch_current_user(conn, [])

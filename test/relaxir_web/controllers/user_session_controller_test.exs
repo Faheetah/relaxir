@@ -8,7 +8,7 @@ defmodule RelaxirWeb.UserSessionControllerTest do
   end
 
   describe "GET /users/log_in" do
-    @tag skip: "this works"
+    @tag skip: "** (RuntimeError) expected response with status 200, got: 302, with body:"
     test "renders log in page", %{conn: conn} do
       conn = get(conn, Routes.user_session_path(conn, :new))
       response = html_response(conn, 200)
@@ -16,7 +16,6 @@ defmodule RelaxirWeb.UserSessionControllerTest do
       assert response =~ "Register</a>"
     end
 
-    @tag skip: "not redirecting, but it seems to redirect in practice"
     test "redirects if already logged in", %{conn: conn, user: user} do
       conn = conn |> log_in_user(user) |> get(Routes.user_session_path(conn, :new))
       assert redirected_to(conn) == "/"
@@ -24,7 +23,7 @@ defmodule RelaxirWeb.UserSessionControllerTest do
   end
 
   describe "POST /users/log_in" do
-    @tag skip: "logins definitely work"
+    @tag skip: "Assertion with =~ failed right: user-576460752303423007@example.com"
     test "logs the user in", %{conn: conn, user: user} do
       conn =
         post(conn, Routes.user_session_path(conn, :create), %{
@@ -42,7 +41,7 @@ defmodule RelaxirWeb.UserSessionControllerTest do
       assert response =~ "Log out</a>"
     end
 
-    @tag skip: "this works"
+    @tag skip: "Expected truthy, got nil _relaxir_web_user_remember_me"
     test "logs the user in with remember me", %{conn: conn, user: user} do
       conn =
         post(conn, Routes.user_session_path(conn, :create), %{
@@ -57,7 +56,7 @@ defmodule RelaxirWeb.UserSessionControllerTest do
       assert redirected_to(conn) =~ "/"
     end
 
-    @tag skip: "this works"
+    @tag skip: "Assertion with =~ failed right: /foo/bar"
     test "logs the user in with return to", %{conn: conn, user: user} do
       conn =
         conn
@@ -72,7 +71,7 @@ defmodule RelaxirWeb.UserSessionControllerTest do
       assert redirected_to(conn) == "/foo/bar"
     end
 
-    @tag skip: "todo"
+    @tag skip: "** (RuntimeError) expected response with status 200, got: 302, with body:"
     test "emits error message with invalid credentials", %{conn: conn, user: user} do
       conn =
         post(conn, Routes.user_session_path(conn, :create), %{
