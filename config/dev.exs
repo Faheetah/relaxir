@@ -5,7 +5,7 @@ config :relaxir, Relaxir.Repo,
   username: "postgres",
   password: "postgres",
   database: "relaxir_dev",
-  hostname: "localhost",
+  hostname: System.get_env("DATABASE_URL", "localhost"),
   show_sensitive_data_on_connection_error: true,
   # only for importing with mix, otherwise it spams debug SQL
   # log: false,
