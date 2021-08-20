@@ -1,0 +1,33 @@
+name: Elixir CI
+
+env:
+  MIX_ENV: dev
+
+on:
+  push:
+
+jobs:
+  build:
+    name: Build release
+    runs-on: ubuntu-20.04
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Download elixir
+      run: wget https://packages.erlang-solutions.com/erlang/debian/pool/elixir_1.10.4-1~ubuntu~focal_all.deb
+
+    - name: Download elixir
+      run: sudo dpkg -i elixir_1.10.4-1~ubuntu~focal_all.deb
+
+    - name: Install hex
+      run: mix local.hex --force
+
+    - name: Install rebar
+      run: mix local.rebar --force
+
+    - name: Build dependencies
+      run: mix deps.get && mix compile
+
+    - name: Code scan
+      run: mix sobelow --config
