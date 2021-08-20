@@ -11,8 +11,8 @@ jobs:
     name: Run CI
     runs-on: ubuntu-20.04
 
-    container:
-      image: elixir:1.12.2-slim
+    # container:
+      # image: elixir:1.12.2-slim
 
     services:
       postgres:
