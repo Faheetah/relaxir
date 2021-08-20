@@ -74,6 +74,7 @@ defmodule RelaxirWeb.RecipeControllerTest do
 
       conn = get(conn, Routes.recipe_path(conn, :show, recipe))
       response = html_response(conn, 200)
+
       recipe.fixture["ingredients"]
       |> Enum.each(fn i -> assert response =~ i.name end)
     end

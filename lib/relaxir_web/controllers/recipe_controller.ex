@@ -3,11 +3,10 @@ defmodule RelaxirWeb.RecipeController do
 
   alias Relaxir.Recipes
   alias Relaxir.Recipes.Recipe
-  alias RelaxirWeb.Authentication
   alias RelaxirWeb.RecipeParser
 
   def index(conn, %{"show" => show}) do
-    current_user = Authentication.get_current_user(conn)
+    current_user = conn.assigns.current_user
 
     recipes =
       case show do
@@ -63,7 +62,7 @@ defmodule RelaxirWeb.RecipeController do
   end
 
   def create(conn, %{"recipe" => recipe_params}) do
-    current_user = Authentication.get_current_user(conn)
+    current_user = conn.assigns.current_user
 
     recipe =
       recipe_params
@@ -81,12 +80,13 @@ defmodule RelaxirWeb.RecipeController do
           recipe_params
           |> RecipeParser.parse_attrs()
           |> Recipes.map_ingredients()
+
         render(conn, "new.html", changeset: changeset, ingredients: ingredients)
     end
   end
 
   def show(conn, %{"id" => id}) do
-    current_user = Authentication.get_current_user(conn)
+    current_user = conn.assigns.current_user
     recipe = Recipes.get_recipe!(id)
     render(conn, "show.html", recipe: recipe, current_user: current_user)
   end

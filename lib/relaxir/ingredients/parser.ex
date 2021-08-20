@@ -3,8 +3,10 @@ defmodule Relaxir.Ingredients.Parser do
   alias Relaxir.Units
 
   def downcase_ingredients(attrs) do
-    ingredients = Map.get(attrs, "ingredients", [])
-    |> Enum.map(fn i -> Map.put(i, :name, String.downcase(i[:name])) end)
+    ingredients =
+      Map.get(attrs, "ingredients", [])
+      |> Enum.map(fn i -> Map.put(i, :name, String.downcase(i[:name])) end)
+
     case ingredients do
       [] -> attrs
       _ -> Map.put(attrs, "ingredients", ingredients)
@@ -37,7 +39,7 @@ defmodule Relaxir.Ingredients.Parser do
             i
         end
       end)
-      |> Enum.with_index
+      |> Enum.with_index()
       |> Enum.map(fn {ingredient, index} -> Map.merge(ingredient, %{order: index}) end)
 
     errors =
@@ -114,7 +116,7 @@ defmodule Relaxir.Ingredients.Parser do
   end
 
   defp find_unit(units, unit_name) do
-    {:ok, Enum.find(units, &(singularize_unit(&1, unit_name)))}
+    {:ok, Enum.find(units, &singularize_unit(&1, unit_name))}
   end
 
   defp map_unit({:ok, nil}, attrs, unit_name, amount) do
@@ -128,7 +130,6 @@ defmodule Relaxir.Ingredients.Parser do
         amount: amount
       })
       |> Map.delete(:unit)
-
     else
       Map.merge(attrs, %{amount: amount})
     end
@@ -166,10 +167,10 @@ defmodule Relaxir.Ingredients.Parser do
     case String.split(ingredient.name) do
       [whole, fraction, unit | name] ->
         if Float.parse(fraction) != :error and Float.parse(whole) != :error and hd(Tuple.to_list(Float.parse(fraction))) do
-            parsed_amount = hd(Tuple.to_list(Float.parse(whole))) + parse_amount(fraction)
-            build_ingredient(parsed_amount, ingredient: ingredient, unit: unit, name: name)
+          parsed_amount = hd(Tuple.to_list(Float.parse(whole))) + parse_amount(fraction)
+          build_ingredient(parsed_amount, ingredient: ingredient, unit: unit, name: name)
         else
-            build_ingredient(parse_amount(whole), ingredient: ingredient, unit: fraction, name: [unit | name])
+          build_ingredient(parse_amount(whole), ingredient: ingredient, unit: fraction, name: [unit | name])
         end
 
       [amount, unit | name] ->

@@ -14,7 +14,7 @@ defmodule Relaxir.Recipes.Recipe do
     has_many :units, through: [:recipe_ingredients, :unit]
     has_many :recipe_categories, RecipeCategory, on_replace: :delete
     has_many :categories, through: [:recipe_categories, :category]
-    belongs_to :user, Relaxir.Users.User
+    belongs_to :user, Relaxir.Accounts.User
 
     timestamps()
   end

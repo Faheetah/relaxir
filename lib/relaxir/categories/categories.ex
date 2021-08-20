@@ -39,7 +39,7 @@ defmodule Relaxir.Categories do
 
       error ->
         error
-      end
+    end
   end
 
   def update_category(%Category{} = category, attrs) do
@@ -54,6 +54,7 @@ defmodule Relaxir.Categories do
       delete_cache(category)
       insert_cache(%{name: name, id: category.id})
     end
+
     changeset
   end
 

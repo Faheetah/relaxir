@@ -128,4 +128,3 @@ defmodule RelaxirWeb.InventoryListControllerTest do
     %{inventory_list: inventory_list}
   end
 end
-

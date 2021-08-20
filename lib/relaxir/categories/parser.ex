@@ -2,8 +2,10 @@ defmodule Relaxir.Categories.Parser do
   alias Relaxir.Categories
 
   def downcase_categories(attrs) do
-    categories = Map.get(attrs, "categories", [])
-    |> Enum.map(&(String.downcase(&1)))
+    categories =
+      Map.get(attrs, "categories", [])
+      |> Enum.map(&String.downcase(&1))
+
     case categories do
       [] -> attrs
       _ -> Map.put(attrs, "categories", categories)
@@ -40,7 +42,7 @@ defmodule Relaxir.Categories.Parser do
 
     recipe_categories =
       (attrs["recipe_categories"] || [])
-      |> Enum.map(&(map_existing_category(&1, current_recipe_categories, recipe)))
+      |> Enum.map(&map_existing_category(&1, current_recipe_categories, recipe))
 
     Map.put(attrs, "recipe_categories", recipe_categories)
   end

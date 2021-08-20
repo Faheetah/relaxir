@@ -18,8 +18,7 @@ config :relaxir, RelaxirWeb.Endpoint,
   pubsub_server: Relaxir.PubSub,
   live_view: [signing_salt: "HNKcYMPI"]
 
-config :relaxir, RelaxirWeb.Authentication,
-  ttl: {4, :weeks}
+config :relaxir, RelaxirWeb.Authentication, ttl: {4, :weeks}
 
 config :invert, Invert,
   tables: [
@@ -37,26 +36,7 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
-config :ueberauth, Ueberauth,
-  providers: [
-    google: {Ueberauth.Strategy.Google, []},
-    identity: {
-      Ueberauth.Strategy.Identity,
-      [
-        param_nesting: "user",
-        request_path: "/register",
-        callback_path: "/register",
-        callback_methods: ["POST"]
-      ]
-    }
-  ]
-
-config :ueberauth, Ueberauth.Strategy.Google.OAuth,
-  client_id: System.get_env("GOOGLE_CLIENT_ID"),
-  client_secret: System.get_env("GOOGLE_CLIENT_SECRET")
-
-config :relaxir, RelaxirWeb.Authentication,
-  issuer: "relaxir"
+config :relaxir, RelaxirWeb.Authentication, issuer: "relaxir"
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

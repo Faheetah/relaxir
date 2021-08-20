@@ -3,10 +3,9 @@ defmodule RelaxirWeb.CategoryController do
 
   alias Relaxir.Categories
   alias Relaxir.Categories.Category
-  alias RelaxirWeb.Authentication
 
   def index(conn, _params) do
-    current_user = Authentication.get_current_user(conn)
+    current_user = conn.assigns.current_user
     categories = Categories.list_categories()
     render(conn, "index.html", categories: categories, current_user: current_user)
   end
@@ -29,7 +28,7 @@ defmodule RelaxirWeb.CategoryController do
   end
 
   def show(conn, %{"id" => id}) do
-    current_user = Authentication.get_current_user(conn)
+    current_user = conn.assigns.current_user
     category = Categories.get_category!(id)
     render(conn, "show.html", category: category, current_user: current_user)
   end

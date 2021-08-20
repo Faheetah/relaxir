@@ -8,17 +8,31 @@ on:
 
 jobs:
   build:
-    name: Build release
+    name: Run CI
     runs-on: ubuntu-20.04
+
+    container:
+      image: elixir:1.12.2-slim
+
+    services:
+      postgres:
+        image: postgres:12.8
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
     - uses: actions/checkout@v2
 
-    - name: Download elixir
-      run: wget https://packages.erlang-solutions.com/erlang/debian/pool/elixir_1.10.4-1~ubuntu~focal_all.deb
+    - name: Install git
+      run: apt update && apt install -y git build-essential
 
-    - name: Download elixir
-      run: sudo dpkg -i elixir_1.10.4-1~ubuntu~focal_all.deb
+    # - name: Download elixir
+    #   run: wget https://packages.erlang-solutions.com/erlang/debian/pool/elixir_1.12.2-1~ubuntu~focal_all.deb
+
+    # - name: Download elixir
+    #   run: sudo dpkg -i elixir_1.12.2-1~ubuntu~focal_all.deb
 
     - name: Install hex
       run: mix local.hex --force
@@ -31,3 +45,16 @@ jobs:
 
     - name: Code scan
       run: mix sobelow --config
+
+    - uses: github/codeql-action/upload-sarif@v1
+      with:
+        sarif_file: results.sarif
+
+    - name: Credo
+      run: mix credo
+
+    - name: Unit tests
+      run: mix test
+      env:
+        DATABASE_URL: postgres
+        MIX_ENV: test

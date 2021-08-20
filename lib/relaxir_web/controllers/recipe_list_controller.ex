@@ -1,12 +1,11 @@
 defmodule RelaxirWeb.RecipeListController do
   use RelaxirWeb, :controller
 
-  alias RelaxirWeb.Authentication
   alias Relaxir.RecipeLists
   alias Relaxir.RecipeLists.RecipeList
 
   def index(conn, _params) do
-    current_user = Authentication.get_current_user(conn)
+    current_user = conn.assigns.current_user
 
     recipe_lists = RecipeLists.list_recipe_lists()
     render(conn, "index.html", recipe_lists: recipe_lists, current_user: current_user)
@@ -18,7 +17,7 @@ defmodule RelaxirWeb.RecipeListController do
   end
 
   def create(conn, %{"recipe_list" => recipe_list_params}) do
-    current_user = Authentication.get_current_user(conn)
+    current_user = conn.assigns.current_user
     recipe_list_params = Map.put(recipe_list_params, "user_id", current_user.id)
 
     case RecipeLists.create_recipe_list(recipe_list_params) do
@@ -33,7 +32,7 @@ defmodule RelaxirWeb.RecipeListController do
   end
 
   def show(conn, %{"id" => id}) do
-    current_user = Authentication.get_current_user(conn)
+    current_user = conn.assigns.current_user
     recipe_list = RecipeLists.get_recipe_list!(id)
     render(conn, "show.html", recipe_list: recipe_list, current_user: current_user)
   end
@@ -71,6 +70,7 @@ defmodule RelaxirWeb.RecipeListController do
     recipe_list = RecipeLists.get_recipe_list!(id)
 
     RecipeLists.remove_recipe(recipe_list, String.to_integer(recipe_id))
+
     conn
     |> put_flash(:info, "Recipe removed successfully.")
     |> redirect(to: Routes.recipe_list_path(conn, :show, recipe_list))
@@ -78,9 +78,11 @@ defmodule RelaxirWeb.RecipeListController do
 
   def select_list(conn, %{"recipe_id" => recipe_id}) do
     recipe_lists = RecipeLists.list_recipe_lists()
+
     case recipe_lists do
       [recipe_list] ->
         add_recipe(conn, %{"id" => recipe_list.id, "recipe_id" => recipe_id})
+
       _ ->
         render(conn, "select_list.html", recipe_lists: recipe_lists, recipe_id: recipe_id)
     end
@@ -94,6 +96,7 @@ defmodule RelaxirWeb.RecipeListController do
         conn
         |> put_flash(:info, "Recipe added successfully.")
         |> redirect(to: Routes.recipe_list_path(conn, :show, recipe_list))
+
       _ ->
         conn
         |> redirect(to: Routes.recipe_list_path(conn, :show, recipe_list))

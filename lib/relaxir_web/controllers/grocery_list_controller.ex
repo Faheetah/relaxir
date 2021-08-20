@@ -1,12 +1,11 @@
 defmodule RelaxirWeb.GroceryListController do
   use RelaxirWeb, :controller
 
-  alias RelaxirWeb.Authentication
   alias Relaxir.GroceryLists
   alias Relaxir.GroceryLists.GroceryList
 
   def index(conn, _params) do
-    current_user = Authentication.get_current_user(conn)
+    current_user = conn.assigns.current_user
 
     grocery_lists = GroceryLists.list_grocery_lists()
     render(conn, "index.html", grocery_lists: grocery_lists, current_user: current_user)
@@ -18,7 +17,7 @@ defmodule RelaxirWeb.GroceryListController do
   end
 
   def create(conn, %{"grocery_list" => grocery_list_params}) do
-    current_user = Authentication.get_current_user(conn)
+    current_user = conn.assigns.current_user
     grocery_list_params = Map.put(grocery_list_params, "user_id", current_user.id)
 
     case GroceryLists.create_grocery_list(grocery_list_params) do
@@ -33,7 +32,7 @@ defmodule RelaxirWeb.GroceryListController do
   end
 
   def show(conn, %{"id" => id}) do
-    current_user = Authentication.get_current_user(conn)
+    current_user = conn.assigns.current_user
     grocery_list = GroceryLists.get_grocery_list!(id)
     render(conn, "show.html", grocery_list: grocery_list, current_user: current_user)
   end
@@ -75,15 +74,17 @@ defmodule RelaxirWeb.GroceryListController do
   def add_ingredient(conn, %{"id" => id, "ingredient_id" => ingredient_id}) do
     grocery_list = GroceryLists.get_grocery_list!(id)
 
-    ingredient_id = cond do
-      is_integer(ingredient_id) -> ingredient_id
-      is_binary(ingredient_id) -> String.to_integer(ingredient_id)
-    end
+    ingredient_id =
+      cond do
+        is_integer(ingredient_id) -> ingredient_id
+        is_binary(ingredient_id) -> String.to_integer(ingredient_id)
+      end
 
     case GroceryLists.add_ingredient(grocery_list, ingredient_id) do
       :ok ->
         conn
         |> redirect(to: Routes.grocery_list_path(conn, :show, grocery_list))
+
       _ ->
         conn
         |> redirect(to: Routes.grocery_list_path(conn, :show, grocery_list))

@@ -1,4 +1,4 @@
-# Setuj
+# Setup
 
 Install Elixir
 

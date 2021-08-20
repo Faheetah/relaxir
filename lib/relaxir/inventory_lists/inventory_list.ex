@@ -4,7 +4,7 @@ defmodule Relaxir.InventoryLists.InventoryList do
 
   schema "inventory_lists" do
     field :name, :string
-    belongs_to :user, Relaxir.Users.User
+    belongs_to :user, Relaxir.Accounts.User
     has_many :ingredient_inventory_lists, Relaxir.IngredientInventoryList, on_replace: :delete, on_delete: :delete_all
     has_many :ingredients, through: [:ingredient_inventory_lists, :ingredient]
 

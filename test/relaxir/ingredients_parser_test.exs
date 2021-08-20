@@ -31,7 +31,8 @@ defmodule RelaxirWeb.RecipeParserTest do
 
     test "parses a note when amount and multiple commas" do
       # guards against false positives when parsing ingredients without units i.e. "1/4 onion, sliced"
-      assert {:ok, %{amount: 1, name: "", unit: "onion", note: "sliced, diced, and nice"}} == extract_ingredient_fields("1 onion, sliced, diced, and nice")
+      assert {:ok, %{amount: 1, name: "", unit: "onion", note: "sliced, diced, and nice"}} ==
+               extract_ingredient_fields("1 onion, sliced, diced, and nice")
     end
 
     test "parses an ingredient without a unit" do

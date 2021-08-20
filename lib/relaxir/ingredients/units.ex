@@ -10,13 +10,14 @@ defmodule Relaxir.Units do
 
     Unit
     |> where([u], u.name in [^singular, ^plural] or u.abbreviation in [^singular, ^plural])
-    |> Repo.one
+    |> Repo.one()
   end
 
   def create_unit(attrs) do
-    abbreviation = attrs
-    |> Map.get(:abbreviation)
-    |> Inflex.singularize()
+    abbreviation =
+      attrs
+      |> Map.get(:abbreviation)
+      |> Inflex.singularize()
 
     %Unit{}
     |> Unit.changeset(%{name: Inflex.singularize(attrs.name), abbreviation: abbreviation})

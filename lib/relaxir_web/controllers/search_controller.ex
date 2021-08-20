@@ -12,14 +12,14 @@ defmodule RelaxirWeb.SearchController do
 
   # default search page
   def new(conn, params) when map_size(params) == 0 do
-    current_user = RelaxirWeb.Authentication.get_current_user(conn)
+    current_user = conn.assigns.current_user
     render(conn, "search.html", current_user: current_user, count: :na, checkboxes: @default_checkboxes, results: [])
   end
 
   # search results
   def search(conn, params) do
     terms = params["terms"]
-    current_user = RelaxirWeb.Authentication.get_current_user(conn)
+    current_user = conn.assigns.current_user
 
     checkboxes = %{
       recipes: Map.get(params, "recipes", false) == "true",

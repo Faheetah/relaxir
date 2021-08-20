@@ -80,4 +80,3 @@ defmodule Relaxir.InventoryListsTest do
     end
   end
 end
-

@@ -47,17 +47,8 @@
                 <%= if function_exported?(Routes, :live_dashboard_path, 2) do %>
                   <li class="navigation-item"><%= link "LiveDashboard", to: Routes.live_dashboard_path(@conn, :home) %></li>
                 <% end %>
-                <li class="navigation-item">
-                  <%= @current_user.email %>
-                </li>
-                <li class="navigation-item">
-                  <%= link("Log Out", to: Routes.session_path(@conn, :delete), method: :delete) %>
-                </li>
-              <% else %>
-                <li class="navigation-item">
-                  <%= link("Login", to: Routes.session_path(@conn, :create)) %>
-                </li>
               <% end %>
+              <%= render "_user_menu.html", assigns %>
             </ul>
           </section>
         </nav>

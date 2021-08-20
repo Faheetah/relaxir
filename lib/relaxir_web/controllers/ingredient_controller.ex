@@ -3,10 +3,9 @@ defmodule RelaxirWeb.IngredientController do
 
   alias Relaxir.Ingredients
   alias Relaxir.Ingredients.Ingredient
-  alias RelaxirWeb.Authentication
 
   def index(conn, _params) do
-    current_user = Authentication.get_current_user(conn)
+    current_user = conn.assigns.current_user
     ingredients = Ingredients.list_ingredients()
     render(conn, "index.html", ingredients: ingredients, current_user: current_user)
   end
@@ -51,7 +50,7 @@ defmodule RelaxirWeb.IngredientController do
   end
 
   def show(conn, %{"id" => id}) do
-    current_user = Authentication.get_current_user(conn)
+    current_user = conn.assigns.current_user
     ingredient = Ingredients.get_ingredient!(id)
     render(conn, "show.html", ingredient: ingredient, current_user: current_user)
   end
@@ -88,14 +87,24 @@ defmodule RelaxirWeb.IngredientController do
   def select_list(conn, %{"ingredient_id" => ingredient_id, "for" => list_for}) do
     inventory_lists = Relaxir.InventoryLists.list_inventory_lists()
     grocery_lists = Relaxir.GroceryLists.list_grocery_lists()
+
     cond do
       length(inventory_lists) == 1 && Enum.empty?(grocery_lists) ->
         RelaxirWeb.InventoryListController.add_ingredient(conn, %{"id" => hd(inventory_lists).id, "ingredient_id" => ingredient_id})
+
       Enum.empty?(inventory_lists) && length(grocery_lists) == 1 ->
         RelaxirWeb.GroceryListController.add_ingredient(conn, %{"id" => hd(grocery_lists).id, "ingredient_id" => ingredient_id})
+
       true ->
-        render(conn, "select_list.html", list_count: length(inventory_lists ++ grocery_lists), inventory_lists: inventory_lists, grocery_lists: grocery_lists, ingredient_id: ingredient_id, for: list_for)
+        render(conn, "select_list.html",
+          list_count: length(inventory_lists ++ grocery_lists),
+          inventory_lists: inventory_lists,
+          grocery_lists: grocery_lists,
+          ingredient_id: ingredient_id,
+          for: list_for
+        )
     end
   end
+
   def select_list(conn, %{"ingredient_id" => ingredient_id}), do: select_list(conn, %{"ingredient_id" => ingredient_id, "for" => nil})
 end

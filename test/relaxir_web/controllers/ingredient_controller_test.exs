@@ -17,7 +17,8 @@ defmodule RelaxirWeb.IngredientControllerTest do
 
   describe "create ingredient" do
     test "redirects to show when data is valid", %{conn: conn} do
-      conn = post(conn, Routes.ingredient_path(conn, :create), ingredient: %{name: "ingredient fixture", description: "description fixture"})
+      conn =
+        post(conn, Routes.ingredient_path(conn, :create), ingredient: %{name: "ingredient fixture", description: "description fixture"})
 
       assert %{id: id} = redirected_params(conn)
       assert redirected_to(conn) == Routes.ingredient_path(conn, :show, id)

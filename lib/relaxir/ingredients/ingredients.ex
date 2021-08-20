@@ -39,12 +39,13 @@ defmodule Relaxir.Ingredients do
 
       error ->
         error
-      end
+    end
   end
 
   def create_ingredients(attrs) do
-    now = NaiveDateTime.utc_now |> NaiveDateTime.truncate(:second)
+    now = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
     timestamps = %{inserted_at: now, updated_at: now}
+
     Repo.insert_all(Ingredient, Enum.map(attrs, &Map.merge(&1, timestamps)))
     |> Enum.map(fn ingredient ->
       case ingredient do
@@ -70,6 +71,7 @@ defmodule Relaxir.Ingredients do
       delete_cache(ingredient)
       insert_cache(%{name: name, id: ingredient.id})
     end
+
     changeset
   end
 
