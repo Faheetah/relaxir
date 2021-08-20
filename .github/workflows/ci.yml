@@ -26,6 +26,8 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: Install git
+      run: sudo apt install -y git
     # - name: Download elixir
     #   run: wget https://packages.erlang-solutions.com/erlang/debian/pool/elixir_1.12.2-1~ubuntu~focal_all.deb
 
