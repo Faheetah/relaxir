@@ -2,6 +2,7 @@ name: Elixir CI
 
 env:
   MIX_ENV: dev
+  DATABASE_URL: postgres
 
 on:
   push:
