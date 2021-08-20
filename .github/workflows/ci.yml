@@ -11,14 +11,17 @@ jobs:
     name: Run CI
     runs-on: ubuntu-20.04
 
+    services:
+      postgres:
+        image: postgres:12.8
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432/tcp
+
     steps:
     - uses: actions/checkout@v2
-
-    - name: Install postgresql
-      run: sudo apt install postgresql
-
-    - name: start postgres
-      run: sudo systemctl start postgresql
 
     - name: Download elixir
       run: wget https://packages.erlang-solutions.com/erlang/debian/pool/elixir_1.12.2-1~ubuntu~focal_all.deb
