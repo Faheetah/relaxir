@@ -91,6 +91,7 @@ defmodule RelaxirWeb.RecipeView do
     |> Enum.join(separator)
   end
 
+  # sobelow_skip ["XSS.Raw"]
   def render_markdown(text) do
     case text do
       nil -> ""
