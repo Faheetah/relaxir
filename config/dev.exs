@@ -6,7 +6,7 @@ config :relaxir, Relaxir.Repo,
   password: "postgres",
   database: "relaxir_dev",
   hostname: System.get_env("DATABASE_URL", "localhost"),
-  port: String.to_integer(System.get_env("DATABASE_PORT", "5432")),
+  port: System.get_env("DATABASE_PORT", "5432"),
   show_sensitive_data_on_connection_error: true,
   # only for importing with mix, otherwise it spams debug SQL
   # log: false,
