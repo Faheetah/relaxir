@@ -13,7 +13,7 @@ config :relaxir, Relaxir.Repo,
   password: "postgres",
   database: "relaxir_test#{System.get_env("MIX_TEST_PARTITION")}",
   hostname: System.get_env("DATABASE_URL", "localhost"),
-  port: System.get_env("DATABASE_PORT", 5432),
+  port: System.get_env("DATABASE_PORT", "5432"),
   pool: Ecto.Adapters.SQL.Sandbox
 
 # We don't run a server during test. If one is required,
