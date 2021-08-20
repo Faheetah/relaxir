@@ -11,8 +11,8 @@ jobs:
     name: Run CI
     runs-on: ubuntu-20.04
 
-    # container:
-      # image: elixir:1.12.2-slim
+    container:
+      image: elixir:1.12.2-slim
 
     services:
       postgres:
@@ -20,21 +20,19 @@ jobs:
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
-        ports:
-          - 5432/tcp
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
     - uses: actions/checkout@v2
 
-    # - name: Install git
-      # run: apt update && apt install -y git build-essential
+    - name: Install git
+      run: apt update && apt install -y git build-essential
 
-    - name: Download elixir
-      run: wget https://packages.erlang-solutions.com/erlang/debian/pool/elixir_1.12.2-1~ubuntu~focal_all.deb
+    # - name: Download elixir
+    #   run: wget https://packages.erlang-solutions.com/erlang/debian/pool/elixir_1.12.2-1~ubuntu~focal_all.deb
 
-    - name: Download elixir
-      run: sudo dpkg -i elixir_1.12.2-1~ubuntu~focal_all.deb
+    # - name: Download elixir
+    #   run: sudo dpkg -i elixir_1.12.2-1~ubuntu~focal_all.deb
 
     - name: Install hex
       run: mix local.hex --force
