@@ -27,8 +27,8 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Install git
-      run: apt update && apt install -y git build-essential
+    # - name: Install git
+      # run: apt update && apt install -y git build-essential
     # - name: Download elixir
     #   run: wget https://packages.erlang-solutions.com/erlang/debian/pool/elixir_1.12.2-1~ubuntu~focal_all.deb
 
