@@ -15,7 +15,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Install postgresql
-      run: sudo apt install postgresql
+      run: sudo apt install postgresql && sudo systemctl start postgresql
 
     - name: Download elixir
       run: wget https://packages.erlang-solutions.com/erlang/debian/pool/elixir_1.12.2-1~ubuntu~focal_all.deb
