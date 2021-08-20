@@ -1,8 +1,9 @@
 defmodule RelaxirWeb.Router do
   import Phoenix.LiveDashboard.Router
-  import RelaxirWeb.Authentication, only: [load_current_user: 2, require_admin: 2]
 
   use RelaxirWeb, :router
+
+  import RelaxirWeb.UserAuth
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -10,34 +11,14 @@ defmodule RelaxirWeb.Router do
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers, %{"content-security-policy" => "default-src 'self'"}
-    plug :load_current_user
-  end
-
-  pipeline :api do
-    plug :accepts, ["json"]
-  end
-
-  pipeline :guardian do
-    plug RelaxirWeb.Authentication.Pipeline
-  end
-
-  pipeline :browser_auth do
-    plug Guardian.Plug.EnsureAuthenticated
+    plug :fetch_current_user
   end
 
   scope "/", RelaxirWeb do
-    pipe_through [:browser, :guardian]
+    pipe_through [:browser]
 
     scope "/" do
-      pipe_through [:browser_auth]
-
-      resources "/profile", ProfileController, only: [:show], singleton: true
-
-      delete "/logout", SessionController, :delete
-    end
-
-    scope "/" do
-      pipe_through [:browser_auth, :require_admin]
+      pipe_through [:require_authenticated_user, :require_admin]
       resources "/recipes", RecipeController, except: [:show, :index]
 
       resources "/recipelists", RecipeListController
@@ -66,9 +47,6 @@ defmodule RelaxirWeb.Router do
 
     get "/", RecipeController, :index
 
-    get "/login", SessionController, :new
-    post "/login", SessionController, :create
-
     get "/search", SearchController, :new
     post "/search", SearchController, :search
     resources "/recipes", RecipeController, only: [:show, :index]
@@ -76,20 +54,6 @@ defmodule RelaxirWeb.Router do
     get "/tools/:name", ToolController, :show
     resources "/ingredients", IngredientController, only: [:show, :index]
     resources "/categories", CategoryController, only: [:show, :index]
-  end
-
-  scope "/auth", RelaxirWeb do
-    pipe_through [:browser, :guardian]
-
-    get "/:provider", AuthController, :request
-    get "/:provider/callback", AuthController, :callback
-  end
-
-  scope "/api", RelaxirWeb.Api do
-    pipe_through :api
-
-    resources "/ingredients", IngredientController, only: [:show, :index]
-    resources "/food", UsdaController, [:show, :index]
   end
 
   ## Authentication routes

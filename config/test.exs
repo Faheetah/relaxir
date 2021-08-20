@@ -23,6 +23,3 @@ config :relaxir, RelaxirWeb.Endpoint,
 
 # Print only warnings and errors during test
 config :logger, level: :warn
-
-config :relaxir, RelaxirWeb.Authentication,
-  secret_key: "PXqHaM2ZyRSldcH0roFOkRUHL/QM/ADXp1Zi9vtG8MX3kZjiUE/hl14Ej2E++H7A"

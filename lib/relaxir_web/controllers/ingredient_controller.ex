@@ -3,10 +3,9 @@ defmodule RelaxirWeb.IngredientController do
 
   alias Relaxir.Ingredients
   alias Relaxir.Ingredients.Ingredient
-  alias RelaxirWeb.Authentication
 
   def index(conn, _params) do
-    current_user = Authentication.get_current_user(conn)
+    current_user = conn.assigns.current_user
     ingredients = Ingredients.list_ingredients()
     render(conn, "index.html", ingredients: ingredients, current_user: current_user)
   end
@@ -51,7 +50,7 @@ defmodule RelaxirWeb.IngredientController do
   end
 
   def show(conn, %{"id" => id}) do
-    current_user = Authentication.get_current_user(conn)
+    current_user = conn.assigns.current_user
     ingredient = Ingredients.get_ingredient!(id)
     render(conn, "show.html", ingredient: ingredient, current_user: current_user)
   end

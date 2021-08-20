@@ -1,12 +1,11 @@
 defmodule RelaxirWeb.RecipeListController do
   use RelaxirWeb, :controller
 
-  alias RelaxirWeb.Authentication
   alias Relaxir.RecipeLists
   alias Relaxir.RecipeLists.RecipeList
 
   def index(conn, _params) do
-    current_user = Authentication.get_current_user(conn)
+    current_user = conn.assigns.current_user
 
     recipe_lists = RecipeLists.list_recipe_lists()
     render(conn, "index.html", recipe_lists: recipe_lists, current_user: current_user)
@@ -18,7 +17,7 @@ defmodule RelaxirWeb.RecipeListController do
   end
 
   def create(conn, %{"recipe_list" => recipe_list_params}) do
-    current_user = Authentication.get_current_user(conn)
+    current_user = conn.assigns.current_user
     recipe_list_params = Map.put(recipe_list_params, "user_id", current_user.id)
 
     case RecipeLists.create_recipe_list(recipe_list_params) do
@@ -33,7 +32,7 @@ defmodule RelaxirWeb.RecipeListController do
   end
 
   def show(conn, %{"id" => id}) do
-    current_user = Authentication.get_current_user(conn)
+    current_user = conn.assigns.current_user
     recipe_list = RecipeLists.get_recipe_list!(id)
     render(conn, "show.html", recipe_list: recipe_list, current_user: current_user)
   end

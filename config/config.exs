@@ -37,24 +37,6 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
-config :ueberauth, Ueberauth,
-  providers: [
-    google: {Ueberauth.Strategy.Google, []},
-    identity: {
-      Ueberauth.Strategy.Identity,
-      [
-        param_nesting: "user",
-        request_path: "/register",
-        callback_path: "/register",
-        callback_methods: ["POST"]
-      ]
-    }
-  ]
-
-config :ueberauth, Ueberauth.Strategy.Google.OAuth,
-  client_id: System.get_env("GOOGLE_CLIENT_ID"),
-  client_secret: System.get_env("GOOGLE_CLIENT_SECRET")
-
 config :relaxir, RelaxirWeb.Authentication,
   issuer: "relaxir"
 

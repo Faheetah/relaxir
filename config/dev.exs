@@ -32,14 +32,6 @@ config :relaxir, RelaxirWeb.Endpoint,
     ]
   ]
 
-config :relaxir, Relaxir.Application,
-  cache_tables: [
-    {Relaxir.Ingredients.Food, :description, [:description, :fdc_id]},
-    {Relaxir.Ingredients.Ingredient, :name, [:name, :id]},
-    {Relaxir.Categories.Category, :name, [:name, :id]},
-    {Relaxir.Recipes.Recipe, :title, [:title, :id]}
-  ]
-
 # ## SSL Support
 #
 # In order to use HTTPS in development, a self-signed
@@ -84,6 +76,3 @@ config :phoenix, :stacktrace_depth, 20
 
 # Initialize plugs at runtime for faster development compilation
 config :phoenix, :plug_init_mode, :runtime
-
-config :relaxir, RelaxirWeb.Authentication,
-  secret_key: "PXqHaM2ZyRSldcH0roFOkRUHL/QM/ADXp1Zi9vtG8MX3kZjiUE/hl14Ej2E++H7A"

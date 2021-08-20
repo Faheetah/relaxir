@@ -4,9 +4,9 @@ defmodule Relaxir.MixProject do
   def project do
     [
       app: :relaxir,
-      version: "0.7.0",
+      version: "0.8.0",
       url: "https://github.com/Faheetah/relaxir/",
-      elixir: "~> 1.7",
+      elixir: "~> 1.12",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
@@ -35,33 +35,33 @@ defmodule Relaxir.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:bcrypt_elixir, "~> 2.0"},
+      # Phoenix related
+      {:plug_cowboy, "~> 2.0"},
       {:phoenix, "~> 1.5.3"},
-      {:phoenix_ecto, "~> 4.1"},
-      {:ecto_sql, "~> 3.4"},
-      {:postgrex, ">= 0.0.0"},
       {:phoenix_html, "~> 2.11"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:phoenix_live_dashboard, "~> 0.2.0"},
+      {:phx_gen_auth, "~> 0.7.0"},
+      # DB related
+      {:phoenix_ecto, "~> 4.1"},
+      {:ecto_sql, "~> 3.4"},
+      {:postgrex, ">= 0.0.0"},
+      # telemetry
       {:telemetry_metrics, "~> 0.4"},
       {:telemetry_poller, "~> 0.4"},
+      # misc required for app
+      {:bcrypt_elixir, "~> 2.0"},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
-      {:plug_cowboy, "~> 2.0"},
-      {:argon2_elixir, "~> 2.3.0"},
-      {:mix_test_watch, "~> 1.0", runtime: false, only: :dev},
-      {:ueberauth, "~> 0.6.3"},
-      {:ueberauth_identity, "~> 0.3.0"},
-      {:ueberauth_google, "~> 0.8"},
-      {:guardian, "~> 2.1"},
-      {:phx_gen_auth, "~> 0.7.0"},
       {:earmark, "~> 1.4.15"},
       {:csv, "~> 2.3.1"},
+      {:inflex, "~> 2.1.0"},
+      {:invert, git: "https://github.com/faheetah/invert", tag: "0.2.1"},
+      # test and code quality
+      {:mix_test_watch, "~> 1.0", runtime: false, only: :dev},
       {:credo, "~> 1.5", only: :dev},
       {:excoveralls, "~> 0.13.1", only: :test},
       {:lcov_ex, "~> 0.1.0", runtime: false, only: :test},
-      {:inflex, "~> 2.1.0"},
-      {:invert, git: "https://github.com/faheetah/invert", tag: "0.2.1"},
       {:sobelow, "~> 0.8", only: :dev}
     ]
   end

@@ -1,12 +1,11 @@
 defmodule RelaxirWeb.InventoryListController do
   use RelaxirWeb, :controller
 
-  alias RelaxirWeb.Authentication
   alias Relaxir.InventoryLists
   alias Relaxir.InventoryLists.InventoryList
 
   def index(conn, _params) do
-    current_user = Authentication.get_current_user(conn)
+    current_user = conn.assigns.current_user
 
     inventory_lists = InventoryLists.list_inventory_lists()
     render(conn, "index.html", inventory_lists: inventory_lists, current_user: current_user)
@@ -18,7 +17,7 @@ defmodule RelaxirWeb.InventoryListController do
   end
 
   def create(conn, %{"inventory_list" => inventory_list_params}) do
-    current_user = Authentication.get_current_user(conn)
+    current_user = conn.assigns.current_user
     inventory_list_params = Map.put(inventory_list_params, "user_id", current_user.id)
 
     case InventoryLists.create_inventory_list(inventory_list_params) do
