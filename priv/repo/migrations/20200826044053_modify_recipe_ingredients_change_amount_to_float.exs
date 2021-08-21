@@ -3,7 +3,7 @@ defmodule Relaxir.Repo.Migrations.ModifyRecipeIngredientsChangeAmountToFloat do
 
   def change do
     alter table(:recipe_ingredients) do
-      modify :amount, :float
+      modify(:amount, :float)
     end
   end
 end

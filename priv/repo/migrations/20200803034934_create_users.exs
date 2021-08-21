@@ -3,13 +3,13 @@ defmodule Relaxir.Repo.Migrations.CreateUsers do
 
   def change do
     create table(:users) do
-      add :email, :string
-      add :encrypted_password, :string
-      add :is_admin, :boolean, default: false
+      add(:email, :string)
+      add(:encrypted_password, :string)
+      add(:is_admin, :boolean, default: false)
 
       timestamps()
     end
 
-    create unique_index(:users, [:email])
+    create(unique_index(:users, [:email]))
   end
 end

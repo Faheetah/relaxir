@@ -3,7 +3,7 @@ defmodule Relaxir.Repo.Migrations.ModifyIngredientsAddDescription do
 
   def change do
     alter table(:ingredients) do
-      add :description, :text
+      add(:description, :text)
     end
   end
 end

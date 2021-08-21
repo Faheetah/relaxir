@@ -3,7 +3,7 @@ defmodule Relaxir.Repo.Migrations.ModifyUnitsAddAbbreviationColumn do
 
   def change do
     alter table(:units) do
-      add :abbreviation, :string
+      add(:abbreviation, :string)
     end
   end
 end

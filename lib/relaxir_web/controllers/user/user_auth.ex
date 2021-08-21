@@ -125,14 +125,14 @@ defmodule RelaxirWeb.UserAuth do
   Check that the user is flagged as an administrator
   """
   def require_admin(conn, _) do
-    unless Map.get(conn.assigns[:current_user], :is_admin) do
+    if Map.get(conn.assigns[:current_user], :is_admin) do
+      conn
+    else
       conn
       |> put_flash(:error, "You must log in to access this page.")
       |> maybe_store_return_to()
       |> redirect(to: Routes.user_session_path(conn, :new))
       |> halt()
-    else
-      conn
     end
   end
 

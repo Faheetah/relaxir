@@ -37,6 +37,12 @@ mix credo
 mix sobelow
 ```
 
+For local development, ensure all files are formatted, i.e.
+
+```
+mix format "{lib,test,config}/**/*.{ex,exs}"
+```
+
 # Prod
 
 Increment version in mix.esx
