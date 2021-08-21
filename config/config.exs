@@ -5,10 +5,13 @@
 # is restricted to this project.
 
 # General application configuration
-use Mix.Config
+import Config
 
 config :relaxir,
   ecto_repos: [Relaxir.Repo]
+
+config :relaxir, :registration,
+  enabled: false
 
 # Configures the endpoint
 config :relaxir, RelaxirWeb.Endpoint,
@@ -17,8 +20,6 @@ config :relaxir, RelaxirWeb.Endpoint,
   render_errors: [view: RelaxirWeb.ErrorView, accepts: ~w(html json), layout: false],
   pubsub_server: Relaxir.PubSub,
   live_view: [signing_salt: "HNKcYMPI"]
-
-config :relaxir, RelaxirWeb.Authentication, ttl: {4, :weeks}
 
 config :invert, Invert,
   tables: [
@@ -35,8 +36,6 @@ config :logger, :console,
 
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
-
-config :relaxir, RelaxirWeb.Authentication, issuer: "relaxir"
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

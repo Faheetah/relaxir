@@ -1,4 +1,6 @@
-use Mix.Config
+import Config
+
+config :relaxir, :registration, enabled: true
 
 # Configure your database
 config :relaxir, Relaxir.Repo,

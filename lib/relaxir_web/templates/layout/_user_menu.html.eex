@@ -2,6 +2,10 @@
   <li class="navigation-item"><%= link @current_user.email, to: Routes.user_settings_path(@conn, :edit) %></li>
   <li class="navigation-item"><%= link "Log out", to: Routes.user_session_path(@conn, :delete), method: :delete %></li>
 <% else %>
+  <%= with {:ok, enabled: true} <- Application.fetch_env(:relaxir, :registration) do %>
   <li class="navigation-item"><%= link "Register", to: Routes.user_registration_path(@conn, :new) %></li>
+  <% else _ -> %>
+  <!-- registration disabled -->
+  <% end %>
   <li class="navigation-item"><%= link "Log in", to: Routes.user_session_path(@conn, :new) %></li>
 <% end %>
