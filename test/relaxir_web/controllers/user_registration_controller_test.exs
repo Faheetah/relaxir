@@ -3,7 +3,7 @@ defmodule RelaxirWeb.UserRegistrationControllerTest do
 
   import Relaxir.AccountsFixtures
 
-  @tag skip: "** (RuntimeError) expected response with status 200, got: 302, with body:"
+  # @tag skip: "** (RuntimeError) expected response with status 200, got: 302, with body:"
   describe "GET /users/register" do
     test "renders registration page", %{conn: conn} do
       conn = get(conn, Routes.user_registration_path(conn, :new))
@@ -19,7 +19,7 @@ defmodule RelaxirWeb.UserRegistrationControllerTest do
     end
   end
 
-  @tag skip: "Assertion with =~ failed right: user-576460752303423007@example.com"
+  # @tag skip: "Assertion with =~ failed right: user-576460752303423007@example.com"
   describe "POST /users/register" do
     @tag :capture_log
     test "creates account and logs the user in", %{conn: conn} do
@@ -37,21 +37,20 @@ defmodule RelaxirWeb.UserRegistrationControllerTest do
       conn = get(conn, "/")
       response = html_response(conn, 200)
       assert response =~ email
-      assert response =~ "Settings</a>"
       assert response =~ "Log out</a>"
     end
 
-    @tag skip: "** (RuntimeError) expected response with status 200, got: 302, with body:"
+    # @tag skip: "** (RuntimeError) expected response with status 200, got: 302, with body:"
     test "render errors for invalid data", %{conn: conn} do
       conn =
         post(conn, Routes.user_registration_path(conn, :create), %{
-          "user" => %{"email" => "with spaces", "password" => "too short"}
+          "user" => %{"email" => "with spaces", "password" => "too"}
         })
 
       response = html_response(conn, 200)
       assert response =~ "<h1>Register</h1>"
       assert response =~ "must have the @ sign and no spaces"
-      assert response =~ "should be at least 12 character"
+      assert response =~ "should be at least 4 character"
     end
   end
 end

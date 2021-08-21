@@ -7,6 +7,10 @@ defmodule RelaxirWeb.CategoryControllerTest do
   @update_attrs %{name: "some updated name"}
   @invalid_attrs %{name: nil}
 
+  setup context do
+    register_and_log_in_user(context, %{admin: true})
+  end
+
   def fixture(:category) do
     {:ok, category} = Categories.create_category(@create_attrs)
     category

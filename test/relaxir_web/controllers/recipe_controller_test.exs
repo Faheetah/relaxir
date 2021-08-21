@@ -1,6 +1,10 @@
 defmodule RelaxirWeb.RecipeControllerTest do
   use RelaxirWeb.ConnCase
 
+  setup context do
+    register_and_log_in_user(context, %{admin: true})
+  end
+
   describe "index" do
     setup [:recipe_draft, :recipe_published, :recipes]
 

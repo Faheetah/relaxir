@@ -7,6 +7,10 @@ defmodule RelaxirWeb.RecipeListControllerTest do
   @update_attrs %{name: "some updated name"}
   @invalid_attrs %{name: nil}
 
+  setup context do
+    register_and_log_in_user(context, %{admin: true})
+  end
+
   def fixture(:recipe_list) do
     {:ok, recipe_list} = RecipeLists.create_recipe_list(Map.put(@create_attrs, :user_id, 1))
     recipe_list

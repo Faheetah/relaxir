@@ -7,6 +7,10 @@ defmodule RelaxirWeb.GroceryListControllerTest do
   @update_attrs %{name: "some updated name"}
   @invalid_attrs %{name: nil}
 
+  setup context do
+    register_and_log_in_user(context, %{admin: true})
+  end
+
   def fixture(:grocery_list) do
     {:ok, grocery_list} = GroceryLists.create_grocery_list(Map.put(@create_attrs, :user_id, 1))
     grocery_list

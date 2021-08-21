@@ -1,6 +1,10 @@
 defmodule RelaxirWeb.IngredientControllerTest do
   use RelaxirWeb.ConnCase
 
+  setup context do
+    register_and_log_in_user(context, %{admin: true})
+  end
+
   describe "index" do
     test "lists all ingredients", %{conn: conn} do
       conn = get(conn, Routes.ingredient_path(conn, :index))

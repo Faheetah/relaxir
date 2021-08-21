@@ -7,6 +7,10 @@ defmodule RelaxirWeb.InventoryListControllerTest do
   @update_attrs %{name: "some updated name"}
   @invalid_attrs %{name: nil}
 
+  setup context do
+    register_and_log_in_user(context, %{admin: true})
+  end
+
   def fixture(:inventory_list) do
     {:ok, inventory_list} = InventoryLists.create_inventory_list(Map.put(@create_attrs, :user_id, 1))
     inventory_list

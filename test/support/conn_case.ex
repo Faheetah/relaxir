@@ -23,11 +23,7 @@ defmodule RelaxirWeb.ConnCase do
       Ecto.Adapters.SQL.Sandbox.mode(Relaxir.Repo, {:shared, self()})
     end
 
-    user = Relaxir.Accounts.get_user!(1)
-
-    conn =
-      Phoenix.ConnTest.build_conn()
-      |> __MODULE__.log_in_user(user)
+    conn = Phoenix.ConnTest.build_conn()
 
     {:ok, conn: conn}
   end
@@ -40,8 +36,8 @@ defmodule RelaxirWeb.ConnCase do
   It stores an updated connection and a registered user in the
   test context.
   """
-  def register_and_log_in_user(%{conn: conn}) do
-    user = Relaxir.AccountsFixtures.user_fixture()
+  def register_and_log_in_user(%{conn: conn}, attrs \\ %{}) do
+    user = Relaxir.AccountsFixtures.user_fixture(attrs)
     %{conn: log_in_user(conn, user), user: user}
   end
 
