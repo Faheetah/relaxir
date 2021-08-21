@@ -3,8 +3,8 @@ defmodule Relaxir.Repo.Migrations.ModifyUnitsRemoveSingularPluralColumns do
 
   def change do
     alter table(:units) do
-      remove :singular, :string
-      remove :plural, :string
+      remove(:singular, :string)
+      remove(:plural, :string)
     end
   end
 end

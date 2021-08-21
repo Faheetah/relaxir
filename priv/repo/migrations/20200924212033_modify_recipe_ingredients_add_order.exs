@@ -3,7 +3,7 @@ defmodule Relaxir.Repo.Migrations.ModifyRecipeIngredientsAddOrder do
 
   def change do
     alter table(:recipe_ingredients) do
-      add :order, :integer
+      add(:order, :integer)
     end
   end
 end

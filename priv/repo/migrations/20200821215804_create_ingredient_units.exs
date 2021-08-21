@@ -3,15 +3,15 @@ defmodule Relaxir.Repo.Migrations.CreateIngredientUnits do
 
   def change do
     create table(:units) do
-      add :singular, :string
-      add :plural, :string
+      add(:singular, :string)
+      add(:plural, :string)
     end
 
     alter table(:recipe_ingredients) do
-      add :unit_id, references(:units)
-      add :note, :string
+      add(:unit_id, references(:units))
+      add(:note, :string)
     end
 
-    create unique_index(:units, [:singular, :plural])
+    create(unique_index(:units, [:singular, :plural]))
   end
 end

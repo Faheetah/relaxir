@@ -3,7 +3,7 @@ defmodule Relaxir.Repo.Migrations.ModifyRecipesText do
 
   def change do
     alter table(:recipes) do
-      modify :directions, :text
+      modify(:directions, :text)
     end
   end
 end

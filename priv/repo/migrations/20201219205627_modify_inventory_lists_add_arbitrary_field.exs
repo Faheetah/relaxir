@@ -3,7 +3,7 @@ defmodule Relaxir.Repo.Migrations.ModifyInventoryListsAddArbitraryField do
 
   def change do
     alter table(:ingredient_inventory_lists) do
-      add :note, :string
+      add(:note, :string)
     end
   end
 end

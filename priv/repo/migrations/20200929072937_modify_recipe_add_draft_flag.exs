@@ -3,7 +3,7 @@ defmodule Relaxir.Repo.Migrations.ModifyRecipeAddDraftFlag do
 
   def change do
     alter table(:recipes) do
-      add :published, :boolean
+      add(:published, :boolean)
     end
   end
 end
