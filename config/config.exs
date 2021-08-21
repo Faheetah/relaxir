@@ -10,8 +10,7 @@ import Config
 config :relaxir,
   ecto_repos: [Relaxir.Repo]
 
-config :relaxir, :registration,
-  enabled: false
+config :relaxir, :registration, enabled: false
 
 # Configures the endpoint
 config :relaxir, RelaxirWeb.Endpoint,
