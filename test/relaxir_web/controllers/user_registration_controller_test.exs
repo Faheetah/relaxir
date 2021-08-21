@@ -3,7 +3,6 @@ defmodule RelaxirWeb.UserRegistrationControllerTest do
 
   import Relaxir.AccountsFixtures
 
-  # @tag skip: "** (RuntimeError) expected response with status 200, got: 302, with body:"
   describe "GET /users/register" do
     test "renders registration page", %{conn: conn} do
       conn = get(conn, Routes.user_registration_path(conn, :new))
@@ -19,7 +18,6 @@ defmodule RelaxirWeb.UserRegistrationControllerTest do
     end
   end
 
-  # @tag skip: "Assertion with =~ failed right: user-576460752303423007@example.com"
   describe "POST /users/register" do
     @tag :capture_log
     test "creates account and logs the user in", %{conn: conn} do
@@ -40,7 +38,6 @@ defmodule RelaxirWeb.UserRegistrationControllerTest do
       assert response =~ "Log out</a>"
     end
 
-    # @tag skip: "** (RuntimeError) expected response with status 200, got: 302, with body:"
     test "render errors for invalid data", %{conn: conn} do
       conn =
         post(conn, Routes.user_registration_path(conn, :create), %{
