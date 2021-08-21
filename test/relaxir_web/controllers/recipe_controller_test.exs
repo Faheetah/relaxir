@@ -2,7 +2,7 @@ defmodule RelaxirWeb.RecipeControllerTest do
   use RelaxirWeb.ConnCase
 
   setup context do
-    register_and_log_in_user(context, %{admin: true})
+    register_and_log_in_user(context, %{is_admin: true})
   end
 
   describe "index" do

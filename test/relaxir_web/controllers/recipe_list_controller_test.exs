@@ -8,7 +8,7 @@ defmodule RelaxirWeb.RecipeListControllerTest do
   @invalid_attrs %{name: nil}
 
   setup context do
-    register_and_log_in_user(context, %{admin: true})
+    register_and_log_in_user(context, %{is_admin: true})
   end
 
   def fixture(:recipe_list) do
