@@ -18,8 +18,8 @@ defmodule Mix.Tasks.Relaxir.AddUser do
 
     %{
       email: String.downcase(data["email"]),
+      username: String.downcase(data["username"]),
       password: data["password"],
-      password_confirmation: data["password"],
       is_admin: data["admin"]
     }
     |> Accounts.register_user()

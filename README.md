@@ -17,7 +17,7 @@ mix phx.digest
 
 ```
 mix ecto.reset
-mix relaxir.add_user email=test@test password=test admin=true
+mix relaxir.add_user email=test@test username=test password=test admin=true
 mix relaxir.seed_db
 iex -S mix phx.server
 ```
@@ -25,7 +25,7 @@ iex -S mix phx.server
 Or inside of phx.server
 
 ```
-Mix.Tasks.Relaxir.AddUser.run(["email=test@test", "password=test", "admin=true"])
+Mix.Tasks.Relaxir.AddUser.run(["email=test@test", "username=test", "password=test", "admin=true"])
 Mix.Tasks.Relaxir.SeedDb.run([])
 ```
 

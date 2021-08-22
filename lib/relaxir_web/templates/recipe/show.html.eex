@@ -4,7 +4,7 @@
 <% end %>
 <%= if Map.get(@recipe, :user) do %>
 <p>by
-<%= hd(String.split(@recipe.user.email, "@")) %>
+<%= @recipe.user.username %>
 </p>
 <% end %>
 

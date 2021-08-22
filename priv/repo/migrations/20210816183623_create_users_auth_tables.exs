@@ -9,6 +9,7 @@ defmodule Relaxir.Repo.Migrations.CreateUsersAuthTables do
     alter table(:users) do
       modify(:email, :citext, null: false)
       modify(:hashed_password, :string, null: false)
+      add(:username, :string)
       add(:confirmed_at, :naive_datetime)
     end
 
@@ -22,5 +23,6 @@ defmodule Relaxir.Repo.Migrations.CreateUsersAuthTables do
 
     create(index(:users_tokens, [:user_id]))
     create(unique_index(:users_tokens, [:context, :token]))
+    create(unique_index(:users, [:username]))
   end
 end

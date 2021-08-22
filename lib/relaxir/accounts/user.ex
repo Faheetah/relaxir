@@ -5,6 +5,7 @@ defmodule Relaxir.Accounts.User do
   @derive {Inspect, except: [:password]}
   schema "users" do
     field :email, :string
+    field :username, :string
     field :password, :string, virtual: true
     field :hashed_password, :string
     field :is_admin, :boolean
@@ -33,8 +34,9 @@ defmodule Relaxir.Accounts.User do
   """
   def registration_changeset(user, attrs, opts \\ []) do
     user
-    |> cast(attrs, [:email, :password, :is_admin])
+    |> cast(attrs, [:email, :username, :password, :is_admin])
     |> validate_email()
+    |> validate_username()
     |> validate_password(opts)
   end
 
@@ -45,6 +47,13 @@ defmodule Relaxir.Accounts.User do
     |> validate_length(:email, max: 160)
     |> unsafe_validate_unique(:email, Relaxir.Repo)
     |> unique_constraint(:email)
+  end
+
+  defp validate_username(changeset) do
+    changeset
+    |> validate_format(:username, ~r/^[A-Za-z0-9\_]+$/, message: "Username must only contain letters, numbers, or underscores")
+    |> validate_length(:username, min: 4, max: 24)
+    |> unique_constraint(:username)
   end
 
   defp validate_password(changeset, opts) do
@@ -99,6 +108,15 @@ defmodule Relaxir.Accounts.User do
     |> cast(attrs, [:password])
     |> validate_confirmation(:password, message: "does not match password")
     |> validate_password(opts)
+  end
+
+  @doc """
+  A user changeset for changing the username.
+  """
+  def username_changeset(user, attrs) do
+    user
+    |> cast(attrs, [:username])
+    |> validate_username()
   end
 
   @doc """

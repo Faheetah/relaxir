@@ -1,5 +1,9 @@
 <%= if @current_user do %>
-  <li class="navigation-item"><%= link @current_user.email, to: Routes.user_settings_path(@conn, :edit) %></li>
+  <%= if @current_user.username do %>
+    <li class="navigation-item"><%= link @current_user.username, to: Routes.user_settings_path(@conn, :edit) %></li>
+  <% else %>
+    <li class="navigation-item"><%= link @current_user.email, to: Routes.user_settings_path(@conn, :edit) %></li>
+  <% end %>
   <li class="navigation-item"><%= link "Log out", to: Routes.user_session_path(@conn, :delete), method: :delete %></li>
 <% else %>
   <%= with {:ok, enabled: true} <- Application.fetch_env(:relaxir, :registration) do %>
