@@ -1,5 +1,35 @@
 <h1>Settings</h1>
 
+<%= unless @username do %>
+  <div class="alert alert-danger">
+    <p>No username is set, please choose a username.</p>
+  </div>
+
+  <h3>Set username</h3>
+
+  <%= form_for @username_changeset, Routes.user_settings_path(@conn, :update), fn f -> %>
+    <%= if @username_changeset.action do %>
+      <div class="alert alert-danger">
+        <p>Oops, something went wrong! Please check the errors below.</p>
+      </div>
+    <% end %>
+
+    <%= hidden_input f, :action, name: "action", value: "update_username" %>
+
+    <%= label f, :username %>
+    <%= text_input f, :username, required: true %>
+    <%= error_tag f, :username %>
+
+    <%= label f, :current_password, for: "current_password_for_email" %>
+    <%= password_input f, :current_password, required: true, name: "current_password", id: "current_password_for_email" %>
+    <%= error_tag f, :current_password %>
+
+    <div>
+      <%= submit "Change username" %>
+    </div>
+  <% end %>
+<% end %>
+
 <h3>Change email</h3>
 
 <%= form_for @email_changeset, Routes.user_settings_path(@conn, :update), fn f -> %>

@@ -8,8 +8,9 @@ accounts = [
 
 Enum.each(accounts, fn {name, is_admin} ->
   unless Accounts.get_user_by_email("#{name}@test") do
-    Accounts.register_user(%{
+    {:ok, _} = Accounts.register_user(%{
       email: "#{name}@test",
+      # username: name,
       password: name,
       password_confirmation: name,
       is_admin: is_admin

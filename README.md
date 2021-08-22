@@ -1,3 +1,5 @@
+[![Elixir CI](https://github.com/Faheetah/relaxir/actions/workflows/ci.yml/badge.svg)](https://github.com/Faheetah/relaxir/actions/workflows/ci.yml)
+
 # Setup
 
 Install Elixir
@@ -15,7 +17,7 @@ mix phx.digest
 
 ```
 mix ecto.reset
-mix relaxir.add_user email=test@test password=test admin=true
+mix relaxir.add_user email=test@test username=test password=test admin=true
 mix relaxir.seed_db
 iex -S mix phx.server
 ```
@@ -23,7 +25,7 @@ iex -S mix phx.server
 Or inside of phx.server
 
 ```
-Mix.Tasks.Relaxir.AddUser.run(["email=test@test", "password=test", "admin=true"])
+Mix.Tasks.Relaxir.AddUser.run(["email=test@test", "username=test", "password=test", "admin=true"])
 Mix.Tasks.Relaxir.SeedDb.run([])
 ```
 
@@ -32,9 +34,9 @@ Mix.Tasks.Relaxir.SeedDb.run([])
 Run unit tests, code quality tests, and static security scan
 
 ```
-mix test
+mix test --cover
 mix credo
-mix sobelow
+mix sobelow --skip -i Config.HTTPS
 ```
 
 For local development, ensure all files are formatted, i.e.
@@ -42,6 +44,8 @@ For local development, ensure all files are formatted, i.e.
 ```
 mix format "{lib,test,config}/**/*.{ex,exs}"
 ```
+
+Alternatively, a `tests.sh` script is included that will run all of the above and only display output of failures. This can be handy as a git hook.
 
 # Prod
 

@@ -4,14 +4,14 @@ defmodule Relaxir.MixProject do
   def project do
     [
       app: :relaxir,
-      version: "0.8.0",
+      version: "0.8.1",
       url: "https://github.com/Faheetah/relaxir/",
       elixir: "~> 1.12",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
-      test_coverage: [tool: LcovEx],
+      test_coverage: [tool: ExCoveralls],
       deps: deps()
     ]
   end
@@ -60,8 +60,7 @@ defmodule Relaxir.MixProject do
       # test and code quality
       {:mix_test_watch, "~> 1.0", runtime: false, only: :dev},
       {:credo, "~> 1.5", only: :dev},
-      {:excoveralls, "~> 0.13.1", only: :test},
-      {:lcov_ex, "~> 0.1.0", runtime: false, only: :test},
+      {:excoveralls, "~> 0.14.2", only: :test},
       {:sobelow, "~> 0.8", only: :dev}
     ]
   end

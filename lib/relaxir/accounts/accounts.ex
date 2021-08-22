@@ -184,6 +184,13 @@ defmodule Relaxir.Accounts do
   end
 
   @doc """
+  Returns an `%Ecto.Changeset{}` for changing the user username."
+  """
+  def change_username(user, attrs \\ %{}) do
+    User.username_changeset(user, attrs)
+  end
+
+  @doc """
   Updates the user password.
 
   ## Examples
@@ -209,6 +216,16 @@ defmodule Relaxir.Accounts do
       {:ok, %{user: user}} -> {:ok, user}
       {:error, :user, changeset, _} -> {:error, changeset}
     end
+  end
+
+  @doc """
+  Updates the user's username
+  """
+  def update_username(user, password, attrs) do
+    user
+    |> User.username_changeset(attrs)
+    |> User.validate_current_password(password)
+    |> Repo.update()
   end
 
   ## Session
