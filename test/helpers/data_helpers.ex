@@ -64,10 +64,6 @@ defmodule Relaxir.DataHelpers do
     %{ingredient: Map.put(ingredient, :fixture, fixture)}
   end
 
-  def categories(_context) do
-    %{categories: @categories}
-  end
-
   def category(_context) do
     fixture = %{name: "new category"}
     {:ok, category} = Categories.create_category(fixture)

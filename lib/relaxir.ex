@@ -1,2 +1,0 @@
-defmodule Relaxir do
-end
