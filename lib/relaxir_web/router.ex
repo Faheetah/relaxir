@@ -10,7 +10,7 @@ defmodule RelaxirWeb.Router do
     plug :fetch_session
     plug :fetch_flash
     plug :protect_from_forgery
-    plug :put_secure_browser_headers, %{"content-security-policy" => "default-src 'self'"}
+    plug :put_secure_browser_headers, %{"content-security-policy" => "..."}
     plug :fetch_current_user
   end
 

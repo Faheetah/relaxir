@@ -7,7 +7,7 @@ defmodule Relaxir.Accounts.UserNotifier do
   #
   defp deliver(to, body) do
     require Logger
-    Logger.debug(body)
+    Logger.info(body)
     {:ok, %{to: to, body: body}}
   end
 
