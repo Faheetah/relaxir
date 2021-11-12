@@ -155,7 +155,16 @@ defmodule RelaxirWeb.UserAuth do
   end
 
   defp maybe_store_return_to(%{method: "GET"} = conn) do
-    put_session(conn, :user_return_to, current_path(conn))
+    # current_path use to be in 1.5
+    if conn.query_string != "" do
+      current_path = conn.request_path <> "?" <> conn.query_string
+      put_session(conn, :user_return_to, current_path)
+    else
+      put_session(conn, :user_return_to, conn.request_path)
+    end
+
+    # old
+    # put_session(conn, :user_return_to, current_path(conn))
   end
 
   defp maybe_store_return_to(conn), do: conn

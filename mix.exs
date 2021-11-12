@@ -37,26 +37,27 @@ defmodule Relaxir.MixProject do
     [
       # Phoenix related
       {:plug_cowboy, "~> 2.0"},
-      {:phoenix, "~> 1.5.3"},
-      {:phoenix_html, "~> 2.11"},
+      {:phoenix, "~> 1.6.2"},
+      {:phoenix_html, "~> 3.1.0"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
-      {:phoenix_live_dashboard, "~> 0.2.0"},
-      {:phx_gen_auth, "~> 0.7.0"},
+      {:phoenix_live_dashboard, "~> 0.6.1"},
+      # initial auth generation, now baked into Phoenix
+      # {:phx_gen_auth, "~> 0.7.0"},
       # DB related
       {:phoenix_ecto, "~> 4.1"},
       {:ecto_sql, "~> 3.4"},
       {:postgrex, ">= 0.0.0"},
       # telemetry
-      {:telemetry_metrics, "~> 0.4"},
-      {:telemetry_poller, "~> 0.4"},
+      {:telemetry_metrics, "~> 0.6.1"},
+      {:telemetry_poller, "~> 1.0"},
       # misc required for app
       {:bcrypt_elixir, "~> 2.0"},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:earmark, "~> 1.4.15"},
-      {:csv, "~> 2.3.1"},
+      {:csv, "~> 2.4.1"},
       {:inflex, "~> 2.1.0"},
-      {:invert, git: "https://github.com/faheetah/invert", tag: "0.2.1"},
+      {:invert, git: "https://github.com/faheetah/invert", tag: "0.3.0"},
       # test and code quality
       {:mix_test_watch, "~> 1.0", runtime: false, only: :dev},
       {:credo, "~> 1.5", only: :dev},
