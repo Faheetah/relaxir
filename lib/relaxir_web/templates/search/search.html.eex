@@ -25,10 +25,10 @@
 
 <%= for {category, results} <- @results do %>
   <%= if length(results) > 0 do %>
-    <h2><%= String.capitalize(category) %></h2>
+    <h2><%= String.capitalize(Atom.to_string(category)) %></h2>
   <% end %>
 
-  <%= for {[result, id], _} <- results do %>
+  <%= for {[result, id], _} <- Enum.take(results, 20) do %>
     <%= if route_exists("#{category}/#{id}") and id != nil do %>
       <p>
       <%= if category == "recipes" do %>

@@ -22,37 +22,20 @@ defmodule RelaxirWeb.SearchController do
     current_user = conn.assigns.current_user
 
     checkboxes = %{
-      recipes: Map.get(params, "recipes", false) == "true",
-      categories: Map.get(params, "categories", false) == "true",
-      ingredients: Map.get(params, "ingredients", false) == "true",
-      usda: Map.get(params, "usda", false) == "true"
+      recipes: params["recipes"] || "true",
+      categories: params["categories"] || "true",
+      ingredients: params["ingredients"] || "true",
+      usda: params["usda"] || "true"
     }
 
-    recipes =
-      case checkboxes.recipes do
-        true -> Search.search_for(Relaxir.Recipes.Recipe, :title, terms)
-        _ -> []
-      end
+    fields =
+      params
+      |> Enum.filter(fn {key, val} -> val == "true" end)
+      |> Enum.map(fn {key, val} -> {String.to_existing_atom(key), val} end)
 
-    categories =
-      case checkboxes.categories do
-        true -> Search.search_for(Relaxir.Categories.Category, :name, terms)
-        _ -> []
-      end
+    results = Search.search_for(fields, terms)
 
-    ingredients =
-      case checkboxes.ingredients do
-        true -> Search.search_for(Relaxir.Ingredients.Ingredient, :name, terms)
-        _ -> []
-      end
-
-    usda =
-      case checkboxes.usda do
-        true -> Search.search_for(Relaxir.Ingredients.Food, :description, terms)
-        _ -> []
-      end
-
-    count = Enum.reduce([recipes, categories, ingredients, usda], 0, fn i, acc -> acc + length(i) end)
+    count = Enum.reduce(results, 0, fn {_, i}, acc -> acc + length(i) end)
 
     terms_for = Map.get(params, "for")
     list_id = Map.get(params, "id")
@@ -63,12 +46,7 @@ defmodule RelaxirWeb.SearchController do
       checkboxes: checkboxes,
       for: terms_for,
       list_id: list_id,
-      results: %{
-        "recipes" => Enum.take(recipes, 20),
-        "categories" => Enum.take(categories, 20),
-        "ingredients" => Enum.take(ingredients, 20),
-        "usda" => Enum.take(usda, 20)
-      }
+      results: results
     )
   end
 end
