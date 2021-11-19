@@ -7,7 +7,7 @@ defmodule Relaxir.IngredientImporter do
   @structs %{
     "Food" => Usda.Food,
     "FoodNutrient" => Usda.FoodNutrient,
-    "Nutrient" => Ingredients.Nutrient
+    "Nutrient" => Usda.Nutrient
   }
 
   Logger.configure(level: :info)
