@@ -7,9 +7,9 @@ defmodule Relaxir.Search do
     "usda" => {Relaxir.Ingredients.Food, :description}
   }
 
-  @spec search_for([atom], String.t) :: [{term, integer}]
+  @spec search_for([atom] | nil, String.t) :: [{term, integer}]
   def search_for(fields, terms) do
-    fields
+    fields || Map.keys(@search_table_mapping)
     |> Enum.filter(fn field -> @search_table_mapping[field] end)
     |> Enum.reduce(%{}, fn field, acc -> Map.put(acc, field, search_table(@search_table_mapping[field], terms)) end)
   end

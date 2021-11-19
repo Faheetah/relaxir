@@ -18,6 +18,7 @@ defmodule Relaxir.Application do
       RelaxirWeb.Telemetry,
       # Start the PubSub system
       {Phoenix.PubSub, name: Relaxir.PubSub},
+      Relaxir.Presence,
       # Start the Endpoint (http/https)
       RelaxirWeb.Endpoint
     ]

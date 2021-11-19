@@ -8,6 +8,8 @@ defmodule RelaxirWeb do
       import Plug.Conn
       import RelaxirWeb.Gettext
       alias RelaxirWeb.Router.Helpers, as: Routes
+
+      import Phoenix.LiveView.Controller
     end
   end
 
@@ -60,7 +62,6 @@ defmodule RelaxirWeb do
 
       # Import LiveView and .heex helpers (live_render, live_patch, <.form>, etc)
       import Phoenix.LiveView.Helpers
-      import RelaxirWeb.LiveHelpers
 
       import RelaxirWeb.ErrorHelpers
       import RelaxirWeb.Gettext

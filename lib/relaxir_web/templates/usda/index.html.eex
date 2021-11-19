@@ -1,0 +1,7 @@
+<h1>Ingredients</h1>
+
+<%= for food <- @usda do %>
+<h4>
+  <%= link String.capitalize(food.description), to: Routes.ingredient_path(@conn, :show, food) %>
+</h4>
+<% end %>

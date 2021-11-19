@@ -1,0 +1,7 @@
+<h1><%= String.capitalize(@usda.description) %></h1>
+
+<p>data_type: <%= @usda.data_type %></p>
+<p>description: <%= @usda.description %></p>
+<p>fdc_id: <%= @usda.fdc_id %></p>
+<p>food_category_id: <%= @usda.food_category_id %></p>
+<p>publication_date: <%= @usda.publication_date %></p>

@@ -1,17 +1,19 @@
 <h1>Search</h1>
 
+<input type="text" phx-keyup="search" phx-debounce="500" value={@query} />
+
 <%= case @count do %>
-  <% :na -> %>
+  <% nil -> %>
   <% 0 -> %><p>No results found<p>
   <% _ -> %><p><%= @count %> results found</p>
 <% end %>
 
 <%= for {category, results} <- @results do %>
-<h2><%= category %></h2>
+<h2><%= String.capitalize(category) %></h2>
 <ul>
   <%= for result <- results do %>
     <li id={"search-#{result.id}"}>
-      <%= result.value %>
+      <%= link result.value, to: "#{category}/#{result.id}" %>
     </li>
   <% end %>
 </ul>

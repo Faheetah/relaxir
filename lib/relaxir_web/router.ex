@@ -52,14 +52,17 @@ defmodule RelaxirWeb.Router do
 
     get "/", RecipeController, :index
 
-    get "/search", SearchController, :new
-    post "/search", SearchController, :search
+    get "/old/search", SearchController, :new
+    post "/old/search", SearchController, :search
 
-    live "/b/search", SearchLive.Search, :search
+    live "/search", SearchLive.Search, :search
 
     resources "/recipes", RecipeController, only: [:show, :index]
     get "/tools", ToolController, :index
     get "/tools/:name", ToolController, :show
+    # this needs pagination
+    # get "/usda", UsdaController, :index
+    get "/usda/:id", UsdaController, :show
     resources "/ingredients", IngredientController, only: [:show, :index]
     resources "/categories", CategoryController, only: [:show, :index]
   end
