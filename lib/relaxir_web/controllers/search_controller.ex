@@ -31,7 +31,7 @@ defmodule RelaxirWeb.SearchController do
     fields =
       params
       |> Enum.filter(fn {key, val} -> val == "true" end)
-      |> Enum.map(fn {key, val} -> {String.to_existing_atom(key), val} end)
+      |> Enum.map(fn {key, val} -> key end)
 
     results = Search.search_for(fields, terms)
 

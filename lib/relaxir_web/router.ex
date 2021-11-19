@@ -1,7 +1,10 @@
 defmodule RelaxirWeb.Router do
-  import Phoenix.LiveDashboard.Router
+  use Phoenix.Router
 
-  use RelaxirWeb, :router
+  import Plug.Conn
+  import Phoenix.Controller
+  import Phoenix.LiveView.Router
+  import Phoenix.LiveDashboard.Router
 
   import RelaxirWeb.UserAuth
 
@@ -9,6 +12,8 @@ defmodule RelaxirWeb.Router do
     plug :accepts, ["html"]
     plug :fetch_session
     plug :fetch_flash
+    plug :fetch_live_flash
+    plug :put_root_layout, {RelaxirWeb.LayoutView, :app}
     plug :protect_from_forgery
     plug :put_secure_browser_headers, %{"content-security-policy" => "..."}
     plug :fetch_current_user
@@ -49,6 +54,9 @@ defmodule RelaxirWeb.Router do
 
     get "/search", SearchController, :new
     post "/search", SearchController, :search
+
+    live "/b/search", SearchLive.Search, :search
+
     resources "/recipes", RecipeController, only: [:show, :index]
     get "/tools", ToolController, :index
     get "/tools/:name", ToolController, :show

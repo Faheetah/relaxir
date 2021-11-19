@@ -1,0 +1,18 @@
+<h1>Search</h1>
+
+<%= case @count do %>
+  <% :na -> %>
+  <% 0 -> %><p>No results found<p>
+  <% _ -> %><p><%= @count %> results found</p>
+<% end %>
+
+<%= for {category, results} <- @results do %>
+<h2><%= category %></h2>
+<ul>
+  <%= for result <- results do %>
+    <li id={"search-#{result.id}"}>
+      <%= result.value %>
+    </li>
+  <% end %>
+</ul>
+<% end %>
