@@ -3,7 +3,7 @@ defmodule Relaxir.Ingredients.Ingredient do
   import Ecto.Changeset
 
   alias Relaxir.RecipeIngredient
-  alias Relaxir.Ingredients.Food
+  alias Relaxir.Usda.Food
 
   @derive {Jason.Encoder, only: [:id, :name]}
 

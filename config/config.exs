@@ -34,7 +34,7 @@ config :esbuild,
   # Invert
 config :invert, Invert,
   tables: [
-    {Relaxir.Ingredients.Food, :description, [:description, :fdc_id]},
+    {Relaxir.Usda.Food, :description, [:description, :fdc_id]},
     {Relaxir.Ingredients.Ingredient, :name, [:name, :id]},
     {Relaxir.Categories.Category, :name, [:name, :id]},
     {Relaxir.Recipes.Recipe, :title, [:title, :id]}

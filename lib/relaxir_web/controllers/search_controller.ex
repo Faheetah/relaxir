@@ -30,8 +30,8 @@ defmodule RelaxirWeb.SearchController do
 
     fields =
       params
-      |> Enum.filter(fn {key, val} -> val == "true" end)
-      |> Enum.map(fn {key, val} -> key end)
+      |> Enum.filter(fn {_, val} -> val == "true" end)
+      |> Enum.map(fn {key, _} -> key end)
 
     results = Search.search_for(fields, terms)
 

@@ -5,3 +5,14 @@
 <p>fdc_id: <%= @usda.fdc_id %></p>
 <p>food_category_id: <%= @usda.food_category_id %></p>
 <p>publication_date: <%= @usda.publication_date %></p>
+
+<h2>Nutrients:</h2>
+<%= for food_nutrient <- @usda.food_nutrients do %>
+<li>
+  <b>
+    <%= food_nutrient.amount %>
+    <%= food_nutrient.nutrient.unit_name %>
+  </b>
+  <%= food_nutrient.nutrient.name %>
+</li>
+<% end %>

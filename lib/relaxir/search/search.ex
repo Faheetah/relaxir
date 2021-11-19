@@ -4,7 +4,7 @@ defmodule Relaxir.Search do
     "recipes" => {Relaxir.Recipes.Recipe, :title},
     "categories" => {Relaxir.Categories.Category, :name},
     "ingredients" => {Relaxir.Ingredients.Ingredient, :name},
-    "usda" => {Relaxir.Ingredients.Food, :description}
+    "usda" => {Relaxir.Usda.Food, :description}
   }
 
   @spec search_for([atom] | nil, String.t) :: [{term, integer}]

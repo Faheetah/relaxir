@@ -2,10 +2,11 @@ defmodule Relaxir.IngredientImporter do
   import Ecto.Query, warn: false
   alias Relaxir.Repo
   alias Relaxir.Ingredients
+  alias Relaxir.Usda
 
   @structs %{
-    "Food" => Ingredients.Food,
-    "FoodNutrient" => Ingredients.FoodNutrient,
+    "Food" => Usda.Food,
+    "FoodNutrient" => Usda.FoodNutrient,
     "Nutrient" => Ingredients.Nutrient
   }
 
@@ -22,7 +23,7 @@ defmodule Relaxir.IngredientImporter do
     |> Stream.map(&Map.take(&1, module.__schema__(:fields)))
     |> Stream.map(fn entry ->
       entry
-      |> Map.drop([:id])
+      # |> Map.drop([:id])
       |> Map.merge(%{inserted_at: now, updated_at: now})
     end)
     |> Stream.chunk_every(1000)

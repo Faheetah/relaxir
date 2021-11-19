@@ -1,7 +1,7 @@
 defmodule Relaxir.Usda do
   import Ecto.Query, warn: false
   alias Relaxir.Repo
-  alias Relaxir.Ingredients.Food
+  alias Relaxir.Usda.Food
 
   def list_food do
     Repo.all(Food)
@@ -9,6 +9,8 @@ defmodule Relaxir.Usda do
 
   def get_food!(id) do
     Food
+    |> preload(:nutrients)
     |> Repo.get_by(fdc_id: id)
+    |> IO.inspect
   end
 end
