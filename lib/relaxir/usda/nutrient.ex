@@ -19,6 +19,6 @@ defmodule Relaxir.Usda.Nutrient do
     nutrient
     |> cast(attrs, [:id, :name, :unit_name, :nutrient_nbr, :rank])
     |> cast_assoc(:food_nutrients)
-    |> validate_required([:name, :unit_name, :nutrient_nbr, :rank])
+    |> validate_required([:name, :unit_name, :rank])
   end
 end

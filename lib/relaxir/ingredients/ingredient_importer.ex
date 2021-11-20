@@ -17,7 +17,18 @@ defmodule Relaxir.IngredientImporter do
     now = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
 
     do_import(path)
+    # no clue why rank on Nutrient struggles so much and gets in as a float as a string
+    # this coerces that, sadly
+    |> Stream.map(fn %{"rank" => rank} = data ->
+        if rank == "" do
+          data
+        else
+          {i, _} = Integer.parse(rank)
+          Map.put(data, "rank", i)
+        end
+    end)
     |> Stream.map(&module.changeset(struct(module, %{}), &1))
+    |> Stream.map(&IO.inspect/1)
     |> Stream.filter(fn entry -> entry.valid? == true end)
     |> Stream.map(&Ecto.Changeset.apply_changes/1)
     |> Stream.map(&Map.take(&1, module.__schema__(:fields)))
