@@ -37,7 +37,7 @@ defmodule RelaxirWeb.SearchLive.Search do
   @impl true
   def handle_event("search", %{"value" => query} = _, socket) do
     {count, results} =
-      if String.length(query) > 3 do
+      if String.length(query) > 2 do
         get_results(socket.assigns.filter, query)
       else
         {nil, []}
