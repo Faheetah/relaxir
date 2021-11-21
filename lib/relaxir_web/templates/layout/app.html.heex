@@ -4,9 +4,8 @@
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Relaxir · Phoenix Framework</title>
+    <title>R+D</title>
     <%= csrf_meta_tag() %>
-    <%= live_title_tag assigns[:page_title] || "Relaxir" %>
     <link phx-track-static rel="stylesheet" href={Routes.static_path(@conn, "/assets/app.css")}/>
     <script defer phx-track-static type="text/javascript" src={Routes.static_path(@conn, "/assets/app.js")}></script>
   </head>
@@ -17,7 +16,7 @@
         <%# hamburger menu %>
         <div class="flex-none lg:hidden">
           <label data-menu-toggle for="hamburger-toggle" class="cursor-pointer">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-green-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 10c-2,-7,18,-7,16,0M4 10h16M4 14h16M4 18h16" />
             </svg>
           </label>
@@ -51,7 +50,7 @@
           <label class="cursor-pointer" data-menu-toggle for="search-toggle">
             <a href="/search">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
             </a>
           </label>
@@ -62,7 +61,7 @@
           <%= if @current_user do %>
             <%= link to: "#" do %>
             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             <% end %>
 
@@ -108,13 +107,13 @@
 
       <%# hamburger expand %>
       <input class="hidden peer" id="hamburger-toggle" type="checkbox" />
-      <div class="peer-checked:block divide-y w-full h-full absolute bg-white text-2xl px-2 hidden">
+      <div class="peer-checked:block divide-y w-full h-full fixed bg-white text-2xl hidden px-2">
           <%= for item <- ~w[recipes ingredients categories tools] do %>
           <a class="flex my-2 py-4" href={"/#{item}"}>
             <div class="flex-auto"><%= String.upcase(item) %></div>
             <div class="flex-none">
             <svg class="h-full w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             </div>
           </a>

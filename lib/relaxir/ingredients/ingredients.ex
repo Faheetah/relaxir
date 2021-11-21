@@ -3,9 +3,46 @@ defmodule Relaxir.Ingredients do
   alias Relaxir.Repo
 
   alias Relaxir.Ingredients.Ingredient
+  alias Relaxir.Recipes.Recipe
+  alias Relaxir.RecipeIngredient
 
   def list_ingredients do
     Repo.all(order_by(Ingredient, asc: :name))
+  end
+
+  def top_ingredients(limit \\ 4) do
+    recipe_count =
+      from ri in RecipeIngredient,
+      group_by: ri.ingredient_id,
+      select: ri.ingredient_id,
+      order_by: [desc: count(ri.recipe_id)],
+      limit: ^limit
+
+    query =
+      from i in Ingredient,
+      join: ri in subquery(recipe_count),
+      on: i.id == ri.ingredient_id
+
+    Repo.all(query)
+    |> Enum.reverse()
+    |> Enum.reduce([], fn ingredient, acc ->
+      top_recipes =
+        from ri in RecipeIngredient,
+        where: ri.ingredient_id == ^ingredient.id,
+        join: r in Recipe,
+        where: r.id == ri.recipe_id,
+        order_by: [desc: r.inserted_at],
+        select: r,
+        limit: 4
+
+      recipes =
+        top_recipes
+        |> Repo.all
+        |> Repo.preload(:user)
+        |> Repo.preload(:categories)
+
+      [{ingredient, recipes} | acc]
+    end)
   end
 
   def get_ingredient!(id) do

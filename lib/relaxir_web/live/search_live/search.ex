@@ -54,7 +54,7 @@ defmodule RelaxirWeb.SearchLive.Search do
 
   defp apply_action(socket, :search, _params) do
     socket
-    |> assign(:page_title, "Listing Searches")
+    |> assign(:page_title, "R+D | Search")
   end
 
   defp get_results(filter, query) do

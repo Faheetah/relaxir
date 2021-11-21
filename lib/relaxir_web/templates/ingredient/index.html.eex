@@ -6,8 +6,10 @@
 </h4>
 <% end %>
 
-<%= for ingredient <- @ingredients do %>
-<h4>
-  <%= link String.capitalize(ingredient.name), to: Routes.ingredient_path(@conn, :show, ingredient) %>
-</h4>
+<%= for {ingredient, recipes} <- @top_ingredients do %>
+<div class="text-4xl">
+  <%= String.capitalize(ingredient.name) %>
+</div>
+
+<%= render(RelaxirWeb.RecipeView, "recipe_list.html", current_user: @current_user, recipes: recipes, conn: @conn, show: false) %>
 <% end %>

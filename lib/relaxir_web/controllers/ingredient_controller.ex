@@ -6,8 +6,8 @@ defmodule RelaxirWeb.IngredientController do
 
   def index(conn, _params) do
     current_user = conn.assigns.current_user
-    ingredients = Ingredients.list_ingredients()
-    render(conn, "index.html", ingredients: ingredients, current_user: current_user)
+    top_ingredients = Ingredients.top_ingredients()
+    render(conn, "index.html", top_ingredients: top_ingredients, current_user: current_user)
   end
 
   def new(conn, _params) do

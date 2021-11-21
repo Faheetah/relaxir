@@ -1,7 +1,7 @@
 <div class="text-6xl font-light mb-4">
-Recipes
+  Recipes
 
-<%= if @current_user && @current_user.is_admin do %>
+  <%= if @current_user && @current_user.is_admin do %>
   <%= if @show == "all" do %>
     <%= link to: Routes.recipe_path(@conn, :index) do %>
     <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 inline text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -17,38 +17,13 @@ Recipes
   <% end %>
   <% end %>
 
-<%= if @current_user && @current_user.is_admin do %>
+  <%= if @current_user && @current_user.is_admin do %>
   <%= link to: Routes.recipe_path(@conn, :new) do %>
   <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
   </svg>
-<% end %>
-<% end %>
-</div>
-
-<div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
-  <%= for recipe <- @recipes do %>
-  <div class="m-2 border-black border-2 p-4">
-    <div class="text-lg font-bold mb-4">
-      <%= link String.capitalize(recipe.title), to: Routes.recipe_path(@conn, :show, recipe) %>
-    </div>
-
-    <div class="text-green-600 text-sm">
-      <%= recipe.inserted_at.month %>/<%= recipe.inserted_at.day %>/<%= recipe.inserted_at.year %>
-
-      <%= if recipe.user do %>
-        <%= if recipe.user.username do %>
-          by <%= recipe.user.username %>
-        <% end %>
-      <% end %>
-    </div>
-
-    <div>
-    <%= for category <- recipe.categories do %>
-    <%= link category.name, to: Routes.category_path(@conn, :show, category.id) %><span class="last:hidden"> /</span>
-    <% end %>
-    </div>
-
-  </div>
+  <% end %>
   <% end %>
 </div>
+
+<%= render("recipe_list.html", recipes: @recipes, conn: @conn) %>

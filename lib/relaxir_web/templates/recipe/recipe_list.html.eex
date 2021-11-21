@@ -1,0 +1,26 @@
+<div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+  <%= for recipe <- @recipes do %>
+  <div class="m-2 border-black border-2 p-4">
+    <div class="text-lg font-bold mb-4">
+      <%= link String.capitalize(recipe.title), to: Routes.recipe_path(@conn, :show, recipe) %>
+    </div>
+
+    <div class="text-green-600 text-sm">
+      <%= recipe.inserted_at.month %>/<%= recipe.inserted_at.day %>/<%= recipe.inserted_at.year %>
+
+      <%= if recipe.user do %>
+        <%= if recipe.user.username do %>
+          by <%= recipe.user.username %>
+        <% end %>
+      <% end %>
+    </div>
+
+    <div>
+    <%= for category <- recipe.categories do %>
+    <%= link category.name, to: Routes.category_path(@conn, :show, category.id) %><span class="last:hidden"> /</span>
+    <% end %>
+    </div>
+
+  </div>
+  <% end %>
+</div>
