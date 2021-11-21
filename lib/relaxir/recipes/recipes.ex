@@ -28,17 +28,17 @@ defmodule Relaxir.Recipes do
   end
 
   def list_recipes(user_id) do
-    query = from r in Recipe, where: r.user_id == ^user_id, order_by: [desc: r.updated_at]
+    query = from r in Recipe, where: r.user_id == ^user_id, order_by: [desc: r.updated_at], preload: [:user, :categories]
     Repo.all(query)
   end
 
   def list_draft_recipes do
-    query = from r in Recipe, where: r.published == false or is_nil(r.published), order_by: [desc: r.updated_at]
+    query = from r in Recipe, where: r.published == false or is_nil(r.published), order_by: [desc: r.updated_at], preload: [:user, :categories]
     Repo.all(query)
   end
 
   def list_published_recipes do
-    query = from r in Recipe, where: r.published == true, order_by: [desc: r.updated_at]
+    query = from r in Recipe, where: r.published == true, order_by: [desc: r.updated_at], preload: [:user, :categories]
     Repo.all(query)
   end
 

@@ -10,9 +10,7 @@ defmodule Mix.Tasks.Relaxir.LocalDeploy do
     [
       "mix deps.get --only prod",
       "mix compile",
-      "npm install --prefix ./assets",
-      "npm run deploy --prefix ./assets",
-      "mix phx.digest",
+      "mix assets.deploy",
       "mix release --overwrite",
       "tar -zcf relaxir.tar.gz _build/prod/rel/relaxir/",
       "scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null relaxir.tar.gz #{host}:relaxir.tar.gz"

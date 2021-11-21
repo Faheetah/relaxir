@@ -1,6 +1,17 @@
-<h2>Search</h2>
+<div class="mb-4 text-6xl font-light">
+Search
+</div>
 
-<input type="text" phx-keyup="search" phx-debounce="500" value={@query} />
+<div>
+
+  <input
+    class="w-full h-10 border-black border-2 rounded-lg self-end text-xl p-4 max-w-sm mb-2"
+    type="text"
+    phx-keyup="search"
+    phx-debounce="500"
+    value={@query}
+  />
+</div>
 
 <%= case @count do %>
   <% nil -> %>
@@ -9,12 +20,13 @@
 <% end %>
 
 <%= for {category, results} <- @results do %>
-<h3><%= String.capitalize(category) %></h3>
-<ul>
+<%= if length(results) > 0 do %>
+<div class="mt-6 mb-2 text-2xl font-bold"><%= String.capitalize(category) %></div>
+<div class="grid grid-cols-4">
   <%= for result <- results do %>
-    <li id={"search-#{result.id}"}>
-      <%= link result.value, to: "#{category}/#{result.id}" %>
-    </li>
+    <%= link result.value, to: "#{category}/#{result.id}", class: "p-2 border rounded hover:bg-blue-100 hover:border-blue-400 border-gray-400 bg-gray-100 m-4" %>
+
   <% end %>
-</ul>
+</div>
+<% end %>
 <% end %>
