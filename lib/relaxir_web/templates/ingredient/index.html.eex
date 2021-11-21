@@ -8,7 +8,6 @@
 
 <%= for ingredient <- @ingredients do %>
 <h4>
-  <span><%= button "+", to: Routes.ingredient_path(@conn, :select_list, ingredient), method: :get, class: "btn-tiny" %></span>
   <%= link String.capitalize(ingredient.name), to: Routes.ingredient_path(@conn, :show, ingredient) %>
 </h4>
 <% end %>

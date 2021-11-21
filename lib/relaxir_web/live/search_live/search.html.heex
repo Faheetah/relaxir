@@ -1,4 +1,4 @@
-<h1>Search</h1>
+<h2>Search</h2>
 
 <input type="text" phx-keyup="search" phx-debounce="500" value={@query} />
 
@@ -9,7 +9,7 @@
 <% end %>
 
 <%= for {category, results} <- @results do %>
-<h2><%= String.capitalize(category) %></h2>
+<h3><%= String.capitalize(category) %></h3>
 <ul>
   <%= for result <- results do %>
     <li id={"search-#{result.id}"}>

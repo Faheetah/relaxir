@@ -1,4 +1,4 @@
-<h1>Recipes</h1>
+<div class="text-4xl">Recipes</div>
 
 <span><%= link "all", to: Routes.recipe_path(@conn, :index, show: "all") %></span>
 <span><%= link "drafts", to: Routes.recipe_path(@conn, :index, show: "drafts") %></span>
@@ -12,7 +12,6 @@
 
 <%= for recipe <- @recipes do %>
 <h4>
-  <span><%= button "+", to: Routes.recipe_list_path(@conn, :select_list, recipe), method: :get, class: "btn-tiny" %></span>
   <%= link String.capitalize(recipe.title), to: Routes.recipe_path(@conn, :show, recipe) %>
 </h4>
 <% end %>

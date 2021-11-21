@@ -10,71 +10,123 @@
     <link phx-track-static rel="stylesheet" href={Routes.static_path(@conn, "/assets/app.css")}/>
     <script defer phx-track-static type="text/javascript" src={Routes.static_path(@conn, "/assets/app.js")}></script>
   </head>
+
   <body>
-    <header>
-      <section class="container">
-        <nav class="navigation" role="navigation">
-          <label class="hamburger" data-menu-toggle for="hamburger-toggle">
-            🍔
+    <header class="container mx-auto">
+      <div class="flex p-2 pb-0 lg:pb-1 place-items-center border-green-600 border-b-4">
+        <%# hamburger menu %>
+        <div class="flex-none lg:hidden">
+          <label data-menu-toggle for="hamburger-toggle" class="cursor-pointer">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-green-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 10c-2,-7,18,-7,16,0M4 10h16M4 14h16M4 18h16" />
+            </svg>
           </label>
-          <input id="hamburger-toggle" type="checkbox" />
+        </div>
 
-          <section class="full-menu">
-            <ul class="navigation-list">
-              <li class="navigation-item">
-                <a href="/" title="Recipes">Recipes</a>
-              </li>
-              <li class="navigation-item">
-                <a href="/ingredients" title="Ingredients">Ingredients</a>
-              </li>
-              <li class="navigation-item">
-                <a href="/categories" title="Categories">Categories</a>
-              </li>
-              <li class="navigation-item">
-                <a href="/search" title="Search">Search</a>
-              </li>
-              <li class="navigation-item">
-                <a href="/tools" title="Tools">Tools</a>
-              </li>
-              <%= if @conn.assigns[:current_user] do %>
-                <li class="navigation-item">
-                  <a href="/recipelists" title="Recipe Lists">Recipe Lists</a>
-                </li>
-                <li class="navigation-item">
-                  <a href="/grocerylists" title="Grocery Lists">Grocery Lists</a>
-                </li>
-                <li class="navigation-item">
-                  <a href="/inventorylists" title="Inventory Lists">Inventory Lists</a>
-                </li>
-                <%= if function_exported?(Routes, :live_dashboard_path, 2) do %>
-                  <li class="navigation-item"><%= link "LiveDashboard", to: Routes.live_dashboard_path(@conn, :home) %></li>
-                <% end %>
+        <%# search toggle %>
+        <input class="hidden peer" id="search-toggle" type="checkbox" />
+
+        <%# header %>
+        <div class="peer-checked:hidden lg:peer-checked:block flex-auto h-full lg:flex-none text-4xl text-center lg:text-5xl font-extrabold text-green-600 tracking-tighter">
+          <a href="/">Relax+Dine</a>
+        </div>
+
+        <%# regular menu %>
+        <div class="hidden truncate lg:inline-block self-end space-x-4 mx-4 flex-1 justify-items-center">
+          <a class="text-xl" href="/">RECIPES</a>
+          <a class="text-xl" href="/ingredients">INGREDIENTS</a>
+          <a class="text-xl" href="/categories">CATEGORIES</a>
+          <a class="text-xl" href="/tools">TOOLS</a>
+        </div>
+
+        <%# search bar %>
+        <div class="hidden peer-checked:inline-block xl:inline-block mx-4 flex-auto self-end h-auto w-auto">
+          <input class="w-full h-10 border-black border-2 mb-1 -mt-1 rounded-lg self-end text-xl p-4 max-w-sm float-right" type="text" />
+        </div>
+
+        <%# search icon %>
+        <div class="flex-none mr-4 -ml-2 ">
+          <label class="cursor-pointer" data-menu-toggle for="search-toggle">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </label>
+        </div>
+
+        <%# login/logout %>
+        <div class="flex-none group">
+          <%= if @current_user do %>
+            <%= link to: "#" do %>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <% end %>
+
+            <div class="hidden group-hover:block group-focus:block flex absolute bg-white px-4 right-8 divide-y-2 divide-black border-2 border-black border-solid">
+              <%= link to: Routes.user_settings_path(@conn, :profile), class: "block text-xl my-2 justify-between flex" do %>
+              profile
+              <svg class="h-full w-6 inline right ml-2 self-end" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
               <% end %>
 
-              <%= if @current_user do %>
-                <%= if @current_user.username do %>
-                  <li class="navigation-item"><%= link @current_user.username, to: Routes.user_settings_path(@conn, :edit) %></li>
-                <% else %>
-                  <li class="navigation-item"><%= link @current_user.email, to: Routes.user_settings_path(@conn, :edit) %></li>
-                <% end %>
-                <li class="navigation-item"><%= link "Log out", to: Routes.user_session_path(@conn, :delete), method: :delete %></li>
-              <% else %>
-                <%= with {:ok, enabled: true} <- Application.fetch_env(:relaxir, :registration) do %>
-                <li class="navigation-item"><%= link "Register", to: Routes.user_registration_path(@conn, :new) %></li>
-                <% else _ -> %>
-                <!-- registration disabled -->
-                <% end %>
-                <li class="navigation-item"><%= link "Log in", to: Routes.user_session_path(@conn, :new) %></li>
+              <%= link to: Routes.grocery_list_path(@conn, :index), class: "block text-xl my-2 justify-between flex" do %>
+              grocery list
+              <svg class="h-full w-6 inline right ml-2 self-end" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
               <% end %>
 
-            </ul>
-          </section>
-        </nav>
-      </section>
+              <%= link to: Routes.recipe_list_path(@conn, :index), class: "block text-xl my-2 justify-between flex" do %>
+              liked recipes
+              <svg class="h-full w-6 inline right ml-2 self-end" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <% end %>
+
+              <%= link to: Routes.user_session_path(@conn, :delete), method: :delete, class: "block text-xl my-2 flex justify-between" do %>
+              logout
+              <svg class="h-full w-6 inline right ml-2 self-end" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <% end %>
+            </div>
+          <% else %>
+
+            <%= link to: Routes.user_session_path(@conn, :new) do %>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+            </svg>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+
+      <%# hamburger expand %>
+      <input class="hidden peer" id="hamburger-toggle" type="checkbox" />
+      <div class="peer-checked:block divide-y w-full h-full absolute bg-white text-2xl px-2 hidden">
+          <%= for item <- ~w[recipes ingredients categories tools] do %>
+          <a class="flex my-2 py-4" href={"/#{item}"}>
+            <div class="flex-auto"><%= String.upcase(item) %></div>
+            <div class="flex-none">
+            <svg class="h-full w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            </div>
+          </a>
+          <% end %>
+      </div>
     </header>
-    <main role="main" class="container">
-      <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
-      <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
+
+    <main class="container mx-auto p-2">
+      <%= if get_flash(@conn, :info) do %>
+      <p class="alert-info"><%= get_flash(@conn, :info) %></p>
+      <% end %>
+
+      <%= if get_flash(@conn, :error) do %>
+      <p class="alert-danger"><%= get_flash(@conn, :error) %></p>
+      <% end %>
+
       <%= @inner_content %>
     </main>
   </body>

@@ -1,174 +1,21 @@
 /* This file is for your main application css. */
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
 @import "./phoenix.css";
 
-/* Alerts and form errors */
-.alert {
-  padding: 15px;
-  margin-bottom: 20px;
-  border: 1px solid transparent;
-  border-radius: 4px;
+input, textarea {
+  @apply border;
 }
+
+/* Alerts and form errors */
 .alert-info {
-  color: #31708f;
-  background-color: #d9edf7;
-  border-color: #bce8f1;
+  @apply p-3 mb-4 border border-blue-200 rounded text-blue-800 bg-blue-100;
 }
 .alert-warning {
-  color: #8a6d3b;
-  background-color: #fcf8e3;
-  border-color: #faebcc;
+  @apply p-3 mb-4 border border-yellow-200 rounded text-yellow-800 bg-yellow-100;
 }
 .alert-danger {
-  color: #a94442;
-  background-color: #f2dede;
-  border-color: #ebccd1;
-}
-.alert p {
-  margin-bottom: 0;
-}
-.alert:empty {
-  display: none;
-}
-
-
-.navigation {
-  background: #f4f5f6;
-  border-bottom: .1rem solid #d1d1d1;
-  display: block;
-  left: 0;
-  max-width: 100%;
-  position: fixed;
-  right: 0;
-  top: 0;
-  width: 100%;
-  z-index: 1;
-}
-
-.navigation .navigation-list,
-.navigation .navigation-title {
-  display: inline;
-  font-size: 1.6rem;
-  line-height: 5.2rem;
-  padding: 0;
-  text-decoration: none;
-}
-
-.navigation .navigation-list {
-  list-style: none;
-  margin-bottom: 0;
-}
-
-.navigation .navigation-item {
-  float: left;
-  margin-bottom: 0;
-  margin-left: 2.5rem;
-  position: relative;
-}
-
-main.container {
-  padding-top: 8rem;
-}
-
-.navigation .navigation-list, .navigation .navigation-title {
-  display: block;
-}
-
-.navigation-item {
-  margin: 1px;
-  padding: 0 1em 0 1em;
-}
-
-textarea {
-  min-height: 24rem;
-}
-
-.btn-tiny {
-  height: 17px;
-  line-height: normal;
-  padding: 1px 6px 1px 6px;
-}
-
-.hamburger {
-  background-color: transparent;
-  border: transparent;
-  font-size: 3rem;
-  padding: 1rem;
-  line-height: 2rem;
-  display: none;
-}
-
-#hamburger-toggle {
-  display: none;
-}
-
-#hamburger-toggle:checked ~ .full-menu {
-  display: initial;
-}
-
-@media (max-width: 768px) {
-  .navigation-item, .navigation-item a {
-    background-color: #444444;
-    color: #EEEEEE;
-    width: 100%;
-    margin-left: 0 !important;
-  }
-
-  .navigation-list {
-    margin: 0;
-  }
-
-  .hamburger {
-    display: block;
-  }
-
-  .full-menu {
-    display: none;
-  }
-
-  .navigation-item {
-    float: none !important;
-    text-align: center;
-  }
-}
-
-ul {
-  list-style-type: none;
-}
-
-.search {
-  display: flex;
-  flex-direction: row;
-}
-
-.search button {
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-}
-
-.search input {
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-}
-
-.grey {
-  -webkit-filter: grayscale(100%);
-   filter: grayscale(100%);
-    font-size: 2em;
-}
-
-.hidden {
-  display: none !important;
-}
-
-.toggle-button {
-  width: 24%;
-  background-color: #606c76;
-}
-
-.checkbox:checked + .toggle-button {
-  background-color: #0069d9 !important;
-}
-
-.search-checkboxes {
-  text-align: center;
+  @apply p-3 mb-4 border border-red-200 rounded text-red-800 bg-red-100;
 }

@@ -13,10 +13,13 @@ defmodule RelaxirWeb.Router do
     plug :fetch_session
     plug :fetch_flash
     plug :fetch_live_flash
-    plug :put_root_layout, {RelaxirWeb.LayoutView, :app}
     plug :protect_from_forgery
     plug :put_secure_browser_headers, %{"content-security-policy" => "..."}
     plug :fetch_current_user
+  end
+
+  pipeline :live_browser do
+    plug :put_root_layout, {RelaxirWeb.LayoutView, :app}
   end
 
   scope "/", RelaxirWeb do
@@ -55,7 +58,10 @@ defmodule RelaxirWeb.Router do
     get "/old/search", SearchController, :new
     post "/old/search", SearchController, :search
 
-    live "/search", SearchLive.Search, :search
+    scope "/" do
+      pipe_through [:live_browser]
+      live "/search", SearchLive.Search, :search
+    end
 
     resources "/recipes", RecipeController, only: [:show, :index]
     get "/tools", ToolController, :index
@@ -85,6 +91,7 @@ defmodule RelaxirWeb.Router do
   scope "/", RelaxirWeb do
     pipe_through [:browser, :require_authenticated_user]
 
+    get "/users/profile", UserSettingsController, :profile
     get "/users/settings", UserSettingsController, :edit
     put "/users/settings", UserSettingsController, :update
     get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email

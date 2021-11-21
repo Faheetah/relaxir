@@ -198,7 +198,7 @@ defmodule Relaxir.Recipes do
         if score > 1 do
           put_change(ingredient, :suggestion, %{name: String.downcase(s), type: "ingredient", score: round(score * 10)})
         else
-          case Invert.get(Usda.Food, :description, ingredient_name) do
+          case Invert.get(Relaxir.Usda.Food, :description, ingredient_name) do
             {:ok, suggestion} ->
               {[s, _], score} = hd(suggestion)
               score_ingredient(ingredient, score, s, "USDA")
@@ -209,7 +209,7 @@ defmodule Relaxir.Recipes do
         end
 
       {:error, :not_found} ->
-        case Invert.get(Usda.Food, :description, ingredient_name) do
+        case Invert.get(Relaxir.Usda.Food, :description, ingredient_name) do
           {:ok, suggestion} ->
             {[s, _], score} = hd(suggestion)
             score_ingredient(ingredient, score, s, "USDA")

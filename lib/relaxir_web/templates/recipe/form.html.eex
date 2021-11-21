@@ -5,28 +5,43 @@
     </div>
   <% end %>
 
+  <div>
   <%= label f, :title %>
   <%= text_input f, :title %>
   <%= error_tag f, :title %>
+  </div>
 
+  <div>
   <%= label f, :published %>
   <%= checkbox f, :published %>
   <%= error_tag f, :published %>
 
+  </div>
+
+  <div>
   <%= label f, :categories %>
   <h6><i>Comma separated list of categories</i></h6>
   <%= categories_input f, :categories %>
   <%= error_tag f, :categories %>
 
-  <%= label f, :ingredients %>
-  <h6><i>Ingredients with optional amounts and notes, i.e. "2 cups flour, sifted"</i></h6>
+  </div>
+
+  <div>
+  <p><%= label f, :ingredients %></p>
+  <p>
+    <i>Ingredients with optional amounts and notes, i.e. "2 cups flour, sifted"</i>
+  </p>
   <%= ingredients_input f, :ingredients, @ingredients %>
   <%= error_tag f, :recipe_ingredients %>
   <%= error_tag f, :ingredients %>
 
-  <%= label f, :directions %>
+  </div>
+
+  <div>
+  <p><%= label f, :directions %></p>
   <%= textarea f, :directions %>
   <%= error_tag f, :directions %>
+  </div>
 
   <div>
     <%= submit "Preview" %>

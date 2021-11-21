@@ -6,6 +6,10 @@ defmodule RelaxirWeb.UserSettingsController do
 
   plug :assign_email_and_password_changesets
 
+  def profile(conn, _params) do
+    render(conn, "profile.html")
+  end
+
   def edit(conn, _params) do
     render(conn, "edit.html")
   end

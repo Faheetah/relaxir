@@ -6,13 +6,20 @@
 <p>food_category_id: <%= @usda.food_category_id %></p>
 <p>publication_date: <%= @usda.publication_date %></p>
 
-<h2>Nutrients:</h2>
-<%= for food_nutrient <- @usda.food_nutrients do %>
-<li>
-  <b>
-    <%= food_nutrient.amount %>
-    <%= food_nutrient.nutrient.unit_name %>
-  </b>
-  <%= food_nutrient.nutrient.name %>
-</li>
-<% end %>
+<div class="max-w-xs w-1/4">
+  <h2>Nutrition Facts</h2>
+  <table>
+    <tbody>
+      <%= for food_nutrient <- @usda.food_nutrients do %>
+      <tr>
+        <td>
+          <b><%= food_nutrient.nutrient.name %></b>
+        </td>
+        <td>
+          <%= food_nutrient.amount %><%= String.downcase(food_nutrient.nutrient.unit_name) %>
+        </td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
