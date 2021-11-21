@@ -20,7 +20,11 @@ defmodule Relaxir.Recipes do
   ]
 
   def list_recipes do
-    Repo.all(order_by(Recipe, desc: :updated_at))
+    Recipe
+    |> order_by(desc: :updated_at)
+    |> preload(:user)
+    |> preload(:categories)
+    |> Repo.all()
   end
 
   def list_recipes(user_id) do
