@@ -10,6 +10,10 @@ defmodule RelaxirWeb.UsdaController do
 
   def show(conn, %{"id" => id}) do
     usda = Usda.get_food!(id)
-    render(conn, "show.html", usda: usda)
+    nutrients =
+      usda.food_nutrients
+      |> Enum.reduce(%{}, fn n, acc -> Map.put(acc, n.nutrient.name, "#{n.amount}#{String.downcase(n.nutrient.unit_name)}") end)
+
+    render(conn, "show.html", usda: usda, nutrients: nutrients)
   end
 end

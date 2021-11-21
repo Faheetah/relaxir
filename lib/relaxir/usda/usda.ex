@@ -11,6 +11,5 @@ defmodule Relaxir.Usda do
     Food
     |> preload(:nutrients)
     |> Repo.get_by(fdc_id: id)
-    |> IO.inspect
   end
 end

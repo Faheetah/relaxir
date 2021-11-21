@@ -1,25 +1,145 @@
-<h1><%= String.capitalize(@usda.description) %></h1>
+<div class="mb-4 text-6xl">
+  <%= String.capitalize(@usda.description) %>
+</div>
 
-<p>data_type: <%= @usda.data_type %></p>
-<p>description: <%= @usda.description %></p>
-<p>fdc_id: <%= @usda.fdc_id %></p>
-<p>food_category_id: <%= @usda.food_category_id %></p>
-<p>publication_date: <%= @usda.publication_date %></p>
+<div class="max-w-xs border-black border-2 px-2">
+  <div class="text-3xl font-black border-b-8 border-black">NUTRITION FACTS</div>
 
-<div class="max-w-xs w-1/4">
-  <h2>Nutrition Facts</h2>
-  <table>
-    <tbody>
-      <%= for food_nutrient <- @usda.food_nutrients do %>
-      <tr>
-        <td>
-          <b><%= food_nutrient.nutrient.name %></b>
-        </td>
-        <td>
-          <%= food_nutrient.amount %><%= String.downcase(food_nutrient.nutrient.unit_name) %>
-        </td>
-      </tr>
-      <% end %>
-    </tbody>
-  </table>
+  <div class="text-3xl font-black flex justify-between border-b-4 border-black">
+    <div>Calories</div>
+    <div class="right"><%= String.trim(@nutrients["Energy"], "kcal") %></div>
+  </div>
+
+  <div class="divide-y divide-black border-b-8 border-black">
+    <div class="text-xl flex justify-between">
+      <div>
+      <span class="font-black">Total Fat</span>
+      <%= @nutrients["Total lipid (fat)"] %>
+      </div>
+      <div>
+      <!-- % DV -->
+      </div>
+    </div>
+
+    <div class="text-xl flex justify-between">
+      <div>
+      <span class="pl-4">Saturated Fat</span>
+      <%= @nutrients["Fatty acids, total saturated"] %>
+      </div>
+      <div>
+      <!-- % DV -->
+      </div>
+    </div>
+
+    <div class="text-xl flex justify-between">
+      <div>
+      <span class="pl-4"><span class="italic">Trans</span> Fat</span>
+      <%= @nutrients["Fatty acids, total trans"] %>
+      </div>
+      <div>
+      <!-- % DV -->
+      </div>
+    </div>
+
+    <div class="text-xl flex justify-between">
+      <div>
+      <span class="font-black">Cholesterol</span>
+      <%= @nutrients["Cholesterol"] %>
+      </div>
+      <div>
+      <!-- % DV -->
+      </div>
+    </div>
+
+    <div class="text-xl flex justify-between">
+      <div>
+      <span class="font-black">Sodium</span>
+      <%= @nutrients["Sodium, Na"] %>
+      </div>
+      <div>
+      <!-- % DV -->
+      </div>
+    </div>
+
+    <div class="text-xl flex justify-between">
+      <div>
+      <span class="font-black">Total Carbohydrates</span>
+      <%= @nutrients["Carbohydrate, by difference"] %>
+      </div>
+      <div>
+      <!-- % DV -->
+      </div>
+    </div>
+
+    <div class="text-xl flex justify-between">
+      <div>
+      <span class="pl-4">Dietary Fiber</span>
+      <%= @nutrients["Fiber, total dietary"] %>
+      </div>
+      <div>
+      <!-- % DV -->
+      </div>
+    </div>
+
+    <div class="text-xl flex justify-between">
+      <div>
+      <span class="p-4">Total Sugars</span>
+      <%= @nutrients["Sugars, total including NLEA"] %>
+      </div>
+      <div>
+      <!-- % DV -->
+      </div>
+    </div>
+
+    <div class="text-xl flex justify-between border-b-8 border-black">
+      <div>
+      <span class="font-black">Protein</span>
+      <%= @nutrients["Protein"] %>
+      </div>
+      <div>
+      <!-- % DV -->
+      </div>
+    </div>
+  </div>
+
+  <div class="divide-y divide-black">
+    <div class="text-xl flex justify-between">
+      <div>
+      <span class="font-black">Calcium</span>
+      <%= @nutrients["Calcium, Ca"] %>
+      </div>
+      <div>
+      <!-- % DV -->
+      </div>
+    </div>
+
+    <div class="text-xl flex justify-between">
+      <div>
+      <span class="font-black">Iron</span>
+      <%= @nutrients["Iron, Fe"] %>
+      </div>
+      <div>
+      <!-- % DV -->
+      </div>
+    </div>
+
+    <div class="text-xl flex justify-between">
+      <div>
+      <span class="font-black">Vitamin A</span>
+      <%= @nutrients["Vitamin A, IU"] %>
+      </div>
+      <div>
+      <!-- % DV -->
+      </div>
+    </div>
+
+    <div class="text-xl flex justify-between">
+      <div>
+      <span class="font-black">Vitamin C</span>
+      <%= @nutrients["Vitamin C, total ascorbic acid"] %>
+      </div>
+      <div>
+      <!-- % DV -->
+      </div>
+    </div>
 </div>

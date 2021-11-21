@@ -28,7 +28,6 @@ defmodule Relaxir.IngredientImporter do
         end
     end)
     |> Stream.map(&module.changeset(struct(module, %{}), &1))
-    |> Stream.map(&IO.inspect/1)
     |> Stream.filter(fn entry -> entry.valid? == true end)
     |> Stream.map(&Ecto.Changeset.apply_changes/1)
     |> Stream.map(&Map.take(&1, module.__schema__(:fields)))
