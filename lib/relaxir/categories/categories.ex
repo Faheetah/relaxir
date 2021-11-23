@@ -26,23 +26,27 @@ defmodule Relaxir.Categories do
     Repo.all(query)
     |> Enum.reverse()
     |> Enum.reduce([], fn category, acc ->
-      top_recipes =
-        from rc in RecipeCategory,
-        where: rc.category_id == ^category.id,
-        join: r in Recipe,
-        where: r.id == rc.recipe_id,
-        order_by: [desc: r.inserted_at],
-        select: r,
-        limit: 4
-
-      recipes =
-        top_recipes
-        |> Repo.all
-        |> Repo.preload(:user)
-        |> Repo.preload(:categories)
+      recipes = latest_recipes_for_category(category)
 
       [{category, recipes} | acc]
     end)
+  end
+
+  def latest_recipes_for_category(category) do
+    top_recipes =
+      from rc in RecipeCategory,
+      where: rc.category_id == ^category.id,
+      join: r in Recipe,
+      where: r.id == rc.recipe_id,
+      order_by: [desc: r.inserted_at],
+      select: r,
+      limit: 4
+
+    recipes =
+      top_recipes
+      |> Repo.all
+      |> Repo.preload(:user)
+      |> Repo.preload(:categories)
   end
 
 

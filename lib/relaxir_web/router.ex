@@ -67,6 +67,7 @@ defmodule RelaxirWeb.Router do
     # get "/usda", UsdaController, :index
     get "/usda/:id", UsdaController, :show
     resources "/ingredients", IngredientController, only: [:show, :index]
+    get "/categories/all", CategoryController, :all
     resources "/categories", CategoryController, only: [:show, :index]
   end
 

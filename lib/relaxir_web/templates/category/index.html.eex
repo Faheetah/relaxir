@@ -1,5 +1,7 @@
 <h1>Categories</h1>
 
+<%= link "ALL CATEGORIES", to: Routes.category_path(@conn, :all) %>
+
 <%= if @current_user && @current_user.is_admin do %>
 <h4>
   <%= link "+ New Category", to: Routes.category_path(@conn, :new) %>
@@ -7,8 +9,8 @@
 <% end %>
 
 <%= for {category, recipes} <- @top_categories do %>
-<div class="text-4xl">
-  <%= String.capitalize(category.name) %>
+<div class="text-4xl mt-8">
+  <%= link String.capitalize(category.name), to: Routes.category_path(@conn, :show, category.id) %>
 </div>
 
 <%= render(RelaxirWeb.RecipeView, "recipe_list.html", current_user: @current_user, recipes: recipes, conn: @conn, show: false) %>

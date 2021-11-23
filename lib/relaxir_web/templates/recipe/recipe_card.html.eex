@@ -1,4 +1,4 @@
-<div class="m-2 border-black border p-4">
+<div class="border-black border p-4">
   <div class="text-lg font-bold mb-4">
     <%= link String.capitalize(@recipe.title), to: Routes.recipe_path(@conn, :show, @recipe) %>
   </div>

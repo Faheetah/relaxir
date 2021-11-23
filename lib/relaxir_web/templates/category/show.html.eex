@@ -1,15 +1,6 @@
-<h1><%= String.capitalize(@category.name) %></h1>
+<div class="text-2xl"><%= String.capitalize(@category.name) %></div>
 
-<%= if @category.recipes != [] do %>
-<strong>Recipes:</strong>
-<ul>
-<%= for recipe <- @category.recipes do %>
-<li>
-  <%= link recipe.title, to: Routes.recipe_path(@conn, :show, recipe)%>
-</li>
-<% end %>
-</ul>
-<% end %>
+<%= render(RelaxirWeb.RecipeView, "recipe_list.html", current_user: @current_user, recipes: @recipes, conn: @conn, show: false) %>
 
 <%= if @current_user && @current_user.is_admin do %>
 <span><%= link "Edit", to: Routes.category_path(@conn, :edit, @category) %></span>

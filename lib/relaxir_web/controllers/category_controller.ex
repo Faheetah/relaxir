@@ -10,6 +10,12 @@ defmodule RelaxirWeb.CategoryController do
     render(conn, "index.html", top_categories: top_categories, current_user: current_user)
   end
 
+  def all(conn, _params) do
+    current_user = conn.assigns.current_user
+    categories = Categories.list_categories()
+    render(conn, "all.html", categories: categories, current_user: current_user)
+  end
+
   def new(conn, _params) do
     changeset = Categories.change_category(%Category{})
     render(conn, "new.html", changeset: changeset)
@@ -30,7 +36,8 @@ defmodule RelaxirWeb.CategoryController do
   def show(conn, %{"id" => id}) do
     current_user = conn.assigns.current_user
     category = Categories.get_category!(id)
-    render(conn, "show.html", category: category, current_user: current_user)
+    recipes = Categories.latest_recipes_for_category(category)
+    render(conn, "show.html", category: category, recipes: recipes, current_user: current_user)
   end
 
   def edit(conn, %{"id" => id}) do

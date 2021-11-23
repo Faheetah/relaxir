@@ -1,0 +1,13 @@
+<h1>Categories</h1>
+
+<%= if @current_user && @current_user.is_admin do %>
+<h4>
+  <%= link "+ New Category", to: Routes.category_path(@conn, :new) %>
+</h4>
+<% end %>
+
+<%= for category <- @categories do %>
+<div class="grid grid-cols-4">
+  <%= link String.capitalize(category.name), to: Routes.category_path(@conn, :show, category.id), class: "p-2 border rounded hover:bg-blue-100 hover:border-blue-400 border-gray-400 bg-gray-100 m-4" %>
+</div>
+<% end %>
