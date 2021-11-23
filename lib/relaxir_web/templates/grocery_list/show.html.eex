@@ -1,13 +1,5 @@
 <h1><%= @grocery_list.name %></h1>
 
-<%= form_for @conn, Routes.search_path(@conn, :search, ingredients: true, usda: true, for: :groceries, id: @grocery_list.id), fn f -> %>
-  <%= label f, :add_ingredient %>
-  <div class="search">
-    <%= text_input f, :terms %>
-    <button type="submit"><span class="grey">🔍</span></button>
-  </div>
-<% end %>
-
 <%= if @grocery_list.ingredients != [] do %>
 <p>Ingredients:</p>
 <ul>

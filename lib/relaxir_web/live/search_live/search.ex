@@ -1,4 +1,4 @@
-defmodule RelaxirWeb.SearchLive.Search do
+defmodule RelaxirWeb.SearchLive do
   use RelaxirWeb, :live_view
 
   alias Relaxir.Search
@@ -12,18 +12,9 @@ defmodule RelaxirWeb.SearchLive.Search do
         nil
       end
 
-    {count, results} =
-      if params["q"] do
-        get_results(filter, params["q"])
-      else
-        {nil, []}
-      end
-
     {
       :ok,
       socket
-      |> assign(:count, count)
-      |> assign(:results, results)
       |> assign(:query, params["q"] || "")
       |> assign(:filter, filter)
     }
@@ -46,18 +37,34 @@ defmodule RelaxirWeb.SearchLive.Search do
     {
       :noreply,
       socket
-      |> assign(:count, count)
-      |> assign(:results, results)
-      |> assign(:query, query)
+      |> push_patch(to: Routes.search_path(socket, :search, q: query), replace: true)
     }
   end
 
-  defp apply_action(socket, :search, _params) do
+  defp apply_action(socket, :search, params) do
+    filter =
+      if params["f"] do
+        String.split(params["f"], ",")
+      else
+        nil
+      end
+
+    {count, results} =
+      if params["q"] do
+        get_results(filter, params["q"])
+      else
+        {nil, []}
+      end
+
     socket
     |> assign(:page_title, "R+D | Search")
+    |> assign(:count, count)
+    |> assign(:results, results)
+    |> assign(:query, params["q"])
   end
 
   defp get_results(filter, query) do
+
     search = Search.search_for(filter, query)
 
     count = Enum.reduce(search, 0, fn {_, i}, acc -> acc + length(i) end)

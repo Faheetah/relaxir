@@ -1,12 +1,5 @@
 <h1>Listing Inventory lists</h1>
 
-<%= form_for @conn, Routes.search_path(@conn, :search, ingredients: true, usda: true, for: :ingredients), fn f -> %>
-  <div class="search">
-    <%= text_input f, :terms %>
-    <button type="submit"><span class="grey">🔍</span></button>
-  </div>
-<% end %>
-
 <table>
   <thead>
     <tr>

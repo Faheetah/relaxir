@@ -16,7 +16,7 @@ Search
 <%= case @count do %>
   <% nil -> %>
   <% 0 -> %><p>No results found<p>
-  <% _ -> %><p><%= @count %> results found</p>
+  <% _ -> %><p><%= @count %> total results found</p>
 <% end %>
 
 <%= for {category, results} <- @results do %>

@@ -5,13 +5,13 @@
   <%= if @show == "all" do %>
     <%= link to: Routes.recipe_path(@conn, :index) do %>
     <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 inline text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
     </svg>
     <% end %>
   <% else %>
     <%= link to: Routes.recipe_path(@conn, :index, show: "all") do %>
     <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
     </svg>
     <% end %>
   <% end %>
@@ -20,10 +20,14 @@
   <%= if @current_user && @current_user.is_admin do %>
   <%= link to: Routes.recipe_path(@conn, :new) do %>
   <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
   </svg>
   <% end %>
   <% end %>
 </div>
 
-<%= render("recipe_list.html", recipes: @recipes, conn: @conn) %>
+<div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+  <%= for recipe <- @recipes do %>
+  <%= render("recipe_card.html", recipe: recipe, conn: @conn) %>
+  <% end %>
+</div>

@@ -55,12 +55,9 @@ defmodule RelaxirWeb.Router do
 
     get "/", RecipeController, :index
 
-    get "/old/search", SearchController, :new
-    post "/old/search", SearchController, :search
-
     scope "/" do
       pipe_through [:live_browser]
-      live "/search", SearchLive.Search, :search
+      live "/search", SearchLive, :search
     end
 
     resources "/recipes", RecipeController, only: [:show, :index]
