@@ -1,5 +1,8 @@
 <div class="border-gray-600 border p-4">
+  <%= if @recipe.image_filename do %>
   <%= img_tag "/uploads/#{@recipe.image_filename}", class: "h-auto w-auto" %>
+  <% end %>
+
   <div class="text-lg font-bold mb-4">
     <%= link String.capitalize(@recipe.title), to: Routes.recipe_path(@conn, :show, @recipe) %>
   </div>
