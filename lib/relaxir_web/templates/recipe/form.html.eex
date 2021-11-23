@@ -12,10 +12,15 @@
   </div>
 
   <div>
+  <%= label f, :image_filename %>
+  <%= text_input f, :image_filename %>
+  <%= error_tag f, :image_filename %>
+  </div>
+
+  <div>
   <%= label f, :published %>
   <%= checkbox f, :published %>
   <%= error_tag f, :published %>
-
   </div>
 
   <div>
@@ -23,7 +28,6 @@
   <h6><i>Comma separated list of categories</i></h6>
   <%= categories_input f, :categories %>
   <%= error_tag f, :categories %>
-
   </div>
 
   <div>

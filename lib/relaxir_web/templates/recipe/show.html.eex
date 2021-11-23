@@ -1,4 +1,9 @@
 <h1><%= String.capitalize(@recipe.title) %></h1>
+
+<%= if @recipe.image_filename do %>
+<%= img_tag "/uploads/#{@recipe.image_filename}" %>
+<% end %>
+
 <%= if @recipe.published == true do %>
 <p>Published</p>
 <% end %>

@@ -3,7 +3,7 @@ defmodule RelaxirWeb.SearchLive do
 
   alias Relaxir.Search
 
-  @impl true
+  @impl Phoenix.LiveView
   def mount(params, _session, socket) do
     filter =
       if params["f"] do
@@ -20,12 +20,12 @@ defmodule RelaxirWeb.SearchLive do
     }
   end
 
-  @impl true
+  @impl Phoenix.LiveView
   def handle_params(params, _url, socket) do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
   end
 
-  @impl true
+  @impl Phoenix.LiveView
   def handle_event("search", %{"value" => query} = _, socket) do
     {count, results} =
       if String.length(query) > 2 do
