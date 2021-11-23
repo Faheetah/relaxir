@@ -66,6 +66,7 @@ defmodule RelaxirWeb.Router do
     # this needs pagination
     # get "/usda", UsdaController, :index
     get "/usda/:id", UsdaController, :show
+    get "/ingredients/all", IngredientController, :all
     resources "/ingredients", IngredientController, only: [:show, :index]
     get "/categories/all", CategoryController, :all
     resources "/categories", CategoryController, only: [:show, :index]

@@ -10,6 +10,12 @@ defmodule RelaxirWeb.IngredientController do
     render(conn, "index.html", top_ingredients: top_ingredients, current_user: current_user)
   end
 
+  def all(conn, _params) do
+    current_user = conn.assigns.current_user
+    ingredients = Ingredients.list_ingredients()
+    render(conn, "all.html", ingredients: ingredients, current_user: current_user)
+  end
+
   def new(conn, _params) do
     changeset = Ingredients.change_ingredient(%Ingredient{})
     render(conn, "new.html", changeset: changeset)
@@ -52,7 +58,8 @@ defmodule RelaxirWeb.IngredientController do
   def show(conn, %{"id" => id}) do
     current_user = conn.assigns.current_user
     ingredient = Ingredients.get_ingredient!(id)
-    render(conn, "show.html", ingredient: ingredient, current_user: current_user)
+    recipes = Ingredients.latest_recipes_for_ingredient(ingredient)
+    render(conn, "show.html", ingredient: ingredient, recipes: recipes, current_user: current_user)
   end
 
   def edit(conn, %{"id" => id}) do

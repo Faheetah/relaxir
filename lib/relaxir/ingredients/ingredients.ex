@@ -26,23 +26,27 @@ defmodule Relaxir.Ingredients do
     Repo.all(query)
     |> Enum.reverse()
     |> Enum.reduce([], fn ingredient, acc ->
-      top_recipes =
-        from ri in RecipeIngredient,
-        where: ri.ingredient_id == ^ingredient.id,
-        join: r in Recipe,
-        where: r.id == ri.recipe_id,
-        order_by: [desc: r.inserted_at],
-        select: r,
-        limit: 4
-
-      recipes =
-        top_recipes
-        |> Repo.all
-        |> Repo.preload(:user)
-        |> Repo.preload(:categories)
+      recipes = latest_recipes_for_ingredient(ingredient)
 
       [{ingredient, recipes} | acc]
     end)
+  end
+
+  def latest_recipes_for_ingredient(ingredient) do
+    top_recipes =
+      from ri in RecipeIngredient,
+      where: ri.ingredient_id == ^ingredient.id,
+      join: r in Recipe,
+      where: r.id == ri.recipe_id,
+      order_by: [desc: r.inserted_at],
+      select: r,
+      limit: 4
+
+    recipes =
+      top_recipes
+      |> Repo.all
+      |> Repo.preload(:user)
+      |> Repo.preload(:categories)
   end
 
   def get_ingredient!(id) do
