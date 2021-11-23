@@ -1,4 +1,4 @@
-<div class="text-6xl font-light mb-4">
+<div class="text-6xl mb-8">
   Recipes
 
   <%= if @current_user && @current_user.is_admin do %>
