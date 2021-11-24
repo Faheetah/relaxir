@@ -2,6 +2,9 @@ import Config
 
 config :relaxir, :registration, enabled: true
 
+config :relaxir, RelaxirWeb.UploadLive,
+  dest: "priv/static/uploads"
+
 # Configure your database
 config :relaxir, Relaxir.Repo,
   username: "postgres",

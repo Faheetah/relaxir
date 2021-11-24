@@ -26,6 +26,11 @@ defmodule RelaxirWeb.Endpoint do
     gzip: false,
     only: ~w(assets uploads fonts images favicon.ico robots.txt)
 
+  plug Plug.Static,
+    at: "/uploads",
+    from: Application.fetch_env!(:relaxir, RelaxirWeb.UploadLive)[:dest],
+    gzip: true
+
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.
   if code_reloading? do

@@ -32,7 +32,7 @@ defmodule Relaxir.Ingredients do
     end)
   end
 
-  def latest_recipes_for_ingredient(ingredient) do
+  def latest_recipes_for_ingredient(ingredient, limit \\ 4) do
     top_recipes =
       from ri in RecipeIngredient,
       where: ri.ingredient_id == ^ingredient.id,
@@ -40,7 +40,7 @@ defmodule Relaxir.Ingredients do
       where: r.id == ri.recipe_id,
       order_by: [desc: r.inserted_at],
       select: r,
-      limit: 4
+      limit: ^limit
 
     recipes =
       top_recipes

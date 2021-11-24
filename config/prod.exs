@@ -13,5 +13,8 @@ config :relaxir, RelaxirWeb.Endpoint,
   url: [host: "www.relaxanddine.com", port: 443],
   cache_static_manifest: "priv/static/cache_manifest.json"
 
+config :relaxir, RelaxirWeb.UploadLive,
+  dest: "/home/relaxir/uploads"
+
 # Do not print debug messages in production
 config :logger, level: :info

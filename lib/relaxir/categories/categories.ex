@@ -32,7 +32,7 @@ defmodule Relaxir.Categories do
     end)
   end
 
-  def latest_recipes_for_category(category) do
+  def latest_recipes_for_category(category, limit \\ 4) do
     top_recipes =
       from rc in RecipeCategory,
       where: rc.category_id == ^category.id,
@@ -40,7 +40,7 @@ defmodule Relaxir.Categories do
       where: r.id == rc.recipe_id,
       order_by: [desc: r.inserted_at],
       select: r,
-      limit: 4
+      limit: ^limit
 
     recipes =
       top_recipes

@@ -58,7 +58,7 @@ defmodule RelaxirWeb.IngredientController do
   def show(conn, %{"id" => id}) do
     current_user = conn.assigns.current_user
     ingredient = Ingredients.get_ingredient!(id)
-    recipes = Ingredients.latest_recipes_for_ingredient(ingredient)
+    recipes = Ingredients.latest_recipes_for_ingredient(ingredient, 20)
     render(conn, "show.html", ingredient: ingredient, recipes: recipes, current_user: current_user)
   end
 

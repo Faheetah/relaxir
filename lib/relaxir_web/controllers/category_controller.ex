@@ -36,7 +36,7 @@ defmodule RelaxirWeb.CategoryController do
   def show(conn, %{"id" => id}) do
     current_user = conn.assigns.current_user
     category = Categories.get_category!(id)
-    recipes = Categories.latest_recipes_for_category(category)
+    recipes = Categories.latest_recipes_for_category(category, 20)
     render(conn, "show.html", category: category, recipes: recipes, current_user: current_user)
   end
 
