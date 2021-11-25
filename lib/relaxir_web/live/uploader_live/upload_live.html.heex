@@ -2,7 +2,7 @@
   <%= live_file_input @uploads.picture %>
 
 
-  <button type="submit">Upload</button>
+  <button class="border border-gray-400 bg-gray-200 p-1" type="submit">Upload</button>
 </form>
 
 <%# use phx-drop-target with the upload ref to enable file drag and drop %>
@@ -12,11 +12,6 @@
 <%= for entry <- @uploads.picture.entries do %>
   <article class="upload-entry">
 
-    <figure>
-      <%# Phoenix.LiveView.Helpers.live_img_preview/2 renders a client-side preview %>
-      <%= live_img_preview entry %>
-      <figcaption><%= entry.client_name %></figcaption>
-    </figure>
 
     <%# entry.progress will update automatically for in-flight entries %>
     <progress value={entry.progress} max="100"> <%= entry.progress %>% </progress>
@@ -29,6 +24,11 @@
       <p class="alert alert-danger"><%= inspect(err) %></p>
     <% end %>
 
+    <figure>
+      <%# Phoenix.LiveView.Helpers.live_img_preview/2 renders a client-side preview %>
+      <%= live_img_preview entry %>
+      <figcaption><%= entry.client_name %></figcaption>
+    </figure>
   </article>
 <% end %>
 

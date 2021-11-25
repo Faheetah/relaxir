@@ -29,7 +29,8 @@ defmodule RelaxirWeb.UploadLive do
   def handle_event("save", _params, socket) do
     consume_uploaded_entries(socket, :picture, fn %{path: path}, _entry ->
       dest = Application.fetch_env!(:relaxir, RelaxirWeb.UploadLive)[:dest]
-      File.cp!(path, Path.join(dest, Path.basename(path)))
+      resize(path, dest, "1920", "1440")
+      resize(path, dest, "400", "600")
 
       socket.assigns.recipe
       |> String.to_integer()
@@ -41,5 +42,18 @@ defmodule RelaxirWeb.UploadLive do
       :noreply,
       redirect(socket, to: Routes.recipe_path(socket, :show, socket.assigns.recipe))
     }
+  end
+
+  defp resize(path, dest, width, height) do
+    System.cmd("gm", [
+      "convert",
+      path,
+      "-resize", "#{width}x#{height}",
+      "-crop", "#{width}x#{height}",
+      "-gravity", "center",
+      "+profile", "'*'",
+      "-compress", "JPEG",
+      Path.join(dest, "#{Path.basename(path)}-#{width}x#{height}.jpg")
+    ])
   end
 end

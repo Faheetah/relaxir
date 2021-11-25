@@ -122,11 +122,23 @@ defmodule Relaxir.Recipes do
       end)
     end
 
+    with %{image_filename: nil} do
+      dest = Application.fetch_env!(:relaxir, RelaxirWeb.UploadLive)[:dest]
+      File.rm(Path.join(dest, "#{recipe.image_filename}-1920x1440.jpg"))
+      File.rm(Path.join(dest, "#{recipe.image_filename}-400x600.jpg"))
+    end
+
     changeset
   end
 
   def delete_recipe(%Recipe{} = recipe) do
     delete_cache(recipe)
+    dest = Application.fetch_env!(:relaxir, RelaxirWeb.UploadLive)[:dest]
+    # I don't know why these have to be wrapped in tasks but if they aren't then somehow
+    # the request redirects back to the post, which is deleted, so it gets a 404 instead of GET /
+    t1 = Task.async(fn -> File.rm(Path.join(dest, "#{recipe.image_filename}-1920x1440.jpg")) end)
+    t2 = Task.async(fn -> File.rm(Path.join(dest, "#{recipe.image_filename}-400x600.jpg")) end)
+    Task.await_many([t1, t2])
     Repo.delete(recipe)
   end
 

@@ -1,7 +1,7 @@
 <div class="text-4xl"><%= String.capitalize(@recipe.title) %></div>
 
 <%= if @recipe.image_filename do %>
-<%= img_tag "/uploads/#{@recipe.image_filename}" %>
+<%= img_tag "/uploads/#{@recipe.image_filename}-1920x1440.jpg" %>
 <% else %>
 <%= link "Upload an image", to: Routes.recipe_upload_path(@conn, :new, @recipe.id), class: "text-red-600 text-xl" %>
 <% end %>
@@ -43,5 +43,6 @@
 <%= if @current_user && @current_user.is_admin do %>
 <div><%= button "Add to List", to: Routes.recipe_list_path(@conn, :select_list, @recipe), method: :get, class: "btn-tiny" %></div>
 <div><%= link "Edit", to: Routes.recipe_path(@conn, :edit, @recipe) %></div>
+<div><%= link "Delete", to: Routes.recipe_path(@conn, :delete, @recipe), method: :delete, data: [confirm: "Are you sure?"] %></div>
 <div><%= link "Back", to: Routes.recipe_path(@conn, :index) %></div>
 <% end %>
