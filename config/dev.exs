@@ -68,7 +68,7 @@ config :relaxir, RelaxirWeb.Endpoint,
 config :relaxir, RelaxirWeb.Endpoint,
   live_reload: [
     patterns: [
-      ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
+      ~r"priv/static/assets/.*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
       ~r"lib/relaxir_web/(live|views)/.*(ex)$",
       ~r"lib/relaxir_web/templates/.*(eex)$"

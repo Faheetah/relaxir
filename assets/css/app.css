@@ -19,3 +19,11 @@ input, textarea {
 .alert-danger {
   @apply p-3 mb-4 border border-red-200 rounded text-red-800 bg-red-100;
 }
+
+h2 {
+  @apply text-2xl
+}
+
+p {
+  @apply my-4
+}

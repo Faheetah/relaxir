@@ -42,11 +42,10 @@ defmodule Relaxir.Categories do
       select: r,
       limit: ^limit
 
-    recipes =
-      top_recipes
-      |> Repo.all
-      |> Repo.preload(:user)
-      |> Repo.preload(:categories)
+    top_recipes
+    |> Repo.all
+    |> Repo.preload(:user)
+    |> Repo.preload(:categories)
   end
 
 

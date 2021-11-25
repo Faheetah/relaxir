@@ -1,7 +1,6 @@
 defmodule Relaxir.IngredientImporter do
   import Ecto.Query, warn: false
   alias Relaxir.Repo
-  alias Relaxir.Ingredients
   alias Relaxir.Usda
 
   @structs %{

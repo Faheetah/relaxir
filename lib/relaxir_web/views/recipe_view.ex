@@ -16,13 +16,13 @@ defmodule RelaxirWeb.RecipeView do
     Phoenix.HTML.Form.text_input(form, field, value: format_names_to_text(categories, ", "))
   end
 
-  def ingredients_input(form, field, ingredients, _opts \\ []) do
+  def ingredients_input(form, field, ingredients, opts \\ []) do
     ingredients =
       ingredients
       |> Enum.map(&ingredients_output/1)
       |> Enum.join("\n")
 
-    Phoenix.HTML.Form.textarea(form, field, value: ingredients)
+    Phoenix.HTML.Form.textarea(form, field, Keyword.merge(opts, [value: ingredients]))
   end
 
   def ingredients_output(recipe_ingredient) do

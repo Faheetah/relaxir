@@ -5,49 +5,49 @@
     </div>
   <% end %>
 
-  <div>
+  <div class="my-4">
   <%= label f, :title %>
   <%= text_input f, :title %>
   <%= error_tag f, :title %>
   </div>
 
-  <div>
+  <div class="my-4">
   <%= label f, :image_filename %>
   <%= text_input f, :image_filename %>
   <%= error_tag f, :image_filename %>
   </div>
 
-  <div>
+  <div class="my-4">
   <%= label f, :published %>
   <%= checkbox f, :published %>
   <%= error_tag f, :published %>
   </div>
 
-  <div>
+  <div class="my-4">
   <%= label f, :categories %>
   <h6><i>Comma separated list of categories</i></h6>
   <%= categories_input f, :categories %>
   <%= error_tag f, :categories %>
   </div>
 
-  <div>
-  <p><%= label f, :ingredients %></p>
-  <p>
+  <div class="my-4">
+  <div class="text-xl font-bold my-4"><%= label f, :ingredients %></div>
+  <div class="my-2">
     <i>Ingredients with optional amounts and notes, i.e. "2 cups flour, sifted"</i>
-  </p>
-  <%= ingredients_input f, :ingredients, @ingredients %>
+  </div>
+  <%= ingredients_input f, :ingredients, @ingredients, class: "w-3/4 h-80" %>
   <%= error_tag f, :recipe_ingredients %>
   <%= error_tag f, :ingredients %>
 
   </div>
 
-  <div>
-  <p><%= label f, :directions %></p>
-  <%= textarea f, :directions %>
+  <div class="my-4">
+  <div class="text-xl font-bold my-4"><%= label f, :directions %></div>
+  <%= textarea f, :directions, class: "w-3/4 h-80" %>
   <%= error_tag f, :directions %>
   </div>
 
-  <div>
-    <%= submit "Preview" %>
+  <div class="my-4">
+    <%= submit "Preview", class: "border-blue-400 border rounded bg-blue-100 p-2" %>
   </div>
 <% end %>

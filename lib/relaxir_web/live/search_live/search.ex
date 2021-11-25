@@ -27,7 +27,7 @@ defmodule RelaxirWeb.SearchLive do
 
   @impl Phoenix.LiveView
   def handle_event("search", %{"value" => query} = _, socket) do
-    {count, results} =
+    {_count, _results} =
       if String.length(query) > 2 do
         get_results(socket.assigns.filter, query)
       else

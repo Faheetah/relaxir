@@ -29,13 +29,14 @@ defmodule RelaxirWeb.UploadLive do
   def handle_event("save", _params, socket) do
     consume_uploaded_entries(socket, :picture, fn %{path: path}, _entry ->
       dest = Application.fetch_env!(:relaxir, RelaxirWeb.UploadLive)[:dest]
-      resize(path, dest, "1920", "1440")
-      resize(path, dest, "400", "600")
+      resize(path, dest, "640", "480", "full")
+      resize(path, dest, "400", "400", "thumbnail")
 
       socket.assigns.recipe
       |> String.to_integer()
       |> Relaxir.Recipes.get_recipe!()
-      |> Relaxir.Recipes.update_recipe(%{"image_filename" => Path.basename(path)})
+      |> Relaxir.Recipes.Recipe.changeset(%{"image_filename" => Path.basename(path)})
+      |> Relaxir.Repo.update()
     end)
 
     {
@@ -44,16 +45,16 @@ defmodule RelaxirWeb.UploadLive do
     }
   end
 
-  defp resize(path, dest, width, height) do
+  defp resize(path, dest, width, height, suffix) do
     System.cmd("gm", [
       "convert",
       path,
-      "-resize", "#{width}x#{height}",
-      "-crop", "#{width}x#{height}",
-      "-gravity", "center",
+      "-resize", "#{width}x#{height}^",
+      "-gravity", "Center",
+      "-crop", "#{width}x#{height}+0+0",
       "+profile", "'*'",
       "-compress", "JPEG",
-      Path.join(dest, "#{Path.basename(path)}-#{width}x#{height}.jpg")
+      Path.join(dest, "#{Path.basename(path)}-#{suffix}.jpg")
     ])
   end
 end
