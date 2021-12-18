@@ -46,7 +46,7 @@ defmodule RelaxirWeb.UploadLive do
   end
 
   defp resize(path, dest, width, height, suffix) do
-    System.cmd("gm", [
+    {_, 0} = System.cmd("gm", [
       "convert",
       path,
       "-resize", "#{width}x#{height}^",
@@ -56,5 +56,6 @@ defmodule RelaxirWeb.UploadLive do
       "-compress", "JPEG",
       Path.join(dest, "#{Path.basename(path)}-#{suffix}.jpg")
     ])
+    :ok = File.chmod("#{Path.basename(path)}-#{suffix}.jpg", 0o644)
   end
 end
