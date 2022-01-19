@@ -76,3 +76,17 @@ Load it in with:
 ```
 mix relaxir.import Food ../../food-data/food.csv
 ```
+
+Using sr_legacy_food
+
+```
+mkdir food-data
+cd food-data
+wget https://fdc.nal.usda.gov/fdc-datasets/FoodData_Central_sr_legacy_food_csv_%202019-04-02.zip
+unzip FoodData_Central_sr_legacy_food_csv_%202019-04-02.zip
+wget https://fdc.nal.usda.gov/fdc-datasets/FoodData_Central_Supporting_Data_csv_2021-10-28.zip
+unzip FoodData_Central_Supporting_Data_csv_2021-10-28.zip
+mix relaxir.import Food food-data/food.csv
+mix relaxir.import Nutrient food-data/nutrient.csv
+mix relaxir.import FoodNutrient food-data/food_nutrient.csv
+```
