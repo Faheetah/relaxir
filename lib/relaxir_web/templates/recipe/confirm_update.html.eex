@@ -1,20 +1,23 @@
-<%= render "confirm_comparison.html", recipe_categories: @recipe_categories, recipe_ingredients: @recipe_ingredients, changeset: @changeset %>
-<%= form_for @changeset, Routes.recipe_path(@conn, :update, @recipe), [method: "put", as: :recipe], fn f -> %>
-  <%= hidden_input f, :title, value: @recipe_params["title"] %>
-  <%= hidden_input f, :image_filename, value: @recipe_params["image_filename"] %>
-  <%= hidden_input f, :directions, value: @recipe_params["directions"] %>
-  <%= hidden_input f, :categories, value: @recipe_params["categories"] %>
-  <%= hidden_input f, :ingredients, value: @recipe_params["ingredients"] %>
-  <%= hidden_input f, :published, value: @recipe_params["published"] %>
-  <%= submit "Save", class: "border border-blue-400 bg-blue-100 rounded p-2 inline" %>
-<% end %>
+<div class="container">
+  <%= render "confirm_comparison.html", recipe_categories: @recipe_categories, recipe_ingredients: @recipe_ingredients, changeset: @changeset %>
 
-<%= form_for @changeset, Routes.recipe_path(@conn, :edit, @recipe), [as: :recipe], fn f -> %>
-  <%= hidden_input f, :title, value: @recipe_params["title"] %>
-  <%= hidden_input f, :image_filename, value: @recipe_params["image_filename"] %>
-  <%= hidden_input f, :directions, value: @recipe_params["directions"] %>
-  <%= hidden_input f, :categories, value: @recipe_params["categories"] %>
-  <%= hidden_input f, :ingredients, value: @recipe_params["ingredients"] %>
-  <%= hidden_input f, :published, value: @recipe_params["published"] %>
-  <%= submit "Back", class: "border border-yellow-400 bg-yellow-100 rounded p-2 inline" %>
-<% end %>
+  <%= form_for @changeset, Routes.recipe_path(@conn, :update, @recipe), [method: "put", as: :recipe], fn f -> %>
+    <%= hidden_input f, :title, value: @recipe_params["title"] %>
+    <%= hidden_input f, :image_filename, value: @recipe_params["image_filename"] %>
+    <%= hidden_input f, :directions, value: @recipe_params["directions"] %>
+    <%= hidden_input f, :categories, value: @recipe_params["categories"] %>
+    <%= hidden_input f, :ingredients, value: @recipe_params["ingredients"] %>
+    <%= hidden_input f, :published, value: @recipe_params["published"] %>
+    <%= submit "Save", class: "border border-blue-400 bg-blue-100 rounded p-2 inline" %>
+  <% end %>
+
+  <%= form_for @changeset, Routes.recipe_path(@conn, :edit, @recipe), [as: :recipe], fn f -> %>
+    <%= hidden_input f, :title, value: @recipe_params["title"] %>
+    <%= hidden_input f, :image_filename, value: @recipe_params["image_filename"] %>
+    <%= hidden_input f, :directions, value: @recipe_params["directions"] %>
+    <%= hidden_input f, :categories, value: @recipe_params["categories"] %>
+    <%= hidden_input f, :ingredients, value: @recipe_params["ingredients"] %>
+    <%= hidden_input f, :published, value: @recipe_params["published"] %>
+    <%= submit "Back", class: "border border-yellow-400 bg-yellow-100 rounded p-2 inline" %>
+  <% end %>
+</div>

@@ -1,6 +1,6 @@
 <%# something needs to be up here to balance the page %>
 
-<div class="text-6xl"><%= String.capitalize(@recipe.title) %></div>
+<div class="text-4xl"><%= String.capitalize(@recipe.title) %></div>
 
 <div class="my-2 font-bold inline-block">
   <%= if @recipe.user do %>
@@ -39,7 +39,7 @@
 <div class="my-8 text-lg">
 <%= if @recipe.recipe_ingredients != [] do %>
   <div class="text-3xl font-bold my-4 text-green-600">Ingredients</div>
-  <ul class="list-disc text-blue-400">
+  <ul class="list-disc text-blue-500">
     <%= for recipe_ingredient <- @recipe.recipe_ingredients do %>
     <li>
       <div class="text-black my-2">
@@ -51,9 +51,18 @@
 <% end %>
 </div>
 
+<%= if @recipe.directions do %>
 <div class="my-8 text-lg">
-<div class="text-3xl font-bold my-4 text-green-600">Directions</div>
-<%= render_markdown @recipe.directions %>
+  <div class="text-3xl font-bold my-4 text-green-600">Directions</div>
+  <ul class="list-decimal text-blue-500 font-bold">
+  <%= for md <- @recipe.directions |> String.split("\n", trim: true) |> Enum.reject(&(String.trim(&1) == "")) do %>
+    <li>
+      <div class="text-black my-2 font-normal"><%= md %></div>
+    </li>
+  <% end %>
+  </ul>
+</div>
+<% end %>
 
 <%= if @current_user && @current_user.is_admin do %>
 <div class="border-gray-300 border rounded inline-block my-2 p-2 bg-gray-100"><%= link "Back", to: Routes.recipe_path(@conn, :index) %></div>

@@ -1,4 +1,4 @@
-<div class="text-6xl mb-8"><%= String.capitalize(@category.name) %></div>
+<div class="text-4xl mb-8"><%= String.capitalize(@category.name) %></div>
 
 <%= render(RelaxirWeb.RecipeView, "recipe_list.html", current_user: @current_user, recipes: @recipes, conn: @conn, show: false) %>
 

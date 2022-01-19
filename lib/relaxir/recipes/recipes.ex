@@ -122,6 +122,7 @@ defmodule Relaxir.Recipes do
       end)
     end
 
+    # I have no idea what this was supose to be ... just leave it
     with %{image_filename: nil} do
       dest = Application.fetch_env!(:relaxir, RelaxirWeb.UploadLive)[:dest]
       File.rm(Path.join(dest, "#{recipe.image_filename}-1920x1440.jpg"))

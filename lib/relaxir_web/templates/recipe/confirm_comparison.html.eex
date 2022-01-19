@@ -1,54 +1,50 @@
-<h1>Changes</h1>
-
-<h1><%= String.capitalize(@changeset.changes.title) %></h1>
+<div class="text-4xl">
+  <%= String.capitalize(@changeset.changes.title) %> (changes)
+</div>
 
 <%= if @changeset.changes.published == true do %>
 <p>published</p>
 <% end %>
 
-<%= if @recipe_categories != [] do %>
-<h2>Categories:</h2>
-<%= for recipe_category <- @recipe_categories do %>
-<li>
+<div class="my-4">
+  <%= if @recipe_categories != [] do %>
+  <div class="font-bold text-lg inline">Tags</div>
+  <%= for recipe_category <- @recipe_categories do %>
+    <span class="rounded relative bg-blue-100 mx-1 px-2 py-1 font-bold text-blue-900">
+      <%= recipe_category.changes.category.changes.name %>
+      <%= unless Map.get(recipe_category.changes, :category_id) do %>
+        <span class="absolute -right-2 -top-2 text-green-700 rounded px-1 text-xs bg-green-200">new</span>
+      <% end %>
+    </span>
+  <% end %>
+  <% end %>
+</div>
 
-<%= unless Map.get(recipe_category.changes, :category_id) do %>
-<span style="color: green">
-<% end %>
-
-<%= recipe_category.changes.category.changes.name %>
-
-<%= unless Map.get(recipe_category.changes, :category_id) do %>
-</span>
-<% end %>
-
-</li>
-<% end %>
-<% end %>
-
-
+<div class="my-8 text-lg">
 <%= if @recipe_ingredients != [] do %>
-<h2>Ingredients:</h2>
-<table>
-<tr>
-<th>Amount</th>
-<th>Unit</th>
-<th>Ingredient</th>
-<th>Note</th>
+<div class="text-3xl font-bold my-4 text-green-600">Ingredients</div>
+<table class="border border-collapse border-black my-8">
+<tr class="bg-blue-100">
+<th class="border border-black px-4">Amount</th>
+<th class="border border-black px-4">Unit</th>
+<th class="border border-black px-4">Ingredient</th>
+<th class="border border-black px-4">Note</th>
 </tr>
 <%= for recipe_ingredient <- @recipe_ingredients do %>
-<tr>
-  <th>
+<tr class="odd:bg-blue-100">
+  <th class="border border-gray-400 px-4">
     <%= if Map.get(recipe_ingredient.changes, :amount) do %>
     <%= parse_fraction(recipe_ingredient.changes.amount) %>
     <% end %>
   </th>
-  <th>
+  <th class="border border-gray-400 px-4">
+  <%= inspect recipe_ingredient.changes %>
     <%= if Map.get(recipe_ingredient.changes, :unit) do %>
     <%= recipe_ingredient.changes.unit %>
     <% end %>
   </th>
 
-  <th>
+  <th class="border border-gray-400 px-4">
     <%= unless Map.get(recipe_ingredient.changes, :ingredient_id) do %>
     <%= if Map.get(recipe_ingredient.changes, :suggestion) && recipe_ingredient.changes.suggestion.type == "ingredient" do %>
     <span style="color: orange">
@@ -68,7 +64,7 @@
     <% end %>
   </th>
 
-  <th>
+  <th class="border border-gray-400 px-4">
     <%= if Map.get(recipe_ingredient.changes, :note) do %>
 
     <%= recipe_ingredient.changes.note %>
@@ -87,9 +83,17 @@ ingredient - found ingredient<br/>
 <span style="color: green">ingredient (suggestion)</span> - similar ingredient from USDA database<br/>
 <span style="color: green">ingredient</span> - new ingredient
 </p>
+</div>
 
 <%= if Map.get(@changeset.changes, :directions) do %>
-<h2>Directions:</h2>
-<%= render_markdown @changeset.changes.directions %>
+<div class="my-8 text-lg">
+  <div class="text-3xl font-bold my-4 text-green-600">Directions</div>
+  <ul class="list-decimal text-blue-500 font-bold">
+  <%= for md <- @changeset.changes.directions |> String.split("\n", trim: true) |> Enum.reject(&(String.trim(&1) == "")) do %>
+    <li>
+      <div class="text-black my-2 font-normal"><%= md %></div>
+    </li>
+  <% end %>
+  </ul>
+</div>
 <% end %>
-

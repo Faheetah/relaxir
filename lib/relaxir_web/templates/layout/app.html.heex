@@ -11,8 +11,8 @@
   </head>
 
   <body class="flex flex-col min-h-screen">
-    <header class="container mx-auto">
-      <div class="flex p-2 pb-0 lg:pb-1 place-items-center border-green-600 border-b-4">
+    <header class="mx-full">
+      <div class="flex p-4 place-items-center border-green-600 border-b-4">
         <%# hamburger menu %>
         <div class="flex-none lg:hidden">
           <label data-menu-toggle for="hamburger-toggle" class="cursor-pointer">
@@ -33,11 +33,11 @@
         </div>
 
         <%# regular menu %>
-        <div class="hidden truncate lg:inline-block self-end space-x-4 mx-4 flex-1 justify-items-center">
-          <a class="text-xl hover:border-b border-black" href="/">RECIPES</a>
-          <a class="text-xl hover:border-b border-black" href="/ingredients">BY INGREDIENT</a>
-          <a class="text-xl hover:border-b border-black" href="/categories">BY CATEGORY</a>
-          <a class="text-xl hover:border-b border-black" href="/tools">TOOLS</a>
+        <div class="hidden truncate lg:inline-block text-xl font-bold self-end space-x-8 pl-4 mx-4 flex-1 justify-items-end">
+          <a class="hover:text-blue-500" href="/">RECIPES</a>
+          <a class="hover:text-blue-500" href="/ingredients">BY INGREDIENT</a>
+          <a class="hover:text-blue-500" href="/categories">BY CATEGORY</a>
+          <a class="hover:text-blue-500" href="/tools">TOOLS</a>
         </div>
 
         <%# search bar %>
@@ -68,28 +68,28 @@
             <% end %>
 
             <div class="hidden group-hover:block group-focus:block flex absolute border divide-y divide-gray-600 border-gray-600 border-solid-2 bg-white right-8">
-              <%= link to: Routes.user_settings_path(@conn, :profile), class: "block text-xl justify-between flex bg-white hover:bg-blue-400 hover:text-white py-3 px-6" do %>
+              <%= link to: Routes.user_settings_path(@conn, :profile), class: "block text-xl justify-between flex bg-white hover:bg-blue-500 hover:text-white py-3 px-6" do %>
               profile
               <svg class="h-full w-6 inline right ml-2 self-end" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               <% end %>
 
-              <%= link to: Routes.grocery_list_path(@conn, :index), class: "block text-xl justify-between flex bg-white hover:bg-blue-400 hover:text-white py-3 px-6" do %>
+              <%= link to: Routes.grocery_list_path(@conn, :index), class: "block text-xl justify-between flex bg-white hover:bg-blue-500 hover:text-white py-3 px-6" do %>
               grocery list
               <svg class="h-full w-6 inline right ml-2 self-end" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               <% end %>
 
-              <%= link to: Routes.recipe_list_path(@conn, :index), class: "block text-xl justify-between flex bg-white hover:bg-blue-400 hover:text-white py-3 px-6" do %>
+              <%= link to: Routes.recipe_list_path(@conn, :index), class: "block text-xl justify-between flex bg-white hover:bg-blue-500 hover:text-white py-3 px-6" do %>
               liked recipes
               <svg class="h-full w-6 inline right ml-2 self-end" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               <% end %>
 
-              <%= link to: Routes.user_session_path(@conn, :delete), method: :delete, class: "block text-xl justify-between flex bg-white hover:bg-blue-400 hover:text-white py-3 px-6" do %>
+              <%= link to: Routes.user_session_path(@conn, :delete), method: :delete, class: "block text-xl justify-between flex bg-white hover:bg-blue-500 hover:text-white py-3 px-6" do %>
               logout
               <svg class="h-full w-6 inline right ml-2 self-end" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -137,10 +137,8 @@
       </div>
     </main>
 
-    <footer class="bg-gray-100 border-t p-4">
-      <div class="container mx-auto">
-      Copyright 2021 RelaxAndDine.com
-      </div>
+    <footer>
+      <%# footer will go here, and will pin to bottom from main flex-grow %>
     </footer>
   </body>
 </html>
