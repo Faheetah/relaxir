@@ -2,6 +2,8 @@
   <%= String.capitalize(@usda.description) %>
 </div>
 
+<div class="mb-4 text-l text-gray-600">Type: <%= @usda.data_type %></div>
+
 <div class="max-w-xs border-black border-2 px-2">
   <div class="text-3xl font-black border-b-8 border-black">NUTRITION FACTS</div>
 

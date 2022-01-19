@@ -2,6 +2,7 @@
 
 <%= for food <- @usda do %>
 <h4>
-  <%= link String.capitalize(food.description), to: Routes.ingredient_path(@conn, :show, food) %>
+  <%= link String.capitalize(food.description), to: Routes.usda_path(@conn, :show, food.fdc_id) %>
 </h4>
+<div><%= food.data_type %></div>
 <% end %>
