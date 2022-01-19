@@ -6,6 +6,9 @@ defmodule Relaxir.Ingredients do
   alias Relaxir.Recipes.Recipe
   alias Relaxir.RecipeIngredient
 
+  # these ingredients are too common but insignificant, so we will exclude them
+  @excluded_ingredient_names ["salt", "pepper"]
+
   def list_ingredients do
     Repo.all(order_by(Ingredient, asc: :name))
   end
@@ -20,6 +23,7 @@ defmodule Relaxir.Ingredients do
 
     query =
       from i in Ingredient,
+      where: i.name not in @excluded_ingredient_names,
       join: ri in subquery(recipe_count),
       on: i.id == ri.ingredient_id
 
