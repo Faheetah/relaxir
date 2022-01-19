@@ -56,6 +56,8 @@ defmodule RelaxirWeb.UploadLive do
       "-compress", "JPEG",
       Path.join(dest, "#{Path.basename(path)}-#{suffix}.jpg")
     ])
-    :ok = File.chmod("#{Path.basename(path)}-#{suffix}.jpg", 0o644)
+    :ok =
+      Path.join(dest, "#{Path.basename(path)}-#{suffix}.jpg")
+      |> File.chmod(0o644)
   end
 end
