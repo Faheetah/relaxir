@@ -38,7 +38,6 @@
     <% end %>
   </th>
   <th class="border border-gray-400 px-4">
-  <%= inspect recipe_ingredient.changes %>
     <%= if Map.get(recipe_ingredient.changes, :unit) do %>
     <%= recipe_ingredient.changes.unit %>
     <% end %>
