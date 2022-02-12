@@ -3,7 +3,7 @@ defmodule Relaxir.Repo.Migrations.AddNotesToRecipes do
 
   def change do
     alter table(:recipes) do
-      add(:note, :string)
+      add(:note, :text)
     end
   end
 end
