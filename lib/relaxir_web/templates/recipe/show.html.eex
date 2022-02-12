@@ -44,8 +44,8 @@
 </div>
 
 
-<div class="lg:grid grid-cols-4">
-  <div class="lg:mr-24 my-8 text-lg">
+<div class="lg:grid grid-cols-3">
+  <div class="lg:mr-12 my-8 text-lg">
   <%= if @recipe.recipe_ingredients != [] do %>
     <div class="text-3xl font-bold my-4 text-green-600">Ingredients</div>
     <ul class="list-disc text-xl text-blue-500">
@@ -60,7 +60,7 @@
   <% end %>
   </div>
 
-  <div class="lg:col-span-3 lg:ml-24 my-8 text-lg">
+  <div class="lg:col-span-2 lg:ml-12 my-8 text-lg">
     <%= if @recipe.directions do %>
     <div class="text-3xl font-bold my-4 text-green-600">Directions</div>
     <ul class="list-decimal text-2xl text-blue-500 font-bold">
