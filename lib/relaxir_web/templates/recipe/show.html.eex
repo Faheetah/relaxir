@@ -1,6 +1,6 @@
 <%# something needs to be up here to balance the page %>
 
-<div class="lg:grid grid-cols-2 shadow-lg bg-slate-100 text-gray-800">
+<div class="lg:grid grid-cols-2 lg:shadow-lg lg:bg-slate-100 lg:text-gray-800">
   <div class="col p-8 text-center self-center">
     <div class="text-6xl mb-8"><%= String.capitalize(@recipe.title) %></div>
 
