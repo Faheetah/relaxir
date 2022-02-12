@@ -36,3 +36,5 @@ relaxir.tar.gz
 results.sarif
 
 /food-data/
+
+/assets/node_modules/
