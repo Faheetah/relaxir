@@ -1,5 +1,5 @@
 <div class="text-4xl mb-8">
-  Recipes
+  <div class="p-8 lg:p-0 text-6xl">Recipes</div>
 
   <%= if @current_user && @current_user.is_admin do %>
   <%= if @show == "all" do %>

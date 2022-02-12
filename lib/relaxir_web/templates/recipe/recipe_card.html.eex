@@ -1,4 +1,4 @@
-<div class="border-gray-600 border">
+<div class="bg-slate-100 shadow-lg text-slate-800">
   <%= if @recipe.image_filename do %>
   <%= link to: Routes.recipe_path(@conn, :show, @recipe) do %>
   <%= img_tag "/uploads/#{@recipe.image_filename}-thumbnail.jpg", class: "h-auto w-auto" %>
