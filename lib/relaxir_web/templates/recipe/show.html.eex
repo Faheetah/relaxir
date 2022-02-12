@@ -16,10 +16,10 @@
 
 <div class="my-4">
   <%= if @recipe.categories != [] do %>
-  <div class="font-bold text-lg inline">Tags</div>
+  <div class="font-bold text-lg inline">Tags:</div>
 
   <%= for category <- @recipe.categories do %>
-    <%= link category.name, to: Routes.category_path(@conn, :show, category), class: "rounded bg-blue-100 mx-1 px-2 py-1 font-bold text-blue-900" %>
+    <%= link String.capitalize(category.name), to: Routes.category_path(@conn, :show, category), class: "rounded-full bg-blue-100 mx-1 px-4 py-2 font-medium text-blue-900" %>
   <% end %>
   <% end %>
 </div>
@@ -36,13 +36,15 @@
   <% end %>
 <% end %>
 
-<div class="my-8 text-lg">
+
+<div class="lg:grid grid-cols-4">
+<div class="lg:mr-24 my-8 text-lg">
 <%= if @recipe.recipe_ingredients != [] do %>
   <div class="text-3xl font-bold my-4 text-green-600">Ingredients</div>
-  <ul class="list-disc text-blue-500">
+  <ul class="list-disc text-xl text-blue-500">
     <%= for recipe_ingredient <- @recipe.recipe_ingredients do %>
     <li>
-      <div class="text-black my-2">
+      <div class="text-black text-lg my-2">
       <%= link ingredients_output(recipe_ingredient), to: Routes.ingredient_path(@conn, :show, recipe_ingredient.ingredient)%>
       </div>
     </li>
@@ -51,18 +53,25 @@
 <% end %>
 </div>
 
+<div class="lg:col-span-2 lg:ml-24 my-8 text-lg">
 <%= if @recipe.directions do %>
-<div class="my-8 text-lg">
   <div class="text-3xl font-bold my-4 text-green-600">Directions</div>
-  <ul class="list-decimal text-blue-500 font-bold">
+  <ul class="list-decimal text-2xl text-blue-500 font-bold">
   <%= for md <- @recipe.directions |> String.split("\n", trim: true) |> Enum.reject(&(String.trim(&1) == "")) do %>
     <li>
-      <div class="text-black my-2 font-normal"><%= md %></div>
+      <div class="text-black my-6 text-lg font-normal"><%= md %></div>
     </li>
   <% end %>
   </ul>
+<% end %>
+
+<%= if @recipe.note do %>
+  <div class="text-3xl font-bold my-4 text-green-600">Note</div>
+  <div class="text-black my-6 text-lg font-normal"><%= @recipe.note %></div>
 </div>
 <% end %>
+</div>
+
 
 <%= if @current_user && @current_user.is_admin do %>
 <div class="border-gray-300 border rounded inline-block my-2 p-2 bg-gray-100"><%= link "Back", to: Routes.recipe_path(@conn, :index) %></div>

@@ -6,8 +6,9 @@ defmodule Relaxir.Recipes.Recipe do
   alias Relaxir.RecipeCategory
 
   schema "recipes" do
-    field :directions, :string
     field :title, :string
+    field :directions, :string
+    field :note, :string
     field :published, :boolean
     field :image_filename, :string
     has_many :recipe_ingredients, RecipeIngredient, on_replace: :delete, on_delete: :delete_all
@@ -22,7 +23,7 @@ defmodule Relaxir.Recipes.Recipe do
 
   def changeset(recipe, attrs) do
     recipe
-    |> cast(strip_directions(attrs), [:title, :directions, :published, :user_id, :image_filename])
+    |> cast(strip_directions(attrs), [:title, :directions, :note, :published, :user_id, :image_filename])
     |> cast_assoc(:recipe_categories)
     |> cast_assoc(:recipe_ingredients)
     |> validate_required([:title])

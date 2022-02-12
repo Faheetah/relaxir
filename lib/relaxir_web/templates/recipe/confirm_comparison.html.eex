@@ -96,3 +96,10 @@ ingredient - found ingredient<br/>
   </ul>
 </div>
 <% end %>
+
+<%= if Map.get(@changeset.changes, :note) do %>
+<div class="my-8 text-lg">
+  <div class="text-3xl font-bold my-4 text-green-600">Note</div>
+  <div class="text-black my-2 font-normal"><%= @changeset.changes.note %></div>
+</div>
+<% end %>

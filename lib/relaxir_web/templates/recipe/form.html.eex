@@ -48,6 +48,12 @@
   </div>
 
   <div class="my-4">
+  <div class="text-xl font-bold my-4"><%= label f, :note %></div>
+  <%= textarea f, :note, class: "w-3/4 h-80" %>
+  <%= error_tag f, :note %>
+  </div>
+
+  <div class="my-4">
     <%= submit "Preview", class: "border-blue-400 border rounded bg-blue-100 p-2" %>
   </div>
 <% end %>

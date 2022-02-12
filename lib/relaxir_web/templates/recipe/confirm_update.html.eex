@@ -5,6 +5,7 @@
     <%= hidden_input f, :title, value: @recipe_params["title"] %>
     <%= hidden_input f, :image_filename, value: @recipe_params["image_filename"] %>
     <%= hidden_input f, :directions, value: @recipe_params["directions"] %>
+    <%= hidden_input f, :note, value: @recipe_params["note"] %>
     <%= hidden_input f, :categories, value: @recipe_params["categories"] %>
     <%= hidden_input f, :ingredients, value: @recipe_params["ingredients"] %>
     <%= hidden_input f, :published, value: @recipe_params["published"] %>
@@ -15,6 +16,7 @@
     <%= hidden_input f, :title, value: @recipe_params["title"] %>
     <%= hidden_input f, :image_filename, value: @recipe_params["image_filename"] %>
     <%= hidden_input f, :directions, value: @recipe_params["directions"] %>
+    <%= hidden_input f, :note, value: @recipe_params["note"] %>
     <%= hidden_input f, :categories, value: @recipe_params["categories"] %>
     <%= hidden_input f, :ingredients, value: @recipe_params["ingredients"] %>
     <%= hidden_input f, :published, value: @recipe_params["published"] %>
