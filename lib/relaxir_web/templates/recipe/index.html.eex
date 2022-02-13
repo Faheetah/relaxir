@@ -26,7 +26,7 @@
   <% end %>
 </div>
 
-<div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+<div class="grid grid-cols-1 sm:grid-cols-4 gap-8 p-4">
   <%= for recipe <- @recipes do %>
   <%= render("recipe_card.html", recipe: recipe, conn: @conn) %>
   <% end %>
