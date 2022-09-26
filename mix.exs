@@ -8,7 +8,7 @@ defmodule Relaxir.MixProject do
       url: "https://github.com/Faheetah/relaxir/",
       elixir: "~> 1.12",
       elixirc_paths: elixirc_paths(Mix.env()),
-      compilers: [:phoenix, :gettext] ++ Mix.compilers(),
+      compilers: [:phoenix] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       test_coverage: [tool: ExCoveralls],
@@ -37,33 +37,33 @@ defmodule Relaxir.MixProject do
     [
       # Phoenix related
       {:plug_cowboy, "~> 2.0"},
-      {:phoenix, "~> 1.6.2"},
-      {:phoenix_live_view, "~> 0.17.5"},
-      {:phoenix_html, "~> 3.1.0"},
+      {:phoenix, "~> 1.6.12"},
+      {:phoenix_live_view, "~> 0.18"},
+      {:phoenix_html, "~> 3.2.0"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
-      {:phoenix_live_dashboard, "~> 0.6.1"},
-      {:esbuild, "~> 0.2", runtime: Mix.env() == :dev},
+      {:phoenix_live_dashboard, "~> 0.7"},
+      {:esbuild, "~> 0.5", runtime: Mix.env() == :dev},
       # initial auth generation, now baked into Phoenix
       # {:phx_gen_auth, "~> 0.7.0"},
       # DB related
       {:phoenix_ecto, "~> 4.1"},
-      {:ecto_sql, "~> 3.4"},
+      {:ecto_sql, "~> 3.8"},
       {:postgrex, ">= 0.0.0"},
       # telemetry
       {:telemetry_metrics, "~> 0.6.1"},
       {:telemetry_poller, "~> 1.0"},
       # misc required for app
-      {:bcrypt_elixir, "~> 2.0"},
-      {:gettext, "~> 0.11"},
-      {:jason, "~> 1.0"},
-      {:earmark, "~> 1.4.15"},
-      {:csv, "~> 2.4.1"},
+      {:bcrypt_elixir, "~> 3.0"},
+      {:gettext, "~> 0.20"},
+      {:jason, "~> 1.4"},
+      {:earmark, "~> 1.4.27"},
+      {:csv, "~> 2.5"},
       {:inflex, "~> 2.1.0"},
       {:invert, git: "https://github.com/faheetah/invert", tag: "0.3.0"},
       # test and code quality
       {:mix_test_watch, "~> 1.0", runtime: false, only: :dev},
-      {:credo, "~> 1.5", only: :dev},
-      {:excoveralls, "~> 0.14.2", only: :test},
+      {:credo, "~> 1.6.7", only: :dev},
+      {:excoveralls, "~> 0.14.6", only: :test},
       {:sobelow, "~> 0.8", only: :dev}
     ]
   end
