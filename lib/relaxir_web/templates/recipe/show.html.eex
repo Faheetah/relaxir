@@ -44,7 +44,7 @@
 </div>
 
 
-<div class="lg:grid grid-cols-3 py-8">
+<div class="lg:grid grid-cols-3 mt-4 lg:mt-0 py-8 px-10 lg:px-0">
   <div class="px-4">
   <%= if @recipe.recipe_ingredients != [] do %>
     <div class="text-4xl font-bold mt-4 mb-8 text-black">Ingredients</div>
@@ -62,32 +62,34 @@
   <% end %>
   </div>
 
-  <div class="lg:col-span-2 lg:ml-12 text-lg">
-    <%= if @recipe.directions do %>
-    <div class="text-4xl font-bold mt-4 mb-8 text-black">Directions</div>
-    <ul class="list-decimal text-lg text-amber-600 font-bold">
-    <%= for md <- @recipe.directions |> String.split("\n", trim: true) |> Enum.reject(&(String.trim(&1) == "")) do %>
-      <li>
-        <div class="text-black my-6 text-lg font-normal"><%= md %></div>
-      </li>
-    <% end %>
-    </ul>
-  <% end %>
-
-  <%= if @recipe.note do %>
-    <div class="text-2xl font-bold mt-8 mb-2 text-black">Note</div>
-    <%= for note <- @recipe.note |> String.split("\n", trim: true) |> Enum.reject(&(String.trim(&1) == "")) do %>
-    <ul class="list-disc text-xl text-amber-600">
-      <%= if String.first(note) == "*" do %>
-      <li>
-      <span class="text-black my-6 text-lg font-normal"><%= String.trim_leading(note, "*") |> String.trim_leading() %></span>
-      </li>
-      <% else %>
-      <span class="text-black my-6 text-lg font-normal"><%= note %></span>
+  <div class="lg:col-span-2 mt-12 lg:mt-0 lg:ml-12 text-lg">
+    <div class="px-4">
+      <%= if @recipe.directions do %>
+      <div class="text-4xl font-bold mt-4 mb-8 text-black">Directions</div>
+      <ul class="list-decimal text-lg text-amber-600 font-bold">
+      <%= for md <- @recipe.directions |> String.split("\n", trim: true) |> Enum.reject(&(String.trim(&1) == "")) do %>
+        <li>
+          <div class="text-black my-6 text-lg font-normal"><%= md %></div>
+        </li>
       <% end %>
-    </ul>
+      </ul>
     <% end %>
-  <% end %>
+
+    <%= if @recipe.note do %>
+      <div class="text-2xl font-bold mt-8 mb-2 text-black">Note</div>
+      <%= for note <- @recipe.note |> String.split("\n", trim: true) |> Enum.reject(&(String.trim(&1) == "")) do %>
+      <ul class="list-disc text-xl text-amber-600">
+        <%= if String.first(note) == "*" do %>
+        <li>
+        <span class="text-black my-6 text-lg font-normal"><%= String.trim_leading(note, "*") |> String.trim_leading() %></span>
+        </li>
+        <% else %>
+        <span class="text-black my-6 text-lg font-normal"><%= note %></span>
+        <% end %>
+      </ul>
+      <% end %>
+    <% end %>
+    </div>
   </div>
 </div>
 
