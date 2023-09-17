@@ -28,7 +28,7 @@ defmodule RelaxirWeb.Endpoint do
 
   plug Plug.Static,
     at: "/uploads",
-    from: Application.fetch_env!(:relaxir, RelaxirWeb.UploadLive)[:dest],
+    from: Application.compile_env!(:relaxir, RelaxirWeb.UploadLive)[:dest],
     gzip: true
 
   # Code reloading can be explicitly enabled under the

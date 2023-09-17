@@ -125,12 +125,12 @@
 
     <main class="pt-8 lg:pt-16 flex-grow">
       <div class="mx-auto lg:container lg:w-3/4">
-        <%= if get_flash(@conn, :info) do %>
-        <p class="alert-info"><%= get_flash(@conn, :info) %></p>
+        <%= if Phoenix.Flash.get(@flash, :info) do %>
+        <p class="alert-info"><%= Phoenix.Flash.get(@flash, :info) %></p>
         <% end %>
 
-        <%= if get_flash(@conn, :error) do %>
-        <p class="alert-danger"><%= get_flash(@conn, :error) %></p>
+        <%= if Phoenix.Flash.get(@flash, :error) do %>
+        <p class="alert-danger"><%= Phoenix.Flash.get(@flash, :error) %></p>
         <% end %>
 
         <%= @inner_content %>

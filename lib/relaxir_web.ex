@@ -38,7 +38,7 @@ defmodule RelaxirWeb do
   def live_view do
     quote do
       use Phoenix.LiveView,
-        layout: {RelaxirWeb.LayoutView, "live.html"}
+        layout: {RelaxirWeb.LayoutView, :live}
 
       unquote(view_helpers())
     end

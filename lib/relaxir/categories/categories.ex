@@ -36,7 +36,7 @@ defmodule Relaxir.Categories do
     top_recipes =
       from rc in RecipeCategory,
       where: rc.category_id == ^category.id,
-      join: r in Recipe,
+      join: r in Recipe, on: r.id == rc.recipe_id,
       where: r.id == rc.recipe_id,
       order_by: [desc: r.inserted_at],
       select: r,

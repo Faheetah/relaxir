@@ -40,7 +40,7 @@ defmodule Relaxir.Ingredients do
     top_recipes =
       from ri in RecipeIngredient,
       where: ri.ingredient_id == ^ingredient.id,
-      join: r in Recipe,
+      join: r in Recipe, on: r.id == ri.recipe_id,
       where: r.id == ri.recipe_id,
       order_by: [desc: r.inserted_at],
       select: r,
