@@ -4,7 +4,7 @@ defmodule RelaxirWeb.Router do
   import Plug.Conn
   import Phoenix.Controller
   import Phoenix.LiveView.Router
-  # import Phoenix.LiveDashboard.Router
+  import Phoenix.LiveDashboard.Router
 
   import RelaxirWeb.UserAuth
 
@@ -50,7 +50,7 @@ defmodule RelaxirWeb.Router do
       resources "/ingredients", IngredientController, except: [:show, :index]
       get "/ingredients/:ingredient_id/addToList", IngredientController, :select_list
       resources "/categories", CategoryController, except: [:show, :index]
-      # live_dashboard "/dashboard", metrics: RelaxirWeb.Telemetry
+      live_dashboard "/dashboard", metrics: RelaxirWeb.Telemetry
 
       scope "/", as: :recipe do
         pipe_through [:live_browser]

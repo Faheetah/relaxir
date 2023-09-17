@@ -38,10 +38,10 @@ defmodule Relaxir.MixProject do
       # Phoenix related
       {:plug_cowboy, "~> 2.6"},
       {:phoenix, "~> 1.6.2"},
-      {:phoenix_live_view, "~> 0.18.18"},
+      {:phoenix_live_view, "~> 0.19"},
       {:phoenix_html, "~> 3.3"},
       {:phoenix_live_reload, "~> 1.4", only: :dev},
-      # {:phoenix_live_dashboard, "~> 0.8"},
+      {:phoenix_live_dashboard, "~> 0.8"},
       {:esbuild, "~> 0.7", runtime: Mix.env() == :dev},
       # initial auth generation, now baked into Phoenix
       # {:phx_gen_auth, "~> 0.7.0"},
