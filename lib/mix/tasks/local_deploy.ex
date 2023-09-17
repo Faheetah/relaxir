@@ -18,7 +18,7 @@ defmodule Mix.Tasks.Relaxir.LocalDeploy do
     |> Enum.each(fn command ->
       IO.puts(">> #{command}")
       [command | args] = String.split(command, " ")
-      cmd(command, args, env: [{"MIX_ENV", "prod"}])
+      {_, 0} = cmd(command, args, env: [{"MIX_ENV", "prod"}])
     end)
 
     conn

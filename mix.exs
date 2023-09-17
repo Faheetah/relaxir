@@ -4,7 +4,7 @@ defmodule Relaxir.MixProject do
   def project do
     [
       app: :relaxir,
-      version: "0.8.2",
+      version: "0.8.3",
       url: "https://github.com/Faheetah/relaxir/",
       elixir: "~> 1.12",
       elixirc_paths: elixirc_paths(Mix.env()),
@@ -42,6 +42,7 @@ defmodule Relaxir.MixProject do
       {:phoenix_html, "~> 3.3"},
       {:phoenix_live_reload, "~> 1.4", only: :dev},
       {:phoenix_live_dashboard, "~> 0.8"},
+      {:jason, "~>1.4"},
       {:esbuild, "~> 0.7", runtime: Mix.env() == :dev},
       # initial auth generation, now baked into Phoenix
       # {:phx_gen_auth, "~> 0.7.0"},
