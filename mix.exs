@@ -36,26 +36,25 @@ defmodule Relaxir.MixProject do
   defp deps do
     [
       # Phoenix related
-      {:plug_cowboy, "~> 2.0"},
+      {:plug_cowboy, "~> 2.6"},
       {:phoenix, "~> 1.6.2"},
       {:phoenix_live_view, "~> 0.17.5"},
       {:phoenix_html, "~> 3.1.0"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:phoenix_live_dashboard, "~> 0.6.1"},
-      {:esbuild, "~> 0.2", runtime: Mix.env() == :dev},
+      {:esbuild, "~> 0.7", runtime: Mix.env() == :dev},
       # initial auth generation, now baked into Phoenix
       # {:phx_gen_auth, "~> 0.7.0"},
       # DB related
       {:phoenix_ecto, "~> 4.1"},
-      {:ecto_sql, "~> 3.4"},
-      {:postgrex, ">= 0.0.0"},
+      {:ecto_sql, "~> 3.10"},
+      {:postgrex, "~> 0.17"},
       # telemetry
       {:telemetry_metrics, "~> 0.6.1"},
       {:telemetry_poller, "~> 1.0"},
       # misc required for app
       {:bcrypt_elixir, "~> 3.1"},
       {:gettext, "~> 0.11"},
-      {:jason, "~> 1.0"},
       {:earmark, "~> 1.4"},
       {:csv, "~> 3.0.5"},
       {:inflex, "~> 2.1.0"},
@@ -63,8 +62,8 @@ defmodule Relaxir.MixProject do
       # test and code quality
       {:mix_test_watch, "~> 1.0", runtime: false, only: :dev},
       {:credo, "~> 1.7", only: :dev},
-      {:excoveralls, "~> 0.14.2", only: :test},
-      {:sobelow, "~> 0.8", only: :dev}
+      {:excoveralls, "~> 0.17", only: :test},
+      {:sobelow, "~> 0.13", only: :dev}
     ]
   end
 
