@@ -12,7 +12,7 @@
 
   <body class="flex flex-col min-h-screen">
     <header class="mx-full">
-      <div class="flex p-4 place-items-center border-green-600 border-b-4">
+      <div class="flex p-4 pb-1 place-items-center border-gray-700 border-b-4">
         <%# hamburger menu %>
         <div class="flex-none lg:hidden">
           <label data-menu-toggle for="hamburger-toggle" class="cursor-pointer">
@@ -28,16 +28,16 @@
         <%# header %>
         <div class="peer-checked:hidden lg:peer-checked:block flex-auto h-full lg:flex-none text-4xl text-center lg:text-5xl font-black tracking-tighter">
           <a href="/">
-          <span class="text-green-600">Relax</span><span class="text-gray-500 text-4xl font-bold">+</span><span class="text-green-600">Dine</span>
+          <span class="text-amber-600">Relax</span><span class="text-amber-500 text-4xl font-bold">+</span><span class="text-amber-600">Dine</span>
           </a>
         </div>
 
         <%# regular menu %>
         <div class="hidden truncate lg:inline-block text-xl font-bold self-end space-x-8 pl-4 mx-4 flex-1 justify-items-end">
-          <a class="hover:text-blue-500" href="/">RECIPES</a>
-          <a class="hover:text-blue-500" href="/ingredients">BY INGREDIENT</a>
-          <a class="hover:text-blue-500" href="/categories">BY CATEGORY</a>
-          <a class="hover:text-blue-500" href="/tools">TOOLS</a>
+          <a class="text-gray-700 hover:text-amber-600" href="/">RECIPES</a>
+          <a class="text-gray-700 hover:text-amber-600" href="/ingredients">BY INGREDIENT</a>
+          <a class="text-gray-700 hover:text-amber-600" href="/categories">BY CATEGORY</a>
+          <a class="text-gray-700 hover:text-amber-600" href="/tools">TOOLS</a>
         </div>
 
         <%# search bar %>
