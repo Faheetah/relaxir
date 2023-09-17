@@ -37,7 +37,7 @@ defmodule Relaxir.MixProject do
     [
       # Phoenix related
       {:plug_cowboy, "~> 2.6"},
-      {:phoenix, "~> 1.6.2"},
+      {:phoenix, "~> 1.7"},
       {:phoenix_live_view, "~> 0.19"},
       {:phoenix_html, "~> 3.3"},
       {:phoenix_live_reload, "~> 1.4", only: :dev},
