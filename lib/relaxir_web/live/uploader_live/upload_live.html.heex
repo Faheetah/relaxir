@@ -19,13 +19,13 @@
     <%# a regular click event whose handler will invoke Phoenix.LiveView.cancel_upload/3 %>
     <button phx-click="cancel-upload" phx-value-ref={entry.ref} aria-label="cancel">&times;</button>
 
-    <%# Phoenix.LiveView.Helpers.upload_errors/2 returns a list of error atoms %>
+    <%# Phoenix.Component.upload_errors/2 returns a list of error atoms %>
     <%= for err <- upload_errors(@uploads.picture, entry) do %>
       <p class="alert alert-danger"><%= inspect(err) %></p>
     <% end %>
 
     <figure>
-      <%# Phoenix.LiveView.Helpers.live_img_preview/2 renders a client-side preview %>
+      <%# Phoenix.Component.live_img_preview/2 renders a client-side preview %>
       <%= live_img_preview entry %>
       <figcaption><%= entry.client_name %></figcaption>
     </figure>

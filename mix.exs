@@ -38,15 +38,15 @@ defmodule Relaxir.MixProject do
       # Phoenix related
       {:plug_cowboy, "~> 2.6"},
       {:phoenix, "~> 1.6.2"},
-      {:phoenix_live_view, "~> 0.17.5"},
-      {:phoenix_html, "~> 3.1.0"},
-      {:phoenix_live_reload, "~> 1.2", only: :dev},
-      {:phoenix_live_dashboard, "~> 0.6.1"},
+      {:phoenix_live_view, "~> 0.18.18"},
+      {:phoenix_html, "~> 3.3"},
+      {:phoenix_live_reload, "~> 1.4", only: :dev},
+      # {:phoenix_live_dashboard, "~> 0.8"},
       {:esbuild, "~> 0.7", runtime: Mix.env() == :dev},
       # initial auth generation, now baked into Phoenix
       # {:phx_gen_auth, "~> 0.7.0"},
       # DB related
-      {:phoenix_ecto, "~> 4.1"},
+      {:phoenix_ecto, "~> 4.4"},
       {:ecto_sql, "~> 3.10"},
       {:postgrex, "~> 0.17"},
       # telemetry
@@ -60,7 +60,7 @@ defmodule Relaxir.MixProject do
       {:inflex, "~> 2.1.0"},
       {:invert, git: "https://github.com/faheetah/invert", tag: "0.3.0"},
       # test and code quality
-      {:mix_test_watch, "~> 1.0", runtime: false, only: :dev},
+      {:mix_test_watch, "~> 1.1", runtime: false, only: :dev},
       {:credo, "~> 1.7", only: :dev},
       {:excoveralls, "~> 0.17", only: :test},
       {:sobelow, "~> 0.13", only: :dev}

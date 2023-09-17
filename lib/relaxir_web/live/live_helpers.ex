@@ -1,5 +1,5 @@
 defmodule RelaxirWeb.LiveHelpers do
-  import Phoenix.LiveView.Helpers
+  use Phoenix.Component
 
   @doc """
   Renders a component inside the `RelaxirWeb.ModalComponent` component.
