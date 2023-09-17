@@ -44,7 +44,7 @@
 </div>
 
 
-<div class="lg:grid grid-cols-3 mt-4 lg:mt-0 py-8 px-10 lg:px-0">
+<div class="lg:grid grid-cols-3 mt-4 lg:mt-0 py-8 px-4 lg:px-0">
   <div class="px-4">
   <%= if @recipe.recipe_ingredients != [] do %>
     <div class="text-4xl font-bold mt-4 mb-8 text-black">Ingredients</div>
