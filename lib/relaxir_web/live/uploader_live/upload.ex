@@ -29,8 +29,8 @@ defmodule RelaxirWeb.UploadLive do
   def handle_event("save", _params, socket) do
     consume_uploaded_entries(socket, :picture, fn %{path: path}, _entry ->
       dest = Application.fetch_env!(:relaxir, RelaxirWeb.UploadLive)[:dest]
-      resize(path, dest, "640", "480", "full")
-      resize(path, dest, "400", "400", "thumbnail")
+      :ok = resize(path, dest, "640", "480", "full")
+      :ok = resize(path, dest, "400", "400", "thumbnail")
 
       socket.assigns.recipe
       |> String.to_integer()

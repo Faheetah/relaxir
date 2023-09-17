@@ -4,7 +4,7 @@ defmodule Relaxir.MixProject do
   def project do
     [
       app: :relaxir,
-      version: "0.8.1",
+      version: "0.8.2",
       url: "https://github.com/Faheetah/relaxir/",
       elixir: "~> 1.12",
       elixirc_paths: elixirc_paths(Mix.env()),
@@ -53,16 +53,16 @@ defmodule Relaxir.MixProject do
       {:telemetry_metrics, "~> 0.6.1"},
       {:telemetry_poller, "~> 1.0"},
       # misc required for app
-      {:bcrypt_elixir, "~> 2.0"},
+      {:bcrypt_elixir, "~> 3.1"},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
-      {:earmark, "~> 1.4.15"},
-      {:csv, "~> 2.4.1"},
+      {:earmark, "~> 1.4"},
+      {:csv, "~> 3.0.5"},
       {:inflex, "~> 2.1.0"},
       {:invert, git: "https://github.com/faheetah/invert", tag: "0.3.0"},
       # test and code quality
       {:mix_test_watch, "~> 1.0", runtime: false, only: :dev},
-      {:credo, "~> 1.5", only: :dev},
+      {:credo, "~> 1.7", only: :dev},
       {:excoveralls, "~> 0.14.2", only: :test},
       {:sobelow, "~> 0.8", only: :dev}
     ]

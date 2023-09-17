@@ -26,8 +26,8 @@ defmodule Relaxir.IngredientImporter do
           Map.put(data, "rank", i)
         end
     end)
-    # |> Stream.filter(fn food -> food["data_type"] == nil || food["data_type"] == "foundation_food" || food["data_type"] == "survey_fndds_food" end)
-    |> Stream.filter(fn food -> food["data_type"] == nil || food["data_type"] == "sr_legacy_food" end)
+    |> Stream.filter(fn food -> food["data_type"] == nil || food["data_type"] == "foundation_food" || food["data_type"] == "survey_fndds_food" end)
+    # |> Stream.filter(fn food -> food["data_type"] == nil || food["data_type"] == "sr_legacy_food" end)
     |> Stream.map(&module.changeset(struct(module, %{}), &1))
     |> Stream.filter(fn entry -> entry.valid? == true end)
     |> Stream.map(&Ecto.Changeset.apply_changes/1)

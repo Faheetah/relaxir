@@ -18,7 +18,6 @@ mix phx.digest
 ```
 mix ecto.reset
 mix relaxir.add_user email=test@test username=test password=test admin=true
-mix relaxir.seed_db
 iex -S mix phx.server
 ```
 
@@ -26,7 +25,6 @@ Or inside of phx.server
 
 ```
 Mix.Tasks.Relaxir.AddUser.run(["email=test@test", "username=test", "password=test", "admin=true"])
-Mix.Tasks.Relaxir.SeedDb.run([])
 ```
 
 # Tests
@@ -69,7 +67,9 @@ mix relaxir.local_deploy relaxanddine.com
 
 # USDA Data
 
-Can be found at https://fdc.nal.usda.gov/portal-data/external/dataDictionary
+**DEPRECATED: USDA nutrition is an absolute mess and has not been working correctly. The nutrition of base foods does not generally change over time as well. USDA functionality is going to be moved to browse only and eventually removed altogether. This information is going to be individually compiled for ingredients and updated. For now, nutrition is going to be phased out of the site.**
+
+Can be found at https://fdc.nal.usda.gov/download-datasets.html
 
 Load it in with:
 
