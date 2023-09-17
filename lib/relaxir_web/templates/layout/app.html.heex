@@ -11,12 +11,12 @@
   </head>
 
   <body class="flex flex-col min-h-screen">
-    <header class="mx-full">
-      <div class="flex p-4 pb-1 place-items-center border-gray-700 border-b-4">
+    <header>
+      <div class="flex mt-4 px-4 lg:px-8 place-items-center">
         <%# hamburger menu %>
         <div class="flex-none lg:hidden">
           <label data-menu-toggle for="hamburger-toggle" class="cursor-pointer">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 10c-2,-7,18,-7,16,0M4 10h16M4 14h16M4 18h16" />
             </svg>
           </label>
@@ -33,11 +33,11 @@
         </div>
 
         <%# regular menu %>
-        <div class="hidden truncate lg:inline-block text-xl font-bold self-end space-x-8 pl-4 mx-4 flex-1 justify-items-end">
-          <a class="text-gray-700 hover:text-amber-600" href="/">RECIPES</a>
-          <a class="text-gray-700 hover:text-amber-600" href="/ingredients">BY INGREDIENT</a>
-          <a class="text-gray-700 hover:text-amber-600" href="/categories">BY CATEGORY</a>
-          <a class="text-gray-700 hover:text-amber-600" href="/tools">TOOLS</a>
+        <div class="hidden lg:inline-block text-xl self-end space-x-8 pl-8 mx-4 flex-1 justify-items-end">
+          <a class="text-gray-700 border-b-2 border-transparent hover:border-amber-600" href="/">RECIPES</a>
+          <a class="text-gray-700 border-b-2 border-transparent hover:border-amber-600" href="/ingredients">BY INGREDIENT</a>
+          <a class="text-gray-700 border-b-2 border-transparent hover:border-amber-600" href="/categories">BY CATEGORY</a>
+          <a class="text-gray-700 border-b-2 border-transparent hover:border-amber-600" href="/tools">TOOLS</a>
         </div>
 
         <%# search bar %>
@@ -123,7 +123,7 @@
       </div>
     </header>
 
-    <main class="lg:mt-12 flex-grow">
+    <main class="pt-8 lg:pt-16 flex-grow">
       <div class="mx-auto lg:container lg:w-3/4">
         <%= if get_flash(@conn, :info) do %>
         <p class="alert-info"><%= get_flash(@conn, :info) %></p>
