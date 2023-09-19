@@ -31,6 +31,7 @@ npm-debug.log
 /priv/static/assets
 /priv/static/uploads
 /priv/static/cache_manifest.json
+/priv/static/favicon-*
 /backups/
 
 relaxir.tar.gz

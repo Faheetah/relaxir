@@ -57,7 +57,6 @@ defmodule RelaxirWeb.SearchLive do
       end
 
     socket
-    |> assign(:page_title, "R+D | Search")
     |> assign(:count, count)
     |> assign(:results, results)
     |> assign(:query, params["q"])
