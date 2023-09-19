@@ -1,5 +1,5 @@
 <form id="upload-form" phx-submit="save" phx-change="validate">
-  <%= live_file_input @uploads.picture %>
+  <.live_file_input upload={@uploads.picture} />
 
 
   <button class="border border-gray-400 bg-gray-200 p-1" type="submit">Upload</button>
@@ -26,7 +26,7 @@
 
     <figure>
       <%# Phoenix.Component.live_img_preview/2 renders a client-side preview %>
-      <%= live_img_preview entry %>
+      <.live_img_preview entry={entry} />
       <figcaption><%= entry.client_name %></figcaption>
     </figure>
   </article>

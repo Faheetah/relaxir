@@ -34,7 +34,7 @@
     <% else %>
       <%= if @current_user && @current_user.is_admin do %>
       <div class="mt-8">
-        <%= link "Upload an image", to: Routes.recipe_upload_path(@conn, :new, @recipe.id), class: "border-black border rounded p-2 text-black bg-black text-xl py-2 inline-block" %>
+        <%= link "Upload an image", to: Routes.recipe_upload_path(@conn, :new, @recipe.id), class: "border-black border rounded p-2 text-black bg-amber-200 text-xl py-2 inline-block" %>
       </div>
       <% end %>
     <% end %>
