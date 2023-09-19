@@ -46,16 +46,16 @@
 
 
 <div class="lg:grid grid-cols-3 mt-4 lg:mt-0 py-8 px-4 lg:px-0">
-  <div class="px-4">
-  <%= if @recipe.recipe_ingredients != [] do %>
+  <div class="px-4 lg:px-0">
+    <%= if @recipe.recipe_ingredients != [] do %>
     <div class="text-4xl mt-4 mb-8 text-black">Ingredients</div>
-    <div class="lg:mr-12 text-lg">
-      <ul class="list-disc text-sm text-amber-600">
+    <div class="lg:mr-16 text-lg">
+      <ul class="space-y-4 list-[square] lg:list-inside text-sm text-amber-600">
         <%= for recipe_ingredient <- @recipe.recipe_ingredients do %>
         <li>
-          <div class="text-black text-lg my-4 hover:underline decoration-2 decoration-amber-600 underline-offset-4">
+          <span class="text-black text-lg my-4 hover:underline decoration-2 decoration-amber-600 underline-offset-4">
           <%= link ingredients_output(recipe_ingredient), to: Routes.ingredient_path(@conn, :show, recipe_ingredient.ingredient)%>
-          </div>
+          </span>
         </li>
         <% end %>
       </ul>
@@ -63,14 +63,14 @@
   <% end %>
   </div>
 
-  <div class="lg:col-span-2 mt-12 lg:mt-0 lg:ml-12 text-lg">
-    <div class="px-4">
+  <div class="lg:col-span-2 mt-12 lg:mt-0 lg:ml-12 lg:w-3/4 text-lg">
+    <div class="px-4 lg:px-0">
       <%= if @recipe.directions do %>
       <div class="text-3xl mt-4 mb-8 text-black">Directions</div>
-      <ul class="list-decimal text-lg text-amber-600 font-bold">
+      <ul class="space-y-4 list-decimal lg:list-inside text-lg text-amber-600 font-bold">
       <%= for md <- @recipe.directions |> String.split("\n", trim: true) |> Enum.reject(&(String.trim(&1) == "")) do %>
         <li>
-          <div class="text-black my-6 text-lg font-normal"><%= md %></div>
+          <span class="text-black my-6 text-lg font-normal"><%= md %></span>
         </li>
       <% end %>
       </ul>
