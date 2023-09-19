@@ -12,8 +12,8 @@
   </head>
 
   <body class="flex flex-col min-h-screen">
-    <header class="print:hidden">
-      <div class="flex mt-2 lg:mt-4 px-4 lg:px-8 place-items-center">
+    <header class="print:hidden shadow-md shadow-neutra-100 py-4">
+      <div class="flex px-4 lg:px-8 place-items-center">
         <%# hamburger menu %>
         <div class="flex-none self-end lg:hidden h-full">
           <label data-menu-toggle for="hamburger-toggle" class="cursor-pointer">
@@ -33,8 +33,8 @@
         <%# regular menu %>
         <div class="hidden lg:inline-block text-xl self-end space-x-8 pl-8 mx-4 flex-1 justify-items-end">
           <a class="text-gray-700 hover:underline underline-offset-4 decoration-2 decoration-amber-600" href="/">RECIPES</a>
-          <a class="text-gray-700 hover:underline underline-offset-4 decoration-2 decoration-amber-600" href="/ingredients">BY INGREDIENT</a>
-          <a class="text-gray-700 hover:underline underline-offset-4 decoration-2 decoration-amber-600" href="/categories">BY CATEGORY</a>
+          <a class="text-gray-700 hover:underline underline-offset-4 decoration-2 decoration-amber-600" href="/ingredients">INGREDIENTS</a>
+          <a class="text-gray-700 hover:underline underline-offset-4 decoration-2 decoration-amber-600" href="/categories">CATEGORIES</a>
           <a class="text-gray-700 hover:underline underline-offset-4 decoration-2 decoration-amber-600" href="/tools">TOOLS</a>
         </div>
 
@@ -139,6 +139,16 @@
         <div />
       </div>
     </header>
+
+    <div class="flex pl-4 space-x-2 bg-amber-100 text-amber-900 text-sm font-bold decoration-amber-600 underline-offset-2">
+    <a href="#" class="py-3 px-4 hover:underline">APPETIZERS</a>
+    <a href="#" class="py-3 px-4 hover:underline">BREAKFAST+LUNCH</a>
+    <a href="#" class="py-3 px-4 hover:underline">MAINS</a>
+    <a href="#" class="py-3 px-4 hover:underline">SIDES</a>
+    <a href="#" class="py-3 px-4 hover:underline">CONDIMENTS</a>
+    <a href="#" class="py-3 px-4 hover:underline">DRINKS</a>
+    <a href="#" class="py-3 px-4 hover:underline">BAKING</a>
+    </div>
 
     <main class="pt-4 lg:pt-12 flex-grow">
       <div class="mx-auto lg:container lg:w-3/4">

@@ -6,6 +6,7 @@ module.exports = {
       colors: {
         amber: {
           50: "#fffaf0",
+          100: "#f7f2ee",
         },
         green: {
           100: "#EEFFEE",
