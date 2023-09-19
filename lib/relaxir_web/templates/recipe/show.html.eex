@@ -1,6 +1,6 @@
 <%# something needs to be up here to balance the page %>
 
-<div class="lg:grid grid-cols-2 shadow-lg lg:bg-neutral-50 lg:text-black">
+<div class="lg:grid grid-cols-2 lg:shadow-lg lg:bg-neutral-50 lg:text-black">
   <div class="col p-8 text-center self-center">
     <div class="text-6xl mb-8"><%= String.capitalize(@recipe.title) %></div>
 
@@ -26,10 +26,11 @@
       <% end %>
     </div>
   </div>
-  <div class="col">
+
+  <div class="col print:hidden">
     <%= if @recipe.image_filename do %>
     <div>
-      <%= img_tag "/uploads/#{@recipe.image_filename}-full.jpg" %>
+      <%= img_tag "/uploads/#{@recipe.image_filename}-full.jpg", class: "w-full -max" %>
     </div>
     <% else %>
       <%= if @current_user && @current_user.is_admin do %>
