@@ -13,20 +13,8 @@
   <body class="flex flex-col min-h-screen">
     <header>
       <div class="flex mt-4 px-4 lg:px-8 place-items-center">
-        <%# hamburger menu %>
-        <div class="flex-none lg:hidden">
-          <label data-menu-toggle for="hamburger-toggle" class="cursor-pointer">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 10c-2,-7,18,-7,16,0M4 10h16M4 14h16M4 18h16" />
-            </svg>
-          </label>
-        </div>
-
-        <%# search toggle %>
-        <input class="hidden peer" id="search-toggle" type="checkbox" />
-
-        <%# header %>
-        <div class="peer-checked:hidden lg:peer-checked:block flex-auto h-full lg:flex-none text-4xl text-center lg:text-5xl font-black tracking-tighter">
+        <%# logo %>
+        <div class="flex-auto h-full lg:flex-none text-5xl text-center font-black tracking-tighter">
           <a href="/">
           <span class="text-amber-600">Relax</span><span class="text-amber-500 text-4xl font-bold">+</span><span class="text-amber-600">Dine</span>
           </a>
@@ -40,6 +28,11 @@
           <a class="text-gray-700 hover:underline underline-offset-4 decoration-2 decoration-amber-600" href="/tools">TOOLS</a>
         </div>
 
+        <%# search toggle %>
+        <%!--
+        <input class="hidden peer" id="search-toggle" type="checkbox" />
+        --%>
+
         <%# search bar %>
         <!--
         <div class="hidden peer-checked:inline-block xl:inline-block mx-4 flex-auto self-end h-auto w-auto">
@@ -48,7 +41,7 @@
         -->
 
         <%# search icon %>
-        <div class="flex-none mr-4 -ml-2 ">
+        <div class="flex-none mr-4 -ml-2 hidden lg:inline">
           <label class="cursor-pointer" data-menu-toggle for="search-toggle">
             <a href="/search">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -58,8 +51,9 @@
           </label>
         </div>
 
+
         <%# login/logout %>
-        <div class="flex-none group">
+        <div class="flex-none group hidden lg:inline">
           <%= if @current_user do %>
             <%= link to: "#" do %>
             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -100,7 +94,6 @@
               <% end %>
             </div>
           <% else %>
-
             <%= link to: Routes.user_session_path(@conn, :new) do %>
             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
@@ -108,25 +101,56 @@
             <% end %>
           <% end %>
         </div>
+
+        <%# hamburger menu %>
+        <div class="flex-none lg:hidden">
+          <label data-menu-toggle for="hamburger-toggle" class="cursor-pointer">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-11 w-11 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 14c-2,-7,18,-7,16,0M4 14h16M4 18h16M4 22h16" />
+            </svg>
+          </label>
+        </div>
       </div>
 
       <%# hamburger expand %>
       <input class="hidden peer" id="hamburger-toggle" type="checkbox" />
-      <div class="peer-checked:block divide-y w-full h-full fixed bg-white text-2xl hidden px-2">
-          <%= for item <- ~w[recipes ingredients categories tools] do %>
-          <a class="flex my-2 py-4" href={"/#{item}"}>
-            <div class="flex-auto"><%= String.upcase(item) %></div>
-            <div class="flex-none">
-            <svg class="h-full w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            </div>
-          </a>
+      <div class="peer-checked:block pt-4 divide-y-2 divide-gray-600 w-full h-full fixed bg-white text-3xl hidden">
+        <div />
+        <%= for item <- ~w[recipes ingredients categories tools search profile] do %>
+        <a class="flex p-4 hover:bg-amber-500" href={"/#{item}"}>
+          <div class="flex-auto"><%= String.upcase(item) %></div>
+          <div class="flex-none">
+          <svg class="h-full w-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          </div>
+        </a>
+        <% end %>
+
+        <%= if @current_user do %>
+          <%= link to: Routes.user_session_path(@conn, :delete), method: :delete, class: "flex p-4 hover:bg-amber-500" do %>
+          <div class="flex-auto">LOGOUT</div>
+          <div class="flex-none">
+          <svg class="h-full w-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          </div>
           <% end %>
+        <% else %>
+          <%= link to: Routes.user_session_path(@conn, :new), class: "flex p-4 hover:bg-amber-500" do %>
+          <div class="flex-auto">LOGIN</div>
+          <div class="flex-none">
+          <svg class="h-full w-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          </div>
+          <% end %>
+        <% end %>
+        <div />
       </div>
     </header>
 
-    <main class="pt-8 lg:pt-16 flex-grow">
+    <main class="pt-4 lg:pt-12 flex-grow">
       <div class="mx-auto lg:container lg:w-3/4">
         <%= if Phoenix.Flash.get(@flash, :info) do %>
         <p class="alert-info"><%= Phoenix.Flash.get(@flash, :info) %></p>
