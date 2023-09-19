@@ -5,8 +5,11 @@ module.exports = {
     extend: {
       colors: {
         amber: {
-          50: "#fffaf0",
-          100: "#f7f2ee",
+          100: "#f9f2eb",
+          200: "#f9d8b8",
+          500: "#ffab66",
+          600: "#e66700",
+          900: "#803900",
         },
         green: {
           100: "#EEFFEE",
