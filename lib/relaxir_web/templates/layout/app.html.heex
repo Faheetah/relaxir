@@ -60,15 +60,15 @@
             <% end %>
 
             <div class="hidden group-hover:block group-focus:block flex absolute border divide-y divide-gray-600 border-gray-600 border-solid-2 bg-white right-8">
-              <%= link to: Routes.user_settings_path(@conn, :profile), class: "block text-xl justify-between flex bg-white hover:bg-blue-500 hover:text-white py-3 px-6" do %>
-              profile
+              <%= link to: Routes.user_settings_path(@conn, :profile), class: "block text-xl justify-between flex bg-white hover:bg-amber-500 py-3 px-6" do %>
+              PROFILE
               <svg class="h-full w-6 inline right ml-2 self-end" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               <% end %>
 
-              <%= link to: Routes.grocery_list_path(@conn, :index), class: "block text-xl justify-between flex bg-white hover:bg-blue-500 hover:text-white py-3 px-6" do %>
-              grocery list
+              <%= link to: Routes.grocery_list_path(@conn, :index), class: "block text-xl justify-between flex bg-white hover:bg-amber-500 py-3 px-6" do %>
+              GROCERY LIST
               <svg class="h-full w-6 inline right ml-2 self-end" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
@@ -76,16 +76,16 @@
 
               <%# to reimplement as favorites %>
               <div class='hidden'>
-              <%= link to: "/favorites", class: "block text-xl justify-between flex bg-white hover:bg-blue-500 hover:text-white py-3 px-6" do %>
-              liked recipes
+              <%= link to: "/favorites", class: "block text-xl justify-between flex bg-white hover:bg-amber-500 py-3 px-6" do %>
+              LIKED RECIPES
               <svg class="h-full w-6 inline right ml-2 self-end" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               <% end %>
               </div>
 
-              <%= link to: Routes.user_session_path(@conn, :delete), method: :delete, class: "block text-xl justify-between flex bg-white hover:bg-blue-500 hover:text-white py-3 px-6" do %>
-              logout
+              <%= link to: Routes.user_session_path(@conn, :delete), method: :delete, class: "block text-xl justify-between flex bg-white hover:bg-amber-500 py-3 px-6" do %>
+              LOGOUT
               <svg class="h-full w-6 inline right ml-2 self-end" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
