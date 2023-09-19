@@ -7,8 +7,8 @@ defmodule Relaxir.IngredientGroceryList do
     belongs_to :grocery_list, Relaxir.GroceryLists.GroceryList
   end
 
-  def changeset(recipe_list, attrs) do
-    recipe_list
+  def changeset(grocery_list, attrs) do
+    grocery_list
     |> cast(attrs, [:ingredient_id, :grocery_list_id])
     |> cast_assoc(:ingredient)
     |> cast_assoc(:grocery_list)
