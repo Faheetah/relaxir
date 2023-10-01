@@ -69,7 +69,8 @@ defmodule RelaxirWeb.Router do
     get "/ingredients/all", IngredientController, :all
     resources "/ingredients", IngredientController, only: [:show, :index]
     get "/categories/all", CategoryController, :all
-    resources "/categories", CategoryController, only: [:show, :index]
+    resources "/categories", CategoryController, only: [:index]
+    get "/categories/:name", CategoryController, :show
   end
 
   ## Authentication routes

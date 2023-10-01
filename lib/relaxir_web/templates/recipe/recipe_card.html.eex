@@ -22,7 +22,7 @@
 
   <div>
   <%= for category <- @recipe.categories do %>
-  <%= link category.name, to: Routes.category_path(@conn, :show, category.id) %><span class="last:hidden"> /</span>
+  <%= link category.name, to: Routes.category_path(@conn, :show, category.name) %><span class="last:hidden"> /</span>
   <% end %>
   </div>
   </div>

@@ -15,7 +15,7 @@ Categories
   <%= for {category, recipes} <- @top_categories do %>
   <div class="py-8">
   <div class="text-4xl mb-4 font-bold text-red-500">
-    <%= link String.capitalize(category.name), to: Routes.category_path(@conn, :show, category.id) %>
+    <%= link String.capitalize(category.name), to: Routes.category_path(@conn, :show, category.name) %>
   </div>
 
   <%= render(RelaxirWeb.RecipeView, "recipe_list.html", current_user: @current_user, recipes: recipes, conn: @conn, show: false) %>
