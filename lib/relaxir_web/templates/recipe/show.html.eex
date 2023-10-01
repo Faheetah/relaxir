@@ -1,6 +1,4 @@
-<%# something needs to be up here to balance the page %>
-
-<div class="lg:grid grid-cols-2 lg:shadow-lg lg:bg-neutral-50 lg:text-black">
+<div class="mt-4 lg:grid grid-cols-2 lg:shadow-lg lg:bg-neutral-50 lg:text-black lg:w-5/6 mx-auto">
   <div class="col p-8 text-center self-center">
     <div class="text-6xl mb-8"><%= String.capitalize(@recipe.title) %></div>
 
@@ -21,7 +19,7 @@
       <div class="font-bold text-lg inline">Tags:</div>
 
       <%= for category <- @recipe.categories do %>
-        <%= link String.capitalize(category.name), to: Routes.category_path(@conn, :show, category), class: "rounded-full bg-slate-800 hover:bg-slate-600 bg:text-gray-300 text-gray-100 leading-10 mx-1 px-4 py-1 font-medium" %>
+        <%= link String.capitalize(category.name), to: Routes.category_path(@conn, :show, category.name), class: "rounded-full bg-slate-800 hover:bg-slate-600 bg:text-gray-300 text-gray-100 leading-10 mx-1 px-4 py-1 font-medium" %>
       <% end %>
       <% end %>
     </div>
@@ -40,24 +38,23 @@
       <% end %>
     <% end %>
   </div>
-
-
 </div>
 
-
-<div class="lg:grid grid-cols-3 mt-4 lg:mt-0 py-8 px-4 lg:px-0">
+<div class="lg:grid grid-cols-3 mt-4 lg:mt-0 py-8 px-4 lg:px-0 w-11/12 lg:w-5/6 mx-auto">
   <div class="px-4 lg:px-0">
     <%= if @recipe.recipe_ingredients != [] do %>
-    <div class="text-4xl mt-4 mb-8 text-black">Ingredients</div>
+    <div class="text-3xl mt-4 mb-8 font-medium text-black">Ingredients</div>
     <div class="lg:mr-16 text-lg">
-      <ul class="space-y-4 list-[square] lg:list-inside text-sm text-amber-600">
+      <ul class="border-neutral-300 border-solid text-sm text-amber-600 divide-y">
+      <li />
         <%= for recipe_ingredient <- @recipe.recipe_ingredients do %>
-        <li>
-          <span class="text-black text-lg my-4 hover:underline decoration-2 decoration-amber-600 underline-offset-4">
+        <li class="py-2">
+          <span class="text-black text-lg hover:underline decoration-2 decoration-amber-600 underline-offset-4">
           <%= link ingredients_output(recipe_ingredient), to: Routes.ingredient_path(@conn, :show, recipe_ingredient.ingredient)%>
           </span>
         </li>
         <% end %>
+      <li />
       </ul>
     </div>
   <% end %>
@@ -66,18 +63,18 @@
   <div class="lg:col-span-2 mt-12 lg:mt-0 lg:ml-12 lg:w-3/4 text-lg">
     <div class="px-4 lg:px-0">
       <%= if @recipe.directions do %>
-      <div class="text-3xl mt-4 mb-8 text-black">Directions</div>
-      <ul class="space-y-4 list-decimal lg:list-inside text-lg text-amber-600 font-bold">
+      <div class="text-3xl font-medium mt-4 mb-8 text-black">Directions</div>
+      <ul class="space-y-4 -ml-2 list-decimal text-2xl font-extralight lg:list-outside text-amber-600 font-bold">
       <%= for md <- @recipe.directions |> String.split("\n", trim: true) |> Enum.reject(&(String.trim(&1) == "")) do %>
         <li>
-          <span class="text-black my-6 text-lg font-normal"><%= md %></span>
+          <div class="text-black ml-2 my-6 text-lg font-normal"><%= md %></div>
         </li>
       <% end %>
       </ul>
     <% end %>
 
     <%= if @recipe.note do %>
-      <div class="text-2xl font-bold mt-8 mb-2 text-black">Note</div>
+      <div class="text-2xl font-medium mt-8 mb-2 text-black">Note</div>
       <%= for note <- @recipe.note |> String.split("\n", trim: true) |> Enum.reject(&(String.trim(&1) == "")) do %>
       <ul class="list-disc text-xl text-amber-600">
         <%= if String.first(note) == "*" do %>

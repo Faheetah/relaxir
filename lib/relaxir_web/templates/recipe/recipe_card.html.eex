@@ -1,30 +1,30 @@
-<div class="lg:shadow-lg lg:border-0 border-b-4 border-gray-200 border-dotted pb-4">
+<div class="mb-12">
   <%= if @recipe.image_filename do %>
+  <div class="-mt-2 relative">
   <%= link to: Routes.recipe_path(@conn, :show, @recipe) do %>
-  <%= img_tag "/uploads/#{@recipe.image_filename}-thumbnail.jpg", class: "h-auto w-auto" %>
-  <% end %>
+  <%= img_tag "/uploads/#{@recipe.image_filename}-full.jpg", class: "h-auto w-auto" %>
   <% end %>
 
-  <div class="px-2 py-2">
-  <div class="text-lg font-bold">
-    <%= link String.capitalize(@recipe.title), to: Routes.recipe_path(@conn, :show, @recipe) %>
   </div>
+  <% end %>
 
-  <div class="text-sm">
-    <%= @recipe.inserted_at.month %>/<%= @recipe.inserted_at.day %>/<%= @recipe.inserted_at.year %>
-
-    <%= if @recipe.user do %>
-      <%= if @recipe.user.username do %>
-        by <%= @recipe.user.username %>
-      <% end %>
+  <div class="mx-2 lg:mx-0">
+    <div class="text-neutral-800 mt-1 text-sm font-medium decoration-amber-500 decoration-2 underline-offset-4">
+    <%= for category <- @recipe.categories do %>
+    <%= link String.upcase(category.name), to: Routes.category_path(@conn, :show, category.name), class: "hover:underline" %><span class="last:hidden"> /</span>
     <% end %>
-  </div>
+    </div>
 
-  <div>
-  <%= for category <- @recipe.categories do %>
-  <%= link category.name, to: Routes.category_path(@conn, :show, category.name) %><span class="last:hidden"> /</span>
-  <% end %>
-  </div>
-  </div>
 
+    <div class="text-3xl tracking-tight leading-6 font-bold pb-4 mt-4">
+      <%= link @recipe.title, to: Routes.recipe_path(@conn, :show, @recipe) %>
+    </div>
+
+    <%= if @recipe.description do %>
+    <div class="text-sm">
+      <%= @recipe.description %>
+    </div>
+    <% end %>
+
+  </div>
 </div>

@@ -38,6 +38,7 @@ defmodule Relaxir.Categories do
       where: rc.category_id == ^category.id,
       join: r in Recipe, on: r.id == rc.recipe_id,
       where: r.id == rc.recipe_id,
+      where: r.published == true,
       order_by: [desc: r.inserted_at],
       select: r,
       limit: ^limit

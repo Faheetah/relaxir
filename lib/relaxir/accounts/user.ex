@@ -51,7 +51,8 @@ defmodule Relaxir.Accounts.User do
 
   defp validate_username(changeset) do
     changeset
-    |> validate_format(:username, ~r/^[A-Za-z0-9\_]+$/, message: "Username must only contain letters, numbers, or underscores")
+    # Right now, username is display name only
+    # |> validate_format(:username, ~r/^[A-Za-z0-9\_]+$/, message: "Username must only contain letters, numbers, or underscores")
     |> validate_length(:username, min: 4, max: 24)
     |> unique_constraint(:username)
   end

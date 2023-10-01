@@ -12,8 +12,8 @@
   </head>
 
   <body class="flex flex-col min-h-screen">
-    <header class="print:hidden py-4">
-      <div class="flex px-4 lg:px-8 place-items-center mb-4">
+    <header class="print:hidden py-6 mx-auto lg:w-5/6">
+      <div class="flex place-items-center">
         <%# hamburger menu %>
         <div class="flex-none self-end lg:hidden h-full">
           <label data-menu-toggle for="hamburger-toggle" class="cursor-pointer">
@@ -62,6 +62,13 @@
             <div class="hidden group-hover:block group-focus:block flex absolute border divide-y divide-gray-600 border-gray-600 border-solid-2 bg-white right-8">
               <%= link to: Routes.user_settings_path(@conn, :profile), class: "block text-xl justify-between flex bg-white hover:bg-amber-500 py-3 px-6" do %>
               PROFILE
+              <svg class="h-full w-6 inline right ml-2 self-end" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <% end %>
+
+              <%= link to: Routes.recipe_path(@conn, :new), class: "block text-xl justify-between flex bg-white hover:bg-amber-500 py-3 px-6" do %>
+              ADD RECIPE
               <svg class="h-full w-6 inline right ml-2 self-end" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
@@ -139,21 +146,22 @@
         <div />
       </div>
 
-      <div class="hidden lg:flex pl-4 space-x-2 bg-neutal-200 text-neutral-900 text-sm font-bold decoration-amber-500 underline-offset-4">
-        <a href="/categories/appetizers" class="py-3 px-4 hover:underline">APPETIZERS</a>
-        <a href="/categories/breakfast" class="py-3 px-4 hover:underline">BREAKFAST</a>
-        <a href="/categories/lunch" class="py-3 px-4 hover:underline">LUNCH</a>
-        <a href="/categories/mains" class="py-3 px-4 hover:underline">MAINS</a>
-        <a href="/categories/sides" class="py-3 px-4 hover:underline">SIDES</a>
-        <a href="/categories/condiments" class="py-3 px-4 hover:underline">CONDIMENTS</a>
-        <a href="/categories/drinks" class="py-3 px-4 hover:underline">DRINKS</a>
-        <a href="/categories/baking" class="py-3 px-4 hover:underline">BAKING</a>
+      <%# Sub menu %>
+      <div class="hidden lg:flex mt-2 space-x-2 bg-neutral-800 text-neutral-300 text-sm font-bold decoration-amber-600 underline-offset-4">
+        <a href="/categories/appetizers" class="py-2 px-4 hover:underline">APPETIZERS</a>
+        <a href="/categories/breakfast" class="py-2 px-4 hover:underline">BREAKFAST</a>
+        <a href="/categories/lunch" class="py-2 px-4 hover:underline">LUNCH</a>
+        <a href="/categories/mains" class="py-2 px-4 hover:underline">MAINS</a>
+        <a href="/categories/sides" class="py-2 px-4 hover:underline">SIDES</a>
+        <a href="/categories/condiments" class="py-2 px-4 hover:underline">CONDIMENTS</a>
+        <a href="/categories/drinks" class="py-2 px-4 hover:underline">DRINKS</a>
+        <a href="/categories/baking" class="py-2 px-4 hover:underline">BAKING</a>
       </div>
     </header>
 
 
-    <main class="pt-4 lg:pt-12 flex-grow">
-      <div class="mx-auto lg:container lg:w-3/4">
+    <main class="mt-8">
+      <div class="mx-auto lg:w-5/6">
         <%= if Phoenix.Flash.get(@flash, :info) do %>
         <p class="alert-info"><%= Phoenix.Flash.get(@flash, :info) %></p>
         <% end %>

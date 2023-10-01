@@ -3,6 +3,7 @@
 
   <%= form_for @changeset, Routes.recipe_path(@conn, :update, @recipe), [method: "put", as: :recipe], fn f -> %>
     <%= hidden_input f, :title, value: @recipe_params["title"] %>
+    <%= hidden_input f, :description, value: @recipe_params["description"] %>
     <%= hidden_input f, :image_filename, value: @recipe_params["image_filename"] %>
     <%= hidden_input f, :directions, value: @recipe_params["directions"] %>
     <%= hidden_input f, :note, value: @recipe_params["note"] %>
@@ -14,6 +15,7 @@
 
   <%= form_for @changeset, Routes.recipe_path(@conn, :edit, @recipe), [as: :recipe], fn f -> %>
     <%= hidden_input f, :title, value: @recipe_params["title"] %>
+    <%= hidden_input f, :description, value: @recipe_params["description"] %>
     <%= hidden_input f, :image_filename, value: @recipe_params["image_filename"] %>
     <%= hidden_input f, :directions, value: @recipe_params["directions"] %>
     <%= hidden_input f, :note, value: @recipe_params["note"] %>
