@@ -11,6 +11,11 @@ defmodule Relaxir.Recipes.Recipe do
     field :note, :string
     field :description, :string
     field :published, :boolean
+    field :gluten_free, :boolean
+    field :keto, :boolean
+    field :vegetarian, :boolean
+    field :vegan, :boolean
+    field :spicy, :boolean
     field :image_filename, :string
     has_many :recipe_ingredients, RecipeIngredient, on_replace: :delete, on_delete: :delete_all
     has_many :ingredients, through: [:recipe_ingredients, :ingredient]
@@ -22,9 +27,24 @@ defmodule Relaxir.Recipes.Recipe do
     timestamps()
   end
 
+  @cast_attrs [
+    :title,
+    :gluten_free,
+    :keto,
+    :vegetarian,
+    :vegan,
+    :spicy,
+    :description,
+    :directions,
+    :note,
+    :published,
+    :user_id,
+    :image_filename
+  ]
+
   def changeset(recipe, attrs) do
     recipe
-    |> cast(strip_directions(attrs), [:title, :description, :directions, :note, :published, :user_id, :image_filename])
+    |> cast(strip_directions(attrs), @cast_attrs)
     |> cast_assoc(:recipe_categories)
     |> cast_assoc(:recipe_ingredients)
     |> validate_required([:title])

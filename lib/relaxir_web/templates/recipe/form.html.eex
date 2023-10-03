@@ -24,9 +24,35 @@
   </div>
 
   <div class="my-4">
-  <%= label f, :published %>
-  <%= checkbox f, :published %>
-  <%= error_tag f, :published %>
+  <%= checkbox f, :published, class: "peer hidden" %>
+  <%= label f, :published, class: "px-2 py-1 bg-neutral-200 peer-checked:bg-green-500 select-none cursor-pointer" %>
+  </div>
+
+  <div class="my-4">
+  <span>
+  <%= checkbox f, :gluten_free, class: "peer hidden" %>
+  <%= label f, :gluten_free, class: "px-4 py-1 bg-neutral-200 peer-checked:bg-green-500 select-none cursor-pointer" %>
+  </span>
+
+  <span>
+  <%= checkbox f, :keto, class: "peer hidden" %>
+  <%= label f, :keto, class: "px-4 py-1 bg-neutral-200 peer-checked:bg-green-500 select-none cursor-pointer" %>
+  </span>
+
+  <span>
+  <%= checkbox f, :vegetarian, class: "peer hidden" %>
+  <%= label f, :vegetarian, class: "px-4 py-1 bg-neutral-200 peer-checked:bg-green-500 select-none cursor-pointer" %>
+  </span>
+
+  <span>
+  <%= checkbox f, :vegan, class: "peer hidden" %>
+  <%= label f, :vegan, class: "px-4 py-1 bg-neutral-200 peer-checked:bg-green-500 select-none cursor-pointer" %>
+  </span>
+
+  <span>
+  <%= checkbox f, :spicy, class: "peer hidden" %>
+  <%= label f, :spicy, class: "px-4 py-1 bg-neutral-200 peer-checked:bg-green-500 select-none cursor-pointer" %>
+  </span>
   </div>
 
   <div class="my-4">

@@ -10,6 +10,11 @@
     <%= hidden_input f, :categories, value: @recipe_params["categories"] %>
     <%= hidden_input f, :ingredients, value: @recipe_params["ingredients"] %>
     <%= hidden_input f, :published, value: @recipe_params["published"] %>
+    <%= hidden_input f, :gluten_free, value: @recipe_params["gluten_free"] %>
+    <%= hidden_input f, :keto, value: @recipe_params["keto"] %>
+    <%= hidden_input f, :vegetarian, value: @recipe_params["vegetarian"] %>
+    <%= hidden_input f, :vegan, value: @recipe_params["vegan"] %>
+    <%= hidden_input f, :spicy, value: @recipe_params["spicy"] %>
     <%= submit "Save", class: "border border-blue-400 bg-blue-100 rounded p-2" %>
   <% end %>
 
@@ -22,6 +27,11 @@
     <%= hidden_input f, :categories, value: @recipe_params["categories"] %>
     <%= hidden_input f, :ingredients, value: @recipe_params["ingredients"] %>
     <%= hidden_input f, :published, value: @recipe_params["published"] %>
+    <%= hidden_input f, :gluten_free, value: @recipe_params["gluten_free"] %>
+    <%= hidden_input f, :keto, value: @recipe_params["keto"] %>
+    <%= hidden_input f, :vegetarian, value: @recipe_params["vegetarian"] %>
+    <%= hidden_input f, :vegan, value: @recipe_params["vegan"] %>
+    <%= hidden_input f, :spicy, value: @recipe_params["spicy"] %>
     <%= submit "Back", class: "border border-yellow-400 bg-yellow-100 rounded p-2 inline" %>
   <% end %>
 </div>
