@@ -9,6 +9,7 @@
     <%= csrf_meta_tag() %>
     <link phx-track-static rel="stylesheet" href={Routes.static_path(@conn, "/assets/app.css")}/>
     <script defer phx-track-static type="text/javascript" src={Routes.static_path(@conn, "/assets/app.js")}></script>
+    <%= if @meta_attrs, do: meta_tags(@meta_attrs |> IO.inspect) %>
   </head>
 
   <body class="flex flex-col min-h-screen">
@@ -163,6 +164,7 @@
         <a href="/categories/mains" class="py-2 px-4 hover:underline">MAINS</a>
         <a href="/categories/sides" class="py-2 px-4 hover:underline">SIDES</a>
         <a href="/categories/condiments" class="py-2 px-4 hover:underline">CONDIMENTS</a>
+        <a href="/categories/dessert" class="py-2 px-4 hover:underline">DESSERT</a>
         <a href="/categories/drinks" class="py-2 px-4 hover:underline">DRINKS</a>
         <a href="/categories/baking" class="py-2 px-4 hover:underline">BAKING</a>
       </div>

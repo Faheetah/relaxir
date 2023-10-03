@@ -16,6 +16,11 @@ defmodule RelaxirWeb.Router do
     plug :protect_from_forgery
     plug :put_secure_browser_headers, %{"content-security-policy" => "..."}
     plug :fetch_current_user
+    plug :meta_defaults
+  end
+
+  def meta_defaults(conn, _opts) do
+    assign(conn, :meta_attrs, [])
   end
 
   pipeline :live_browser do

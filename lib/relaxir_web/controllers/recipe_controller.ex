@@ -88,7 +88,20 @@ defmodule RelaxirWeb.RecipeController do
   def show(conn, %{"id" => id}) do
     current_user = conn.assigns.current_user
     recipe = Recipes.get_recipe!(id)
-    render(conn, "show.html", recipe: recipe, current_user: current_user)
+
+    meta_attrs = [
+      %{name: "twitter:card", content: "summary_large_image"}, # required to make the image proper sized on some sites
+      %{property: "og:ttl", content: "600"},
+      %{property: "og:type", content: "image"},
+      %{property: "og:site_name", content: "Relax+Dine"},
+      %{property: "og:title", content: recipe.title},
+      %{property: "og:description", content: recipe.description},
+      %{property: "og:url", content: Routes.recipe_path(conn, :show, recipe)},
+      %{property: "og:image", content: Path.join(["https://www.relaxanddine.com/uploads", Map.get(recipe, :image_filename)]) <> "-full.jpg"}
+    ]
+    IO.inspect recipe
+
+    render(conn, "show.html", recipe: recipe, current_user: current_user, meta_attrs: meta_attrs)
   end
 
   def edit(conn, %{"id" => id, "recipe" => recipe}) do
