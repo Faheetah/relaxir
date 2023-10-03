@@ -12,10 +12,10 @@
   </head>
 
   <body class="flex flex-col min-h-screen">
-    <header class="print:hidden p-2 lg:py-6 lg:px-0 lg:mx-auto lg:w-5/6">
-      <div class="flex place-items-center">
+    <header class="print:hidden sticky top-0 bg-white lg:my-6 lg:px-0 lg:mx-auto lg:w-5/6">
+      <div class="flex py-2 place-items-center">
         <%# hamburger menu %>
-        <div class="flex-none self-end lg:hidden h-full">
+        <div class="flex-none pl-2 self-end lg:hidden h-full">
           <label data-menu-toggle for="hamburger-toggle" class="cursor-pointer">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 6h20M4 11h20M4 16h20" />
@@ -39,7 +39,7 @@
         </div>
 
         <%# search icon %>
-        <div class="flex-none self-end">
+        <div class="flex-none self-end pr-2">
           <label class="cursor-pointer" data-menu-toggle for="search-toggle">
             <a href="/search">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -125,6 +125,15 @@
         <% end %>
 
         <%= if @current_user do %>
+        <%= link to: Routes.recipe_path(@conn, :new), class: "flex p-4 hover:bg-amber-500" do %>
+          <div class="flex-auto">ADD RECIPE</div>
+          <div class="flex-none">
+          <svg class="h-full w-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          </div>
+        <% end %>
+
           <%= link to: Routes.user_session_path(@conn, :delete), method: :delete, class: "flex p-4 hover:bg-amber-500" do %>
           <div class="flex-auto">LOGOUT</div>
           <div class="flex-none">
@@ -160,7 +169,7 @@
     </header>
 
 
-    <main class="mt-4 lg:mt-12">
+    <main class="mt-2 lg:pt-8">
       <div class="mx-auto lg:w-5/6">
         <%= if Phoenix.Flash.get(@flash, :info) do %>
         <p class="alert-info"><%= Phoenix.Flash.get(@flash, :info) %></p>
