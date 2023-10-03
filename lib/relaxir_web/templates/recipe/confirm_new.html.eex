@@ -9,6 +9,7 @@
     <%= hidden_input f, :note, value: @recipe_params["note"] %>
     <%= hidden_input f, :categories, value: @recipe_params["categories"] %>
     <%= hidden_input f, :ingredients, value: @recipe_params["ingredients"] %>
+    <%= hidden_input f, :published, value: @recipe_params["published"] %>
     <%= submit "Save", class: "border border-blue-400 bg-blue-100 rounded p-2" %>
   <% end %>
 
@@ -20,6 +21,7 @@
     <%= hidden_input f, :note, value: @recipe_params["note"] %>
     <%= hidden_input f, :categories, value: @recipe_params["categories"] %>
     <%= hidden_input f, :ingredients, value: @recipe_params["ingredients"] %>
+    <%= hidden_input f, :published, value: @recipe_params["published"] %>
     <%= submit "Back", class: "border border-yellow-400 bg-yellow-100 rounded p-2 inline" %>
   <% end %>
 </div>
