@@ -99,7 +99,6 @@ defmodule RelaxirWeb.RecipeController do
       %{property: "og:url", content: Routes.recipe_path(conn, :show, recipe)},
       %{property: "og:image", content: Path.join(["https://www.relaxanddine.com/uploads", Map.get(recipe, :image_filename)]) <> "-full.jpg"}
     ]
-    IO.inspect recipe
 
     render(conn, "show.html", recipe: recipe, current_user: current_user, meta_attrs: meta_attrs)
   end

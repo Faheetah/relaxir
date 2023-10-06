@@ -2,6 +2,9 @@ import Config
 
 config :relaxir, :registration, enabled: true
 
+config :relaxir, RelaxirWeb.UploadLive,
+  dest: "priv/static/uploads"
+
 # Only in tests, remove the complexity from the password hashing algorithm
 config :bcrypt_elixir, :log_rounds, 1
 
