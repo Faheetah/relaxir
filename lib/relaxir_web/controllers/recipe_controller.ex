@@ -35,32 +35,6 @@ defmodule RelaxirWeb.RecipeController do
     render(conn, "new.html", ingredients: [], changeset: changeset)
   end
 
-  def confirm_new(conn, %{"recipe" => recipe_params}) do
-    attrs =
-      recipe_params
-      |> RecipeParser.parse_attrs()
-
-    changeset = Recipes.change_recipe(%Recipe{}, attrs)
-    recipe_categories = Recipes.get_recipe_category_names(changeset)
-    recipe_ingredients = Recipes.get_recipe_ingredient_suggestions(changeset)
-
-    case changeset do
-      %{valid?: false} ->
-        ingredients = Recipes.map_ingredients(attrs)
-        render(conn, "new.html", changeset: changeset, ingredients: ingredients)
-
-      _ ->
-        render(
-          conn,
-          "confirm_new.html",
-          recipe_categories: recipe_categories,
-          recipe_ingredients: recipe_ingredients,
-          recipe_params: recipe_params,
-          changeset: changeset
-        )
-    end
-  end
-
   def create(conn, %{"recipe" => recipe_params}) do
     current_user = conn.assigns.current_user
 
@@ -71,9 +45,7 @@ defmodule RelaxirWeb.RecipeController do
 
     case Recipes.create_recipe(recipe) do
       {:ok, recipe} ->
-        conn
-        |> put_flash(:info, "Recipe created successfully.")
-        |> redirect(to: Routes.recipe_path(conn, :show, recipe))
+        redirect(conn, to: Routes.recipe_path(conn, :show, recipe))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         ingredients =
@@ -120,33 +92,6 @@ defmodule RelaxirWeb.RecipeController do
     render(conn, "edit.html", recipe: recipe, ingredients: recipe.recipe_ingredients, changeset: changeset)
   end
 
-  def confirm_update(conn, %{"id" => id, "recipe" => recipe_params}) do
-    recipe = Recipes.get_recipe!(id)
-
-    attrs =
-      recipe_params
-      |> RecipeParser.parse_attrs()
-
-    changeset = Recipes.change_recipe(%Recipe{}, attrs)
-    recipe_categories = Recipes.get_recipe_category_names(changeset)
-    recipe_ingredients = Recipes.get_recipe_ingredient_suggestions(changeset)
-
-    case changeset do
-      %{valid?: false} ->
-        ingredients = Recipes.map_ingredients(attrs)
-        render(conn, "edit.html", recipe: recipe, changeset: %{changeset | action: :insert}, ingredients: ingredients)
-
-      _ ->
-        render(conn, "confirm_update.html",
-          recipe_categories: recipe_categories,
-          recipe_ingredients: recipe_ingredients,
-          recipe: recipe,
-          recipe_params: recipe_params,
-          changeset: changeset
-        )
-    end
-  end
-
   def update(conn, %{"id" => id, "recipe" => recipe_params}) do
     recipe = Recipes.get_recipe!(id)
 
@@ -157,9 +102,7 @@ defmodule RelaxirWeb.RecipeController do
 
     case Recipes.update_recipe(recipe, RecipeParser.parse_attrs(recipe_params)) do
       {:ok, recipe} ->
-        conn
-        |> put_flash(:info, "Recipe updated successfully.")
-        |> redirect(to: Routes.recipe_path(conn, :show, recipe))
+        redirect(conn, to: Routes.recipe_path(conn, :show, recipe))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "edit.html", recipe: recipe, ingredients: ingredients, changeset: %{changeset | action: :insert})
@@ -170,8 +113,6 @@ defmodule RelaxirWeb.RecipeController do
     recipe = Recipes.get_recipe!(id)
     {:ok, _recipe} = Recipes.delete_recipe(recipe)
 
-    conn
-    |> put_flash(:info, "Recipe deleted successfully.")
-    |> redirect(to: Routes.recipe_path(conn, :index))
+    redirect(conn, to: Routes.recipe_path(conn, :index))
   end
 end

@@ -128,7 +128,11 @@ defmodule Relaxir.Recipes do
   def delete_recipe(%Recipe{} = recipe) do
     delete_cache(recipe)
     dest = Application.fetch_env!(:relaxir, RelaxirWeb.UploadLive)[:dest]
-    :ok = File.rm(Path.join(dest, "#{recipe.image_filename}-full.jpg"))
+
+    if recipe.image_filename do
+      :ok = File.rm(Path.join(dest, "#{recipe.image_filename}-full.jpg"))
+    end
+
     Repo.delete(recipe)
   end
 
