@@ -9,6 +9,6 @@ defmodule RelaxirWeb.ErrorViewTest do
   end
 
   test "renders 500.html" do
-    assert render_to_string(RelaxirWeb.ErrorView, "500.html", []) == "Internal Server Error"
+    assert render_to_string(RelaxirWeb.ErrorView, "500.html", []) == "Relax, we are working on it."
   end
 end

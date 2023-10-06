@@ -26,7 +26,7 @@ defmodule RelaxirWeb.UserConfirmationControllerTest do
         })
 
       assert redirected_to(conn) == "/"
-      assert get_flash(conn, :info) =~ "If your email is in our system"
+      assert Flash.get(conn.assigns.flash, :info) =~ "If your email is in our system"
       assert Repo.get_by!(Accounts.UserToken, user_id: user.id).context == "confirm"
     end
 
@@ -39,7 +39,7 @@ defmodule RelaxirWeb.UserConfirmationControllerTest do
         })
 
       assert redirected_to(conn) == "/"
-      assert get_flash(conn, :info) =~ "If your email is in our system"
+      assert Flash.get(conn.assigns.flash, :info) =~ "If your email is in our system"
       refute Repo.get_by(Accounts.UserToken, user_id: user.id)
     end
 
@@ -50,7 +50,7 @@ defmodule RelaxirWeb.UserConfirmationControllerTest do
         })
 
       assert redirected_to(conn) == "/"
-      assert get_flash(conn, :info) =~ "If your email is in our system"
+      assert Flash.get(conn.assigns.flash, :info) =~ "If your email is in our system"
       assert Repo.all(Accounts.UserToken) == []
     end
   end
@@ -64,7 +64,7 @@ defmodule RelaxirWeb.UserConfirmationControllerTest do
 
       conn = get(conn, Routes.user_confirmation_path(conn, :confirm, token))
       assert redirected_to(conn) == "/"
-      assert get_flash(conn, :info) =~ "User confirmed successfully"
+      assert Flash.get(conn.assigns.flash, :info) =~ "User confirmed successfully"
       assert Accounts.get_user!(user.id).confirmed_at
       refute get_session(conn, :user_token)
       assert Repo.all(Accounts.UserToken) == []
@@ -72,7 +72,7 @@ defmodule RelaxirWeb.UserConfirmationControllerTest do
       # When not logged in
       conn = get(conn, Routes.user_confirmation_path(conn, :confirm, token))
       assert redirected_to(conn) == "/"
-      assert get_flash(conn, :error) =~ "User confirmation link is invalid or it has expired"
+      assert Flash.get(conn.assigns.flash, :error) =~ "User confirmation link is invalid or it has expired"
 
       # When logged in
       conn =
@@ -81,13 +81,13 @@ defmodule RelaxirWeb.UserConfirmationControllerTest do
         |> get(Routes.user_confirmation_path(conn, :confirm, token))
 
       assert redirected_to(conn) == "/"
-      refute get_flash(conn, :error)
+      refute Flash.get(conn.assigns.flash, :error)
     end
 
     test "does not confirm email with invalid token", %{conn: conn, user: user} do
       conn = get(conn, Routes.user_confirmation_path(conn, :confirm, "oops"))
       assert redirected_to(conn) == "/"
-      assert get_flash(conn, :error) =~ "User confirmation link is invalid or it has expired"
+      assert Flash.get(conn.assigns.flash, :error) =~ "User confirmation link is invalid or it has expired"
       refute Accounts.get_user!(user.id).confirmed_at
     end
   end

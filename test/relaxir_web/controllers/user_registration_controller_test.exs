@@ -3,6 +3,7 @@ defmodule RelaxirWeb.UserRegistrationControllerTest do
 
   import Relaxir.AccountsFixtures
 
+  @tag skip: "registration is disabled"
   describe "GET /users/register" do
     test "renders registration page", %{conn: conn} do
       conn = get(conn, Routes.user_registration_path(conn, :new))
@@ -18,8 +19,8 @@ defmodule RelaxirWeb.UserRegistrationControllerTest do
     end
   end
 
+  @tag skip: "Registration is disabled"
   describe "POST /users/register" do
-    @tag :capture_log
     test "creates account and logs the user in", %{conn: conn} do
       email = unique_user_email()
 
