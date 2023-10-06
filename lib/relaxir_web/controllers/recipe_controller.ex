@@ -96,12 +96,15 @@ defmodule RelaxirWeb.RecipeController do
       %{property: "og:site_name", content: "Relax+Dine"},
       %{property: "og:title", content: recipe.title},
       %{property: "og:description", content: recipe.description},
-      %{property: "og:url", content: Routes.recipe_path(conn, :show, recipe)},
-      %{property: "og:image", content: Path.join(["https://www.relaxanddine.com/uploads", (recipe.image_filename || "default") <> "-full.jpg"])}
+      %{property: "og:url", content: Path.join("https://www.relaxanddine.com", Routes.recipe_path(conn, :show, recipe))},
+      %{property: "og:image", content: get_upload_path(recipe.image_filename)}
     ]
 
     render(conn, "show.html", recipe: recipe, current_user: current_user, meta_attrs: meta_attrs)
   end
+
+  defp get_upload_path(nil), do: "https://www.relaxanddine.com/default-full.jpg"
+  defp get_upload_path(file), do: "https://www.relaxanddine.com/uploads/#{file}-full.jpg"
 
   def edit(conn, %{"id" => id, "recipe" => recipe}) do
     attrs = RecipeParser.parse_attrs(recipe)

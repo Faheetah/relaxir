@@ -24,7 +24,7 @@ defmodule RelaxirWeb.Endpoint do
     at: "/",
     from: :relaxir,
     gzip: false,
-    only: ~w(assets uploads fonts images favicon.ico robots.txt)
+    only: ~w(assets uploads fonts images default-full.jpg favicon.ico robots.txt)
 
   plug Plug.Static,
     at: "/uploads",

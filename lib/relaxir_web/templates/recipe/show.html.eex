@@ -53,7 +53,7 @@
         <%= if @recipe.image_filename do %>
           <%= img_tag "/uploads/#{@recipe.image_filename}-full.jpg", class: "w-full -max" %>
         <% else %>
-          <%= img_tag "/uploads/default-full.jpg", class: "w-full -max" %>
+          <%= img_tag "/default-full.jpg", class: "w-full -max" %>
         <% end %>
 
     </div>

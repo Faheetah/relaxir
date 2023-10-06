@@ -32,6 +32,7 @@ npm-debug.log
 /priv/static/uploads/live_view_upload-*
 /priv/static/cache_manifest.json
 /priv/static/favicon-*
+/priv/static/default-full-*
 /backups/
 
 relaxir.tar.gz

@@ -30,11 +30,15 @@ defmodule RelaxirWeb.UploadLive do
     consume_uploaded_entries(socket, :picture, fn %{path: path}, _entry ->
       dest = Application.fetch_env!(:relaxir, RelaxirWeb.UploadLive)[:dest]
       :ok = resize(path, dest, "640", "480", "full")
-      :ok = resize(path, dest, "400", "400", "thumbnail")
 
-      socket.assigns.recipe
-      |> String.to_integer()
-      |> Relaxir.Recipes.get_recipe!()
+      recipe =
+        socket.assigns.recipe
+        |> String.to_integer()
+        |> Relaxir.Recipes.get_recipe!()
+
+      :ok = File.rm(Path.join(dest, "#{recipe.image_filename}-full.jpg"))
+
+      recipe
       |> Relaxir.Recipes.Recipe.changeset(%{"image_filename" => Path.basename(path)})
       |> Relaxir.Repo.update()
     end)
