@@ -49,7 +49,6 @@ defmodule RelaxirWeb.Router do
       post "/recipes/:id/confirm", RecipeController, :confirm_update
       resources "/ingredients", IngredientController, except: [:show, :index]
       get "/ingredients/:ingredient_id/addToList", IngredientController, :select_list
-      resources "/categories", CategoryController, except: [:show, :index]
       live_dashboard "/dashboard", metrics: RelaxirWeb.Telemetry
 
       scope "/", as: :recipe do
