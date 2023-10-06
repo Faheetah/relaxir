@@ -1,6 +1,15 @@
-<div class="mt-4 lg:grid grid-cols-2 lg:shadow-lg lg:bg-neutral-50 lg:text-black lg:w-5/6 mx-auto">
+<div class="mt-4 lg:grid grid-cols-2 lg:shadow-lg lg:bg-neutral-50 lg:text-black lg:w-5/6 mx-auto relative">
+  <%= if @current_user && @current_user.is_admin do %>
+  <div class="absolute top-0 left-8 space-x-2 mt-2 text-lg">
+    <div class="text-neutral-400 hover:text-neutral-600 hover:underline underline-offset-2 inline"><%= link "Edit", to: Routes.recipe_path(@conn, :edit, @recipe), class: "py-2 pr-2" %></div>
+    <div class="text-red-400 hover:text-red-600 hover:underline underline-offset-2 inline"><%= link "Delete", to: Routes.recipe_path(@conn, :delete, @recipe), method: :delete, data: [confirm: "Are you sure?"], class: "py-2 pr-2" %></div>
+  </div>
+  <% end %>
+
   <div class="col p-8 self-center">
     <div class="text-4xl mb-4"><%= String.capitalize(@recipe.title) %></div>
+
+
 
     <div class="text-md mb-8"><%= @recipe.description %></div>
 
@@ -110,10 +119,3 @@
     </div>
   </div>
 </div>
-
-
-<%= if @current_user && @current_user.is_admin do %>
-<div class="border-gray-300 border rounded inline-block my-2 p-2 bg-gray-100"><%= link "Back", to: Routes.recipe_path(@conn, :index) %></div>
-<div class="border-gray-300 border rounded inline-block my-2 p-2 bg-gray-100"><%= link "Edit", to: Routes.recipe_path(@conn, :edit, @recipe) %></div>
-<div class="border-red-300 border rounded inline-block my-2 p-2 bg-red-100 text-red-800"><%= link "Delete", to: Routes.recipe_path(@conn, :delete, @recipe), method: :delete, data: [confirm: "Are you sure?"] %></div>
-<% end %>
