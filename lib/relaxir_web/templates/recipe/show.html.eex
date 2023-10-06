@@ -19,7 +19,7 @@
     <div class="my-4">
       <%= if @recipe.categories != [] do %>
       <%= for category <- @recipe.categories do %>
-        <%= link String.capitalize(category.name), to: Routes.category_path(@conn, :show, category.name), class: "rounded-full bg-slate-800 hover:bg-slate-600 bg:text-gray-300 text-gray-100 leading-10 px-4 pt-1 pb-2 font-medium" %>
+        <%= link String.upcase(category.name), to: Routes.category_path(@conn, :show, category.name), class: "rounded-full bg-slate-800 hover:bg-slate-600 bg:text-gray-300 text-gray-100 leading-10 px-4 pt-1 pb-2 font-medium" %>
       <% end %>
       <% end %>
     </div>

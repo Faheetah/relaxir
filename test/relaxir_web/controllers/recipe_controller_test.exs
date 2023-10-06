@@ -11,22 +11,22 @@ defmodule RelaxirWeb.RecipeControllerTest do
     test "lists all recipes", %{conn: conn, recipes: recipes} do
       conn = get(conn, Routes.recipe_path(conn, :index, show: "all"))
       response = html_response(conn, 200)
-      assert response =~ String.capitalize(recipes.recipe_published["title"])
-      assert response =~ String.capitalize(recipes.recipe_draft["title"])
+      assert response =~ recipes.recipe_published["title"]
+      assert response =~ recipes.recipe_draft["title"]
     end
 
     test "lists only published recipes", %{conn: conn, recipes: recipes} do
       conn = get(conn, Routes.recipe_path(conn, :index, show: "published"))
       response = html_response(conn, 200)
-      assert response =~ String.capitalize(recipes.recipe_published["title"])
-      refute response =~ String.capitalize(recipes.recipe_draft["title"])
+      assert response =~ recipes.recipe_published["title"]
+      refute response =~ recipes.recipe_draft["title"]
     end
 
     test "lists only draft recipes", %{conn: conn, recipes: recipes} do
       conn = get(conn, Routes.recipe_path(conn, :index, show: "drafts"))
       response = html_response(conn, 200)
-      refute response =~ String.capitalize(recipes.recipe_published["title"])
-      assert response =~ String.capitalize(recipes.recipe_draft["title"])
+      refute response =~ recipes.recipe_published["title"]
+      assert response =~ recipes.recipe_draft["title"]
     end
   end
 
@@ -203,7 +203,7 @@ defmodule RelaxirWeb.RecipeControllerTest do
 
       %{id: id} = redirected_params(conn)
       conn = get(conn, Routes.recipe_path(conn, :show, id))
-      assert html_response(conn, 200) =~ category.name
+      assert html_response(conn, 200) =~ String.upcase(category.name)
     end
   end
 end
