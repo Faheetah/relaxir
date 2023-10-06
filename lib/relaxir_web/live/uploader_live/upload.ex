@@ -36,7 +36,9 @@ defmodule RelaxirWeb.UploadLive do
         |> String.to_integer()
         |> Relaxir.Recipes.get_recipe!()
 
-      :ok = File.rm(Path.join(dest, "#{recipe.image_filename}-full.jpg"))
+      if recipe.image_filename do
+        :ok = File.rm(Path.join(dest, "#{recipe.image_filename}-full.jpg"))
+      end
 
       recipe
       |> Relaxir.Recipes.Recipe.changeset(%{"image_filename" => Path.basename(path)})

@@ -103,7 +103,7 @@ defmodule RelaxirWeb.RecipeController do
     render(conn, "show.html", recipe: recipe, current_user: current_user, meta_attrs: meta_attrs)
   end
 
-  defp get_upload_path(nil), do: "https://www.relaxanddine.com/default-full.jpg"
+  defp get_upload_path(nil), do: "https://www.relaxanddine.com/images/default-full.jpg"
   defp get_upload_path(file), do: "https://www.relaxanddine.com/uploads/#{file}-full.jpg"
 
   def edit(conn, %{"id" => id, "recipe" => recipe}) do
