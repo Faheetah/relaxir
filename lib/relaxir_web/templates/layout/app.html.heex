@@ -9,7 +9,7 @@
     <%= csrf_meta_tag() %>
     <link phx-track-static rel="stylesheet" href={Routes.static_path(@conn, "/assets/app.css")}/>
     <script defer phx-track-static type="text/javascript" src={Routes.static_path(@conn, "/assets/app.js")}></script>
-    <%= if @meta_attrs, do: meta_tags(@meta_attrs |> IO.inspect) %>
+    <%= if @meta_attrs, do: meta_tags(@meta_attrs) %>
   </head>
 
   <body class="flex flex-col min-h-screen">
