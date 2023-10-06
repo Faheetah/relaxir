@@ -43,7 +43,7 @@
         </div>
 
         <%= if @current_user && @current_user.is_admin do %>
-        <div class="opacity-0 hover:opacity-50">
+        <div class="opacity-0 hover:opacity-70">
             <%= link  to: Routes.recipe_upload_path(@conn, :new, @recipe.id), class: "flex absolute bg-neutral-900 w-full h-full text-white text-4xl" do %>
               <span class="place-self-center text-center w-full">Upload an image</span>
             <% end %>
