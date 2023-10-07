@@ -45,19 +45,19 @@
     <div class="relative">
         <div class="absolute right-2 bottom-3">
           <%= if @recipe.vegetarian do %>
-          <span class="rounded-full ml-1 text-sm border-white border-2 bg-green-800 text-neutral-100 font-bold py-1 px-2 cursor-help" title="Vegetarian">VG</span>
+          <span class="rounded-full ml-1 text-sm border-neutral-200 border-2 bg-green-800 text-neutral-100 font-bold py-1 px-2 cursor-help" title="Vegetarian">VG</span>
           <% end %>
           <%= if @recipe.vegan do %>
-          <span class="rounded-full ml-1 text-sm border-white border-2 bg-green-800 text-neutral-100 font-bold py-1 px-2 cursor-help" title="Vegan">VE</span>
+          <span class="rounded-full ml-1 text-sm border-neutral-200 border-2 bg-green-800 text-neutral-100 font-bold py-1 px-2 cursor-help" title="Vegan">VE</span>
           <% end %>
           <%= if @recipe.gluten_free do %>
-          <span class="rounded-full ml-1 text-sm border-white border-2 bg-yellow-800 text-neutral-100 font-bold py-1 px-2 cursor-help" title="Gluten Free">GF</span>
+          <span class="rounded-full ml-1 text-sm border-neutral-200 border-2 bg-yellow-800 text-neutral-100 font-bold py-1 px-2 cursor-help" title="Gluten Free">GF</span>
           <% end %>
           <%= if @recipe.keto do %>
-          <span class="rounded-full ml-1 text-sm border-white border-2 bg-yellow-800 text-neutral-100 font-bold py-1 px-3 cursor-help" title="Keto">K</span>
+          <span class="rounded-full ml-1 text-sm border-neutral-200 border-2 bg-yellow-800 text-neutral-100 font-bold py-1 px-3 cursor-help" title="Keto">K</span>
           <% end %>
           <%= if @recipe.spicy do %>
-          <span class="rounded-full ml-1 text-sm tracking-tighter border-white border-2 bg-red-800 text-neutral-100 font-bold py-1 px-3 cursor-help" title="Keto">HOT</span>
+          <span class="rounded-full ml-1 text-sm tracking-tighter border-neutral-200 border-2 bg-red-800 text-neutral-100 font-bold py-1 px-3 cursor-help" title="Keto">HOT</span>
           <% end %>
         </div>
 
