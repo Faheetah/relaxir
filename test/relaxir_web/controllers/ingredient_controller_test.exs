@@ -65,6 +65,15 @@ defmodule RelaxirWeb.IngredientControllerTest do
 
       assert html_response(conn, 200) =~ "Edit Ingredient"
     end
+
+    test "adds a parent ingredient", %{conn: conn} do
+      Relaxir.Ingredients.create_ingredient(%{name: "poultry"})
+      conn = post(conn, Routes.ingredient_path(conn, :create), ingredient: %{name: "chicken", parent_ingredient_name: "poultry"})
+
+      ingredient = Relaxir.Ingredients.get_ingredient_by_name!("chicken")
+      conn = get(conn, Routes.ingredient_path(conn, :show, ingredient))
+      assert html_response(conn, 200) =~ "poultry > chicken"
+    end
   end
 
   describe "delete ingredient" do

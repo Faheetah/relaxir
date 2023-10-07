@@ -76,4 +76,20 @@ defmodule Relaxir.IngredientsTest do
       assert hd(Ingredients.get_ingredients_by_name!(["some name"])).name == @valid_attrs.name
     end
   end
+
+  describe "nested ingredients" do
+    test "add a parent ingredient to an ingredient twice" do
+      ingredient_fixture(%{name: "poultry"})
+      poultry = Ingredients.get_ingredient_by_name!("poultry")
+
+      ingredient_fixture(%{name: "chicken", parent_ingredient_id: poultry.id})
+      chicken = Ingredients.get_ingredient_by_name!("chicken")
+
+      ingredient_fixture(%{name: "chicken thighs", parent_ingredient_id: chicken.id})
+      chicken_thighs = Ingredients.get_ingredient_by_name!("chicken thighs")
+
+      assert chicken_thighs.parent_ingredient.name == "chicken"
+      assert chicken_thighs.parent_ingredient.parent_ingredient.name == "poultry"
+    end
+  end
 end

@@ -10,9 +10,11 @@ defmodule Relaxir.Ingredients.Ingredient do
   schema "ingredients" do
     field :name, :string
     field :description, :string
+    has_many :child_ingredients, __MODULE__, foreign_key: :parent_ingredient_id
     has_many :recipe_ingredients, RecipeIngredient
     has_many :recipes, through: [:recipe_ingredients, :recipe], on_replace: :delete
     belongs_to :food, Food
+    belongs_to :parent_ingredient, __MODULE__
 
     timestamps()
   end
@@ -26,9 +28,10 @@ defmodule Relaxir.Ingredients.Ingredient do
       end
 
     ingredient
-    |> cast(attrs, [:name, :description])
+    |> cast(attrs, [:name, :description, :parent_ingredient_id])
     |> cast_assoc(:recipe_ingredients)
     |> cast_assoc(:food)
+    |> cast_assoc(:parent_ingredient)
     |> validate_required([:name])
     |> unique_constraint([:name])
   end

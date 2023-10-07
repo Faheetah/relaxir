@@ -1,5 +1,13 @@
 <div class="text-4xl mb-8"><%= String.capitalize(@ingredient.name) %></div>
 
+<%= if @ingredient.parent_ingredient do %>
+<%= if @ingredient.parent_ingredient.parent_ingredient do %>
+<div><%= @ingredient.parent_ingredient.parent_ingredient.name %> > <%= @ingredient.parent_ingredient.name %> > <%= @ingredient.name %></div>
+<% else %>
+<div><%= @ingredient.parent_ingredient.name %> > <%= @ingredient.name %></div>
+<% end %>
+<% end %>
+
 <%= if @ingredient.description do %>
 <%= render_markdown @ingredient.description %>
 <% end %>

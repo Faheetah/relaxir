@@ -7,10 +7,13 @@ defmodule Relaxir.Ingredients do
   alias Relaxir.RecipeIngredient
 
   # these ingredients are too common but insignificant, so we will exclude them
-  @excluded_ingredient_names ["salt", "pepper"]
+  @excluded_ingredient_names ["salt", "pepper", "oil"]
 
   def list_ingredients do
-    Repo.all(order_by(Ingredient, asc: :name))
+    Ingredient
+    |> preload([[child_ingredients: :child_ingredients]])
+    |> order_by(asc: :name)
+    |> Repo.all()
   end
 
   def top_ingredients(limit \\ 4) do
@@ -27,7 +30,9 @@ defmodule Relaxir.Ingredients do
       join: ri in subquery(recipe_count),
       on: i.id == ri.ingredient_id
 
-    Repo.all(query)
+    query
+    |> preload([[child_ingredients: :child_ingredients]])
+    |> Repo.all()
     |> Enum.reverse()
     |> Enum.reduce([], fn ingredient, acc ->
       recipes = latest_recipes_for_ingredient(ingredient)
@@ -37,9 +42,16 @@ defmodule Relaxir.Ingredients do
   end
 
   def latest_recipes_for_ingredient(ingredient, limit \\ 4) do
+    children =
+      ingredient.child_ingredients
+      |> Enum.flat_map(fn i -> [i] ++ i.child_ingredients end)
+      |> Enum.map(fn i -> i.id end)
+
+    ingredient_ids = [ingredient.id] ++ children
+
     top_recipes =
       from ri in RecipeIngredient,
-      where: ri.ingredient_id == ^ingredient.id,
+      where: ri.ingredient_id in ^ingredient_ids,
       join: r in Recipe, on: r.id == ri.recipe_id,
       where: r.id == ri.recipe_id,
       order_by: [desc: r.inserted_at],
@@ -54,12 +66,15 @@ defmodule Relaxir.Ingredients do
 
   def get_ingredient!(id) do
     Ingredient
-    |> preload([:recipes, :food])
+    |> preload([:recipes, :food, [parent_ingredient: :parent_ingredient, child_ingredients: :child_ingredients]])
     |> Repo.get!(id)
   end
 
+  # We only expecet there to ever be 3 levels of ingredients and not arbitrary levels
   def get_ingredient_by_name!(name) do
-    Repo.get_by(Ingredient, name: name)
+    Ingredient
+    |> preload([parent_ingredient: :parent_ingredient])
+    |> Repo.get_by(name: name)
   end
 
   def get_ingredients_by_name!(names) do

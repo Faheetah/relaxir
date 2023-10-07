@@ -46,6 +46,8 @@ defmodule RelaxirWeb.IngredientController do
   end
 
   def create(conn, %{"ingredient" => ingredient_params}) do
+    ingredient_params = maybe_add_parent_ingredient_id(ingredient_params)
+
     case Ingredients.create_ingredient(ingredient_params) do
       {:ok, ingredient} ->
         redirect(conn, to: Routes.ingredient_path(conn, :show, ingredient))
@@ -54,6 +56,15 @@ defmodule RelaxirWeb.IngredientController do
         render(conn, "new.html", changeset: changeset)
     end
   end
+
+  defp maybe_add_parent_ingredient_id(ingredient = %{"parent_ingredient_name" => name}) do
+    case Ingredients.get_ingredient_by_name!(name) do
+      nil -> ingredient
+      %{id: id} -> Map.put(ingredient, "parent_ingredient_id", id)
+    end
+  end
+
+  defp maybe_add_parent_ingredient_id(ingredient), do: ingredient
 
   def show(conn, %{"id" => id}) do
     current_user = conn.assigns.current_user
@@ -70,6 +81,8 @@ defmodule RelaxirWeb.IngredientController do
 
   def update(conn, %{"id" => id, "ingredient" => ingredient_params}) do
     ingredient = Ingredients.get_ingredient!(id)
+
+    ingredient_params = maybe_add_parent_ingredient_id(ingredient_params)
 
     case Ingredients.update_ingredient(ingredient, ingredient_params) do
       {:ok, ingredient} ->
