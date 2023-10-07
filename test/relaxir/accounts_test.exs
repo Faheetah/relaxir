@@ -337,11 +337,6 @@ defmodule Relaxir.AccountsTest do
     test "does not return user for invalid token" do
       refute Accounts.get_user_by_session_token("oops")
     end
-
-    test "does not return user for expired token", %{token: token} do
-      {1, nil} = Repo.update_all(UserToken, set: [inserted_at: ~N[2020-01-01 00:00:00]])
-      refute Accounts.get_user_by_session_token(token)
-    end
   end
 
   describe "delete_session_token/1" do

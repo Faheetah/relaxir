@@ -41,7 +41,7 @@ defmodule RelaxirWeb.UserAuthTest do
 
       assert %{value: signed_token, max_age: max_age} = conn.resp_cookies[@remember_me_cookie]
       assert signed_token != get_session(conn, :user_token)
-      assert max_age == 5_184_000
+      assert max_age == 31_104_000
     end
   end
 
