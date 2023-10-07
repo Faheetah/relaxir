@@ -1,91 +1,114 @@
 <%= form_for @changeset, @action, fn f -> %>
-  <%= if @changeset.action do %>
-    <div class="alert alert-danger">
-      <p>Oops, something went wrong! Please check the errors below.</p>
+<div class="space-y-8">
+  <div>
+    <div class="inline w-full">
+    <%= text_input f, :title, placeholder: "Name a recipe", class: "w-full placeholder:text-neutral-400 placeholder:font-thin h-12 text-2xl font-medium border-0 border-b outline-0 focus:border-amber-500 inline" %>
     </div>
-  <% end %>
-
-  <div class="my-4">
-  <%= label f, :title %>
-  <%= text_input f, :title %>
-  <%= error_tag f, :title %>
+    <%= error_tag f, :title %>
   </div>
 
-  <div class="my-4">
-  <%= label f, :description %>
-  <%= textarea f, :description, class: "w-2/4 h-20" %>
-  <%= error_tag f, :description %>
+  <div>
+    <%= label f, :description, class: "block space-x-2" do %>
+      <div class="font-bold text-lg inline">Description</div>
+        <div class="italic inline text-sm font-thin text-neutral-600">
+          (displays on the front page)
+        </div>
+    <% end %>
+    <%= textarea f, :description, class: "w-full h-24 p-2 resize-none overflow-hidden overscroll-none outline-0 focus:border-amber-500 border-1", maxlength: 256 %>
+    <%= error_tag f, :description %>
   </div>
 
-  <div class="my-4">
-  <%= label f, :image_filename %>
-  <%= text_input f, :image_filename %>
-  <%= error_tag f, :image_filename %>
+  <div>
+    <%= label f, :published, class: "text-lg font-bold mr-2" %>
+    <%= checkbox f, :published, class: "peer h-4 w-4" %>
   </div>
 
-  <div class="my-4">
-  <%= checkbox f, :published, class: "peer hidden" %>
-  <%= label f, :published, class: "px-2 py-1 bg-neutral-200 peer-checked:bg-green-500 select-none cursor-pointer" %>
+
+  <div>
+    <div class="font-bold text-lg mb-3">
+      Tags
+    </div>
+
+    <div class="lg:space-x-2 leading-10">
+      <span>
+      <%= checkbox f, :gluten_free, class: "peer hidden" %>
+      <%= label f, :gluten_free, class: "px-4 py-2 font-medium rounded-full bg-neutral-700 peer-checked:bg-green-800 text-white select-none cursor-pointer" %>
+      </span>
+
+      <span>
+      <%= checkbox f, :keto, class: "peer hidden" %>
+      <%= label f, :keto, class: "px-4 py-2 font-medium rounded-full bg-neutral-700 peer-checked:bg-green-800 text-white select-none cursor-pointer" %>
+      </span>
+
+      <span>
+      <%= checkbox f, :vegetarian, class: "peer hidden" %>
+      <%= label f, :vegetarian, class: "px-4 py-2 rounded-full font-medium bg-neutral-700 peer-checked:bg-green-800 text-white select-none cursor-pointer" %>
+      </span>
+
+      <span>
+      <%= checkbox f, :vegan, class: "peer hidden" %>
+      <%= label f, :vegan, class: "px-4 py-2 font-medium rounded-full bg-neutral-700 peer-checked:bg-green-800 text-white select-none cursor-pointer" %>
+      </span>
+
+      <span>
+      <%= checkbox f, :spicy, class: "peer hidden" %>
+      <%= label f, :spicy, class: "px-4 py-2 font-medium rounded-full bg-neutral-700 peer-checked:bg-green-800 text-white select-none cursor-pointer" %>
+      </span>
+    </div>
   </div>
 
-  <div class="my-4">
-  <span>
-  <%= checkbox f, :gluten_free, class: "peer hidden" %>
-  <%= label f, :gluten_free, class: "px-4 py-1 bg-neutral-200 peer-checked:bg-green-500 select-none cursor-pointer" %>
-  </span>
+  <div>
+    <%= label f, :categories, class: "block space-x-2" do %>
+      <div class="font-bold text-lg inline">Categories</div>
+      <div class="italic inline text-sm font-thin text-neutral-600">
+        (comma separated)
+      </div>
+    <% end %>
 
-  <span>
-  <%= checkbox f, :keto, class: "peer hidden" %>
-  <%= label f, :keto, class: "px-4 py-1 bg-neutral-200 peer-checked:bg-green-500 select-none cursor-pointer" %>
-  </span>
-
-  <span>
-  <%= checkbox f, :vegetarian, class: "peer hidden" %>
-  <%= label f, :vegetarian, class: "px-4 py-1 bg-neutral-200 peer-checked:bg-green-500 select-none cursor-pointer" %>
-  </span>
-
-  <span>
-  <%= checkbox f, :vegan, class: "peer hidden" %>
-  <%= label f, :vegan, class: "px-4 py-1 bg-neutral-200 peer-checked:bg-green-500 select-none cursor-pointer" %>
-  </span>
-
-  <span>
-  <%= checkbox f, :spicy, class: "peer hidden" %>
-  <%= label f, :spicy, class: "px-4 py-1 bg-neutral-200 peer-checked:bg-green-500 select-none cursor-pointer" %>
-  </span>
+    <%= categories_input f, :categories, class: "w-full p-2 outline-0 focus:border-amber-500 border-1" %>
+    <%= error_tag f, :categories %>
   </div>
 
-  <div class="my-4">
-  <%= label f, :categories %>
-  <h6><i>Comma separated list of categories</i></h6>
-  <%= categories_input f, :categories %>
-  <%= error_tag f, :categories %>
+<div class="lg:grid grid-cols-3 gap-4">
+  <div>
+    <%= label f, :ingredients, class: "block space-x-2" do %>
+      <div class="font-bold text-lg inline">Ingredients</div>
+        <div class="italic inline text-sm font-thin text-neutral-600">
+          (optional note, i.e. 2 cups flour, sifted)
+        </div>
+    <% end %>
+
+    <%= ingredients_input f, :ingredients, @ingredients, class: "p-2 w-full h-[32rem] outline-0 focus:border-amber-500 border-1" %>
+    <%= error_tag f, :recipe_ingredients %>
+    <%= error_tag f, :ingredients %>
   </div>
 
-  <div class="my-4">
-  <div class="text-xl font-bold my-4"><%= label f, :ingredients %></div>
-  <div class="my-2">
-    <i>Ingredients with optional amounts and notes, i.e. "2 cups flour, sifted"</i>
-  </div>
-  <%= ingredients_input f, :ingredients, @ingredients, class: "w-3/4 h-80" %>
-  <%= error_tag f, :recipe_ingredients %>
-  <%= error_tag f, :ingredients %>
+  <div class="col-span-2">
+    <div>
+      <%= label f, :directions, class: "block space-x-2" do %>
+        <div class="font-bold text-lg inline">Directions</div>
+        <div class="italic inline text-sm font-thin text-neutral-600">
+          (steps separated by new lines)
+        </div>
+      <% end %>
+
+      <%= textarea f, :directions, class: "p-2 w-full h-[32rem] outline-0 focus:border-amber-500 border-1" %>
+      <%= error_tag f, :directions %>
+    </div>
 
   </div>
+</div>
 
-  <div class="my-4">
-  <div class="text-xl font-bold my-4"><%= label f, :directions %></div>
-  <%= textarea f, :directions, class: "w-3/4 h-80" %>
-  <%= error_tag f, :directions %>
-  </div>
+    <div>
+      <%= label f, :note, class: "block space-x-2" do %>
+        <div class="font-bold text-lg inline">Note</div>
+      <% end %>
 
-  <div class="my-4">
-  <div class="text-xl font-bold my-4"><%= label f, :note %></div>
-  <%= textarea f, :note, class: "w-3/4 h-80" %>
-  <%= error_tag f, :note %>
-  </div>
+      <%= textarea f, :note, class: "p-2 w-full h-48 outline-0 focus:border-amber-500 border-1" %>
+      <%= error_tag f, :note %>
+    </div>
 
-  <div class="my-4">
-    <%= submit "Save", class: "border-blue-400 border rounded bg-blue-100 p-2" %>
+  <div class="pb-24 w-full lg:w-2/5 m-auto">
+    <%= submit "Save Recipe", class: "w-full text-4xl tracking-wider py-4 rounded bg-neutral-700 text-neutral-200 select-none cursor-pointer hover:bg-neutral-600" %>
   </div>
 <% end %>

@@ -11,9 +11,9 @@ defmodule RelaxirWeb.RecipeView do
     Phoenix.HTML.Form.checkbox(form, field, value: value)
   end
 
-  def categories_input(form, field, _opts \\ []) do
+  def categories_input(form, field, opts \\ []) do
     categories = Phoenix.HTML.Form.input_value(form, field)
-    Phoenix.HTML.Form.text_input(form, field, value: format_names_to_text(categories, ", "))
+    Phoenix.HTML.Form.text_input(form, field, Keyword.merge(opts, [value: format_names_to_text(categories, ", ")]))
   end
 
   def ingredients_input(form, field, ingredients, opts \\ []) do

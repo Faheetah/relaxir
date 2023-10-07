@@ -1,13 +1,20 @@
-<div class="mt-4 lg:grid grid-cols-2 lg:shadow-lg lg:bg-neutral-50 lg:text-black lg:w-5/6 mx-auto relative">
+<div class="lg:umt-4 lg:grid grid-cols-2 lg:shadow-lg lg:bg-neutral-50 lg:text-black lg:w-5/6 mx-auto relative">
   <%= if @current_user && @current_user.is_admin do %>
-  <div class="absolute top-0 left-8 space-x-2 mt-2 text-lg">
+  <div class="hidden lg:visible absolute top-0 left-8 space-x-2 mt-2 text-lg">
     <div class="text-neutral-400 hover:text-neutral-600 hover:underline underline-offset-2 inline"><%= link "Edit", to: Routes.recipe_path(@conn, :edit, @recipe), class: "py-2 pr-2" %></div>
     <div class="text-red-400 hover:text-red-600 hover:underline underline-offset-2 inline"><%= link "Delete", to: Routes.recipe_path(@conn, :delete, @recipe), method: :delete, data: [confirm: "Are you sure?"], class: "py-2 pr-2" %></div>
   </div>
   <% end %>
 
   <div class="col p-8 self-center">
-    <div class="text-4xl mb-4"><%= String.capitalize(@recipe.title) %></div>
+    <div class="text-3xl lg:text-4xl mb-4">
+      <%= String.capitalize(@recipe.title) %>
+
+      <div class="lg:hidden space-x-2 mt-2 text-lg">
+        <div class="text-neutral-400 hover:text-neutral-600 hover:underline underline-offset-2 inline"><%= link "Edit", to: Routes.recipe_path(@conn, :edit, @recipe), class: "py-2 pr-2" %></div>
+        <div class="text-red-400 hover:text-red-600 hover:underline underline-offset-2 inline"><%= link "Delete", to: Routes.recipe_path(@conn, :delete, @recipe), method: :delete, data: [confirm: "Are you sure?"], class: "py-2 pr-2" %></div>
+      </div>
+    </div>
 
 
 
@@ -37,17 +44,20 @@
   <div class="col print:hidden">
     <div class="relative">
         <div class="absolute right-2 bottom-3">
-          <%= if @recipe.gluten_free do %>
-          <span class="rounded-full ml-1 text-sm border-white border-2 bg-green-800 text-neutral-100 font-bold py-1 px-2 cursor-help" title="Gluten Free">GF</span>
-          <% end %>
           <%= if @recipe.vegetarian do %>
           <span class="rounded-full ml-1 text-sm border-white border-2 bg-green-800 text-neutral-100 font-bold py-1 px-2 cursor-help" title="Vegetarian">VG</span>
           <% end %>
           <%= if @recipe.vegan do %>
           <span class="rounded-full ml-1 text-sm border-white border-2 bg-green-800 text-neutral-100 font-bold py-1 px-2 cursor-help" title="Vegan">VE</span>
           <% end %>
+          <%= if @recipe.gluten_free do %>
+          <span class="rounded-full ml-1 text-sm border-white border-2 bg-yellow-800 text-neutral-100 font-bold py-1 px-2 cursor-help" title="Gluten Free">GF</span>
+          <% end %>
           <%= if @recipe.keto do %>
-          <span class="rounded-full ml-1 text-sm border-white border-2 bg-green-800 text-neutral-100 font-bold py-1 px-3 cursor-help" title="Keto">K</span>
+          <span class="rounded-full ml-1 text-sm border-white border-2 bg-yellow-800 text-neutral-100 font-bold py-1 px-3 cursor-help" title="Keto">K</span>
+          <% end %>
+          <%= if @recipe.spicy do %>
+          <span class="rounded-full ml-1 text-sm tracking-tighter border-white border-2 bg-red-800 text-neutral-100 font-bold py-1 px-3 cursor-help" title="Keto">HOT</span>
           <% end %>
         </div>
 
