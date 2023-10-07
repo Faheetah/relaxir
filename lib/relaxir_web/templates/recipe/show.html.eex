@@ -1,6 +1,6 @@
 <div class="lg:umt-4 lg:grid grid-cols-2 lg:shadow-lg lg:bg-neutral-50 lg:text-black lg:w-5/6 mx-auto relative">
   <%= if @current_user && @current_user.is_admin do %>
-  <div class="hidden lg:visible absolute top-0 left-8 space-x-2 mt-2 text-lg">
+  <div class="hidden lg:block absolute top-0 left-8 space-x-2 mt-2 text-lg">
     <div class="text-neutral-400 hover:text-neutral-600 hover:underline underline-offset-2 inline"><%= link "Edit", to: Routes.recipe_path(@conn, :edit, @recipe), class: "py-2 pr-2" %></div>
     <div class="text-red-400 hover:text-red-600 hover:underline underline-offset-2 inline"><%= link "Delete", to: Routes.recipe_path(@conn, :delete, @recipe), method: :delete, data: [confirm: "Are you sure?"], class: "py-2 pr-2" %></div>
   </div>
