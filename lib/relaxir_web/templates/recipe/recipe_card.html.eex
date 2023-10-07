@@ -16,7 +16,7 @@
           <span class="rounded-full ml-1 text-sm border-neutral-200 border-2 bg-yellow-800 text-neutral-100 font-bold py-1 px-3 cursor-help" title="Keto">K</span>
           <% end %>
           <%= if @recipe.spicy do %>
-          <span class="rounded-full ml-1 text-sm tracking-tighter border-neutral-200 border-2 bg-red-800 text-neutral-100 font-bold py-1 px-3 cursor-help" title="Keto">HOT</span>
+          <span class="rounded-full ml-1 text-sm tracking-tighter border-neutral-200 border-2 bg-red-800 text-neutral-100 font-bold py-1 px-3 cursor-help" title="Spicy">HOT</span>
           <% end %>
         </div>
       <div>
