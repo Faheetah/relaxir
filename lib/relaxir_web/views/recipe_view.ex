@@ -41,17 +41,17 @@ defmodule RelaxirWeb.RecipeView do
     |> Enum.reject(&is_nil(&1))
     |> Enum.join(" ")
     |> String.trim()
-    |> (fn i ->
-          if is_nil(note) do
-            i
-          else
-            "#{i}, #{note}"
-          end
-        end).()
+    |> maybe_add_note(note)
   end
+
+  def maybe_add_note(i, nil), do: i
+  def maybe_add_note(i, note), do: "#{i}, #{note}"
+
 
   def parse_fraction(nil), do: nil
 
+  # What does this do lol?
+  # Looks like it turns a float into a human readable fraction
   def parse_fraction(amount) do
     # covers up to 1..100/1..100 reliably
     # can possibly cover up to 1/999999 reasonably well
