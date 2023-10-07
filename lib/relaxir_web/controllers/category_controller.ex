@@ -15,4 +15,11 @@ defmodule RelaxirWeb.CategoryController do
     categories = Categories.list_categories()
     render(conn, "all.html", categories: categories, current_user: current_user)
   end
+
+  def show(conn, %{"name" => name}) do
+    current_user = conn.assigns.current_user
+    category = Categories.get_category_by_name!(name)
+    recipes = Categories.latest_recipes_for_category(category, 20)
+    render(conn, "show.html", category: category, recipes: recipes, current_user: current_user)
+  end
 end

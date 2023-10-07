@@ -1,8 +1,3 @@
 <div class="text-6xl text-center font-medium mb-16"><%= String.capitalize(@category.name) %></div>
 
 <%= render(RelaxirWeb.RecipeView, "recipe_list.html", current_user: @current_user, recipes: @recipes, conn: @conn, show: false) %>
-
-<%= if @current_user && @current_user.is_admin do %>
-<span><%= link "Edit", to: Routes.category_path(@conn, :edit, @category) %></span>
-<span><%= link "Back", to: Routes.category_path(@conn, :index) %></span>
-<% end %>
