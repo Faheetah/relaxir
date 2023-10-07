@@ -12,6 +12,6 @@ All Categories
 
 <div class="grid grid-cols-4 gap-4">
 <%= for category <- @categories do %>
-  <%= link String.capitalize(category.name), to: Routes.category_path(@conn, :show, category.name), class: "p-2 border rounded hover:bg-green-100 hover:border-green-600 border-gray-400 bg-gray-100" %>
+  <%= link String.upcase(category.name), to: Routes.category_path(@conn, :show, category.name), class: "p-2 border rounded hover:bg-green-100 hover:border-green-600 border-gray-400 bg-gray-100" %>
 <% end %>
 </div>
