@@ -19,8 +19,17 @@ defmodule RelaxirWeb.Router do
     plug :meta_defaults
   end
 
+  @default_meta [
+    %{property: "og:ttl", content: "600"},
+    %{property: "og:type", content: "image"},
+    %{property: "og:title", content: "Relax+Dine"},
+    %{property: "og:description", content: "Fine dining and practical recipes."},
+    %{property: "og:url", content: "https://www.relaxanddine.com"},
+    %{property: "og:image", content: "/images/default-full.jpg"}
+  ]
+
   def meta_defaults(conn, _opts) do
-    assign(conn, :meta_attrs, [])
+    assign(conn, :meta_attrs, @default_meta)
   end
 
   pipeline :live_browser do
