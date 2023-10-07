@@ -9,6 +9,7 @@ defmodule Relaxir.Ingredients.Ingredient do
 
   schema "ingredients" do
     field :name, :string
+    field :singular, :string
     field :description, :string
     has_many :child_ingredients, __MODULE__, foreign_key: :parent_ingredient_id
     has_many :recipe_ingredients, RecipeIngredient
@@ -28,7 +29,7 @@ defmodule Relaxir.Ingredients.Ingredient do
       end
 
     ingredient
-    |> cast(attrs, [:name, :description, :parent_ingredient_id])
+    |> cast(attrs, [:name, :singular, :description, :parent_ingredient_id])
     |> cast_assoc(:recipe_ingredients)
     |> cast_assoc(:food)
     |> cast_assoc(:parent_ingredient)

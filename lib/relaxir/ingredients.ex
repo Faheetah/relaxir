@@ -87,6 +87,17 @@ defmodule Relaxir.Ingredients do
     |> Repo.all()
   end
 
+  def get_ingredients_by_singular_name!(names) do
+    names = Enum.map(names, &Inflex.singularize/1)
+
+    query =
+      from ingredient in Ingredient,
+        where: ingredient.singular in ^names,
+        select: ingredient
+
+    found = Repo.all(query)
+  end
+
   def create_ingredient(attrs) do
     %Ingredient{}
     |> Ingredient.changeset(attrs)
@@ -99,23 +110,6 @@ defmodule Relaxir.Ingredients do
       error ->
         error
     end
-  end
-
-  def create_ingredients(attrs) do
-    now = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
-    timestamps = %{inserted_at: now, updated_at: now}
-
-    Repo.insert_all(Ingredient, Enum.map(attrs, &Map.merge(&1, timestamps)))
-    |> Enum.map(fn ingredient ->
-      case ingredient do
-        {:ok, ingredient} ->
-          insert_cache(ingredient)
-          {:ok, ingredient}
-
-        error ->
-          error
-      end
-    end)
   end
 
   def update_ingredient(%Ingredient{} = ingredient, attrs) do

@@ -1,5 +1,14 @@
 <div class="text-4xl mb-8"><%= String.capitalize(@ingredient.name) %></div>
 
+<%= if @ingredient.singular do %>
+<div class="mb-8">Singular: <%= String.capitalize(@ingredient.singular) %></div>
+<% else %>
+<div class="mb-8 underline text-amber-600 underline-offset-2">
+<%= link "Warning! Singular not defined, please define it!", to: Routes.ingredient_path(@conn, :edit, @ingredient) %>
+</div>
+<% end %>
+
+
 <%= if @ingredient.parent_ingredient do %>
 <%= if @ingredient.parent_ingredient.parent_ingredient do %>
 <div><%= @ingredient.parent_ingredient.parent_ingredient.name %> > <%= @ingredient.parent_ingredient.name %> > <%= @ingredient.name %></div>
@@ -18,6 +27,11 @@
 <%= if @current_user && @current_user.is_admin do %>
 <div><%= button "Add to List", to: Routes.ingredient_path(@conn, :select_list, @ingredient), method: :get, class: "btn-tiny" %></div>
 <div><%= link "Edit", to: Routes.ingredient_path(@conn, :edit, @ingredient) %></div>
+<%= if @recipes == [] do %>
+<div class="text-red-600"><%= link "Delete", to: Routes.ingredient_path(@conn, :delete, @ingredient), method: :delete, data: [confirm: "Yes?"] %></div>
+<% else %>
+<div class="text-yellow-600">Unlink all recipes to delete an ingredient</div>
+<% end %>
 <div><%= link "Back", to: Routes.ingredient_path(@conn, :index) %></div>
 <% end %>
 </div>
