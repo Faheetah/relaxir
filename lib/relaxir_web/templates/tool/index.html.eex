@@ -1,4 +1,6 @@
-<h1>Tools</h1>
+<div class="text-4xl mb-8">Tools</div>
 
-<h4><%= link "Dishers", to: Routes.tool_path(@conn, :show, "dishers") %></h4>
-<h4><%= link "Conversions", to: Routes.tool_path(@conn, :show, "conversions") %></h4>
+<div class="space-y-2">
+<div class="text-lg"><%= link "Disher size charts", to: Routes.tool_path(@conn, :show, "dishers") %></div>
+<div class="text-lg"><%= link "Common measurement conversions", to: Routes.tool_path(@conn, :show, "conversions") %></div>
+</div>
