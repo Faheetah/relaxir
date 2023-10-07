@@ -95,16 +95,16 @@ defmodule RelaxirWeb.RecipeController do
   def update(conn, %{"id" => id, "recipe" => recipe_params}) do
     recipe = Recipes.get_recipe!(id)
 
-    ingredients =
-      recipe_params
-      |> RecipeParser.parse_attrs()
-      |> Recipes.map_ingredients()
-
     case Recipes.update_recipe(recipe, RecipeParser.parse_attrs(recipe_params)) do
       {:ok, recipe} ->
         redirect(conn, to: Routes.recipe_path(conn, :show, recipe))
 
       {:error, %Ecto.Changeset{} = changeset} ->
+        # this is only for rendering purposes on errors, could we move this into `recipe`?
+        ingredients =
+            recipe_params
+            |> RecipeParser.parse_attrs()
+            |> Recipes.map_ingredients()
         render(conn, "edit.html", recipe: recipe, ingredients: ingredients, changeset: %{changeset | action: :insert})
     end
   end

@@ -78,21 +78,13 @@ defmodule Relaxir.Ingredients do
   end
 
   def get_ingredients_by_name!(names) do
-    query =
-      from ingredient in Ingredient,
-        where: ingredient.name in ^names,
-        select: ingredient
-
-    query
-    |> Repo.all()
-  end
-
-  def get_ingredients_by_singular_name!(names) do
-    names = Enum.map(names, &Inflex.singularize/1)
+    singular_names = Enum.map(names, &Inflex.singularize/1)
 
     query =
       from ingredient in Ingredient,
-        where: ingredient.singular in ^names,
+        where: ingredient.name in ^singular_names,
+        or_where: ingredient.singular in ^singular_names,
+        or_where: ingredient.name in ^names,
         select: ingredient
 
     found = Repo.all(query)
@@ -100,7 +92,7 @@ defmodule Relaxir.Ingredients do
 
   def create_ingredient(attrs) do
     %Ingredient{}
-    |> Ingredient.changeset(attrs)
+    |> Ingredient.changeset(maybe_singularize_attrs(attrs))
     |> Repo.insert()
     |> case do
       {:ok, ingredient} ->
@@ -111,6 +103,9 @@ defmodule Relaxir.Ingredients do
         error
     end
   end
+
+  def maybe_singularize_attrs(attrs = %{"singular" => ""}), do: Map.put(attrs, "singular", Inflex.singularize(attrs["name"]))
+  def maybe_singularize_attrs(attrs), do: attrs
 
   def update_ingredient(%Ingredient{} = ingredient, attrs) do
     ingredient

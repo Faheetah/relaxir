@@ -183,6 +183,7 @@ defmodule Relaxir.Recipes do
     Invert.delete(Relaxir.Recipes.Recipe, :title, {recipe.title, [recipe.title, recipe.id]})
   end
 
+  # Ingredient suggestions are currently unused, will revive later without USDA
   def get_recipe_ingredient_suggestions(changeset) do
     changeset
     |> get_recipe_ingredient_names()

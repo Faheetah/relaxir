@@ -101,8 +101,16 @@ defmodule Relaxir.Ingredients.Parser do
     end
   end
 
+  defp match_existing_ingredient(i, ingredient) do
+    if i.singular == nil do
+      i.name == ingredient.name || i.singular == ingredient.name
+    else
+      i.singular == Inflex.singularize(ingredient.name)
+    end
+  end
+
   defp match_existing_ingredients(ingredient, fetched_ingredients) do
-    case Enum.find(fetched_ingredients, fn i -> i.name == ingredient.name end) do
+    case Enum.find(fetched_ingredients, fn i -> match_existing_ingredient(i, ingredient) end) do
       nil -> %{ingredient: ingredient}
       ingredient -> %{ingredient_id: ingredient.id}
     end

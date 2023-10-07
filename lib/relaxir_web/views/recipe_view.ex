@@ -37,16 +37,27 @@ defmodule RelaxirWeb.RecipeView do
         true -> Inflex.singularize(unit.name)
       end
 
-    [parse_fraction(amount), unit, recipe_ingredient.ingredient.name]
+    [parse_fraction(amount), unit, inflex_ingredient(recipe_ingredient.ingredient, amount)]
     |> Enum.reject(&is_nil(&1))
     |> Enum.join(" ")
     |> String.trim()
     |> maybe_add_note(note)
   end
 
+  def inflex_ingredient(ingredient, amount) do
+    if amount in [1.0, nil] do
+      if Map.get(ingredient, :singular) in ["", nil] do
+        ingredient.name
+      else
+        ingredient.singular
+      end
+    else
+      ingredient.name
+    end
+  end
+
   def maybe_add_note(i, nil), do: i
   def maybe_add_note(i, note), do: "#{i}, #{note}"
-
 
   def parse_fraction(nil), do: nil
 
