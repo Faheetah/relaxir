@@ -10,8 +10,36 @@
   <% end %>
 </div>
 
-<div class="grid grid-cols-4 gap-4">
-<%= for ingredient <- @ingredients do %>
-  <%= link String.capitalize(ingredient.name), to: Routes.ingredient_path(@conn, :show, ingredient.id), class: "p-2 border rounded hover:bg-green-100 hover:border-green-600 border-gray-400 bg-gray-100" %>
-<% end %>
+<div class="grid grid-cols-4 gap-4 text-lg font-medium">
+  <%= for ingredient <- @ingredients do %>
+    <div class="flex">
+        <%= link to: Routes.ingredient_path(@conn, :show, ingredient.id), class: "p-3 bg-neutral-100 hover:bg-neutral-200 flex-grow" do %>
+          <%= if ingredient.parent_ingredient do %>
+            <%= if ingredient.parent_ingredient.parent_ingredient do %>
+              <div class="inline text-neutral-400">
+                <%= String.capitalize(ingredient.parent_ingredient.parent_ingredient.name) %> >
+              </div>
+            <% end %>
+
+            <div class="inline text-neutral-400">
+              <%= String.capitalize(ingredient.parent_ingredient.name) %> >
+            </div>
+          <% end %>
+
+          <%= String.capitalize(ingredient.name) %>
+
+          <%= if !ingredient.singular do %>
+            <div class="text-red-700 inline text-sm align-super">!</div>
+          <% end %>
+        <% end %>
+
+        <%= link to: Routes.ingredient_path(@conn, :edit, ingredient), class: "p-3 text-yellow-500 bg-yellow-100 hover:bg-yellow-200" do %>
+          E
+        <% end %>
+
+        <%= link to: Routes.ingredient_path(@conn, :delete, ingredient), method: :delete, data: [confirm: "Yes?"], class: "p-3 text-red-400 bg-red-100 hover:bg-red-200" do %>
+          X
+        <% end %>
+    </div>
+  <% end %>
 </div>

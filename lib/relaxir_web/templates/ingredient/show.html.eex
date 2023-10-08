@@ -1,37 +1,52 @@
-<div class="text-4xl mb-8"><%= String.capitalize(@ingredient.name) %></div>
+<div class="space-y-8">
 
-<%= if @ingredient.singular do %>
-<div class="mb-8">Singular: <%= String.capitalize(@ingredient.singular) %></div>
-<% else %>
-<div class="mb-8 underline text-amber-600 underline-offset-2">
-<%= link "Warning! Singular not defined, please define it!", to: Routes.ingredient_path(@conn, :edit, @ingredient) %>
+  <div class="text-4xl mb-8">
+    <div class="font-thin">
+      <%= if @ingredient.parent_ingredient do %>
+        <%= if @ingredient.parent_ingredient.parent_ingredient do %>
+          <%= link to: Routes.ingredient_path(@conn, :show, @ingredient.parent_ingredient.parent_ingredient), class: "text-neutral-500" do %>
+            <%= String.capitalize(@ingredient.parent_ingredient.parent_ingredient.name) %> /
+          <% end %>
+        <% end %>
+
+        <%= link to: Routes.ingredient_path(@conn, :show, @ingredient.parent_ingredient), class: "text-neutral-500" do %>
+          <%= String.capitalize(@ingredient.parent_ingredient.name) %> /
+        <% end %>
+      <% end %>
+
+      <%= String.capitalize(@ingredient.name) %>
+
+      <%= if @ingredient.singular do %>
+        <div class="inline text-neutral-500">
+          (<%= String.capitalize(@ingredient.singular) %>)
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <div>
+  <%= if !@ingredient.singular do %>
+    <%= link to: Routes.ingredient_path(@conn, :edit, @ingredient), class: "mb-8 underline text-amber-600 underline-offset-2 font-medium text-lg p-4 bg-amber-100" do %>
+      Warning! Singular not defined, please define it!
+    <% end %>
+  <% end %>
+  </div>
+
+<div class="space-x-4 font-medium">
+  <%= if @current_user && @current_user.is_admin do %>
+    <div class="inline p-3 bg-neutral-100"><%= link "Edit", to: Routes.ingredient_path(@conn, :edit, @ingredient) %></div>
+
+    <%= if @recipes == [] do %>
+      <div class="text-red-600 inline bg-red-100 p-3"><%= link "Delete", to: Routes.ingredient_path(@conn, :delete, @ingredient), method: :delete, data: [confirm: "Yes?"] %></div>
+    <% else %>
+      <div class="text-amber-600 p-3 inline bg-amber-100">Unlink all recipes to delete an ingredient</div>
+    <% end %>
+  <% end %>
 </div>
-<% end %>
 
-
-<%= if @ingredient.parent_ingredient do %>
-<%= if @ingredient.parent_ingredient.parent_ingredient do %>
-<div><%= @ingredient.parent_ingredient.parent_ingredient.name %> > <%= @ingredient.parent_ingredient.name %> > <%= @ingredient.name %></div>
-<% else %>
-<div><%= @ingredient.parent_ingredient.name %> > <%= @ingredient.name %></div>
-<% end %>
-<% end %>
 
 <%= if @ingredient.description do %>
 <%= render_markdown @ingredient.description %>
 <% end %>
 
 <%= render(RelaxirWeb.RecipeView, "recipe_list.html", current_user: @current_user, recipes: @recipes, conn: @conn, show: false) %>
-
-<div class="mt-8">
-<%= if @current_user && @current_user.is_admin do %>
-<div><%= button "Add to List", to: Routes.ingredient_path(@conn, :select_list, @ingredient), method: :get, class: "btn-tiny" %></div>
-<div><%= link "Edit", to: Routes.ingredient_path(@conn, :edit, @ingredient) %></div>
-<%= if @recipes == [] do %>
-<div class="text-red-600"><%= link "Delete", to: Routes.ingredient_path(@conn, :delete, @ingredient), method: :delete, data: [confirm: "Yes?"] %></div>
-<% else %>
-<div class="text-yellow-600">Unlink all recipes to delete an ingredient</div>
-<% end %>
-<div><%= link "Back", to: Routes.ingredient_path(@conn, :index) %></div>
-<% end %>
-</div>

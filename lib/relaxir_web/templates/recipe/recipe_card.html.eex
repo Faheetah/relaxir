@@ -1,5 +1,5 @@
-<div class="mb-12">
-  <div class="-mt-2 mx-6 lg:mx-0">
+<div class="mb-8">
+  <div class="mx-6 lg:mx-0">
   <%= link to: Routes.recipe_path(@conn, :show, @recipe) do %>
     <div class="relative">
         <div class="absolute right-2 bottom-3">

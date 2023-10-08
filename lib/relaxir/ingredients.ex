@@ -11,7 +11,7 @@ defmodule Relaxir.Ingredients do
 
   def list_ingredients do
     Ingredient
-    |> preload([[child_ingredients: :child_ingredients]])
+    |> preload([[parent_ingredient: :parent_ingredient, child_ingredients: :child_ingredients]])
     |> order_by(asc: :name)
     |> Repo.all()
   end

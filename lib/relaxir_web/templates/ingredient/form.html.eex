@@ -1,27 +1,37 @@
 <%= form_for @changeset, @action, fn f -> %>
+<div class="space-y-8">
   <%= if @changeset.action do %>
     <div class="alert alert-danger">
       <p>Oops, something went wrong! Please check the errors below.</p>
     </div>
   <% end %>
 
-  <%= label f, :name %>
-  <%= text_input f, :name %>
-  <%= error_tag f, :name %>
-
-  <%= label f, :singular %>
-  <%= text_input f, :singular %>
-  <%= error_tag f, :singular %>
-
-  <%= label f, :parent_ingredient_name %>
-  <%= text_input f, :parent_ingredient_name %>
-  <%= error_tag f, :parent_ingredient_name %>
-
-  <%= label f, :description %>
-  <%= textarea f, :description %>
-  <%= error_tag f, :description %>
+  <div>
+    <%= label f, :name, class: "block text-lg font-medium" %>
+    <%= text_input f, :name, class: "px-2 py-1 w-1/4" %>
+    <%= error_tag f, :name %>
+  </div>
 
   <div>
-    <%= submit "Save" %>
+    <%= label f, :singular, class: "block text-lg font-medium" %>
+    <%= text_input f, :singular, class: "px-2 py-1 w-1/4" %>
+    <%= error_tag f, :singular %>
   </div>
+
+  <div>
+    <%= label f, :parent_ingredient_name, class: "block text-lg font-medium" %>
+    <%= parent_ingredient_input f, :parent_ingredient_name, class: "px-2 py-1 w-1/4" %>
+    <%= error_tag f, :parent_ingredient_name %>
+  </div>
+
+  <div>
+    <%= label f, :description, class: "block text-lg font-medium" %>
+    <%= textarea f, :description, class: "px-2 py-1 w-1/4 h-24" %>
+    <%= error_tag f, :description %>
+  </div>
+
+  <div>
+    <%= submit "Save", class: "bg-neutral-800 text-white py-3 px-6 text-xl font-medium tracking-wide" %>
+  </div>
+</div>
 <% end %>
