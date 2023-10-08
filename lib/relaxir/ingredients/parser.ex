@@ -102,6 +102,7 @@ defmodule Relaxir.Ingredients.Parser do
   end
 
   defp match_existing_ingredient(i, ingredient) do
+    IO.inspect {i, ingredient}
     if i.singular == nil do
       i.name == ingredient.name || i.singular == ingredient.name
     else
@@ -110,7 +111,8 @@ defmodule Relaxir.Ingredients.Parser do
   end
 
   defp match_existing_ingredients(ingredient, fetched_ingredients) do
-    case Enum.find(fetched_ingredients, fn i -> match_existing_ingredient(i, ingredient) end) do
+    # adding i.name == ingredient.name for cases that inflex does not work, i.e. "canned tomatoes", may have side effects?
+    case Enum.find(fetched_ingredients, fn i -> (match_existing_ingredient(i, ingredient) || i.name == ingredient.name) end) do
       nil -> %{ingredient: ingredient}
       ingredient -> %{ingredient_id: ingredient.id}
     end

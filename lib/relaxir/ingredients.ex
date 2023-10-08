@@ -9,11 +9,31 @@ defmodule Relaxir.Ingredients do
   # these ingredients are too common but insignificant, so we will exclude them
   @excluded_ingredient_names ["salt", "pepper", "oil"]
 
-  def list_ingredients do
+  def list_ingredients() do
     Ingredient
     |> preload([[parent_ingredient: :parent_ingredient, child_ingredients: :child_ingredients]])
     |> order_by(asc: :name)
     |> Repo.all()
+  end
+
+  def list_ingredients_missing_parent() do
+    query =
+      from i in Ingredient,
+      where: is_nil(i.parent_ingredient_id),
+      preload: [[parent_ingredient: :parent_ingredient, child_ingredients: :child_ingredients]],
+      order_by: [asc: :name]
+
+    Repo.all(query)
+  end
+
+  def list_ingredients_missing_singular() do
+    query =
+      from i in Ingredient,
+      where: is_nil(i.singular),
+      preload: [[parent_ingredient: :parent_ingredient, child_ingredients: :child_ingredients]],
+      order_by: [asc: :name]
+
+    Repo.all(query)
   end
 
   def top_ingredients(limit \\ 4) do
@@ -56,6 +76,7 @@ defmodule Relaxir.Ingredients do
       where: r.id == ri.recipe_id,
       order_by: [desc: r.inserted_at],
       select: r,
+      distinct: r,
       limit: ^limit
 
     top_recipes
@@ -87,7 +108,7 @@ defmodule Relaxir.Ingredients do
         or_where: ingredient.name in ^names,
         select: ingredient
 
-    found = Repo.all(query)
+    Repo.all(query)
   end
 
   def create_ingredient(attrs) do

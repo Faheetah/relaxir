@@ -10,10 +10,17 @@ defmodule RelaxirWeb.IngredientController do
     render(conn, "index.html", top_ingredients: top_ingredients, current_user: current_user)
   end
 
+  def all(conn, %{"show" => "singular"}) do
+    ingredients = Ingredients.list_ingredients_missing_singular()
+    render(conn, "all.html", ingredients: ingredients, current_user: conn.assigns.current_user)
+  end
+  def all(conn, %{"show" => "parent"}) do
+    ingredients = Ingredients.list_ingredients_missing_parent()
+    render(conn, "all.html", ingredients: ingredients, current_user: conn.assigns.current_user)
+  end
   def all(conn, _params) do
-    current_user = conn.assigns.current_user
     ingredients = Ingredients.list_ingredients()
-    render(conn, "all.html", ingredients: ingredients, current_user: current_user)
+    render(conn, "all.html", ingredients: ingredients, current_user: conn.assigns.current_user)
   end
 
   def new(conn, _params) do
