@@ -37,7 +37,7 @@
     <div class="inline p-3 bg-neutral-100"><%= link "Edit", to: Routes.ingredient_path(@conn, :edit, @ingredient) %></div>
 
     <%= if @recipes == [] do %>
-      <div class="text-red-600 inline bg-red-100 p-3"><%= link "Delete", to: Routes.ingredient_path(@conn, :delete, @ingredient), method: :delete, data: [confirm: "Yes?"] %></div>
+      <div class="text-red-600 inline bg-red-100 p-3"><%= link "Delete", to: Routes.ingredient_path(@conn, :delete, @ingredient), method: :delete %></div>
     <% else %>
       <div class="text-amber-600 p-3 inline bg-amber-100">Unlink all recipes to delete an ingredient</div>
     <% end %>
