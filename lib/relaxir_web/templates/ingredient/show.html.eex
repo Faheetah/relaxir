@@ -32,21 +32,36 @@
   <% end %>
   </div>
 
-<div class="space-x-4 font-medium">
-  <%= if @current_user && @current_user.is_admin do %>
-    <div class="inline p-3 bg-neutral-100"><%= link "Edit", to: Routes.ingredient_path(@conn, :edit, @ingredient) %></div>
+  <div class="space-x-4 font-medium">
+    <%= if @current_user && @current_user.is_admin do %>
+      <div class="inline p-3 bg-neutral-100"><%= link "Edit", to: Routes.ingredient_path(@conn, :edit, @ingredient) %></div>
 
-    <%= if @recipes == [] do %>
-      <div class="text-red-600 inline bg-red-100 p-3"><%= link "Delete", to: Routes.ingredient_path(@conn, :delete, @ingredient), method: :delete %></div>
-    <% else %>
-      <div class="text-amber-600 p-3 inline bg-amber-100">Unlink all recipes to delete an ingredient</div>
+      <%= if @recipes == [] do %>
+        <div class="text-red-600 inline bg-red-100 p-3"><%= link "Delete", to: Routes.ingredient_path(@conn, :delete, @ingredient), method: :delete %></div>
+      <% else %>
+        <div class="text-amber-600 p-3 inline bg-amber-100">Unlink all recipes to delete an ingredient</div>
+      <% end %>
     <% end %>
+  </div>
+
+
+  <%= if @ingredient.description do %>
+  <div>
+    <%= render_markdown @ingredient.description %>
+  </div>
   <% end %>
+
+  <%= if @ingredient.source_recipe_id do %>
+  <div>
+    This ingredient has a corresponding recipe:
+    <%= link to: Routes.recipe_path(@conn, :show, @ingredient.source_recipe), class: "font-bold text-amber-600 hover:underline underline-offset-4" do %>
+      <%= String.capitalize(@ingredient.source_recipe.title) %>
+    <% end %>
+  </div>
+  <% end %>
+
+  <div>
+    <div class="text-3xl my-4">Recipes:</div>
+    <%= render(RelaxirWeb.RecipeView, "recipe_list.html", current_user: @current_user, recipes: @recipes, conn: @conn, show: false) %>
+  </div>
 </div>
-
-
-<%= if @ingredient.description do %>
-<%= render_markdown @ingredient.description %>
-<% end %>
-
-<%= render(RelaxirWeb.RecipeView, "recipe_list.html", current_user: @current_user, recipes: @recipes, conn: @conn, show: false) %>

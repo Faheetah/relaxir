@@ -25,6 +25,12 @@
   </div>
 
   <div>
+    <%= label f, :source_recipe_url, class: "block text-lg font-medium" %>
+    <%= source_recipe_input f, :source_recipe_url, class: "px-2 py-1 w-1/4" %>
+    <%= error_tag f, :source_recipe_url %>
+  </div>
+
+  <div>
     <%= label f, :description, class: "block text-lg font-medium" %>
     <%= textarea f, :description, class: "px-2 py-1 w-1/4 h-24" %>
     <%= error_tag f, :description %>

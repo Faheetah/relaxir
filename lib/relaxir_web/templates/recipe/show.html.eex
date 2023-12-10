@@ -133,15 +133,34 @@
       <div class="text-3xl mt-4 mb-8 font-medium text-black">Ingredients</div>
       <div class="text-lg lg:mr-12">
         <ul class="border-neutral-300 border-solid text-sm text-amber-600 divide-y">
-        <li />
           <%= for recipe_ingredient <- @recipe.recipe_ingredients do %>
-          <li class="py-2">
-            <span class="text-black text-lg hover:underline decoration-2 decoration-amber-600 underline-offset-4">
-            <%= link ingredients_output(recipe_ingredient), to: Routes.ingredient_path(@conn, :show, recipe_ingredient.ingredient)%>
-            </span>
-          </li>
+            <li class="py-2">
+            <%= if recipe_ingredient.ingredient.source_recipe do %>
+              <span class="text-lg">
+                <div class="mb-2 font-bold text-amber-600 hover:underline decoration-2 decoration-amber-600 underline-offset-4">
+                <%= link ingredients_output(recipe_ingredient), to: Routes.recipe_path(@conn, :show, recipe_ingredient.ingredient.source_recipe_id) %>:
+                </div>
+
+                <ul class="border-neutral-300 border-solid text-sm divide-y">
+                <li></li>
+                <%= for source_recipe_recipe_ingredient <- recipe_ingredient.ingredient.source_recipe.recipe_ingredients do %>
+                  <li>
+                  <span class="text-neutral-500 text-lg hover:underline decoration-2 decoration-amber-600 underline-offset-4">
+                    - <%= link ingredients_output(source_recipe_recipe_ingredient), to: Routes.ingredient_path(@conn, :show, source_recipe_recipe_ingredient.ingredient) %>
+                  </span>
+                  </li>
+                <% end %>
+                </ul>
+              </span>
+            <% else %>
+              <span class="text-black text-lg hover:underline decoration-2 decoration-amber-600 underline-offset-4">
+                <%= link ingredients_output(recipe_ingredient), to: Routes.ingredient_path(@conn, :show, recipe_ingredient.ingredient)%>
+              </span>
+            <% end %>
+            </li>
           <% end %>
-        <li />
+
+          <li></li>
         </ul>
       </div>
     <% end %>

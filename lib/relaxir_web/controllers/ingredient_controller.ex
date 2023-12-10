@@ -1,6 +1,7 @@
 defmodule RelaxirWeb.IngredientController do
   use RelaxirWeb, :controller
 
+  alias Relaxir.Recipes
   alias Relaxir.Ingredients
   alias Relaxir.Ingredients.Ingredient
 
@@ -53,7 +54,10 @@ defmodule RelaxirWeb.IngredientController do
   end
 
   def create(conn, %{"ingredient" => ingredient_params}) do
-    ingredient_params = maybe_add_parent_ingredient_id(ingredient_params)
+    ingredient_params =
+      ingredient_params
+      |> maybe_add_parent_ingredient_id()
+      |> maybe_add_source_recipe_id()
 
     case Ingredients.create_ingredient(ingredient_params) do
       {:ok, ingredient} ->
@@ -70,8 +74,20 @@ defmodule RelaxirWeb.IngredientController do
       %{id: id} -> Map.put(ingredient, "parent_ingredient_id", id)
     end
   end
-
   defp maybe_add_parent_ingredient_id(ingredient), do: ingredient
+
+  defp maybe_add_source_recipe_id(ingredient = %{"source_recipe_url" => source_recipe_url}) do
+    %{host: host, path: path} = URI.parse(source_recipe_url)
+    %{path_params: %{"id" => id}} = Phoenix.Router.route_info(RelaxirWeb.Router, "GET", path, host)
+    {id, ""} = Integer.parse(id)
+
+    case Recipes.get_recipe!(id) do
+      nil -> ingredient
+      %{id: id} -> Map.put(ingredient, "source_recipe_id", id)
+    end
+  end
+  defp maybe_add_source_recipe_id(ingredient), do: ingredient
+
 
   def show(conn, %{"id" => id}) do
     current_user = conn.assigns.current_user
@@ -89,7 +105,10 @@ defmodule RelaxirWeb.IngredientController do
   def update(conn, %{"id" => id, "ingredient" => ingredient_params}) do
     ingredient = Ingredients.get_ingredient!(id)
 
-    ingredient_params = maybe_add_parent_ingredient_id(ingredient_params)
+    ingredient_params =
+      ingredient_params
+      |> maybe_add_parent_ingredient_id()
+      |> maybe_add_source_recipe_id()
 
     case Ingredients.update_ingredient(ingredient, ingredient_params) do
       {:ok, ingredient} ->

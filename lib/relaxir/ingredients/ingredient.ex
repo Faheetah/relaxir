@@ -2,6 +2,7 @@ defmodule Relaxir.Ingredients.Ingredient do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias Relaxir.Recipes.Recipe
   alias Relaxir.RecipeIngredient
   alias Relaxir.Usda.Food
 
@@ -16,6 +17,7 @@ defmodule Relaxir.Ingredients.Ingredient do
     has_many :recipes, through: [:recipe_ingredients, :recipe], on_replace: :delete
     belongs_to :food, Food
     belongs_to :parent_ingredient, __MODULE__
+    belongs_to :source_recipe, Recipe
 
     timestamps()
   end
@@ -29,10 +31,11 @@ defmodule Relaxir.Ingredients.Ingredient do
       end
 
     ingredient
-    |> cast(attrs, [:name, :singular, :description, :parent_ingredient_id])
+    |> cast(attrs, [:name, :singular, :description, :parent_ingredient_id, :source_recipe_id])
     |> cast_assoc(:recipe_ingredients)
     |> cast_assoc(:food)
     |> cast_assoc(:parent_ingredient)
+    |> cast_assoc(:source_recipe)
     |> validate_required([:name])
     |> unique_constraint([:name])
   end

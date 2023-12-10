@@ -102,7 +102,6 @@ defmodule Relaxir.Ingredients.Parser do
   end
 
   defp match_existing_ingredient(i, ingredient) do
-    IO.inspect {i, ingredient}
     if i.singular == nil do
       i.name == ingredient.name || i.singular == ingredient.name
     else

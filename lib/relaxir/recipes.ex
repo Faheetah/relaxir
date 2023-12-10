@@ -12,7 +12,13 @@ defmodule Relaxir.Recipes do
 
   @preload [
     [recipe_ingredients: from(ri in RecipeIngredient, order_by: ri.order)],
-    :ingredients,
+    [
+      ingredients: [
+        source_recipe: [
+          recipe_ingredients: from(ri in RecipeIngredient, order_by: ri.order, preload: [:ingredient, :unit])
+        ]
+      ]
+    ],
     :units,
     :recipe_categories,
     :categories,

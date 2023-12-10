@@ -86,8 +86,18 @@ defmodule Relaxir.Ingredients do
   end
 
   def get_ingredient!(id) do
+    preloads = [
+      :recipes,
+      :food,
+      :source_recipe,
+      [
+        parent_ingredient: :parent_ingredient,
+        child_ingredients: :child_ingredients
+      ]
+    ]
+
     Ingredient
-    |> preload([:recipes, :food, [parent_ingredient: :parent_ingredient, child_ingredients: :child_ingredients]])
+    |> preload(^preloads)
     |> Repo.get!(id)
   end
 
