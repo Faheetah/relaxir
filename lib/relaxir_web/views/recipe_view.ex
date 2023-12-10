@@ -37,15 +37,20 @@ defmodule RelaxirWeb.RecipeView do
         true -> Inflex.singularize(unit.name)
       end
 
-    [parse_fraction(amount), unit, inflex_ingredient(recipe_ingredient.ingredient, amount)]
+    ingredient_name = inflex_ingredient(recipe_ingredient.ingredient, amount, unit)
+
+    [parse_fraction(amount), unit, ingredient_name]
     |> Enum.reject(&is_nil(&1))
     |> Enum.join(" ")
     |> String.trim()
     |> maybe_add_note(note)
   end
 
-  def inflex_ingredient(ingredient, amount) do
-    if amount in [1.0, nil] do
+  def inflex_ingredient(%{singular: ""} = ingredient, _amount, _unit), do: ingredient.name
+  def inflex_ingredient(ingredient, amount, unit) when amount <= 1 and unit == "", do: ingredient.singular
+  def inflex_ingredient(ingredient, _amount, _unit), do: ingredient.name
+  def inflex_ingredient(ingredient, amount, :ignore) do
+    if amount == nil || amount <= 1 do
       if Map.get(ingredient, :singular) in ["", nil] do
         ingredient.name
       else
@@ -108,5 +113,10 @@ defmodule RelaxirWeb.RecipeView do
       nil -> ""
       _ -> Earmark.as_html!(text)
     end
+  end
+
+  def format_month(month) do
+    months = %{1 => "Jan", 2 => "Feb", 3 => "Mar", 4 => "Apr", 5 => "May", 6 => "Jun", 7 => "Jul", 8 => "Aug", 9 => "Sep", 10 => "Oct", 11 => "Nov", 12 => "Dec"}
+    months[month]
   end
 end

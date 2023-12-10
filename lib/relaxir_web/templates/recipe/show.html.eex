@@ -1,131 +1,180 @@
-<div class="lg:umt-4 lg:grid grid-cols-2 lg:shadow-lg lg:bg-neutral-50 lg:text-black lg:w-5/6 mx-auto relative">
-  <%= if @current_user && @current_user.is_admin do %>
-  <div class="hidden lg:block absolute top-0 left-8 space-x-2 mt-2 text-lg">
-    <div class="text-neutral-400 hover:text-neutral-600 hover:underline underline-offset-2 inline"><%= link "Edit", to: Routes.recipe_path(@conn, :edit, @recipe), class: "py-2 pr-2" %></div>
-    <div class="text-red-400 hover:text-red-600 hover:underline underline-offset-2 inline"><%= link "Delete", to: Routes.recipe_path(@conn, :delete, @recipe), method: :delete, data: [confirm: "Are you sure?"], class: "py-2 pr-2" %></div>
-  </div>
-  <% end %>
+<div class="lg:w-11/12 mx-auto">
+  <%# header %>
+  <div class="grid grid-cols-2 pb-8">
+    <div class="px-4 lg:px-0 col col-span-2 lg:col-span-1 order-last lg:order-first lg:mr-12 space-y-4 lg:space-y-8 mb-8">
+      <%# main category %>
+      <div class="text-sm hidden lg:block">
+        <%= link "RECIPES", to: "/recipes", class: "hover:underline decoration-amber-600 underline-offset-2"%>
 
-  <div class="col p-8 self-center">
-    <div class="text-3xl lg:text-4xl mb-4">
-      <%= @recipe.title %>
+        <%= for category <- @recipe.categories do %>
+        <%= if category.name in ~w[appetizers breakfast lunch mains sides condiments dessert drinks baking] do %>
+        <span class="text-amber-600">></span>
+        <%= link String.upcase(category.name), to: Routes.category_path(@conn, :show, category.name), class: "hover:underline decoration-amber-600 underline-offset-2" %>
+        <% end %>
+        <% end %>
+        <span class="text-amber-600">></span>
+      </div>
 
-      <div class="lg:hidden space-x-2 mt-2 text-lg">
+      <%# title %>
+      <div class="text-3xl lg:text-4xl space-y-4 text-center lg:text-left">
+        <div class="font-bold font-serif space-x-2">
+          <%= @recipe.title %>
+        </div>
+
+        <div class="text-sm">
+          <div class="inline">
+            <%= String.upcase(format_month(@recipe.inserted_at.month)) %> <%= @recipe.inserted_at.day %>, <%= @recipe.inserted_at.year %>
+            <%= if @recipe.user do %>
+              <%= if @recipe.user.username do %>
+                by <%= @recipe.user.username %>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <%# mobile main category %>
+      <div class="text-sm lg:hidden block">
+        <%= link "RECIPES", to: "/recipes", class: "hover:underline decoration-amber-600 underline-offset-2"%>
+
+        <%= for category <- @recipe.categories do %>
+        <%= if category.name in ~w[appetizers breakfast lunch mains sides condiments dessert drinks baking] do %>
+        <span class="text-amber-600">></span>
+        <%= link String.upcase(category.name), to: "/categories/category.name", class: "hover:underline decoration-amber-600 underline-offset-2" %>
+        <% end %>
+        <% end %>
+        <span class="text-amber-600">></span>
+      </div>
+
+      <%# prep/cook/makes %>
+      <%# THIS NEEDS TO BE IMPLEMENTED %>
+      <div class="hidden border-x border-neutral-400 text-center grid grid-cols-3 font-medium divide-neutral-400 divide-x">
+        <div>
+          <div class="font-medium">PREP</div>
+          <div class="font-thin">20 mins</div>
+        </div>
+
+        <div>
+          <div class="font-medium">COOK</div>
+          <div class="font-thin">1 hr 20 mins</div>
+        </div>
+
+        <div>
+          <div class="font-medium">MAKES</div>
+          <div class="font-thin">4 sandwiches</div>
+        </div>
+      </div>
+
+      <%# description %>
+      <div class="lg:text-lg"><%= @recipe.description %></div>
+
+      <%# categories %>
+      <div class="space-x text-sm border-t">
+      <span class="text-g">TAGS: </span>
+        <%= if @recipe.categories != [] do %>
+        <%= for category <- @recipe.categories do %>
+          <%= link String.upcase(category.name), to: Routes.category_path(@conn, :show, category.name), class: "inline hover:underline decoration hover:decoration-amber-600 underline-offset-2 text-neutral-800 leading-10 px-2 pt-1 pb-1" %>
+        <% end %>
+        <% end %>
+      </div>
+
+      <%# edit/delete %>
+      <%= if @current_user && @current_user.is_admin do %>
+      <div class="inline font-thin mt-2 text-lg font-sans">
         <div class="text-neutral-400 hover:text-neutral-600 hover:underline underline-offset-2 inline"><%= link "Edit", to: Routes.recipe_path(@conn, :edit, @recipe), class: "py-2 pr-2" %></div>
         <div class="text-red-400 hover:text-red-600 hover:underline underline-offset-2 inline"><%= link "Delete", to: Routes.recipe_path(@conn, :delete, @recipe), method: :delete, data: [confirm: "Are you sure?"], class: "py-2 pr-2" %></div>
       </div>
+      <% end %>
     </div>
 
+    <%# image %>
+    <div class="col col-span-2 lg:col-span-1 order-first lg:order-last print:hidden">
+      <div class="relative">
+          <div class="absolute right-2 bottom-3">
+            <%= if @recipe.vegetarian do %>
+            <span class="rounded-full ml-1 text-sm border-neutral-200 brder-2 bg-green-800 text-neutral-200 font-bold py-1 px-2 cursor-help" title="Vegetarian">VG</span>
+            <% end %>
+            <%= if @recipe.vegan do %>
+            <span class="rounded-full ml-1 text-sm border-green-600 borer bg-green-800 text-neutral-200 font-bold py-1 px-2 cursor-help" title="Vegan">VE</span>
+            <% end %>
+            <%= if @recipe.gluten_free do %>
+            <span class="rounded-full ml-1 text-sm border-neutral-200 brder-2 bg-amber-900 text-neutral-200 font-bold py-1 px-2 cursor-help" title="Gluten Free">GF</span>
+            <% end %>
+            <%= if @recipe.keto do %>
+            <span class="rounded-full ml-1 text-sm border-neutral-200 brder-2 bg-amber-800 text-neutral-200 font-bold py-1 px-3 cursor-help" title="Keto">KE</span>
+            <% end %>
+            <%= if @recipe.spicy do %>
+            <span class="rounded-full ml-1 text-sm tracking-tighter borer-neutral-200 bordr-2 bg-red-800 text-neutral-200 font-bold py-1 px-3 cursor-help" title="Spicy">SP</span>
+            <% end %>
+          </div>
 
+          <%= if @current_user && @current_user.is_admin do %>
+          <div class="opacity-0 hover:opacity-70">
+              <%= link  to: Routes.recipe_upload_path(@conn, :new, @recipe.id), class: "flex absolute bg-neutral-900 w-full h-full text-white text-4xl" do %>
+                <span class="place-self-center text-center w-full">Upload an image</span>
+              <% end %>
+          </div>
+          <% end %>
 
-    <div class="text-md mb-8"><%= @recipe.description %></div>
+          <%= if @recipe.image_filename do %>
+            <%= img_tag "/uploads/#{@recipe.image_filename}-full.jpg" %>
+          <% else %>
+            <%= img_tag "/images/default-full.jpg", class: "w-full -max" %>
+          <% end %>
 
-    <div class="my-2 font-bold inline-block">
-      <%= if @recipe.user do %>
-        <%= if @recipe.user.username do %>
-          by <%= @recipe.user.username %>
-        <% end %>
-      <% end %>
-
-      <div class="ml-2 font-thin inline">
-      <%= @recipe.inserted_at.month %>/<%= @recipe.inserted_at.day %>/<%= @recipe.inserted_at.year %>
       </div>
     </div>
-
-    <div class="my-4">
-      <%= if @recipe.categories != [] do %>
-      <%= for category <- @recipe.categories do %>
-        <%= link String.upcase(category.name), to: Routes.category_path(@conn, :show, category.name), class: "rounded-full bg-slate-800 hover:bg-slate-600 bg:text-gray-300 text-gray-100 leading-10 px-4 pt-1 pb-2 font-medium" %>
-      <% end %>
-      <% end %>
-    </div>
   </div>
 
-  <div class="col print:hidden">
-    <div class="relative">
-        <div class="absolute right-2 bottom-3">
-          <%= if @recipe.vegetarian do %>
-          <span class="rounded-full ml-1 text-sm border-neutral-200 border-2 bg-green-800 text-neutral-100 font-bold py-1 px-2 cursor-help" title="Vegetarian">VG</span>
+  <%# recipe %>
+  <div class="lg:grid grid-cols-5 lg:py-8">
+    <div class="col-span-2 px-4 lg:px-0 pt-2">
+      <%= if @recipe.recipe_ingredients != [] do %>
+      <div class="text-3xl mt-4 mb-8 font-medium text-black">Ingredients</div>
+      <div class="text-lg lg:mr-12">
+        <ul class="border-neutral-300 border-solid text-sm text-amber-600 divide-y">
+        <li />
+          <%= for recipe_ingredient <- @recipe.recipe_ingredients do %>
+          <li class="py-2">
+            <span class="text-black text-lg hover:underline decoration-2 decoration-amber-600 underline-offset-4">
+            <%= link ingredients_output(recipe_ingredient), to: Routes.ingredient_path(@conn, :show, recipe_ingredient.ingredient)%>
+            </span>
+          </li>
           <% end %>
-          <%= if @recipe.vegan do %>
-          <span class="rounded-full ml-1 text-sm border-neutral-200 border-2 bg-green-800 text-neutral-100 font-bold py-1 px-2 cursor-help" title="Vegan">VE</span>
-          <% end %>
-          <%= if @recipe.gluten_free do %>
-          <span class="rounded-full ml-1 text-sm border-neutral-200 border-2 bg-yellow-800 text-neutral-100 font-bold py-1 px-2 cursor-help" title="Gluten Free">GF</span>
-          <% end %>
-          <%= if @recipe.keto do %>
-          <span class="rounded-full ml-1 text-sm border-neutral-200 border-2 bg-yellow-800 text-neutral-100 font-bold py-1 px-3 cursor-help" title="Keto">K</span>
-          <% end %>
-          <%= if @recipe.spicy do %>
-          <span class="rounded-full ml-1 text-sm tracking-tighter border-neutral-200 border-2 bg-red-800 text-neutral-100 font-bold py-1 px-3 cursor-help" title="Spicy">HOT</span>
-          <% end %>
-        </div>
-
-        <%= if @current_user && @current_user.is_admin do %>
-        <div class="opacity-0 hover:opacity-70">
-            <%= link  to: Routes.recipe_upload_path(@conn, :new, @recipe.id), class: "flex absolute bg-neutral-900 w-full h-full text-white text-4xl" do %>
-              <span class="place-self-center text-center w-full">Upload an image</span>
-            <% end %>
-        </div>
-        <% end %>
-
-        <%= if @recipe.image_filename do %>
-          <%= img_tag "/uploads/#{@recipe.image_filename}-full.jpg", class: "w-full -max" %>
-        <% else %>
-          <%= img_tag "/images/default-full.jpg", class: "w-full -max" %>
-        <% end %>
-
-    </div>
-  </div>
-</div>
-
-<div class="lg:grid grid-cols-3 mt-4 lg:mt-0 py-8 px-4 lg:px-0 w-11/12 lg:w-5/6 mx-auto">
-  <div class="px-4 lg:px-0">
-    <%= if @recipe.recipe_ingredients != [] do %>
-    <div class="text-3xl mt-4 mb-8 font-medium text-black">Ingredients</div>
-    <div class="lg:mr-16 text-lg">
-      <ul class="border-neutral-300 border-solid text-sm text-amber-600 divide-y">
-      <li />
-        <%= for recipe_ingredient <- @recipe.recipe_ingredients do %>
-        <li class="py-2">
-          <span class="text-black text-lg hover:underline decoration-2 decoration-amber-600 underline-offset-4">
-          <%= link ingredients_output(recipe_ingredient), to: Routes.ingredient_path(@conn, :show, recipe_ingredient.ingredient)%>
-          </span>
-        </li>
-        <% end %>
-      <li />
-      </ul>
-    </div>
-  <% end %>
-  </div>
-
-  <div class="lg:col-span-2 mt-12 lg:mt-0 lg:ml-12 lg:w-3/4 text-lg">
-    <div class="px-4 lg:px-0">
-      <%= if @recipe.directions do %>
-      <div class="text-3xl font-medium mt-4 mb-8 text-black">Directions</div>
-      <ul class="space-y-4 -ml-2 list-decimal text-2xl font-extralight lg:list-outside text-amber-600 font-bold">
-      <%= for md <- @recipe.directions |> String.split("\n", trim: true) |> Enum.reject(&(String.trim(&1) == "")) do %>
-        <li>
-          <div class="text-black ml-2 my-6 text-lg font-normal"><%= md %></div>
-        </li>
-      <% end %>
-      </ul>
+        <li />
+        </ul>
+      </div>
     <% end %>
+    </div>
 
-    <%= if @recipe.note do %>
-      <div class="text-2xl font-medium mt-8 mb-2 text-black">Note</div>
-      <%= for note <- @recipe.note |> String.split("\n", trim: true) |> Enum.reject(&(String.trim(&1) == "")) do %>
-      <ul class="list-disc text-xl text-amber-600">
-        <%= if String.first(note) == "*" do %>
-        <li>
-        <span class="text-black my-6 text-lg font-normal"><%= String.trim_leading(note, "*") |> String.trim_leading() %></span>
-        </li>
-        <% else %>
-        <span class="text-black my-6 text-lg font-normal"><%= note %></span>
+    <div class="lg:col-span-3 pt-2 mt-12 lg:mt-0 lg:ml-12 text-lg">
+      <div class="px-4 lg:px-0">
+        <%= if @recipe.directions do %>
+        <div class="text-3xl font-medium mt-4 mb-8 text-black">Directions</div>
+        <ul class="space-y-4 -ml-2 list-decimal text-2xl border-y font-extralight lg:list-outside text-amber-600 font-bold">
+        <%= for md <- @recipe.directions |> String.split("\n", trim: true) |> Enum.reject(&(String.trim(&1) == "")) do %>
+          <li>
+            <div class="text-black ml-2 my-6 text-lg font-normal"><%= md %></div>
+          </li>
         <% end %>
-      </ul>
+        </ul>
       <% end %>
-    <% end %>
+
+      <%= if @recipe.note do %>
+        <div class="text-2xl font-medium mt-8 mb-2 text-black">Note</div>
+        <%= for note <- @recipe.note |> String.split("\n", trim: true) |> Enum.reject(&(String.trim(&1) == "")) do %>
+        <ul class="list-disc text-xl text-amber-600">
+          <%= if String.first(note) == "*" do %>
+          <li>
+          <span class="text-black my-6 text-lg font-normal"><%= String.trim_leading(note, "*") |> String.trim_leading() %></span>
+          </li>
+          <% else %>
+          <span class="text-black my-6 text-lg font-normal"><%= note %></span>
+          <% end %>
+        </ul>
+        <% end %>
+      <% end %>
+      </div>
     </div>
   </div>
 </div>
