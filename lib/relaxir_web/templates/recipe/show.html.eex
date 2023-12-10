@@ -90,7 +90,8 @@
     <%# image %>
     <div class="col col-span-2 lg:col-span-1 order-first lg:order-last print:hidden">
       <div class="relative">
-          <div class="absolute right-2 bottom-3">
+          <%# This does not seem to render correctly in some cases, and looks bad, maybe put them after recipe title %>
+          <div class="absolute hidden right-2 bottom-3">
             <%= if @recipe.vegetarian do %>
             <span class="rounded-full ml-1 text-sm border-neutral-200 brder-2 bg-green-800 text-neutral-200 font-bold py-1 px-2 cursor-help" title="Vegetarian">VG</span>
             <% end %>
