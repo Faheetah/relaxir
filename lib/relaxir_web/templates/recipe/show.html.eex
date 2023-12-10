@@ -40,7 +40,7 @@
         <%= for category <- @recipe.categories do %>
         <%= if category.name in ~w[appetizers breakfast lunch mains sides condiments dessert drinks baking] do %>
         <span class="text-amber-600">></span>
-        <%= link String.upcase(category.name), to: "/categories/category.name", class: "hover:underline decoration-amber-600 underline-offset-2" %>
+        <%= link String.upcase(category.name), to: Routes.category_path(@conn, :show, category.name), class: "hover:underline decoration-amber-600 underline-offset-2" %>
         <% end %>
         <% end %>
         <span class="text-amber-600">></span>
