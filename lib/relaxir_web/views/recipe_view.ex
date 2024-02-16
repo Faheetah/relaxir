@@ -49,17 +49,6 @@ defmodule RelaxirWeb.RecipeView do
   def inflex_ingredient(%{singular: ""} = ingredient, _amount, _unit), do: ingredient.name
   def inflex_ingredient(ingredient, amount, unit) when amount <= 1 and unit == "", do: ingredient.singular
   def inflex_ingredient(ingredient, _amount, _unit), do: ingredient.name
-  def inflex_ingredient(ingredient, amount, :ignore) do
-    if amount == nil || amount <= 1 do
-      if Map.get(ingredient, :singular) in ["", nil] do
-        ingredient.name
-      else
-        ingredient.singular
-      end
-    else
-      ingredient.name
-    end
-  end
 
   def maybe_add_note(i, nil), do: i
   def maybe_add_note(i, note), do: "#{i}, #{note}"

@@ -2,7 +2,6 @@ defmodule RelaxirWeb.CategoryController do
   use RelaxirWeb, :controller
 
   alias Relaxir.Categories
-  alias Relaxir.Categories.Category
 
   def index(conn, _params) do
     current_user = conn.assigns.current_user
