@@ -13,8 +13,9 @@ config :relaxir, RelaxirWeb.Endpoint,
   url: [host: "www.relaxanddine.com", port: 443],
   cache_static_manifest: "priv/static/cache_manifest.json"
 
-config :relaxir, RelaxirWeb.UploadLive,
-  dest: "/home/relaxir/uploads"
-
 # Do not print debug messages in production
 config :logger, level: :info
+
+# I have no idea how to have this in runtime.exs but also not fail on compile from Application.compile_env!/3
+config :relaxir, RelaxirWeb.UploadLive,
+  dest: "/tmp/uploads"

@@ -17,4 +17,7 @@ if config_env() == :prod do
     secret_key_base: System.fetch_env!("SECRET_KEY_BASE")
 
   config :relaxir, RelaxirWeb.Endpoint, server: true
+
+  config :relaxir, RelaxirWeb.UploadLive,
+    dest: System.fetch_env!("RELAXIR_UPLOAD_PATH") || "/tmp/uploads"
 end

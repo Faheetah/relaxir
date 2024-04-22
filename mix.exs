@@ -44,6 +44,7 @@ defmodule Relaxir.MixProject do
       {:phoenix_live_dashboard, "~> 0.8"},
       {:jason, "~>1.4"},
       {:esbuild, "~> 0.7", runtime: Mix.env() == :dev},
+      {:tailwind, "~> 0.2.2", runtime: Mix.env() == :dev},
       # initial auth generation, now baked into Phoenix
       # {:phx_gen_auth, "~> 0.7.0"},
       # DB related
@@ -92,7 +93,9 @@ defmodule Relaxir.MixProject do
         "test"
       ],
       "test.clean": ["ecto.drop", "ecto.create", "ecto.migrate", "run priv/repo/test_seeds.exs"],
-      "assets.deploy": ["esbuild default --minify", "phx.digest"]
+      "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing"],
+      "assets.build": ["tailwind default", "esbuild default"],
+      "assets.deploy": ["tailwind default --minify", "esbuild default --minify", "phx.digest"]
     ]
   end
 end
