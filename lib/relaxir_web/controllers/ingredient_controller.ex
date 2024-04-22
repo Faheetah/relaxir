@@ -76,6 +76,7 @@ defmodule RelaxirWeb.IngredientController do
   end
   defp maybe_add_parent_ingredient_id(ingredient), do: ingredient
 
+  defp maybe_add_source_recipe_id(ingredient = %{"source_recipe_url" => ""}), do: ingredient
   defp maybe_add_source_recipe_id(ingredient = %{"source_recipe_url" => source_recipe_url}) do
     %{host: host, path: path} = URI.parse(source_recipe_url)
     %{path_params: %{"id" => id}} = Phoenix.Router.route_info(RelaxirWeb.Router, "GET", path, host)
