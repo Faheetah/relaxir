@@ -3,11 +3,13 @@ defmodule RelaxirWeb.UploadLive do
 
   @impl Phoenix.LiveView
   def mount(%{"id" => recipe_id} = _params, _session, socket) do
-    {:ok,
-    socket
-    |> assign(:uploaded_files, [])
-    |> assign(:recipe, recipe_id)
-    |> allow_upload(:picture, accept: ~w(.jpg .jpeg .png), max_entries: 1)}
+    {
+      :ok,
+      socket
+      |> assign(:uploaded_files, [])
+      |> assign(:recipe, recipe_id)
+      |> allow_upload(:picture, accept: ~w(.jpg .jpeg .png), max_entries: 1)
+    }
   end
 
   @impl Phoenix.LiveView

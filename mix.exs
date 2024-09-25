@@ -4,9 +4,9 @@ defmodule Relaxir.MixProject do
   def project do
     [
       app: :relaxir,
-      version: "0.8.3",
+      version: "0.9.0",
       url: "https://github.com/Faheetah/relaxir/",
-      elixir: "~> 1.12",
+      elixir: "~> 1.17",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
@@ -21,7 +21,7 @@ defmodule Relaxir.MixProject do
   def application do
     [
       mod: {Relaxir.Application, []},
-      extra_applications: [:logger, :runtime_tools, :ssh]
+      extra_applications: [:logger, :runtime_tools]
     ]
   end
 
@@ -34,29 +34,35 @@ defmodule Relaxir.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      # Phoenix related
-      {:plug_cowboy, "~> 2.6"},
-      {:phoenix, "~> 1.7"},
-      {:phoenix_live_view, "~> 0.19"},
+      # TODO remove if migrated fully to live view
       {:phoenix_view, "~> 2.0"},
-      {:phoenix_html, "~> 3.3"},
-      {:phoenix_live_reload, "~> 1.4", only: :dev},
-      {:phoenix_live_dashboard, "~> 0.8"},
-      {:jason, "~>1.4"},
-      {:esbuild, "~> 0.7", runtime: Mix.env() == :dev},
-      {:tailwind, "~> 0.2.2", runtime: Mix.env() == :dev},
-      # initial auth generation, now baked into Phoenix
-      # {:phx_gen_auth, "~> 0.7.0"},
-      # DB related
-      {:phoenix_ecto, "~> 4.4"},
+      {:plug_cowboy, "~> 2.6"},
+      # Phoenix/Ecto related
+      {:phoenix, "~> 1.7"},
+      {:phoenix_ecto, "~> 4.5"},
       {:ecto_sql, "~> 3.10"},
       {:postgrex, "~> 0.17"},
+      {:phoenix_html, "~> 3.3"},
+      {:phoenix_live_view, "~> 1.0.0-rc.1"},
+      {:floki, ">= 0.30.0", only: :test},
+      {:phoenix_live_reload, "~> 1.2", only: :dev},
+      {:phoenix_live_dashboard, "~> 0.8.3"},
+      {:esbuild, "~> 0.8", runtime: Mix.env() == :dev},
+      {:tailwind, "~> 0.2.2", runtime: Mix.env() == :dev},
+      {:heroicons,
+       github: "tailwindlabs/heroicons",
+       tag: "v2.1.1",
+       sparse: "optimized",
+       app: false,
+       compile: false,
+       depth: 1},
       # telemetry
-      {:telemetry_metrics, "~> 0.6.1"},
+      {:telemetry_metrics, "~> 1.0"},
       {:telemetry_poller, "~> 1.0"},
       # misc required for app
+      {:gettext, "~> 0.20"},
+      {:jason, "~>1.4"},
       {:bcrypt_elixir, "~> 3.1"},
-      {:gettext, "~> 0.11"},
       {:earmark, "~> 1.4"},
       {:csv, "~> 3.0.5"},
       {:inflex, "~> 2.1.0"},

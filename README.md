@@ -13,6 +13,12 @@ npm run deploy --prefix ./assets
 mix phx.digest
 ```
 
+All environments need imagemagick
+
+```
+sudo apt install graphicsmagick
+```
+
 # Dev
 
 ```
