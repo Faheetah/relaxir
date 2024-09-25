@@ -8,7 +8,8 @@
 import Config
 
 config :relaxir,
-  ecto_repos: [Relaxir.Repo]
+  ecto_repos: [Relaxir.Repo],
+  generators: [timestamp_type: :utc_datetime]
 
 config :relaxir, :registration, enabled: false
 
@@ -16,14 +17,17 @@ config :relaxir, :registration, enabled: false
 config :relaxir, RelaxirWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "6lFP79ir6YXHSm71b8+XKI75KIKXcA/FgXPzWwMrEISUBlz9a09Xcb1T9FEW19jK",
-  render_errors: [view: RelaxirWeb.ErrorView, accepts: ~w(html json), layout: false],
+  render_errors: [
+    view: RelaxirWeb.ErrorView, accepts: ~w(html json),
+    layout: false
+  ],
   pubsub_server: Relaxir.PubSub,
   live_view: [signing_salt: "HNKcYMPI"]
 
 
 # Configure esbuild (the version is required)
 config :esbuild,
-  version: "0.12.18",
+  version: "0.17.11",
   default: [
     args:
       ~w(js/app.js --bundle --target=es2016 --outdir=../priv/static/assets --external:/fonts/* --external:/images/*),
@@ -33,7 +37,7 @@ config :esbuild,
 
 # Configure tailwind (the version is required)
 config :tailwind,
-  version: "3.4.1",
+  version: "3.4.3",
   default: [
     args: ~w(
       --config=tailwind.config.js
@@ -62,4 +66,4 @@ config :phoenix, :json_library, Jason
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
-import_config "#{Mix.env()}.exs"
+import_config "#{config_env()}.exs"
