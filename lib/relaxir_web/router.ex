@@ -51,6 +51,11 @@ defmodule RelaxirWeb.Router do
       get "/ingredients/:ingredient_id/addToList", IngredientController, :select_list
       live_dashboard "/dashboard", metrics: RelaxirWeb.Telemetry
 
+
+      live "/new/recipes/new", RecipeLive.Index, :new
+      live "/new/recipes/:id/edit", RecipeLive.Index, :edit
+      live "/new/recipes/:id/show/edit", RecipeLive.Show, :edit
+
       scope "/", as: :recipe do
         pipe_through [:live_browser]
         live "/recipes/:id/upload", UploadLive, :new
@@ -64,6 +69,8 @@ defmodule RelaxirWeb.Router do
       live "/search", SearchLive, :search
     end
 
+    live "/new/recipes", RecipeLive.Index, :index
+    live "/new/recipes/:id", RecipeLive.Show, :show
     resources "/recipes", RecipeController, only: [:show, :index]
     get "/tools", ToolController, :index
     get "/tools/:name", ToolController, :show

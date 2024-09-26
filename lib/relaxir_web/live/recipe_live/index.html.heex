@@ -1,0 +1,40 @@
+<.header>
+  Listing Recipes
+  <:actions>
+    <.link patch={~p"/recipes/new"}>
+      <.button>New Recipe</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="recipes"
+  rows={@streams.recipes}
+  row_click={fn {_id, recipe} -> JS.navigate(~p"/recipes/#{recipe}") end}
+>
+  <:action :let={{_id, recipe}}>
+    <div class="sr-only">
+      <.link navigate={~p"/recipes/#{recipe}"}>Show</.link>
+    </div>
+    <.link patch={~p"/recipes/#{recipe}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, recipe}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: recipe.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal :if={@live_action in [:new, :edit]} id="recipe-modal" show on_cancel={JS.patch(~p"/recipes")}>
+  <.live_component
+    module={RelaxirWeb.RecipeLive.FormComponent}
+    id={@recipe.id || :new}
+    title={@page_title}
+    action={@live_action}
+    recipe={@recipe}
+    patch={~p"/recipes"}
+  />
+</.modal>
