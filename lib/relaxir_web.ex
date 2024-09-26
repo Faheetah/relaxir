@@ -51,6 +51,8 @@ defmodule RelaxirWeb do
       alias RelaxirWeb.Router.Helpers, as: Routes
 
       import Phoenix.LiveView.Controller
+
+      unquote(verified_routes())
     end
   end
 

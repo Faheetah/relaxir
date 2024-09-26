@@ -1,4 +1,4 @@
-defmodule RelaxirWeb.UserSettingsController do
+defmodule RelaxirWeb.UserSettingsControllerOld do
   use RelaxirWeb, :controller
 
   alias Relaxir.Accounts

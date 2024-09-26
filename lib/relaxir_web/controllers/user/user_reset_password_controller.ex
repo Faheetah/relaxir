@@ -1,4 +1,4 @@
-defmodule RelaxirWeb.UserResetPasswordController do
+defmodule RelaxirWeb.UserResetPasswordControllerOld do
   use RelaxirWeb, :controller
 
   alias Relaxir.Accounts

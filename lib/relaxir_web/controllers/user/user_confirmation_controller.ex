@@ -1,4 +1,4 @@
-defmodule RelaxirWeb.UserConfirmationController do
+defmodule RelaxirWeb.UserConfirmationControllerOld do
   use RelaxirWeb, :controller
 
   alias Relaxir.Accounts
