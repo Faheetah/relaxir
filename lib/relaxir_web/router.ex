@@ -27,7 +27,7 @@ defmodule RelaxirWeb.Router do
   end
 
   pipeline :live_browser do
-    plug :put_root_layout, {RelaxirWeb.LayoutView, :app}
+    plug :put_root_layout, {RelaxirWeb.Layouts, :root}
   end
 
   scope "/", RelaxirWeb do
