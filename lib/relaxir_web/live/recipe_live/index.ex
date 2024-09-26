@@ -6,12 +6,26 @@ defmodule RelaxirWeb.RecipeLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, stream(socket, :recipes, Recipes.list_recipes())}
+    {:ok, stream(socket, :recipes, [])}
   end
 
   @impl true
   def handle_params(params, _url, socket) do
-    {:noreply, apply_action(socket, socket.assigns.live_action, params)}
+    # TODO add in somewhere functionality to show draft/published/all buttons if logged in
+    recipes =
+      case Map.get(params, "show") do
+        "all" -> Recipes.list_recipes()
+        "drafts" -> Recipes.list_draft_recipes()
+        "draft" -> Recipes.list_draft_recipes()
+        _ -> Recipes.list_published_recipes()
+      end
+
+    {
+      :noreply,
+      socket
+      |> apply_action(socket.assigns.live_action, params)
+      |> stream(:recipes, recipes)
+    }
   end
 
   defp apply_action(socket, :edit, %{"id" => id}) do
