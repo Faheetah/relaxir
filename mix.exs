@@ -21,7 +21,7 @@ defmodule Relaxir.MixProject do
   def application do
     [
       mod: {Relaxir.Application, []},
-      extra_applications: [:logger, :runtime_tools, :ssh]
+      extra_applications: [:logger, :runtime_tools]
     ]
   end
 
@@ -34,7 +34,6 @@ defmodule Relaxir.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:bcrypt_elixir, "~> 3.0"},
       # TODO remove if migrated fully to live view
       {:phoenix_view, "~> 2.0"},
       {:plug_cowboy, "~> 2.6"},
