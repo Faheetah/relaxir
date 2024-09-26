@@ -20,6 +20,12 @@ defmodule RelaxirWeb do
     end
   end
 
+  def channel do
+    quote do
+      use Phoenix.Channel
+    end
+  end
+
   def controller do
     quote do
       use Phoenix.Controller, namespace: RelaxirWeb
@@ -44,12 +50,6 @@ defmodule RelaxirWeb do
 
       # Include shared imports and aliases for views
       unquote(view_helpers())
-    end
-  end
-
-  def channel do
-    quote do
-      use Phoenix.Channel
     end
   end
 
