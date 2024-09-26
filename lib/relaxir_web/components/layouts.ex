@@ -10,5 +10,5 @@ defmodule RelaxirWeb.Layouts do
   """
   use RelaxirWeb, :html
 
-  embed_templates "templates/*"
+  embed_templates "layouts/*"
 end

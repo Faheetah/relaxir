@@ -15,6 +15,7 @@ defmodule RelaxirWeb.SearchLive do
     {
       :ok,
       socket
+      |> assign(:current_user, nil)
       |> assign(:query, params["q"] || "")
       |> assign(:filter, filter)
     }
