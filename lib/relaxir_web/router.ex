@@ -1,12 +1,5 @@
 defmodule RelaxirWeb.Router do
-  use Phoenix.Router
-
-  import Plug.Conn
-  import Phoenix.Controller
-  import Phoenix.LiveView.Router
-  import Phoenix.LiveDashboard.Router
-
-  import RelaxirWeb.UserAuth
+  use RelaxirWeb, :router
 
   pipeline :browser do
     plug :accepts, ["html"]
