@@ -59,14 +59,12 @@ defmodule RelaxirWeb.Router do
       end
     end
 
-    get "/", RecipeController, :index
-
     scope "/" do
       pipe_through [:live_browser]
       live "/search", SearchLive, :search
     end
 
-    resources "/recipes", RecipeController, only: [:show, :index]
+    resources "/recipes", RecipeController, only: [:show]
     get "/tools", ToolController, :index
     get "/tools/:name", ToolController, :show
     # this needs pagination
@@ -152,7 +150,8 @@ defmodule RelaxirWeb.Router do
       live "/users/confirm/:token", UserConfirmationLive, :edit
       live "/users/confirm", UserConfirmationInstructionsLive, :new
 
-      live "/new/recipes", RecipeLive.Index, :index
+      live "/", RecipeLive.Index, :index
+      live "/recipes", RecipeLive.Index, :index
       live "/new/recipes/:id", RecipeLive.Show, :show
       live "/new/recipes/new", RecipeLive.Index, :new
       live "/new/recipes/:id/edit", RecipeLive.Index, :edit
