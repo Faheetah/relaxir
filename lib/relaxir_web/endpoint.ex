@@ -7,12 +7,13 @@ defmodule RelaxirWeb.Endpoint do
   @session_options [
     store: :cookie,
     key: "_relaxir_key",
-    signing_salt: "pQGiDmh7"
+    signing_salt: "pQGiDmh7",
+    same_site: "Lax"
   ]
 
   socket "/socket", RelaxirWeb.UserSocket,
-    websocket: true,
-    longpoll: false
+    websocket: [connect_info: [session: @session_options]],
+    longpoll: [connect_info: [session: @session_options]]
 
   socket "/live", Phoenix.LiveView.Socket, websocket: [connect_info: [session: @session_options]]
 
