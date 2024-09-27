@@ -1,192 +1,158 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <link rel="icon" type="image/png" href="/favicon.ico">
-    <title>Relax+Dine</title>
-    <%= csrf_meta_tag() %>
-    <link phx-track-static rel="stylesheet" href={Routes.static_path(@conn, "/assets/app.css")}/>
-    <script defer phx-track-static type="text/javascript" src={Routes.static_path(@conn, "/assets/app.js")}></script>
-    <%= if @meta_attrs, do: meta_tags(@meta_attrs) %>
-  </head>
+<header class="print:hidden z-40 sticky top-0 bg-white lg:px-0 lg:mx-auto lg:w-5/6">
+  <div class="flex py-2 place-items-center">
+    <%# hamburger menu %>
+    <div class="flex-none pl-2 self-end lg:hidden h-full">
+      <label data-menu-toggle for="hamburger-toggle" class="cursor-pointer">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 6h20M4 11h20M4 16h20" />
+        </svg>
+      </label>
+    </div>
 
-  <body class="flex flex-col min-h-screen space-y-2 lg:space-y-16">
-    <header class="print:hidden z-40 sticky top-0 bg-white lg:px-0 lg:mx-auto lg:w-5/6">
-      <div class="flex py-2 place-items-center">
-        <%# hamburger menu %>
-        <div class="flex-none pl-2 self-end lg:hidden h-full">
-          <label data-menu-toggle for="hamburger-toggle" class="cursor-pointer">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 6h20M4 11h20M4 16h20" />
-            </svg>
-          </label>
-        </div>
+    <%# logo %>
+    <div class="flex-auto h-full lg:flex-none text-center text-3xl lg:text-5xl font-black tracking-tighter">
+      <a href="/">
+      <span class="text-amber-600">Relax</span><span class="text-amber-500 text-2xl lg:text-4xl font-bold">+</span><span class="text-amber-600">Dine</span>
+      </a>
+    </div>
 
-        <%# logo %>
-        <div class="flex-auto h-full lg:flex-none text-center text-3xl lg:text-5xl font-black tracking-tighter">
-          <a href="/">
-          <span class="text-amber-600">Relax</span><span class="text-amber-500 text-2xl lg:text-4xl font-bold">+</span><span class="text-amber-600">Dine</span>
-          </a>
-        </div>
+    <%# regular menu %>
+    <div class="hidden lg:inline-block text-xl self-end space-x-8 pl-8 mx-4 flex-1 justify-items-end text-gray-900 decoration-amber-500 decoration-2 underline-offset-4">
+      <a class="hover:underline" href="/">RECIPES</a>
+      <a class="hover:underline" href="/ingredients">INGREDIENTS</a>
+      <a class="hover:underline" href="/categories">CATEGORIES</a>
+      <a class="hover:underline" href="/tools">TOOLS</a>
+    </div>
 
-        <%# regular menu %>
-        <div class="hidden lg:inline-block text-xl self-end space-x-8 pl-8 mx-4 flex-1 justify-items-end text-gray-900 decoration-amber-500 decoration-2 underline-offset-4">
-          <a class="hover:underline" href="/">RECIPES</a>
-          <a class="hover:underline" href="/ingredients">INGREDIENTS</a>
-          <a class="hover:underline" href="/categories">CATEGORIES</a>
-          <a class="hover:underline" href="/tools">TOOLS</a>
-        </div>
-
-        <%# search icon %>
-        <div class="flex-none self-end pr-2">
-          <label class="cursor-pointer" data-menu-toggle for="search-toggle">
-            <a href="/search">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-            </a>
-          </label>
-        </div>
-
-
-        <%# login/logout %>
-        <div class="flex-none self-end ml-4 group hidden lg:inline">
-          <%= if @current_user do %>
-            <%= link to: "#" do %>
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <% end %>
-
-            <div class="hidden group-hover:block group-focus:block flex absolute border divide-y divide-gray-600 border-gray-600 border-solid-2 bg-white right-0">
-              <%= link to: Routes.user_settings_path(@conn, :profile), class: "block text-xl justify-between flex bg-white hover:bg-amber-500 py-3 px-6" do %>
-              PROFILE
-              <svg class="h-full w-6 inline right ml-2 self-end" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <% end %>
-
-              <%= link to: Routes.recipe_path(@conn, :new), class: "block text-xl justify-between flex bg-white hover:bg-amber-500 py-3 px-6" do %>
-              ADD RECIPE
-              <svg class="h-full w-6 inline right ml-2 self-end" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <% end %>
-
-              <%= link to: Routes.grocery_list_path(@conn, :index), class: "block text-xl justify-between flex bg-white hover:bg-amber-500 py-3 px-6" do %>
-              GROCERY LIST
-              <svg class="h-full w-6 inline right ml-2 self-end" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <% end %>
-
-              <%# to reimplement as favorites %>
-              <div class='hidden'>
-              <%= link to: "/favorites", class: "block text-xl justify-between flex bg-white hover:bg-amber-500 py-3 px-6" do %>
-              LIKED RECIPES
-              <svg class="h-full w-6 inline right ml-2 self-end" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <% end %>
-              </div>
-
-              <%= link to: Routes.user_session_path(@conn, :delete), method: :delete, class: "block text-xl justify-between flex bg-white hover:bg-amber-500 py-3 px-6" do %>
-              LOGOUT
-              <svg class="h-full w-6 inline right ml-2 self-end" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <% end %>
-            </div>
-          <% else %>
-            <%= link to: Routes.user_session_path(@conn, :new) do %>
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
-            </svg>
-            <% end %>
-          <% end %>
-        </div>
-
-      </div>
-
-      <%# hamburger expand %>
-      <input class="hidden peer" id="hamburger-toggle" type="checkbox" />
-      <div class="peer-checked:block pt-4 divide-y-2 divide-gray-600 w-full h-full fixed bg-white text-3xl hidden">
-        <div />
-        <%= for item <- ~w[recipes ingredients categories tools search profile] do %>
-        <a class="flex p-4 hover:bg-amber-500" href={"/#{item}"}>
-          <div class="flex-auto"><%= String.upcase(item) %></div>
-          <div class="flex-none">
-          <svg class="h-full w-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          </div>
+    <%# search icon %>
+    <div class="flex-none self-end pr-2">
+      <label class="cursor-pointer" data-menu-toggle for="search-toggle">
+        <a href="/search">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
         </a>
+      </label>
+    </div>
+
+
+    <%# login/logout %>
+    <div class="flex-none self-end ml-4 group hidden lg:inline">
+      <%= if @current_user do %>
+        <%= link to: "#" do %>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
         <% end %>
 
-        <%= if @current_user do %>
-        <%= link to: Routes.recipe_path(@conn, :new), class: "flex p-4 hover:bg-amber-500" do %>
-          <div class="flex-auto">ADD RECIPE</div>
-          <div class="flex-none">
-          <svg class="h-full w-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div class="hidden group-hover:block group-focus:block flex absolute border divide-y divide-gray-600 border-gray-600 border-solid-2 bg-white right-0">
+          <%= link to: "/profile", class: "block text-xl justify-between flex bg-white hover:bg-amber-500 py-3 px-6" do %>
+          PROFILE
+          <svg class="h-full w-6 inline right ml-2 self-end" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-          </div>
-        <% end %>
-
-          <%= link to: Routes.user_session_path(@conn, :delete), method: :delete, class: "flex p-4 hover:bg-amber-500" do %>
-          <div class="flex-auto">LOGOUT</div>
-          <div class="flex-none">
-          <svg class="h-full w-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          </div>
           <% end %>
-        <% else %>
-          <%= link to: Routes.user_session_path(@conn, :new), class: "flex p-4 hover:bg-amber-500" do %>
-          <div class="flex-auto">LOGIN</div>
-          <div class="flex-none">
-          <svg class="h-full w-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+
+          <%= link to: "/recipes/new", class: "block text-xl justify-between flex bg-white hover:bg-amber-500 py-3 px-6" do %>
+          ADD RECIPE
+          <svg class="h-full w-6 inline right ml-2 self-end" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-          </div>
           <% end %>
+
+          <%= link to: "/users/log_out", method: :delete, class: "block text-xl justify-between flex bg-white hover:bg-amber-500 py-3 px-6" do %>
+          LOGOUT
+          <svg class="h-full w-6 inline right ml-2 self-end" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <% end %>
+        </div>
+      <% else %>
+        <%= link to: "/users/log_in" do %>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+        </svg>
         <% end %>
-        <div />
+      <% end %>
+    </div>
+
+  </div>
+
+  <%# hamburger expand %>
+  <input class="hidden peer" id="hamburger-toggle" type="checkbox" />
+  <div class="peer-checked:block pt-4 divide-y-2 divide-gray-600 w-full h-full fixed bg-white text-3xl hidden">
+    <div />
+    <%= for item <- ~w[recipes ingredients categories tools search profile] do %>
+    <a class="flex p-4 hover:bg-amber-500" href={"/#{item}"}>
+      <div class="flex-auto"><%= String.upcase(item) %></div>
+      <div class="flex-none">
+      <svg class="h-full w-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
       </div>
+    </a>
+    <% end %>
 
-      <%# Sub menu %>
-      <div class="hidden lg:flex mt-2 space-x-2 bg-neutral-800 text-neutral-100 text-sm font-bold decoration-amber-600 underline-offset-4">
-        <a href="/categories/appetizers" class="py-2 px-4 hover:underline">APPETIZERS</a>
-        <a href="/categories/breakfast" class="py-2 px-4 hover:underline">BREAKFAST</a>
-        <a href="/categories/lunch" class="py-2 px-4 hover:underline">LUNCH</a>
-        <a href="/categories/mains" class="py-2 px-4 hover:underline">MAINS</a>
-        <a href="/categories/sides" class="py-2 px-4 hover:underline">SIDES</a>
-        <a href="/categories/condiments" class="py-2 px-4 hover:underline">CONDIMENTS</a>
-        <a href="/categories/dessert" class="py-2 px-4 hover:underline">DESSERT</a>
-        <a href="/categories/drinks" class="py-2 px-4 hover:underline">DRINKS</a>
-        <a href="/categories/baking" class="py-2 px-4 hover:underline">BAKING</a>
+    <%= if @current_user do %>
+    <%= link to: "/recipes/new", class: "flex p-4 hover:bg-amber-500" do %>
+      <div class="flex-auto">ADD RECIPE</div>
+      <div class="flex-none">
+      <svg class="h-full w-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
       </div>
-    </header>
+    <% end %>
 
-
-    <main>
-      <div class="mx-auto lg:w-5/6">
-        <%= if Phoenix.Flash.get(@flash, :info) do %>
-        <p class="alert-info"><%= Phoenix.Flash.get(@flash, :info) %></p>
-        <% end %>
-
-        <%= if Phoenix.Flash.get(@flash, :error) do %>
-        <p class="alert-danger"><%= Phoenix.Flash.get(@flash, :error) %></p>
-        <% end %>
-
-        <%= @inner_content %>
+      <%= link to: "/users/log_out", method: :delete, class: "flex p-4 hover:bg-amber-500" do %>
+      <div class="flex-auto">LOGOUT</div>
+      <div class="flex-none">
+      <svg class="h-full w-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
       </div>
-    </main>
+      <% end %>
+    <% else %>
+      <%= link to: "/users/log_in", class: "flex p-4 hover:bg-amber-500" do %>
+      <div class="flex-auto">LOGIN</div>
+      <div class="flex-none">
+      <svg class="h-full w-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      </div>
+      <% end %>
+    <% end %>
+    <div />
+  </div>
 
-    <footer>
-      <%# footer will go here, and will pin to bottom from main flex-grow %>
-    </footer>
-  </body>
-</html>
+  <%# Sub menu %>
+  <div class="hidden lg:flex mt-2 space-x-2 bg-neutral-800 text-neutral-100 text-sm font-bold decoration-amber-600 underline-offset-4">
+    <a href="/categories/appetizers" class="py-2 px-4 hover:underline">APPETIZERS</a>
+    <a href="/categories/breakfast" class="py-2 px-4 hover:underline">BREAKFAST</a>
+    <a href="/categories/lunch" class="py-2 px-4 hover:underline">LUNCH</a>
+    <a href="/categories/mains" class="py-2 px-4 hover:underline">MAINS</a>
+    <a href="/categories/sides" class="py-2 px-4 hover:underline">SIDES</a>
+    <a href="/categories/condiments" class="py-2 px-4 hover:underline">CONDIMENTS</a>
+    <a href="/categories/dessert" class="py-2 px-4 hover:underline">DESSERT</a>
+    <a href="/categories/drinks" class="py-2 px-4 hover:underline">DRINKS</a>
+    <a href="/categories/baking" class="py-2 px-4 hover:underline">BAKING</a>
+  </div>
+</header>
+
+
+<main>
+  <div class="mx-auto lg:w-5/6">
+    <%= if Phoenix.Flash.get(@flash, :info) do %>
+    <p class="alert-info"><%= Phoenix.Flash.get(@flash, :info) %></p>
+    <% end %>
+
+    <%= if Phoenix.Flash.get(@flash, :error) do %>
+    <p class="alert-danger"><%= Phoenix.Flash.get(@flash, :error) %></p>
+    <% end %>
+
+    <%= @inner_content %>
+  </div>
+</main>
+
+<footer>
+  <%# footer will go here, and will pin to bottom from main flex-grow %>
+</footer>
