@@ -4,6 +4,7 @@
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta :for={attr <- @meta_attrs} property={attr.property} content={attr.content}>
     <link rel="icon" type="image/png" href="/favicon.ico">
     <title>Relax+Dine</title>
     <meta name="csrf-token" content={get_csrf_token()} />

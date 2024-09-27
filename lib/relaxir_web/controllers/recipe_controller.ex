@@ -62,7 +62,7 @@ defmodule RelaxirWeb.RecipeController do
     recipe = Recipes.get_recipe!(id)
 
     meta_attrs = [
-      %{name: "twitter:card", content: "summary_large_image"}, # required to make the image proper sized on some sites
+      %{property: "twitter:card", content: "summary_large_image"}, # required to make the image proper sized on some sites
       %{property: "og:ttl", content: "600"},
       %{property: "og:type", content: "image"},
       %{property: "og:site_name", content: "Relax+Dine"},
