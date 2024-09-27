@@ -38,7 +38,7 @@ defmodule RelaxirWeb.SearchLive do
     {
       :noreply,
       socket
-      |> push_patch(to: Routes.search_path(socket, :search, q: query), replace: true)
+      |> push_patch(to: ~p"/search?q=#{query}", replace: true)
     }
   end
 

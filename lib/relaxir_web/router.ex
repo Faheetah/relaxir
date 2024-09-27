@@ -82,31 +82,6 @@ defmodule RelaxirWeb.Router do
   scope "/", RelaxirWeb do
     pipe_through [:browser, :redirect_if_user_is_authenticated]
 
-    get "/users/register", UserRegistrationController, :new
-    get "/register", UserRegistrationController, :new
-    post "/users/register", UserRegistrationController, :create
-    post "/users/log_in", UserSessionController, :create
-    get "/users/reset_password", UserResetPasswordController, :new
-    post "/users/reset_password", UserResetPasswordController, :create
-    get "/users/reset_password/:token", UserResetPasswordController, :edit
-    put "/users/reset_password/:token", UserResetPasswordController, :update
-  end
-
-  scope "/", RelaxirWeb do
-    pipe_through [:browser]
-
-    delete "/users/log_out", UserSessionController, :delete
-    delete "/logout", UserSessionController, :delete
-    get "/users/confirm", UserConfirmationController, :new
-    post "/users/confirm", UserConfirmationController, :create
-    get "/users/confirm/:token", UserConfirmationController, :confirm
-  end
-
-  ## Authentication routes
-
-  scope "/", RelaxirWeb do
-    pipe_through [:browser, :redirect_if_user_is_authenticated]
-
     live_session :redirect_if_user_is_authenticated,
       on_mount: [{RelaxirWeb.UserAuth, :redirect_if_user_is_authenticated}] do
       live "/users/register", UserRegistrationLive, :new

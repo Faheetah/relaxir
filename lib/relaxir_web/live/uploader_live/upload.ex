@@ -49,7 +49,7 @@ defmodule RelaxirWeb.UploadLive do
 
     {
       :noreply,
-      redirect(socket, to: Routes.recipe_path(socket, :show, socket.assigns.recipe))
+      redirect(socket, to: ~p"/recipes/#{socket.assigns.recipe}")
     }
   end
 

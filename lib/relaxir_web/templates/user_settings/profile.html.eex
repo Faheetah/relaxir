@@ -1,3 +1,0 @@
-<div class="text-xl">
-  <%= @current_user.email %> profile
-</div>
