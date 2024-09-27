@@ -2,17 +2,17 @@ defmodule Relaxir.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
 
-  @derive {Inspect, except: [:password]}
   schema "users" do
     field :email, :string
     field :username, :string
-    field :password, :string, virtual: true
-    field :hashed_password, :string
+    field :password, :string, virtual: true, redact: true
+    field :hashed_password, :string, redact: true
+    field :current_password, :string, virtual: true, redact: true
     field :is_admin, :boolean
-    field :confirmed_at, :naive_datetime
+    field :confirmed_at, :utc_datetime
     has_many :recipes, Relaxir.Recipes.Recipe
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   @doc """
@@ -30,6 +30,12 @@ defmodule Relaxir.Accounts.User do
       leaks in the logs. If password hashing is not needed and clearing the
       password field is not desired (like when using this changeset for
       validations on a LiveView form), this option can be set to `false`.
+      Defaults to `true`.
+
+    * `:validate_email` - Validates the uniqueness of the email, in case
+      you don't want to validate the uniqueness of the email (like when
+      using this changeset for validations on a LiveView form before
+      submitting the form), this option can be set to `false`.
       Defaults to `true`.
   """
   def registration_changeset(user, attrs, opts \\ []) do
@@ -70,6 +76,10 @@ defmodule Relaxir.Accounts.User do
 
     if hash_password? && password && changeset.valid? do
       changeset
+      # If using Bcrypt, then further validate it is at most 72 bytes long
+      |> validate_length(:password, max: 72, count: :bytes)
+      # Hashing could be done with `Ecto.Changeset.prepare_changes/2`, but that
+      # would keep the database transaction open longer and hurt performance.
       |> put_change(:hashed_password, Bcrypt.hash_pwd_salt(password))
       |> delete_change(:password)
     else
@@ -85,7 +95,6 @@ defmodule Relaxir.Accounts.User do
   def email_changeset(user, attrs) do
     user
     |> cast(attrs, [:email])
-    |> validate_email()
     |> case do
       %{changes: %{email: _}} = changeset -> changeset
       %{} = changeset -> add_error(changeset, :email, "did not change")
@@ -124,7 +133,7 @@ defmodule Relaxir.Accounts.User do
   Confirms the account by setting `confirmed_at`.
   """
   def confirm_changeset(user) do
-    now = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
+    now = DateTime.utc_now() |> DateTime.truncate(:second)
     change(user, confirmed_at: now)
   end
 
@@ -148,6 +157,8 @@ defmodule Relaxir.Accounts.User do
   Validates the current password otherwise adds an error to the changeset.
   """
   def validate_current_password(changeset, password) do
+    changeset = cast(changeset, %{current_password: password}, [:current_password])
+
     if valid_password?(changeset.data, password) do
       changeset
     else

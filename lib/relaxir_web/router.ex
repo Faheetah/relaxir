@@ -85,23 +85,11 @@ defmodule RelaxirWeb.Router do
     get "/users/register", UserRegistrationController, :new
     get "/register", UserRegistrationController, :new
     post "/users/register", UserRegistrationController, :create
-    get "/users/log_in", UserSessionController, :new
-    get "/login", UserSessionController, :new
     post "/users/log_in", UserSessionController, :create
     get "/users/reset_password", UserResetPasswordController, :new
     post "/users/reset_password", UserResetPasswordController, :create
     get "/users/reset_password/:token", UserResetPasswordController, :edit
     put "/users/reset_password/:token", UserResetPasswordController, :update
-  end
-
-  scope "/", RelaxirWeb do
-    pipe_through [:browser, :require_authenticated_user]
-
-    get "/users/profile", UserSettingsController, :profile
-    get "/profile", UserSettingsController, :profile
-    get "/users/settings", UserSettingsController, :edit
-    put "/users/settings", UserSettingsController, :update
-    get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
   end
 
   scope "/", RelaxirWeb do
@@ -135,6 +123,7 @@ defmodule RelaxirWeb.Router do
 
     live_session :require_authenticated_user,
       on_mount: [{RelaxirWeb.UserAuth, :ensure_authenticated}] do
+      live "/profile", UserSettingsLive, :edit
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
     end
