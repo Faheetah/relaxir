@@ -219,7 +219,7 @@ defmodule Relaxir.Recipes do
           put_change(ingredient, :suggestion, %{name: String.downcase(s), type: "ingredient", score: round(score * 10)})
         else
           Invert.get(Relaxir.Usda.Food, :description, ingredient_name)
-          |> maybe_get_usda_suggestion
+          |> maybe_get_usda_suggestion(ingredient)
         end
 
       {:error, :not_found} ->
@@ -234,11 +234,11 @@ defmodule Relaxir.Recipes do
     end
   end
 
-  defp maybe_get_usda_suggestion({:ok, suggestion}) do
+  defp maybe_get_usda_suggestion({:ok, suggestion}, ingredient) do
     {[s, _], score} = hd(suggestion)
     score_ingredient(ingredient, score, s, "USDA")
   end
-  defp maybe_get_usda_suggestion({:error, suggestion}), do: ingredient
+  defp maybe_get_usda_suggestion({:error, _suggestion}, ingredient), do: ingredient
 
   defp score_ingredient(ingredient, score, suggestion, type) do
     if score > 1 do
