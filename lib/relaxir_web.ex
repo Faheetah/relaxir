@@ -124,6 +124,7 @@ defmodule RelaxirWeb do
       import Phoenix.HTML
       # Core UI components and translation
       import RelaxirWeb.CoreComponents
+      import RelaxirWeb.FormattingComponents
       import RelaxirWeb.Gettext
 
       # Shortcut for generating JS commands

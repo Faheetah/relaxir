@@ -1,6 +1,6 @@
 <div class="mb-8">
   <div class="mx-6 lg:mx-0">
-  <%= link to: Routes.recipe_path(@conn, :show, @recipe) do %>
+  <%= link to: "/recipes/#{@recipe.id}" do %>
     <div class="relative">
         <%# This does not seem to render correctly in some cases, and looks bad, maybe put them after recipe title %>
         <div class="absolute hidden right-2 bottom-3">
@@ -40,7 +40,7 @@
 
 
     <div class="text-2xl tracking-tight leading-6 font-bold font-serif pb-4 mt-4">
-      <%= link @recipe.title, to: Routes.recipe_path(@conn, :show, @recipe) %>
+      <%= link @recipe.title, to: "/recipes/#{@recipe.id}" %>
     </div>
 
     <%= if @recipe.description do %>

@@ -45,7 +45,7 @@ defmodule RelaxirWeb.RecipeController do
 
     case Recipes.create_recipe(recipe) do
       {:ok, recipe} ->
-        redirect(conn, to: Routes.recipe_path(conn, :show, recipe))
+        redirect(conn, to: "/recipes/#{recipe.id}")
 
       {:error, %Ecto.Changeset{} = changeset} ->
         ingredients =
@@ -68,7 +68,7 @@ defmodule RelaxirWeb.RecipeController do
       %{property: "og:site_name", content: "Relax+Dine"},
       %{property: "og:title", content: recipe.title},
       %{property: "og:description", content: recipe.description},
-      %{property: "og:url", content: Path.join("https://www.relaxanddine.com", Routes.recipe_path(conn, :show, recipe))},
+      %{property: "og:url", content: Path.join("https://www.relaxanddine.com", ~p"/recipes/#{recipe}")},
       %{property: "og:image", content: get_upload_path(recipe.image_filename)}
     ]
 
@@ -97,7 +97,7 @@ defmodule RelaxirWeb.RecipeController do
 
     case Recipes.update_recipe(recipe, RecipeParser.parse_attrs(recipe_params)) do
       {:ok, recipe} ->
-        redirect(conn, to: Routes.recipe_path(conn, :show, recipe))
+        redirect(conn, to: "/recipes/#{recipe.id}")
 
       {:error, %Ecto.Changeset{} = changeset} ->
         # this is only for rendering purposes on errors, could we move this into `recipe`?

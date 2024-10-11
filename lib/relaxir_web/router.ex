@@ -60,7 +60,6 @@ defmodule RelaxirWeb.Router do
 
       live "/search", SearchLive, :search
 
-    resources "/recipes", RecipeController, only: [:show]
     get "/tools", ToolController, :index
     get "/tools/:name", ToolController, :show
     # this needs pagination
@@ -112,10 +111,10 @@ defmodule RelaxirWeb.Router do
 
       live "/", RecipeLive.Index, :index
       live "/recipes", RecipeLive.Index, :index
-      live "/new/recipes/:id", RecipeLive.Show, :show
+      live "/recipes/:id", RecipeLive.Show, :show
       live "/new/recipes/new", RecipeLive.Index, :new
       live "/new/recipes/:id/edit", RecipeLive.Index, :edit
-      live "/new/recipes/:id/show/edit", RecipeLive.Show, :edit
+      live "/recipes/:id/show/edit", RecipeLive.Show, :edit
 
       scope "/", as: :recipe do
         live "/recipes/:id/upload", UploadLive, :new
