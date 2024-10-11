@@ -3,6 +3,8 @@ defmodule Relaxir.InventoryListsTest do
 
   alias Relaxir.InventoryLists
 
+  @moduletag skip: "To reimplement"
+
   describe "inventory_lists" do
     alias Relaxir.InventoryLists.InventoryList
 

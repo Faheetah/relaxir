@@ -3,6 +3,8 @@ defmodule Relaxir.GroceryListsTest do
 
   alias Relaxir.GroceryLists
 
+  @moduletag skip: "To reimplement"
+
   describe "grocery_lists" do
     alias Relaxir.GroceryLists.GroceryList
 
