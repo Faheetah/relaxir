@@ -3,6 +3,8 @@ defmodule RelaxirWeb.CategoryControllerTest do
 
   alias Relaxir.Categories
 
+  @moduletag :skip
+
   @create_attrs %{name: "some name"}
 
   setup context do

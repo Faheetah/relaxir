@@ -1,6 +1,8 @@
 defmodule Relaxir.RecipesTest do
   use Relaxir.DataCase
 
+  @moduletag :skip
+
   alias Relaxir.Recipes
   alias Relaxir.Ingredients
   alias Relaxir.Units

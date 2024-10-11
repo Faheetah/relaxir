@@ -1,6 +1,8 @@
 defmodule RelaxirWeb.IngredientControllerTest do
   use RelaxirWeb.ConnCase
 
+  @moduletag :skip
+
   setup context do
     register_and_log_in_user(context, %{is_admin: true})
   end

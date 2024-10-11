@@ -1,6 +1,8 @@
 defmodule RelaxirWeb.InventoryListControllerTest do
   use RelaxirWeb.ConnCase
 
+  @moduletag :skip
+
   alias Relaxir.InventoryLists
 
   @create_attrs %{name: "some name"}

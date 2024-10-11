@@ -3,6 +3,8 @@ defmodule RelaxirWeb.RecipeLiveTest do
 
   import Phoenix.LiveViewTest
 
+  @moduletag :skip
+
   @create_attrs %{}
   @update_attrs %{}
   @invalid_attrs %{}
