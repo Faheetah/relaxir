@@ -4,8 +4,6 @@ defmodule Relaxir.Categories.Category do
 
   alias Relaxir.RecipeCategory
 
-  @derive {Jason.Encoder, only: [:id, :name]}
-
   schema "categories" do
     field :name, :string
     has_many :recipe_categories, RecipeCategory

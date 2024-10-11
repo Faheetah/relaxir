@@ -6,8 +6,6 @@ defmodule Relaxir.Ingredients.Ingredient do
   alias Relaxir.RecipeIngredient
   alias Relaxir.Usda.Food
 
-  @derive {Jason.Encoder, only: [:id, :name]}
-
   schema "ingredients" do
     field :name, :string
     field :singular, :string
