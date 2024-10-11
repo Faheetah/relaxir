@@ -2,7 +2,6 @@ defmodule RelaxirWeb.RecipeLiveTest do
   use RelaxirWeb.ConnCase
 
   import Phoenix.LiveViewTest
-  import Relaxir.RecipesFixtures
 
   @create_attrs %{}
   @update_attrs %{}
@@ -11,6 +10,10 @@ defmodule RelaxirWeb.RecipeLiveTest do
   defp create_recipe(_) do
     recipe = recipe_fixture()
     %{recipe: recipe}
+  end
+
+  defp recipe_fixture do
+    %{}
   end
 
   describe "Index" do

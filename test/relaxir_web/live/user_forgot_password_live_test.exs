@@ -7,6 +7,8 @@ defmodule RelaxirWeb.UserForgotPasswordLiveTest do
   alias Relaxir.Accounts
   alias Relaxir.Repo
 
+  @moduletag :accounts
+
   describe "Forgot password page" do
     test "renders email page", %{conn: conn} do
       {:ok, lv, html} = live(conn, ~p"/users/reset_password")

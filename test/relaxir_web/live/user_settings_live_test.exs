@@ -5,6 +5,8 @@ defmodule RelaxirWeb.UserSettingsLiveTest do
   import Phoenix.LiveViewTest
   import Relaxir.AccountsFixtures
 
+  @moduletag :accounts
+
   describe "Settings page" do
     test "renders settings page", %{conn: conn} do
       {:ok, _lv, html} =

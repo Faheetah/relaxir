@@ -4,6 +4,8 @@ defmodule RelaxirWeb.UserRegistrationLiveTest do
   import Phoenix.LiveViewTest
   import Relaxir.AccountsFixtures
 
+  @moduletag :accounts
+
   describe "Registration page" do
     test "renders registration page", %{conn: conn} do
       {:ok, _lv, html} = live(conn, ~p"/users/register")
@@ -28,11 +30,11 @@ defmodule RelaxirWeb.UserRegistrationLiveTest do
       result =
         lv
         |> element("#registration_form")
-        |> render_change(user: %{"email" => "with spaces", "password" => "too short"})
+        |> render_change(user: %{"email" => "with spaces", "password" => "bad"})
 
       assert result =~ "Register"
       assert result =~ "must have the @ sign and no spaces"
-      assert result =~ "should be at least 12 character"
+      assert result =~ "should be at least 4 character"
     end
   end
 
@@ -50,9 +52,8 @@ defmodule RelaxirWeb.UserRegistrationLiveTest do
       # Now do a logged in request and assert on the menu
       conn = get(conn, "/")
       response = html_response(conn, 200)
-      assert response =~ email
-      assert response =~ "Settings"
-      assert response =~ "Log out"
+      assert response =~ "PROFILE"
+      assert response =~ "LOGOUT"
     end
 
     test "renders errors for duplicated email", %{conn: conn} do

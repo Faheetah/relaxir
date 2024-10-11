@@ -7,6 +7,8 @@ defmodule RelaxirWeb.UserConfirmationInstructionsLiveTest do
   alias Relaxir.Accounts
   alias Relaxir.Repo
 
+  @moduletag :accounts
+
   setup do
     %{user: user_fixture()}
   end

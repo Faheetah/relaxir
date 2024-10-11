@@ -6,6 +6,8 @@ defmodule RelaxirWeb.UserResetPasswordLiveTest do
 
   alias Relaxir.Accounts
 
+  @moduletag :accounts
+
   setup do
     user = user_fixture()
 

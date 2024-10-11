@@ -20,9 +20,4 @@ defmodule RelaxirWeb.CategoryControllerTest do
       assert html_response(conn, 200) =~ "Categories"
     end
   end
-
-  defp create_category(_) do
-    category = fixture(:category)
-    %{category: category}
-  end
 end

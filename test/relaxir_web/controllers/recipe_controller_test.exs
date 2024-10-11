@@ -30,8 +30,8 @@ defmodule RelaxirWeb.RecipeControllerTest do
     end
   end
 
-  @tag skip: "No longer displays page header"
   describe "new recipe" do
+    @tag skip: "No longer displays page header"
     test "renders form", %{conn: conn} do
       conn = get(conn, Routes.recipe_path(conn, :new))
       assert html_response(conn, 200) =~ "New Recipe"

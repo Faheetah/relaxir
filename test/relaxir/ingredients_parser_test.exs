@@ -1,4 +1,4 @@
-defmodule RelaxirWeb.RecipeParserTest do
+defmodule Relaxir.RecipeParserTest do
   use ExUnit.Case, async: true
   import Relaxir.Ingredients.Parser
 

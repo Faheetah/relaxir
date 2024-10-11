@@ -3,7 +3,7 @@ defmodule RelaxirWeb.RecipeController do
 
   alias Relaxir.Recipes
   alias Relaxir.Recipes.Recipe
-  alias RelaxirWeb.RecipeParser
+  alias Relaxir.RecipeParser
 
   def index(conn, %{"show" => show}) do
     current_user = conn.assigns.current_user

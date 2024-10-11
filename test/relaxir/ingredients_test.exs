@@ -21,7 +21,7 @@ defmodule Relaxir.IngredientsTest do
 
     @tag badtest: "was checking if the update ingredient == the listed ingredient, breaks on preload"
     test "list_ingredients/0 returns all ingredients" do
-      ingredient = ingredient_fixture()
+      ingredient_fixture()
       ingredients = Ingredients.list_ingredients()
       assert length(ingredients) == 1
     end

@@ -1,4 +1,4 @@
-defmodule Relaxir.AccountsFixtures do
+defmodule Relaxir.RecipesFixtures do
   @moduledoc """
   This module defines test helpers for creating
   entities via the `Relaxir.Accounts` context.

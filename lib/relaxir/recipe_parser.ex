@@ -1,4 +1,4 @@
-defmodule RelaxirWeb.RecipeParser do
+defmodule Relaxir.RecipeParser do
   def parse_attrs(attrs) do
     attrs
     |> split_field("categories", ",")
