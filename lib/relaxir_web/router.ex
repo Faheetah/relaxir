@@ -9,6 +9,7 @@ defmodule RelaxirWeb.Router do
     plug :fetch_flash
     plug :fetch_live_flash
     plug :put_root_layout, html: {RelaxirWeb.Layouts, :root}
+    plug :put_secure_browser_headers, %{"content-security-policy" => "default-src 'self'"}
     plug :protect_from_forgery
     plug :fetch_current_user
     plug :meta_defaults

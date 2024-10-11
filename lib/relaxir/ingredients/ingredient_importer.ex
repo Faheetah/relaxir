@@ -33,14 +33,7 @@ defmodule Relaxir.IngredientImporter do
     |> Stream.map(&Ecto.Changeset.apply_changes/1)
     |> Stream.map(&Map.take(&1, module.__schema__(:fields)))
     |> Stream.map(fn entry ->
-      entry
-      |> then(fn f ->
-        if f.id == nil do
-          Map.drop(f, [:id])
-        else
-          f
-        end
-      end)
+      maybe_remove_id(entry)
       |> Map.merge(%{inserted_at: now, updated_at: now})
     end)
     |> Stream.chunk_every(1000)
@@ -51,6 +44,9 @@ defmodule Relaxir.IngredientImporter do
     end)
     |> Enum.each(fn chunk -> Repo.insert_all(module, chunk, on_conflict: :nothing) end)
   end
+
+  defp maybe_remove_id(%{id: nil} = entry), do: Map.drop(entry, [:id])
+  defp maybe_remove_id(entry), do: entry
 
   def do_import(path) do
     [:postgrex, :ecto]

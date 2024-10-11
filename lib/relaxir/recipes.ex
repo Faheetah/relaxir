@@ -131,10 +131,13 @@ defmodule Relaxir.Recipes do
     changeset
   end
 
+  # sobelow_skip ["Traversal"]
+  # traversal is not possible due to dest coming from application config
   def delete_recipe(%Recipe{} = recipe) do
     delete_cache(recipe)
     dest = Application.fetch_env!(:relaxir, RelaxirWeb.UploadLive)[:dest]
 
+    # TODO move this to a separate module to handle physical file access
     if recipe.image_filename do
       :ok = File.rm(Path.join(dest, "#{recipe.image_filename}-full.jpg"))
     end
@@ -215,14 +218,8 @@ defmodule Relaxir.Recipes do
         if score > 1 do
           put_change(ingredient, :suggestion, %{name: String.downcase(s), type: "ingredient", score: round(score * 10)})
         else
-          case Invert.get(Relaxir.Usda.Food, :description, ingredient_name) do
-            {:ok, suggestion} ->
-              {[s, _], score} = hd(suggestion)
-              score_ingredient(ingredient, score, s, "USDA")
-
-            {:error, :not_found} ->
-              ingredient
-          end
+          Invert.get(Relaxir.Usda.Food, :description, ingredient_name)
+          |> maybe_get_usda_suggestion
         end
 
       {:error, :not_found} ->
@@ -236,6 +233,12 @@ defmodule Relaxir.Recipes do
         end
     end
   end
+
+  defp maybe_get_usda_suggestion({:ok, suggestion}) do
+    {[s, _], score} = hd(suggestion)
+    score_ingredient(ingredient, score, s, "USDA")
+  end
+  defp maybe_get_usda_suggestion({:error, suggestion}), do: ingredient
 
   defp score_ingredient(ingredient, score, suggestion, type) do
     if score > 1 do

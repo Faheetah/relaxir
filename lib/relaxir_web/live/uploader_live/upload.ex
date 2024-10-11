@@ -27,6 +27,9 @@ defmodule RelaxirWeb.UploadLive do
     {:noreply, cancel_upload(socket, :picture, ref)}
   end
 
+  # sobelow_skip ["Traversal"]
+  # traversal is not possible due to dest coming from application config
+  # TODO move this to a separate module to handle physical file access
   @impl Phoenix.LiveView
   def handle_event("save", _params, socket) do
     consume_uploaded_entries(socket, :picture, fn %{path: path}, _entry ->
@@ -53,6 +56,9 @@ defmodule RelaxirWeb.UploadLive do
     }
   end
 
+  # sobelow_skip ["Traversal"]
+  # Traversal is not possible due to dest coming from application config
+  # TODO move this to a separate module to handle physical file access
   defp resize(path, dest, width, height, suffix) do
     {_, 0} = System.cmd("gm", [
       "convert",

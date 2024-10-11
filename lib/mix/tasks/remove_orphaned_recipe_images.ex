@@ -16,6 +16,7 @@ defmodule Mix.Tasks.Relaxir.RemoveOrphanedRecipeImages do
     |> Enum.map(&check_image_exists/1)
   end
 
+  # TODO move this to a separate module to handle physical file access
   defp check_image_exists(file) do
     image_filename = String.trim_trailing(file, "-full.jpg")
     recipe = Repo.get_by(Recipe, image_filename: image_filename)

@@ -17,10 +17,7 @@ defmodule RelaxirWeb.RecipeView do
   end
 
   def ingredients_input(form, field, ingredients, opts \\ []) do
-    ingredients =
-      ingredients
-      |> Enum.map(&ingredients_output/1)
-      |> Enum.join("\n")
+    ingredients = Enum.map_join(ingredients, &ingredients_output/1, "\n")
 
     Phoenix.HTML.Form.textarea(form, field, Keyword.merge(opts, [value: ingredients]))
   end
@@ -86,14 +83,12 @@ defmodule RelaxirWeb.RecipeView do
   end
 
   def format_names_to_text(items, separator) do
-    items
-    |> Enum.map(fn i ->
+    Enum.map_join(items, fn i ->
       case i do
         %{name: name} -> name
         _ -> i
       end
-    end)
-    |> Enum.join(separator)
+    end, separator)
   end
 
   # sobelow_skip ["XSS.Raw"]

@@ -135,7 +135,7 @@ defmodule Relaxir.Ingredients do
     end
   end
 
-  def maybe_singularize_attrs(attrs = %{"singular" => ""}), do: Map.put(attrs, "singular", Inflex.singularize(attrs["name"]))
+  def maybe_singularize_attrs(%{"singular" => ""} = attrs), do: Map.put(attrs, "singular", Inflex.singularize(attrs["name"]))
   def maybe_singularize_attrs(attrs), do: attrs
 
   def update_ingredient(%Ingredient{} = ingredient, attrs) do

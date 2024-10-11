@@ -10,7 +10,7 @@ defmodule RelaxirWeb.IngredientView do
   end
 
   def parent_ingredient_input(form, field, opts \\ [])
-  def parent_ingredient_input(form = %{data: %{parent_ingredient: %{name: name}}}, field, opts) do
+  def parent_ingredient_input(%{data: %{parent_ingredient: %{name: name}}} = form, field, opts) do
     Phoenix.HTML.Form.text_input(form, field, Keyword.merge(opts, [value: name]))
   end
   def parent_ingredient_input(form, field, opts) do
@@ -18,10 +18,10 @@ defmodule RelaxirWeb.IngredientView do
   end
 
   def source_recipe_input(form, field, opts \\ [])
-  def source_recipe_input(form = %{data: %{source_recipe_id: nil}}, field, opts) do
+  def source_recipe_input(%{data: %{source_recipe_id: nil}} = form, field, opts) do
     Phoenix.HTML.Form.text_input(form, field, opts)
   end
-  def source_recipe_input(form = %{data: %{source_recipe_id: id}}, field, opts) do
+  def source_recipe_input(%{data: %{source_recipe_id: id}} = form, field, opts) do
     path = RelaxirWeb.Router.Helpers.recipe_url(RelaxirWeb.Endpoint, :show, id)
     Phoenix.HTML.Form.text_input(form, field, Keyword.merge(opts, [value: path]))
   end

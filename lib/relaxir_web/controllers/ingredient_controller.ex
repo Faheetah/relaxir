@@ -68,7 +68,7 @@ defmodule RelaxirWeb.IngredientController do
     end
   end
 
-  defp maybe_add_parent_ingredient_id(ingredient = %{"parent_ingredient_name" => name}) do
+  defp maybe_add_parent_ingredient_id(%{"parent_ingredient_name" => name} = ingredient) do
     case Ingredients.get_ingredient_by_name!(name) do
       nil -> ingredient
       %{id: id} -> Map.put(ingredient, "parent_ingredient_id", id)
@@ -76,8 +76,8 @@ defmodule RelaxirWeb.IngredientController do
   end
   defp maybe_add_parent_ingredient_id(ingredient), do: ingredient
 
-  defp maybe_add_source_recipe_id(ingredient = %{"source_recipe_url" => ""}), do: ingredient
-  defp maybe_add_source_recipe_id(ingredient = %{"source_recipe_url" => source_recipe_url}) do
+  defp maybe_add_source_recipe_id(%{"source_recipe_url" => ""} = ingredient), do: ingredient
+  defp maybe_add_source_recipe_id(%{"source_recipe_url" => source_recipe_url} = ingredient) do
     %{host: host, path: path} = URI.parse(source_recipe_url)
     %{path_params: %{"id" => id}} = Phoenix.Router.route_info(RelaxirWeb.Router, "GET", path, host)
     {id, ""} = Integer.parse(id)
