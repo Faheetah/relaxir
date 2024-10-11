@@ -10,7 +10,7 @@ defmodule RelaxirWeb.UserSettingsLive do
       <:subtitle>Manage your account email address and password settings</:subtitle>
     </.header>
 
-    <div class="space-y-12 divide-y">
+    <div class="space-y-12 divide-y md:w-1/2 px-4 mx-auto mb-8">
       <div>
         <.simple_form
           for={@email_form}

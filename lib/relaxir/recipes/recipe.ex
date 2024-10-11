@@ -54,7 +54,7 @@ defmodule Relaxir.Recipes.Recipe do
     |> find_ingredient_errors()
   end
 
-  def strip_directions(attrs) do
+  defp strip_directions(attrs) do
     case Map.get(attrs, "directions") do
       nil ->
         attrs
@@ -69,7 +69,7 @@ defmodule Relaxir.Recipes.Recipe do
     end
   end
 
-  def find_ingredient_errors(%{valid?: false} = changeset) do
+  defp find_ingredient_errors(%{valid?: false} = changeset) do
     traverse_errors(changeset, fn _, _field, {msg, _} ->
       msg
     end)
@@ -86,23 +86,14 @@ defmodule Relaxir.Recipes.Recipe do
     end)
   end
 
-  def find_ingredient_errors(c), do: c
+  defp find_ingredient_errors(c), do: c
 
-  def find_error(error) do
+  defp find_error(error) do
     case error do
       {_, [{i, _}]} -> i
       {_, [i]} -> [i]
       {_, i} -> Enum.map(i, &find_error(&1))
       i -> i
-    end
-  end
-
-  def find_error(error, acc) do
-    case error do
-      {_, [{i, _}]} -> acc ++ i
-      {_, [i]} -> acc ++ [i]
-      {_, i} -> Enum.map(i, &find_error(&1, acc))
-      i -> acc ++ i
     end
   end
 end
