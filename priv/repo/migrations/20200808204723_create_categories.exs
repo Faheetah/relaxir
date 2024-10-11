@@ -8,7 +8,7 @@ defmodule Relaxir.Repo.Migrations.CreateCategories do
       timestamps()
     end
 
-    create table(:recipes_categories, primary_keys: false) do
+    create table(:recipes_categories, primary_key: false) do
       add(:recipe_id, references(:recipes))
       add(:category_id, references(:categories))
     end

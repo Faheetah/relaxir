@@ -95,6 +95,7 @@ defmodule Relaxir.Accounts.User do
   def email_changeset(user, attrs) do
     user
     |> cast(attrs, [:email])
+    |> validate_email()
     |> case do
       %{changes: %{email: _}} = changeset -> changeset
       %{} = changeset -> add_error(changeset, :email, "did not change")

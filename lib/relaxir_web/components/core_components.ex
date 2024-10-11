@@ -17,7 +17,7 @@ defmodule RelaxirWeb.CoreComponents do
   use Phoenix.Component
 
   alias Phoenix.LiveView.JS
-  import RelaxirWeb.Gettext
+  use Gettext, backend: RelaxirWeb.GetText
 
   @doc """
   Renders a modal.

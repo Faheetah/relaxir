@@ -3,32 +3,27 @@ defmodule RelaxirWeb.ConnCase do
 
   using do
     quote do
+      # The default endpoint for testing
+      @endpoint RelaxirWeb.Endpoint
+
+      use RelaxirWeb, :verified_routes
+
       # Import conveniences for testing with connections
       import Plug.Conn
       import Phoenix.ConnTest
       import RelaxirWeb.ConnCase
       import Relaxir.DataHelpers
 
-      use RelaxirWeb, :verified_routes
 
       alias Phoenix.Flash
       alias RelaxirWeb.Router.Helpers, as: Routes
 
-      # The default endpoint for testing
-      @endpoint RelaxirWeb.Endpoint
     end
   end
 
   setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Relaxir.Repo)
-
-    unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(Relaxir.Repo, {:shared, self()})
-    end
-
-    conn = Phoenix.ConnTest.build_conn()
-
-    {:ok, conn: conn}
+    Relaxir.DataCase.setup_sandbox(tags)
+    {:ok, conn: Phoenix.ConnTest.build_conn()}
   end
 
   @doc """

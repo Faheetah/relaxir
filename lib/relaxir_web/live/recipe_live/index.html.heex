@@ -1,5 +1,5 @@
 <div class="grid grid-cols-1 sm:grid-cols-4 gap-8">
-  <div :for={{id, recipe} <- @streams.recipes}>
+  <div :for={{_id, recipe} <- @streams.recipes}>
     <div class="mb-8">
       <div class="mx-6 lg:mx-0">
         <.link href={~p"/recipes/#{recipe}"}>

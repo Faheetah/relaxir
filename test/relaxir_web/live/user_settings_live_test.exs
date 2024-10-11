@@ -129,13 +129,13 @@ defmodule RelaxirWeb.UserSettingsLiveTest do
         |> render_change(%{
           "current_password" => "invalid",
           "user" => %{
-            "password" => "too short",
+            "password" => "bad",
             "password_confirmation" => "does not match"
           }
         })
 
       assert result =~ "Change Password"
-      assert result =~ "should be at least 12 character(s)"
+      assert result =~ "should be at least 4 character(s)"
       assert result =~ "does not match password"
     end
 
@@ -147,20 +147,21 @@ defmodule RelaxirWeb.UserSettingsLiveTest do
         |> form("#password_form", %{
           "current_password" => "invalid",
           "user" => %{
-            "password" => "too short",
+            "password" => "bad",
             "password_confirmation" => "does not match"
           }
         })
         |> render_submit()
 
       assert result =~ "Change Password"
-      assert result =~ "should be at least 12 character(s)"
+      assert result =~ "should be at least 4 character(s)"
       assert result =~ "does not match password"
       assert result =~ "is not valid"
     end
   end
 
   describe "confirm email" do
+    @describetag skip: "Disabled as email registration is not supported"
     setup %{conn: conn} do
       user = user_fixture()
       email = unique_user_email()

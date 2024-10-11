@@ -47,7 +47,7 @@ defmodule RelaxirWeb do
       use Phoenix.Controller, namespace: RelaxirWeb
 
       import Plug.Conn
-      import RelaxirWeb.Gettext
+      use Gettext, backend: RelaxirWeb.Gettext
       alias RelaxirWeb.Router.Helpers, as: Routes
 
       import Phoenix.LiveView.Controller
@@ -100,7 +100,7 @@ defmodule RelaxirWeb do
       use Phoenix.Component
 
       import RelaxirWeb.ErrorHelpers
-      import RelaxirWeb.Gettext
+      use Gettext, backend: RelaxirWeb.GetText
       alias RelaxirWeb.Router.Helpers, as: Routes
     end
   end
@@ -125,7 +125,7 @@ defmodule RelaxirWeb do
       # Core UI components and translation
       import RelaxirWeb.CoreComponents
       import RelaxirWeb.FormattingComponents
-      import RelaxirWeb.Gettext
+      use Gettext, backend: RelaxirWeb.GetText
 
       # Shortcut for generating JS commands
       alias Phoenix.LiveView.JS
