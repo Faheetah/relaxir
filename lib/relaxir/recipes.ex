@@ -167,7 +167,7 @@ defmodule Relaxir.Recipes do
     end)
     |> Enum.map(fn i ->
       case i do
-        %{unit_id: id} -> Map.put(i, :unit, Relaxir.Repo.get!(Ingredients.Unit, id))
+        %{unit_id: id} -> Map.put(i, :unit, Relaxir.Repo.get!(Units.Unit, id))
         i -> i
       end
     end)
@@ -204,7 +204,7 @@ defmodule Relaxir.Recipes do
   end
 
   defp get_ingredient_name(%{changes: %{unit_id: id}} = ingredient) do
-    unit = Relaxir.Repo.get!(Ingredients.Unit, id)
+    unit = Relaxir.Repo.get!(Units.Unit, id)
 
     cond do
       Map.get(ingredient.changes, :amount) == nil -> ingredient

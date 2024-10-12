@@ -4,7 +4,7 @@ defmodule RelaxirWeb.FormattingComponents do
   """
   use Phoenix.Component
 
-  alias Relaxir.Ingredients.Unit
+  alias Relaxir.Units.Unit
 
   attr :day, :integer, required: true
   attr :month, :integer, required: true
