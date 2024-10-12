@@ -3,8 +3,7 @@ defmodule Relaxir.Search do
   @search_table_mapping %{
     "recipes" => {Relaxir.Recipes.Recipe, :title},
     "categories" => {Relaxir.Categories.Category, :name},
-    "ingredients" => {Relaxir.Ingredients.Ingredient, :name},
-    "usda" => {Relaxir.Usda.Food, :description}
+    "ingredients" => {Relaxir.Ingredients.Ingredient, :name}
   }
 
   @spec search_for([atom] | nil, String.t) :: [{term, integer}]

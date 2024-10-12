@@ -88,7 +88,6 @@ defmodule Relaxir.Ingredients do
   def get_ingredient!(id) do
     preloads = [
       :recipes,
-      :food,
       :source_recipe,
       [
         parent_ingredient: :parent_ingredient,

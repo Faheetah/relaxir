@@ -70,29 +70,3 @@ Or deploy from local workspace
 ```
 mix relaxir.local_deploy relaxanddine.com
 ```
-
-# USDA Data
-
-**DEPRECATED: USDA nutrition is an absolute mess and has not been working correctly. The nutrition of base foods does not generally change over time as well. USDA functionality is going to be moved to browse only and eventually removed altogether. This information is going to be individually compiled for ingredients and updated. For now, nutrition is going to be phased out of the site.**
-
-Can be found at https://fdc.nal.usda.gov/download-datasets.html
-
-Load it in with:
-
-```
-mix relaxir.import Food ../../food-data/food.csv
-```
-
-Using sr_legacy_food
-
-```
-mkdir food-data
-cd food-data
-wget https://fdc.nal.usda.gov/fdc-datasets/FoodData_Central_sr_legacy_food_csv_%202019-04-02.zip
-unzip FoodData_Central_sr_legacy_food_csv_%202019-04-02.zip
-wget https://fdc.nal.usda.gov/fdc-datasets/FoodData_Central_Supporting_Data_csv_2021-10-28.zip
-unzip FoodData_Central_Supporting_Data_csv_2021-10-28.zip
-mix relaxir.import Food food-data/food.csv
-mix relaxir.import Nutrient food-data/nutrient.csv
-mix relaxir.import FoodNutrient food-data/food_nutrient.csv
-```

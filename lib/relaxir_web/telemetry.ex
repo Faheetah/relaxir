@@ -34,7 +34,6 @@ defmodule RelaxirWeb.Telemetry do
       summary("search.items.relaxir_recipes_recipe_title.total", description: "Recipes"),
       summary("search.items.relaxir_categories_category_name.total", description: "Categories"),
       summary("search.items.relaxir_ingredients_ingredient_name.total", description: "Ingredients"),
-      summary("search.items.relaxir_usda_food_description.total", description: "USDA Food"),
       summary("search.query.total_time", unit: {:native, :nanosecond}),
 
       # Database Metrics

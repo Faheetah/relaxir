@@ -31,33 +31,10 @@ defmodule Relaxir.Categories.Parser do
   defp map_category(category, _name), do: %{category_id: category.id}
 
   def map_existing_categories(attrs, recipe) do
-    current_recipe_categories =
-      recipe.recipe_categories
-      |> Enum.reduce(
-        [],
-        fn ri, acc ->
-          [%{id: ri.id, category: %{id: ri.category.id}} | acc]
-        end
-      )
-
     recipe_categories =
       (attrs["recipe_categories"] || [])
-      |> Enum.map(&map_existing_category(&1, current_recipe_categories, recipe))
+      |> Enum.map(fn rc -> Map.put(rc, :recipe_id, recipe.id) end)
 
     Map.put(attrs, "recipe_categories", recipe_categories)
   end
-
-  defp map_existing_category(%{:category_id => id}, categories, recipe) do
-    Enum.find(
-      categories,
-      %{recipe_id: recipe.id, category_id: id},
-      fn crc ->
-        if crc.category.id == id do
-          crc
-        end
-      end
-    )
-  end
-
-  defp map_existing_category(category, _categories, _recipe), do: category
 end

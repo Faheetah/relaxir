@@ -52,20 +52,12 @@ defmodule RelaxirWeb.Router do
       resources "/ingredients", IngredientController, except: [:show, :index]
       get "/ingredients/:ingredient_id/addToList", IngredientController, :select_list
       live_dashboard "/dashboard", metrics: RelaxirWeb.Telemetry
-
-
-      # scope "/", as: :recipe do
-        # live "/recipes/:id/upload", UploadLive, :new
-      # end
     end
 
-      live "/search", SearchLive, :search
+    live "/search", SearchLive, :search
 
     get "/tools", ToolController, :index
     get "/tools/:name", ToolController, :show
-    # this needs pagination
-    # get "/usda", UsdaController, :index
-    get "/usda/:id", UsdaController, :show
     get "/ingredients/all", IngredientController, :all
     resources "/ingredients", IngredientController, only: [:show, :index]
     get "/categories/all", CategoryController, :all

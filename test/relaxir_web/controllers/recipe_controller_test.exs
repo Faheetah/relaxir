@@ -72,7 +72,7 @@ defmodule RelaxirWeb.RecipeControllerTest do
     setup [:recipe_with_ingredients]
 
     test "retains existing ingredients", %{conn: conn, recipe_with_ingredients: recipe} do
-      ingredients = Enum.map_join(recipe.fixture["ingredients"], fn i -> i.name end, "\n")
+      ingredients = Enum.map_join(recipe.fixture["ingredients"], "\n", fn i -> i.name end)
 
       conn = put(conn, Routes.recipe_path(conn, :update, recipe), recipe: %{ingredients: ingredients})
 

@@ -2,7 +2,6 @@ defmodule Relaxir.Recipes do
   @moduledoc false
 
   import Ecto.Query
-  import Ecto.Changeset
 
   alias Relaxir.Repo
   alias Relaxir.Categories
@@ -190,62 +189,6 @@ defmodule Relaxir.Recipes do
 
   def delete_cache(recipe) do
     Invert.delete(Relaxir.Recipes.Recipe, :title, {recipe.title, [recipe.title, recipe.id]})
-  end
-
-  # Ingredient suggestions are currently unused, will revive later without USDA
-  def get_recipe_ingredient_suggestions(changeset) do
-    changeset
-    |> get_recipe_ingredient_names()
-    |> Enum.map(fn ingredient ->
-      ingredient_name =
-        ingredient
-        |> Map.get(:changes)
-        |> Map.get(:ingredient)
-        |> Map.get(:changes)
-        |> Map.get(:name)
-
-      get_recipe_ingredient_suggestion(ingredient, ingredient_name)
-    end)
-  end
-
-  defp get_recipe_ingredient_suggestion(ingredient, nil), do: ingredient
-
-  defp get_recipe_ingredient_suggestion(ingredient, ingredient_name) do
-    case Invert.get(Ingredients.Ingredient, :name, ingredient_name) do
-      {:ok, suggestion} ->
-        {[s, _], score} = hd(suggestion)
-
-        if score > 1 do
-          put_change(ingredient, :suggestion, %{name: String.downcase(s), type: "ingredient", score: round(score * 10)})
-        else
-          Invert.get(Relaxir.Usda.Food, :description, ingredient_name)
-          |> maybe_get_usda_suggestion(ingredient)
-        end
-
-      {:error, :not_found} ->
-        case Invert.get(Relaxir.Usda.Food, :description, ingredient_name) do
-          {:ok, suggestion} ->
-            {[s, _], score} = hd(suggestion)
-            score_ingredient(ingredient, score, s, "USDA")
-
-          {:error, :not_found} ->
-            ingredient
-        end
-    end
-  end
-
-  defp maybe_get_usda_suggestion({:ok, suggestion}, ingredient) do
-    {[s, _], score} = hd(suggestion)
-    score_ingredient(ingredient, score, s, "USDA")
-  end
-  defp maybe_get_usda_suggestion({:error, _suggestion}, ingredient), do: ingredient
-
-  defp score_ingredient(ingredient, score, suggestion, type) do
-    if score > 1 do
-      put_change(ingredient, :suggestion, %{name: String.downcase(suggestion), type: type, score: round(score * 10)})
-    else
-      ingredient
-    end
   end
 
   def get_recipe_ingredient_names(changeset) do
