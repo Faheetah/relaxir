@@ -14,6 +14,7 @@ defmodule Relaxir.Repo.Migrations.CreateRecipes do
       add(:vegetarian, :boolean, default: false)
       add(:vegan, :boolean, default: false)
       add(:spicy, :boolean, default: false)
+      # add(:user_id, references(:users)) # handled in user_auth_tables
 
       timestamps()
     end
