@@ -1,12 +1,12 @@
 alias Relaxir.Recipes
 
 Code.require_file("priv/repo/test_user_seeds.exs")
-Code.require_file("priv/repo/unit_seeds.exs")
 
 [
   %{
     "title" => "Beef Fajitas",
     "categories" => ["Texmex"],
+    "published" => true,
     "ingredients" => [
       %{name: "beef", note: "browned"},
       %{name: "onion"},
@@ -27,6 +27,7 @@ Code.require_file("priv/repo/unit_seeds.exs")
   %{
     "title" => "Salsa",
     "categories" => ["Texmex", "Mexican"],
+    "published" => true,
     "ingredients" => [
       %{name: "tomatoes"},
       %{name: "Onion"},
