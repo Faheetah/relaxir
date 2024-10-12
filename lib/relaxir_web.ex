@@ -124,7 +124,11 @@ defmodule RelaxirWeb do
       import Phoenix.HTML
       # Core UI components and translation
       import RelaxirWeb.CoreComponents
+
+      # Custom components
       import RelaxirWeb.FormattingComponents
+
+      # Gettext
       use Gettext, backend: RelaxirWeb.GetText
 
       # Shortcut for generating JS commands

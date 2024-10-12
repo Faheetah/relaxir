@@ -1,58 +1,10 @@
 <div class="grid grid-cols-1 sm:grid-cols-4 gap-8">
-  <div :for={{_id, recipe} <- @streams.recipes}>
-    <div>
-      <div class="mx-6 lg:mx-0">
-        <.link href={~p"/recipes/#{recipe}"}>
-          <%= if recipe.image_filename do %>
-            <img src={"/uploads/#{recipe.image_filename}-full.jpg"}>
-          <% else %>
-            <img src="/images/default-full.jpg">
-          <% end %>
-        </.link>
-      </div>
-    </div>
-
-    <div class="mx-6 lg:mx-0">
-      <div class="text-neutral-800 mt-1 text-sm font-medium decoration-amber-500 decoration-2 underline-offset-4">
-        <%= for category <- recipe.categories do %>
-          <.link href={~p"/categories/#{category.name}"} class="hover:underline">
-            <%= String.upcase(category.name) %>
-          </.link>
-          <span class="last:hidden"> /</span>
-        <% end %>
-      </div>
-
-
-    <div class="text-2xl tracking-tight leading-6 font-bold font-serif pb-4 mt-4">
-      <.link href={~p"/recipes/#{recipe}"}>
-        <%= recipe.title %>
-      </.link>
-
-      <span class="ml-1">
-      <%= if recipe.vegetarian do %>
-      <span class="text-green-600 font-bold text-lg" title="Vegetarian">V</span>
-      <% end %>
-      <%= if recipe.vegan do %>
-      <span class="text-green-600 font-bold text-lg" title="Vegan">VE</span>
-      <% end %>
-      <%= if recipe.gluten_free do %>
-      <span class="text-green-600 font-bold text-lg" title="Gluten Free">GF</span>
-      <% end %>
-      <%= if recipe.keto do %>
-      <span class="text-yellow-600 font-bold text-lg" title="Keto">K</span>
-      <% end %>
-      <%= if recipe.spicy do %>
-      <span class="text-red-500 font-bold text-lg" title="Spicy">S</span>
-      <% end %>
-      </span>
-    </div>
-
-    <%= if recipe.description do %>
-      <div class="text-sm">
-        <%= recipe.description %>
-      </div>
-    <% end %>
-    </div>
+  <div :for={{id, recipe} <- @streams.recipes}>
+    <.live_component
+      module={RelaxirWeb.RecipeLive.RecipeCardComponent}
+      id={id}
+      recipe={recipe}
+    />
   </div>
 </div>
 
