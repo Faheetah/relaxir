@@ -14,7 +14,7 @@
           (displays on the front page)
         </div>
     <% end %>
-    <%= textarea f, :description, class: "w-full h-24 p-2 resize-none overflow-hidden overscroll-none outline-0 focus:border-amber-500 border-1", maxlength: 72 %>
+    <%= textarea f, :description, class: "w-full h-24 p-2 resize-none overflow-hidden overscroll-none outline-0 focus:border-amber-500 border-1", maxlength: 300 %>
     <%= error_tag f, :description %>
   </div>
 

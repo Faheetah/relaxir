@@ -1,27 +1,8 @@
 <div class="grid grid-cols-1 sm:grid-cols-4 gap-8">
   <div :for={{_id, recipe} <- @streams.recipes}>
-    <div class="mb-8">
+    <div>
       <div class="mx-6 lg:mx-0">
         <.link href={~p"/recipes/#{recipe}"}>
-          <div class="relative">
-            <div class="absolute hidden right-2 bottom-3">
-              <%= if recipe.vegetarian do %>
-              <span class="rounded-full ml-1 text-sm bg-green-800 text-neutral-100 font-bold py-1 px-2 cursor-help" title="Vegetarian">VG</span>
-              <% end %>
-              <%= if recipe.vegan do %>
-              <span class="rounded-full ml-1 text-sm bg-green-800 text-neutral-100 font-bold py-1 px-2 cursor-help" title="Vegan">VE</span>
-              <% end %>
-              <%= if recipe.gluten_free do %>
-              <span class="rounded-full ml-1 text-sm bg-yellow-800 text-neutral-100 font-bold py-1 px-2 cursor-help" title="Gluten Free">GF</span>
-              <% end %>
-              <%= if recipe.keto do %>
-              <span class="rounded-full ml-1 text-sm bg-yellow-800 text-neutral-100 font-bold py-1 px-3 cursor-help" title="Keto">K</span>
-              <% end %>
-              <%= if recipe.spicy do %>
-              <span class="rounded-full ml-1 text-sm tracking-tighter bg-red-800 text-neutral-100 font-bold py-1 px-3 cursor-help" title="Spicy">HOT</span>
-              <% end %>
-            </div>
-          </div>
           <%= if recipe.image_filename do %>
             <img src={"/uploads/#{recipe.image_filename}-full.jpg"}>
           <% else %>
@@ -46,6 +27,24 @@
       <.link href={~p"/recipes/#{recipe}"}>
         <%= recipe.title %>
       </.link>
+
+      <span class="ml-1">
+      <%= if recipe.vegetarian do %>
+      <span class="text-green-600 font-bold text-lg" title="Vegetarian">V</span>
+      <% end %>
+      <%= if recipe.vegan do %>
+      <span class="text-green-600 font-bold text-lg" title="Vegan">VE</span>
+      <% end %>
+      <%= if recipe.gluten_free do %>
+      <span class="text-green-600 font-bold text-lg" title="Gluten Free">GF</span>
+      <% end %>
+      <%= if recipe.keto do %>
+      <span class="text-yellow-600 font-bold text-lg" title="Keto">K</span>
+      <% end %>
+      <%= if recipe.spicy do %>
+      <span class="text-red-500 font-bold text-lg" title="Spicy">S</span>
+      <% end %>
+      </span>
     </div>
 
     <%= if recipe.description do %>
