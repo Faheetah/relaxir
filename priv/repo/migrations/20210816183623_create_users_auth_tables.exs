@@ -4,13 +4,18 @@ defmodule Relaxir.Repo.Migrations.CreateUsersAuthTables do
   def change do
     execute("CREATE EXTENSION IF NOT EXISTS citext", "")
 
-    rename(table(:users), :encrypted_password, to: :hashed_password)
-
-    alter table(:users) do
-      modify(:email, :citext, null: false)
-      modify(:hashed_password, :string, null: false)
+    create table(:users) do
+      add(:email, :citext, null: false)
+      add(:hashed_password, :string, null: false)
       add(:username, :string)
       add(:confirmed_at, :naive_datetime)
+      add(:is_admin, :boolean, default: false)
+
+      timestamps()
+    end
+
+    alter table(:recipes) do
+      add(:user_id, references(:users))
     end
 
     create table(:users_tokens) do
@@ -23,6 +28,7 @@ defmodule Relaxir.Repo.Migrations.CreateUsersAuthTables do
 
     create(index(:users_tokens, [:user_id]))
     create(unique_index(:users_tokens, [:context, :token]))
+    create(unique_index(:users, [:email]))
     create(unique_index(:users, [:username]))
   end
 end

@@ -3,7 +3,7 @@ defmodule Relaxir.Repo.Migrations.RemoveUsdaInformation do
 
   def up do
     alter table(:ingredients) do
-      remove :food_id
+      remove_if_exists :food_id
     end
 
     # Remove USDA

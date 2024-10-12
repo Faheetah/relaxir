@@ -12,6 +12,6 @@ defmodule Relaxir.Repo.Migrations.CreateIngredientUnits do
       add(:note, :string)
     end
 
-    create(unique_index(:units, [:singular, :plural]))
+    create(unique_index(:units, [:name]))
   end
 end

@@ -6,7 +6,6 @@ defmodule Relaxir.Repo.Migrations.CreateRecipes do
       add(:title, :string, null: false)
       add(:directions, :text)
       add(:published, :boolean)
-      add(:user_id, references(:users))
       add(:image_filename, :string)
       add(:note, :text)
       add(:description, :text)
@@ -17,6 +16,10 @@ defmodule Relaxir.Repo.Migrations.CreateRecipes do
       add(:spicy, :boolean, default: false)
 
       timestamps()
+    end
+
+    alter table(:ingredients) do
+      add(:source_recipe_id, references(:recipes))
     end
 
     create(unique_index(:recipes, [:title]))
