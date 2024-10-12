@@ -16,6 +16,15 @@ defmodule RelaxirWeb.RecipeLive.Show do
      |> assign(:recipe, Recipes.get_recipe!(id))}
   end
 
+  @impl true
+  def handle_event("delete", %{"id" => id}, socket) do
+    {:ok, _recipe} =
+      Recipes.get_recipe!(id)
+      |> Recipes.delete_recipe
+
+    {:noreply, push_navigate(socket, to: ~p"/recipes")}
+  end
+
   defp page_title(:show), do: "Show Recipe"
   defp page_title(:edit), do: "Edit Recipe"
 end

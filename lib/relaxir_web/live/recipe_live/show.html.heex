@@ -46,7 +46,9 @@
           <.link patch={~p"/recipes/#{@recipe}/edit"} phx-click={JS.push_focus()}>
             <.icon name="hero-pencil-square" class="text-neutral-300 hover:text-neutral-400" />
           </.link>
-          <%# need to be able to delete recipes too %>
+          <.link phx-click={JS.push("delete", value: %{id: @recipe.id})} data-confirm={"Really delete #{@recipe.title}?"}>
+            <.icon name="hero-trash" class="text-neutral-300 hover:text-neutral-400" />
+          </.link>
           <% end %>
         </div>
 

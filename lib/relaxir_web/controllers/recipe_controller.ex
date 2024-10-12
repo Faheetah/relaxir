@@ -108,11 +108,4 @@ defmodule RelaxirWeb.RecipeController do
         render(conn, "edit.html", recipe: recipe, ingredients: ingredients, changeset: %{changeset | action: :insert})
     end
   end
-
-  def delete(conn, %{"id" => id}) do
-    recipe = Recipes.get_recipe!(id)
-    {:ok, _recipe} = Recipes.delete_recipe(recipe)
-
-    redirect(conn, to: Routes.recipe_path(conn, :index))
-  end
 end
