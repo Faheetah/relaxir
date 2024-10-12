@@ -10,11 +10,26 @@ defmodule RelaxirWeb.RecipeLive.Show do
 
   @impl true
   def handle_params(%{"id" => id}, _, socket) do
-    {:noreply,
-     socket
-     |> assign(:page_title, page_title(socket.assigns.live_action))
-     |> assign(:recipe, Recipes.get_recipe!(id))}
+    recipe = Recipes.get_recipe!(id)
+
+    meta_attrs = %{
+      title: recipe.title,
+      description: recipe.description,
+      url: Path.join("https://www.relaxanddine.com", ~p"/recipes/#{recipe}"),
+      image: get_upload_path(recipe.image_filename)
+    }
+
+    {
+      :noreply,
+      socket
+      |> assign(:page_title, page_title(socket.assigns.live_action))
+      |> assign(:recipe, recipe)
+      |> assign(:meta_attrs, meta_attrs)
+    }
   end
+
+  defp get_upload_path(nil), do: "/images/default-full.jpg"
+  defp get_upload_path(file), do: "/uploads/#{file}-full.jpg"
 
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
@@ -22,7 +37,10 @@ defmodule RelaxirWeb.RecipeLive.Show do
       Recipes.get_recipe!(id)
       |> Recipes.delete_recipe
 
-    {:noreply, push_navigate(socket, to: ~p"/recipes")}
+    {
+      :noreply,
+      redirect(socket, to: ~p"/recipes")
+    }
   end
 
   defp page_title(:show), do: "Show Recipe"

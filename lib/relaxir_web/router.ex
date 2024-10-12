@@ -15,17 +15,14 @@ defmodule RelaxirWeb.Router do
     plug :meta_defaults
   end
 
-  @default_meta [
-    %{property: "og:ttl", content: "600"},
-    %{property: "og:type", content: "image"},
-    %{property: "og:title", content: "Relax+Dine"},
-    %{property: "og:description", content: "Fine dining and practical recipes."},
-    %{property: "og:url", content: "https://www.relaxanddine.com"},
-    %{property: "og:image", content: "/images/default-full.jpg"}
-  ]
-
+  @doc """
+  Assign default meta for OG use in root layout. Updating these in handle_params allows updating
+  the meta that shows on social media. When redirecting away (i.e. deleting), ensure a full
+  navigate happens so the meta is updated. It's not possible to dynamically update the root
+  layout otherwise. This does incur a bit of a slower navigate, unfortunately.
+  """
   def meta_defaults(conn, _opts) do
-    assign(conn, :meta_attrs, @default_meta)
+    assign(conn, :meta_attrs, %{})
   end
 
   pipeline :live_browser do
