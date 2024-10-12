@@ -29,30 +29,6 @@ defmodule RelaxirWeb.IngredientController do
     render(conn, "new.html", changeset: changeset)
   end
 
-  def create(conn, %{"ingredient" => ingredient_params, "for" => list_for, "list_id" => list_id}) do
-    case Ingredients.create_ingredient(ingredient_params) do
-      {:ok, ingredient} ->
-        case list_for do
-          "groceries" -> RelaxirWeb.GroceryListController.add_ingredient(conn, %{"id" => list_id, "ingredient_id" => ingredient.id})
-          "inventories" -> RelaxirWeb.InventoryListController.add_ingredient(conn, %{"id" => list_id, "ingredient_id" => ingredient.id})
-          _ -> redirect(conn, to: Routes.ingredient_path(conn, :show, ingredient))
-        end
-
-      {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "new.html", changeset: changeset)
-    end
-  end
-
-  def create(conn, %{"ingredient" => ingredient_params, "for" => list_for}) do
-    case Ingredients.create_ingredient(ingredient_params) do
-      {:ok, ingredient} ->
-        select_list(conn, %{"ingredient_id" => ingredient.id, "for" => list_for})
-
-      {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "new.html", changeset: changeset)
-    end
-  end
-
   def create(conn, %{"ingredient" => ingredient_params}) do
     ingredient_params =
       ingredient_params
@@ -130,28 +106,4 @@ defmodule RelaxirWeb.IngredientController do
     |> put_flash(:info, "Ingredient deleted successfully.")
     |> redirect(to: Routes.ingredient_path(conn, :index))
   end
-
-  def select_list(conn, %{"ingredient_id" => ingredient_id, "for" => list_for}) do
-    inventory_lists = Relaxir.InventoryLists.list_inventory_lists()
-    grocery_lists = Relaxir.GroceryLists.list_grocery_lists()
-
-    cond do
-      length(inventory_lists) == 1 && Enum.empty?(grocery_lists) ->
-        RelaxirWeb.InventoryListController.add_ingredient(conn, %{"id" => hd(inventory_lists).id, "ingredient_id" => ingredient_id})
-
-      Enum.empty?(inventory_lists) && length(grocery_lists) == 1 ->
-        RelaxirWeb.GroceryListController.add_ingredient(conn, %{"id" => hd(grocery_lists).id, "ingredient_id" => ingredient_id})
-
-      true ->
-        render(conn, "select_list.html",
-          list_count: length(inventory_lists ++ grocery_lists),
-          inventory_lists: inventory_lists,
-          grocery_lists: grocery_lists,
-          ingredient_id: ingredient_id,
-          for: list_for
-        )
-    end
-  end
-
-  def select_list(conn, %{"ingredient_id" => ingredient_id}), do: select_list(conn, %{"ingredient_id" => ingredient_id, "for" => nil})
 end

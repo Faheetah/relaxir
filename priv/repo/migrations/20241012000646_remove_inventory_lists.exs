@@ -7,6 +7,7 @@ defmodule Relaxir.Repo.Migrations.RemoveInventoryLists do
     drop_if_exists table(:ingredient_inventory_lists)
     drop_if_exists table(:inventory_lists)
     execute "DELETE FROM schema_migrations WHERE version = 20201027033825 AND EXISTS (SELECT version FROM schema_migrations WHERE version = 20201027033825);"
+    execute "DELETE FROM schema_migrations WHERE version = 20201219205627 AND EXISTS (SELECT version FROM schema_migrations WHERE version = 20201219205627);"
   end
 
   def down do

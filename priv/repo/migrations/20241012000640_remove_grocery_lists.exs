@@ -7,6 +7,7 @@ defmodule Relaxir.Repo.Migrations.RemoveGroceryLists do
     drop_if_exists table(:ingredient_grocery_lists)
     drop_if_exists table(:grocery_lists)
     execute "DELETE FROM schema_migrations WHERE version = 20201025151641 AND EXISTS (SELECT version FROM schema_migrations WHERE version = 20201025151641);"
+    execute "DELETE FROM schema_migrations WHERE version = 20210320063852 AND EXISTS (SELECT version FROM schema_migrations WHERE version = 20210320063852);"
   end
 
   def down do

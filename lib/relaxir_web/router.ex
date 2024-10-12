@@ -39,18 +39,9 @@ defmodule RelaxirWeb.Router do
       pipe_through [:require_authenticated_user, :require_admin]
       resources "/recipes", RecipeController, except: [:show, :index]
 
-      resources "/grocerylists", GroceryListController
-      delete "/grocerylists/:id/ingredient/:ingredient_id", GroceryListController, :remove_ingredient
-      post "/grocerylists/:id/ingredient/:ingredient_id", GroceryListController, :add_ingredient
-
-      resources "/inventorylists", InventoryListController
-      delete "/inventorylists/:id/ingredient/:ingredient_id", InventoryListController, :remove_ingredient
-      post "/inventorylists/:id/ingredient/:ingredient_id", InventoryListController, :add_ingredient
-
       post "/recipes/new", RecipeController, :new
       post "/recipes/:id/edit", RecipeController, :edit
       resources "/ingredients", IngredientController, except: [:show, :index]
-      get "/ingredients/:ingredient_id/addToList", IngredientController, :select_list
       live_dashboard "/dashboard", metrics: RelaxirWeb.Telemetry
     end
 
