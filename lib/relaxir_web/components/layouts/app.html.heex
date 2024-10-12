@@ -28,51 +28,30 @@
     <%# search icon %>
     <div class="flex-none self-end pr-2">
       <label class="cursor-pointer" data-menu-toggle for="search-toggle">
-        <a href="/search">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-        </svg>
-        </a>
+        <.link href="/search">
+          <.icon name="hero-magnifying-glass" />
+        </.link>
       </label>
     </div>
 
 
     <%# login/logout %>
-    <div class="flex-none self-end ml-4 group hidden lg:inline">
+    <div class="flex-none self-end group hidden lg:inline">
       <%= if @current_user do %>
-        <.link href="#">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
+        <.link href={~p"/recipes/new"} >
+          <.icon name="hero-plus-circle" class="ml-2" />
         </.link>
 
-        <div class="hidden group-hover:block group-focus:block flex absolute border divide-y divide-gray-600 border-gray-600 border-solid-2 bg-white right-0">
-          <.link href={~p"/users/settings"} class="block text-xl justify-between flex bg-white hover:bg-amber-500 py-3 px-6">
-          PROFILE
-          <svg class="h-full w-6 inline right ml-2 self-end" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          </.link>
+        <.link href={~p"/users/settings"} >
+          <.icon name="hero-cog-6-tooth" class="ml-2" />
+        </.link>
 
-          <.link href={~p"/recipes/new"} class="block text-xl justify-between flex bg-white hover:bg-amber-500 py-3 px-6">
-          ADD RECIPE
-          <svg class="h-full w-6 inline right ml-2 self-end" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          </.link>
-
-          <.link href={~p"/users/log_out"} method="delete" class="block text-xl justify-between flex bg-white hover:bg-amber-500 py-3 px-6">
-          LOGOUT
-          <svg class="h-full w-6 inline right ml-2 self-end" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          </.link>
-        </div>
+        <.link href={~p"/users/log_out"} method="delete" >
+          <.icon name="hero-arrow-right-start-on-rectangle" class="ml-2" />
+        </.link>
       <% else %>
         <.link href={~p"/users/log_in"}>
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
-        </svg>
+          <.icon name="hero-arrow-left-end-on-rectangle" />
         </.link>
       <% end %>
     </div>
@@ -81,48 +60,26 @@
 
   <%# hamburger expand %>
   <input class="hidden peer" id="hamburger-toggle" type="checkbox" />
-  <div class="peer-checked:block pt-4 divide-y-2 divide-gray-600 w-full h-full fixed bg-white text-3xl hidden">
-    <div />
+  <div class="peer-checked:block pt-4 w-full h-full fixed bg-white text-xl hidden">
     <%= for item <- ~w[recipes ingredients categories tools search profile] do %>
-    <a class="flex p-4 hover:bg-amber-500" href={"/#{item}"}>
+    <a class="flex px-8 py-4 hover:bg-neutral-200" href={"/#{item}"}>
       <div class="flex-auto"><%= String.upcase(item) %></div>
-      <div class="flex-none">
-      <svg class="h-full w-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-      </div>
     </a>
     <% end %>
 
     <%= if @current_user do %>
-    <.link href={~p"/recipes/new"} class="flex p-4 hover:bg-amber-500">
-      <div class="flex-auto">ADD RECIPE</div>
-      <div class="flex-none">
-      <svg class="h-full w-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-      </div>
-        </.link>
+      <.link href={~p"/recipes/new"} class="flex px-8 py-4 hover:bg-neutral-200">
+        <div class="flex-auto">ADD RECIPE</div>
+      </.link>
 
-      <.link href={~p"/users/log_out"} method="delete" class="flex p-4 hover:bg-amber-500">
-      <div class="flex-auto">LOGOUT</div>
-      <div class="flex-none">
-      <svg class="h-full w-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-      </div>
+      <.link href={~p"/users/log_out"} method="delete" class="flex px-8 py-4 hover:bg-neutral-200">
+        <div class="flex-auto">LOGOUT</div>
       </.link>
     <% else %>
-      <.link href={~p"/users/log_in"} class="flex p-4 hover:bg-amber-500">
-      <div class="flex-auto">LOGIN</div>
-      <div class="flex-none">
-      <svg class="h-full w-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-      </div>
+      <.link href={~p"/users/log_in"} class="flex px-8 py-4 hover:bg-neutral-200">
+        <div class="flex-auto">LOGIN</div>
       </.link>
     <% end %>
-    <div />
   </div>
 
   <%# Sub menu %>
