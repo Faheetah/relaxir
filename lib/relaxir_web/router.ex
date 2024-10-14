@@ -53,7 +53,7 @@ defmodule RelaxirWeb.Router do
     get "/categories/:name", CategoryController, :show
   end
 
-  ## Authentication routes
+  # Log in routes
 
   scope "/", RelaxirWeb do
     pipe_through [:browser, :redirect_if_user_is_authenticated]
@@ -69,6 +69,8 @@ defmodule RelaxirWeb.Router do
     post "/users/log_in", UserSessionController, :create
   end
 
+  # Protected routes
+
   scope "/", RelaxirWeb do
     pipe_through [:browser, :require_authenticated_user]
 
@@ -77,13 +79,14 @@ defmodule RelaxirWeb.Router do
       live "/profile", UserSettingsLive, :edit
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
+      delete "/users/log_out", UserSessionController, :delete
     end
   end
 
+  # Deferred routes
+
   scope "/", RelaxirWeb do
     pipe_through [:browser]
-
-    delete "/users/log_out", UserSessionController, :delete
 
     live_session :current_user,
       on_mount: [{RelaxirWeb.UserAuth, :mount_current_user}] do
