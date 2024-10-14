@@ -5,24 +5,6 @@ defmodule RelaxirWeb.RecipeController do
   alias Relaxir.Recipes.Recipe
   alias Relaxir.RecipeParser
 
-  def index(conn, %{"show" => show}) do
-    current_user = conn.assigns.current_user
-
-    recipes =
-      case show do
-        "all" -> Recipes.list_recipes()
-        "drafts" -> Recipes.list_draft_recipes()
-        "draft" -> Recipes.list_draft_recipes()
-        _ -> Recipes.list_published_recipes()
-      end
-
-    render(conn, "index.html", recipes: recipes, current_user: current_user, show: show)
-  end
-
-  def index(conn, _params) do
-    index(conn, %{"show" => "published"})
-  end
-
   def new(conn, %{"recipe" => recipe}) do
     attrs = RecipeParser.parse_attrs(recipe)
     changeset = Recipes.change_recipe(%Recipe{}, attrs)
@@ -56,27 +38,6 @@ defmodule RelaxirWeb.RecipeController do
         render(conn, "new.html", changeset: changeset, ingredients: ingredients)
     end
   end
-
-  def show(conn, %{"id" => id}) do
-    current_user = conn.assigns.current_user
-    recipe = Recipes.get_recipe!(id)
-
-    meta_attrs = [
-      %{property: "twitter:card", content: "summary_large_image"}, # required to make the image proper sized on some sites
-      %{property: "og:ttl", content: "600"},
-      %{property: "og:type", content: "image"},
-      %{property: "og:site_name", content: "Relax+Dine"},
-      %{property: "og:title", content: recipe.title},
-      %{property: "og:description", content: recipe.description},
-      %{property: "og:url", content: Path.join("https://www.relaxanddine.com", ~p"/recipes/#{recipe}")},
-      %{property: "og:image", content: get_upload_path(recipe.image_filename)}
-    ]
-
-    render(conn, "show.html", recipe: recipe, current_user: current_user, meta_attrs: meta_attrs)
-  end
-
-  defp get_upload_path(nil), do: "https://www.relaxanddine.com/images/default-full.jpg"
-  defp get_upload_path(file), do: "https://www.relaxanddine.com/uploads/#{file}-full.jpg"
 
   def edit(conn, %{"id" => id, "recipe" => recipe}) do
     attrs = RecipeParser.parse_attrs(recipe)
