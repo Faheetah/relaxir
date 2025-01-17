@@ -43,7 +43,7 @@ defmodule Relaxir.MixProject do
       {:ecto_sql, "~> 3.10"},
       {:postgrex, "~> 0.17"},
       {:phoenix_html, "~> 3.3"},
-      {:phoenix_live_view, "~> 1.0.0-rc.1"},
+      {:phoenix_live_view, "~> 1.0.2"},
       {:floki, ">= 0.30.0", only: :test},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:phoenix_live_dashboard, "~> 0.8.3"},

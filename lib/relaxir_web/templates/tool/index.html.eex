@@ -1,6 +1,0 @@
-<div class="text-4xl mb-8">Tools</div>
-
-<div class="space-y-2">
-<div class="text-lg"><%= link "Disher size charts", to: Routes.tool_path(@conn, :show, "dishers") %></div>
-<div class="text-lg"><%= link "Common measurement conversions", to: Routes.tool_path(@conn, :show, "conversions") %></div>
-</div>

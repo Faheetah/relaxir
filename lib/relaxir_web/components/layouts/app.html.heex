@@ -20,7 +20,6 @@
     <%# regular menu %>
     <div class="hidden lg:inline-block text-xl self-end space-x-8 pl-8 mx-4 flex-1 justify-items-end text-gray-900 decoration-amber-500 decoration-2 underline-offset-4">
       <a class="hover:underline" href="/">RECIPES</a>
-      <a class="hover:underline" href="/ingredients">INGREDIENTS</a>
       <a class="hover:underline" href="/categories">CATEGORIES</a>
       <a class="hover:underline" href="/tools">TOOLS</a>
     </div>
@@ -61,7 +60,7 @@
   <%# hamburger expand %>
   <input class="hidden peer" id="hamburger-toggle" type="checkbox" />
   <div class="peer-checked:block pt-4 w-full h-full fixed bg-white text-xl hidden">
-    <%= for item <- ~w[recipes ingredients categories tools search profile] do %>
+    <%= for item <- ~w[recipes categories tools search profile] do %>
     <a class="flex px-8 py-4 hover:bg-neutral-200" href={"/#{item}"}>
       <div class="flex-auto"><%= String.upcase(item) %></div>
     </a>

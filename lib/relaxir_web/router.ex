@@ -29,28 +29,7 @@ defmodule RelaxirWeb.Router do
     plug :put_root_layout, {RelaxirWeb.Layouts, :root}
   end
 
-  scope "/", RelaxirWeb do
-    pipe_through [:browser]
-
-    scope "/" do
-      pipe_through [:require_authenticated_user, :require_admin]
-      resources "/recipes", RecipeController, except: [:show, :index]
-
-      post "/recipes/new", RecipeController, :new
-      post "/recipes/:id/edit", RecipeController, :edit
-      resources "/ingredients", IngredientController, except: [:show, :index]
-      live_dashboard "/dashboard", metrics: RelaxirWeb.Telemetry
-    end
-
-    live "/search", SearchLive, :search
-
-    get "/tools", ToolController, :index
-    get "/tools/:name", ToolController, :show
-    get "/ingredients/all", IngredientController, :all
-    resources "/ingredients", IngredientController, only: [:show, :index]
-  end
-
-  # Log in routes
+  # Use authentication routes
 
   scope "/", RelaxirWeb do
     pipe_through [:browser, :redirect_if_user_is_authenticated]
@@ -78,9 +57,14 @@ defmodule RelaxirWeb.Router do
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
       delete "/users/log_out", UserSessionController, :delete
     end
+
+    scope "/" do
+      pipe_through [:require_admin]
+      live_dashboard "/dashboard", metrics: RelaxirWeb.Telemetry
+    end
   end
 
-  # Deferred routes
+  # Public routes
 
   scope "/", RelaxirWeb do
     pipe_through [:browser]
@@ -99,6 +83,11 @@ defmodule RelaxirWeb.Router do
 
       live "/categories", CategoryLive.Index, :index
       live "/categories/:name", CategoryLive.Show, :show
+
+      live "/search", SearchLive, :search
+
+      live "/tools", ToolLive.Index, :index
+      live "/tools/:name", ToolLive.Show, :show
 
       scope "/", as: :recipe do
         live "/recipes/:id/upload", UploadLive, :new
