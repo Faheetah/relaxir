@@ -1,0 +1,17 @@
+<div class="text-4xl mb-8">
+All Categories
+
+  <%= if @current_user && @current_user.is_admin do %>
+    <%= link to: Routes.category_path(@conn, :new) do %>
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 inline text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    <% end %>
+  <% end %>
+</div>
+
+<div class="grid grid-cols-4 gap-4">
+<%= for category <- @categories do %>
+  <%= link String.upcase(category.name), to: Routes.category_path(@conn, :show, category.name), class: "p-2 border rounded hover:bg-green-100 hover:border-green-600 border-gray-400 bg-gray-100" %>
+<% end %>
+</div>

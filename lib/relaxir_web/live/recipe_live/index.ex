@@ -5,7 +5,7 @@ defmodule RelaxirWeb.RecipeLive.Index do
   alias Relaxir.Recipes.Recipe
 
   @impl true
-  def mount(params, _session, socket) do
+  def mount(_params, _session, socket) do
     {:ok, stream(socket, :recipes, [])}
   end
 

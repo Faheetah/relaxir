@@ -1,0 +1,13 @@
+<div class="text-5xl text-center font-medium font-serif mb-16">
+    <%= String.capitalize(@category.name) %>
+</div>
+
+<div class="grid grid-cols-1 sm:grid-cols-4 gap-8">
+    <div :for={recipe <- @category.recipes}>
+    <.live_component
+        module={RelaxirWeb.RecipeLive.RecipeCardComponent}
+        id={"r-#{recipe.id}"}
+        recipe={recipe}
+    />
+    </div>
+</div>

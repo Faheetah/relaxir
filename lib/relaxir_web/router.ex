@@ -48,9 +48,6 @@ defmodule RelaxirWeb.Router do
     get "/tools/:name", ToolController, :show
     get "/ingredients/all", IngredientController, :all
     resources "/ingredients", IngredientController, only: [:show, :index]
-    get "/categories/all", CategoryController, :all
-    resources "/categories", CategoryController, only: [:index]
-    get "/categories/:name", CategoryController, :show
   end
 
   # Log in routes
@@ -99,6 +96,9 @@ defmodule RelaxirWeb.Router do
       live "/new/recipes/new", RecipeLive.Index, :new
       live "/new/recipes/:id/edit", RecipeLive.Index, :edit
       live "/recipes/:id/show/edit", RecipeLive.Show, :edit
+
+      live "/categories", CategoryLive.Index, :index
+      live "/categories/:name", CategoryLive.Show, :show
 
       scope "/", as: :recipe do
         live "/recipes/:id/upload", UploadLive, :new

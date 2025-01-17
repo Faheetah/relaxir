@@ -10,25 +10,17 @@ defmodule Relaxir.Categories do
     Repo.all(order_by(Category, asc: :name))
   end
 
-  def top_categories(limit \\ 4) do
-    recipe_count =
-      from ri in RecipeCategory,
-      group_by: ri.category_id,
-      select: ri.category_id,
-      order_by: [desc: count(ri.recipe_id)],
-      limit: ^limit
-
-    query =
-      from i in Category,
-      join: ri in subquery(recipe_count),
-      on: i.id == ri.category_id
-
-    Repo.all(query)
-    |> Enum.reverse()
-    |> Enum.reduce([], fn category, acc ->
-      recipes = latest_recipes_for_category(category)
-
-      [{category, recipes} | acc]
+  def top_categories(category_limit \\ 8, recipe_limit \\ 4) do
+    Repo.all(
+      from c in Category,
+      join: rc in RecipeCategory,
+      on: rc.category_id == c.id,
+      group_by: c.id,
+      order_by: [desc: count(rc.recipe_id)],
+      limit: ^category_limit
+    )
+    |> Enum.map(fn category ->
+      Map.put(category, :recipes, latest_recipes_for_category(category, recipe_limit))
     end)
   end
 
@@ -58,6 +50,7 @@ defmodule Relaxir.Categories do
 
   def get_category_by_name!(name) do
     Repo.get_by(Category, name: name)
+    |> Repo.preload(recipes: [:categories])
   end
 
   def get_categories_by_name!(names) do
