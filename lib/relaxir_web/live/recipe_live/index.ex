@@ -5,7 +5,7 @@ defmodule RelaxirWeb.RecipeLive.Index do
   alias Relaxir.Recipes.Recipe
 
   @impl true
-  def mount(_params, _session, socket) do
+  def mount(params, _session, socket) do
     {:ok, stream(socket, :recipes, [])}
   end
 
@@ -14,10 +14,9 @@ defmodule RelaxirWeb.RecipeLive.Index do
     # TODO add in somewhere functionality to show draft/published/all buttons if logged in
     recipes =
       case Map.get(params, "show") do
-        "all" -> Recipes.list_recipes()
         "drafts" -> Recipes.list_draft_recipes()
         "draft" -> Recipes.list_draft_recipes()
-        _ -> Recipes.list_published_recipes()
+        _ -> Recipes.list_recipes()
       end
 
     {

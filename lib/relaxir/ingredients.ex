@@ -73,7 +73,7 @@ defmodule Relaxir.Ingredients do
       from ri in RecipeIngredient,
       where: ri.ingredient_id in ^ingredient_ids,
       join: r in Recipe, on: r.id == ri.recipe_id,
-      where: r.id == ri.recipe_id,
+      where: r.id == ri.recipe_id and r.published == true,
       order_by: [desc: r.inserted_at],
       select: r,
       distinct: r,
