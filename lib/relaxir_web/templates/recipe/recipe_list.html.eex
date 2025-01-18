@@ -1,5 +1,0 @@
-<div class="grid grid-cols-1 sm:grid-cols-4 gap-8">
-  <%= for recipe <- @recipes do %>
-  <%= render("recipe_card.html", recipe: recipe, conn: @conn) %>
-  <% end %>
-</div>

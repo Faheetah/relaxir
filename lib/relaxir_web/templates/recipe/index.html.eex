@@ -1,1 +1,0 @@
-<%= render("recipe_list.html", recipes: @recipes, conn: @conn) %>
