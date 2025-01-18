@@ -129,7 +129,7 @@ defmodule RelaxirWeb do
       import RelaxirWeb.FormattingComponents
 
       # Gettext
-      use Gettext, backend: RelaxirWeb.GetText
+      import RelaxirWeb.Gettext
 
       # Shortcut for generating JS commands
       alias Phoenix.LiveView.JS
