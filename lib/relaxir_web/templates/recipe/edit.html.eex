@@ -1,3 +1,2 @@
 <div class="lg:w-5/6 mx-4 lg:mx-auto relative">
-<%= render "form.html", Map.merge(assigns, %{type: "#{@recipe.title}", action: Routes.recipe_path(@conn, :update, @recipe)}) %>
 </div>

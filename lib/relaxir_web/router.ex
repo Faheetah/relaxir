@@ -56,6 +56,9 @@ defmodule RelaxirWeb.Router do
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
       delete "/users/log_out", UserSessionController, :delete
+
+      live "/recipes/new", RecipeLive.Index, :new
+      live "/recipes/:id/edit", RecipeLive.Show, :edit
     end
 
     scope "/" do
@@ -74,12 +77,11 @@ defmodule RelaxirWeb.Router do
       live "/users/confirm/:token", UserConfirmationLive, :edit
       live "/users/confirm", UserConfirmationInstructionsLive, :new
 
+      live "/ingredients/:shim", RecipeLive.Index, :index
+
       live "/", RecipeLive.Index, :index
       live "/recipes", RecipeLive.Index, :index
       live "/recipes/:id", RecipeLive.Show, :show
-      live "/new/recipes/new", RecipeLive.Index, :new
-      live "/new/recipes/:id/edit", RecipeLive.Index, :edit
-      live "/recipes/:id/show/edit", RecipeLive.Show, :edit
 
       live "/categories", CategoryLive.Index, :index
       live "/categories/:name", CategoryLive.Show, :show
