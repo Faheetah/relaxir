@@ -4,7 +4,6 @@ defmodule Relaxir.Recipes do
   import Ecto.Query
 
   alias Relaxir.Repo
-  alias Relaxir.Categories
   alias Relaxir.Ingredients
   alias Relaxir.RecipeIngredient
   alias Relaxir.Recipes.Recipe
@@ -64,27 +63,14 @@ defmodule Relaxir.Recipes do
   end
 
   def create_recipe(attrs) do
-    attrs = map_attrs(attrs)
-
     %Recipe{}
     |> Recipe.changeset(attrs)
     |> Repo.insert()
-    |> case do
-      {:ok, recipe} ->
-        recipe = Repo.preload(recipe, @preload)
-        insert_cache(recipe)
-
-        recipe.recipe_ingredients
-        |> Enum.each(fn recipe_ingredient ->
-          Relaxir.Ingredients.insert_cache(recipe_ingredient.ingredient)
-        end)
-
-        {:ok, recipe}
-
-      error ->
-        error
-    end
+    |> then(&maybe_preload_recipe/1)
   end
+
+  defp maybe_preload_recipe({:ok, recipe}), do: {:ok, Repo.preload(recipe, @preload)}
+  defp maybe_preload_recipe(error), do: error
 
   def update_recipe(%Recipe{} = recipe, original_attrs) do
     attrs = map_attrs(original_attrs, recipe)
@@ -174,11 +160,12 @@ defmodule Relaxir.Recipes do
     end)
   end
 
-  def map_attrs(attrs, recipe \\ %Recipe{recipe_categories: [], recipe_ingredients: []}) do
+  # def map_attrs(attrs, recipe \\ %Recipe{recipe_categories: [], recipe_ingredients: []}) do
+  def map_attrs(attrs, recipe \\ %Recipe{recipe_ingredients: []}) do
     attrs
-    |> Categories.Parser.downcase_categories()
-    |> Categories.Parser.map_categories()
-    |> Categories.Parser.map_existing_categories(recipe)
+    # |> Categories.Parser.downcase_categories()
+    # |> Categories.Parser.map_categories()
+    # |> Categories.Parser.map_existing_categories(recipe)
     |> Ingredients.Parser.downcase_ingredients()
     |> Ingredients.Parser.map_ingredients()
     |> Ingredients.Parser.map_existing_ingredients(recipe)

@@ -10,6 +10,12 @@ defmodule Relaxir.Categories do
     Repo.all(order_by(Category, asc: :name))
   end
 
+  def search_categories(name) do
+    sanitized = Regex.replace(~r/([\%_])/, name, "\1")
+    query = sanitized <> "%"
+    Repo.all(from c in Category, where: ilike(c.name, ^query), select: c.name)
+  end
+
   def top_categories(category_limit \\ 8, recipe_limit \\ 4) do
     Repo.all(
       from c in Category,

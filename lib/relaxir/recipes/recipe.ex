@@ -2,9 +2,11 @@ defmodule Relaxir.Recipes.Recipe do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias Relaxir.Categories.Category
   alias Relaxir.Ingredients.Ingredient
   alias Relaxir.RecipeIngredient
   alias Relaxir.RecipeCategory
+  alias Relaxir.Repo
 
   schema "recipes" do
     field :title, :string
@@ -22,7 +24,8 @@ defmodule Relaxir.Recipes.Recipe do
     has_many :ingredients, through: [:recipe_ingredients, :ingredient]
     has_many :units, through: [:recipe_ingredients, :unit]
     has_many :recipe_categories, RecipeCategory, on_replace: :delete, on_delete: :delete_all
-    has_many :categories, through: [:recipe_categories, :category]
+    # has_many :categories, through: [:recipe_categories, :category]
+    many_to_many :categories, Category, join_through: RecipeCategory
     has_one :ingredient, Ingredient, foreign_key: :source_recipe_id
     belongs_to :user, Relaxir.Accounts.User
 
@@ -44,14 +47,28 @@ defmodule Relaxir.Recipes.Recipe do
     :image_filename
   ]
 
-  def changeset(recipe, attrs) do
+  def changeset(recipe, attrs, insert? \\ true) do
     recipe
     |> cast(strip_directions(attrs), @cast_attrs)
-    |> cast_assoc(:recipe_categories)
+    # |> cast_assoc(:recipe_categories)
+    |> put_assoc(:categories, parse_categories(attrs, insert?))
     |> cast_assoc(:recipe_ingredients)
     |> validate_required([:title])
     |> unique_constraint([:title])
     |> find_ingredient_errors()
+  end
+
+  defp parse_categories(attrs, insert?) do
+    (attrs["categories"] || [])
+    |> Enum.map(&String.trim/1)
+    |> Enum.reject(& &1 == "")
+    |> Enum.map(& get_or_insert_category(&1, insert?))
+  end
+
+  def get_or_insert_category(name, false), do: %Category{name: name}
+  def get_or_insert_category(name, true) do
+    name = String.downcase(name)
+    Repo.get_by(Category, name: name) || Repo.insert!(%Category{name: name})
   end
 
   defp strip_directions(attrs) do
