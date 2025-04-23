@@ -61,10 +61,15 @@ defmodule RelaxirWeb.RecipeLive.FormComponent do
   end
 
   @impl true
-  def handle_event("live_select_change", %{"text" => text, "id" => live_select_id}, socket) do
-    tags = Categories.search_categories(text)
+  def handle_event("live_select_change", %{"text" => text, "id" => live_select_id, "field" => field}, socket) do
+    IO.inspect field
+    items =
+      case field do
+        "recipe_categories" -> Categories.search_categories(text)
+        "recipe_ingredients" -> Categories.search_categories(text)
+      end
 
-    send_update(LiveSelect.Component, id: live_select_id, options: tags)
+    send_update(LiveSelect.Component, id: live_select_id, options: [text | items])
 
     {:noreply, socket}
   end
@@ -84,22 +89,22 @@ defmodule RelaxirWeb.RecipeLive.FormComponent do
         {:noreply,
          socket
          |> put_flash(:info, "Recipe updated successfully")
-         |> push_patch(to: socket.assigns.patch)}
+         |> push_navigate(to: ~p"/recipes/#{recipe.id}")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign(socket, form: to_form(changeset))}
+        {:noreply, assign(socket, form: to_form(Recipes.change_recipe(socket.assigns.recipe, recipe_params)))}
     end
   end
 
   defp save_recipe(socket, :new, recipe_params) do
     case Recipes.create_recipe(recipe_params) do
       {:ok, recipe} ->
-        # notify_parent({:saved, recipe})
+        notify_parent({:saved, recipe})
 
         {:noreply,
          socket
          |> put_flash(:info, "Recipe created successfully")
-         |> push_patch(to: socket.assigns.patch)}
+         |> push_navigate(to: socket.assigns.patch)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, form: to_form(changeset))}

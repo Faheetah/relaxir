@@ -9,16 +9,15 @@ defmodule Relaxir.Recipes do
   alias Relaxir.Recipes.Recipe
 
   @preloads [
-    # [recipe_ingredients: from(ri in RecipeIngredient, order_by: ri.order)],
-    # [
-    #   ingredients: [
-    #     source_recipe: [
-    #       recipe_ingredients: from(ri in RecipeIngredient, order_by: ri.order, preload: [:ingredient, :unit])
-    #     ]
-    #   ]
-    # ],
-    # :units,
-    # :recipe_categories,
+    [recipe_ingredients: from(ri in RecipeIngredient, order_by: ri.order)],
+    [
+      ingredients: [
+        source_recipe: [
+          recipe_ingredients: from(ri in RecipeIngredient, order_by: ri.order, preload: [:ingredient, :unit])
+        ]
+      ]
+    ],
+    :units,
     :categories,
     :user
   ]
@@ -73,10 +72,9 @@ defmodule Relaxir.Recipes do
   defp maybe_preload_recipe(error), do: error
 
   def update_recipe(%Recipe{} = recipe, original_attrs) do
-    %Recipe{}
+    recipe
     |> Recipe.changeset(original_attrs)
-    |> Repo.insert()
-    |> Repo.preload(@preloads)
+    |> Repo.update()
   end
 
   def old_update_recipe(%Recipe{} = recipe, original_attrs) do
@@ -140,7 +138,7 @@ defmodule Relaxir.Recipes do
 
   def change_recipe(%Recipe{} = recipe, attrs \\ %{}) do
     changeset = Recipe.changeset(recipe, attrs)
-    changes = Map.put(changeset.changes, :categories, attrs["categories"])
+    changes = Map.put(changeset.changes, :categories, attrs["categories"] || Enum.map(recipe.categories, & &1.name))
     Map.put(changeset, :changes, changes)
   end
 
