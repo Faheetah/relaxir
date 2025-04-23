@@ -36,6 +36,8 @@ defmodule RelaxirWeb.RecipeLive.FormComponent do
 
         <.input field={@form[:directions]} type="textarea" label="Directions" />
 
+        <.input field={@form[:note]} type="textarea" label="Note" />
+
         <:actions>
           <.button phx-disable-with="Saving...">Save Recipe</.button>
         </:actions>
