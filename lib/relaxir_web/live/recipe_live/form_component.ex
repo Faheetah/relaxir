@@ -23,6 +23,8 @@ defmodule RelaxirWeb.RecipeLive.FormComponent do
 
         <.input field={@form[:title]} type="text" label="Title" />
 
+        <.input field={@form[:description]} type="textarea" label="Description" />
+
         <.live_select
           field={@form[:categories]}
           phx-target={@myself}
@@ -31,6 +33,8 @@ defmodule RelaxirWeb.RecipeLive.FormComponent do
           option_extra_class="py-2"
           style={:tailwind}
         />
+
+        <.input field={@form[:directions]} type="textarea" label="Directions" />
 
         <:actions>
           <.button phx-disable-with="Saving...">Save Recipe</.button>
@@ -66,7 +70,6 @@ defmodule RelaxirWeb.RecipeLive.FormComponent do
     items =
       case field do
         "recipe_categories" -> Categories.search_categories(text)
-        "recipe_ingredients" -> Categories.search_categories(text)
       end
 
     send_update(LiveSelect.Component, id: live_select_id, options: [text | items])

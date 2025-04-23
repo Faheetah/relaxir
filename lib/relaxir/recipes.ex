@@ -68,21 +68,19 @@ defmodule Relaxir.Recipes do
   defp maybe_preload_recipe({:ok, recipe}), do: {:ok, Repo.preload(recipe, @preloads)}
   defp maybe_preload_recipe(error), do: error
 
-  def update_recipe(%Recipe{} = recipe, original_attrs) do
+  def update_recipe(%Recipe{} = recipe, attrs) do
     recipe
-    |> Recipe.changeset(original_attrs)
+    |> Recipe.changeset(attrs)
     |> Repo.update()
   end
 
-  def old_update_recipe(%Recipe{} = recipe, original_attrs) do
-    attrs = map_attrs(original_attrs, recipe)
-
+  def old_update_recipe(%Recipe{} = recipe, attrs) do
     case attrs["errors"] do
       {:error, error} ->
         {
           :error,
           recipe
-          |> Recipe.changeset(Map.merge(original_attrs, %{"ingredients" => attrs["errors"]}))
+          |> Recipe.changeset(Map.merge(attrs, %{"ingredients" => attrs["errors"]}))
           |> Ecto.Changeset.add_error(:ingredients, error, validation: :required)
         }
 
@@ -164,13 +162,13 @@ defmodule Relaxir.Recipes do
     end)
   end
 
-  def map_attrs(attrs, recipe \\ %Recipe{recipe_ingredients: []}) do
-    attrs
-    |> Enum.map(fn c -> c.name end)
-    |> Ingredients.Parser.downcase_ingredients()
-    |> Ingredients.Parser.map_ingredients()
-    |> Ingredients.Parser.map_existing_ingredients(recipe)
-  end
+  # def map_attrs(attrs, recipe \\ %Recipe{recipe_ingredients: []}) do
+    # attrs
+    # |> Enum.map(fn c -> c.name end)
+    # |> Ingredients.Parser.downcase_ingredients()
+    # |> Ingredients.Parser.map_ingredients()
+    # |> Ingredients.Parser.map_existing_ingredients(recipe)
+  # end
 
   def insert_cache(recipe) do
     Invert.set(Relaxir.Recipes.Recipe, :title, {recipe.title, [recipe.title, recipe.id]})
