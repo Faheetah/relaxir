@@ -39,11 +39,12 @@ defmodule Relaxir.MixProject do
       {:plug_cowboy, "~> 2.6"},
       # Phoenix/Ecto related
       {:phoenix, "~> 1.7"},
+      {:phoenix_html, "~> 4.0"},
+      {:phoenix_html_helpers, "~> 1.0"},
+      {:phoenix_live_view, "~> 1.0.2"},
       {:phoenix_ecto, "~> 4.5"},
       {:ecto_sql, "~> 3.10"},
       {:postgrex, "~> 0.17"},
-      {:phoenix_html, "~> 3.3"},
-      {:phoenix_live_view, "~> 1.0.2"},
       {:floki, ">= 0.30.0", only: :test},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:phoenix_live_dashboard, "~> 0.8.3"},
@@ -61,7 +62,7 @@ defmodule Relaxir.MixProject do
       {:telemetry_poller, "~> 1.0"},
       # misc required for app
       {:gettext, "~> 0.20"},
-      {:jason, "~>1.4"},
+      {:jason, "~> 1.2"},
       {:bcrypt_elixir, "~> 3.1"},
       {:earmark, "~> 1.4"},
       {:csv, "~> 3.0.5"},
@@ -71,7 +72,8 @@ defmodule Relaxir.MixProject do
       {:mix_test_watch, "~> 1.1", runtime: false, only: :dev},
       {:credo, "~> 1.7", only: :dev},
       {:excoveralls, "~> 0.17", only: :test},
-      {:sobelow, "~> 0.13", only: :dev}
+      {:sobelow, "~> 0.13", only: :dev},
+      {:live_select, "~> 1.6"}
     ]
   end
 

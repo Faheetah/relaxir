@@ -91,7 +91,10 @@ defmodule RelaxirWeb do
   defp view_helpers do
     quote do
       # Use all HTML functionality (forms, tags, etc)
-      use Phoenix.HTML
+      import Phoenix.HTML
+
+      # LiveSelect
+      import LiveSelect
 
       # Import basic rendering functionality (render, render_layout, etc)
       import Phoenix.View
@@ -120,10 +123,14 @@ defmodule RelaxirWeb do
 
   defp html_helpers do
     quote do
-      # HTML escaping functionality
+      # Phoenix HTML functionality
       import Phoenix.HTML
+
       # Core UI components and translation
       import RelaxirWeb.CoreComponents
+
+      # LiveSelect
+      import LiveSelect
 
       # Custom components
       import RelaxirWeb.FormattingComponents

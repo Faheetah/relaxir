@@ -25,7 +25,7 @@ defmodule Relaxir.Recipes.Recipe do
     has_many :units, through: [:recipe_ingredients, :unit]
     has_many :recipe_categories, RecipeCategory, on_replace: :delete, on_delete: :delete_all
     # has_many :categories, through: [:recipe_categories, :category]
-    many_to_many :categories, Category, join_through: RecipeCategory
+    many_to_many :categories, Category, join_through: RecipeCategory, on_replace: :delete, on_delete: :delete_all
     has_one :ingredient, Ingredient, foreign_key: :source_recipe_id
     belongs_to :user, Relaxir.Accounts.User
 

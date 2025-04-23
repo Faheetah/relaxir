@@ -8,17 +8,17 @@ defmodule Relaxir.Recipes do
   alias Relaxir.RecipeIngredient
   alias Relaxir.Recipes.Recipe
 
-  @preload [
-    [recipe_ingredients: from(ri in RecipeIngredient, order_by: ri.order)],
-    [
-      ingredients: [
-        source_recipe: [
-          recipe_ingredients: from(ri in RecipeIngredient, order_by: ri.order, preload: [:ingredient, :unit])
-        ]
-      ]
-    ],
-    :units,
-    :recipe_categories,
+  @preloads [
+    # [recipe_ingredients: from(ri in RecipeIngredient, order_by: ri.order)],
+    # [
+    #   ingredients: [
+    #     source_recipe: [
+    #       recipe_ingredients: from(ri in RecipeIngredient, order_by: ri.order, preload: [:ingredient, :unit])
+    #     ]
+    #   ]
+    # ],
+    # :units,
+    # :recipe_categories,
     :categories,
     :user
   ]
@@ -26,7 +26,7 @@ defmodule Relaxir.Recipes do
   def list_recipes do
     Repo.all(
       from r in Recipe,
-      where: r.published == true,
+      # where: r.published == true,
       order_by: [desc: r.inserted_at],
       preload: [:user, :categories]
     )
@@ -49,7 +49,7 @@ defmodule Relaxir.Recipes do
 
   def get_recipe!(id) do
     Recipe
-    |> preload(^@preload)
+    |> preload(^@preloads)
     |> Repo.get!(id)
   end
 
@@ -69,10 +69,17 @@ defmodule Relaxir.Recipes do
     |> then(&maybe_preload_recipe/1)
   end
 
-  defp maybe_preload_recipe({:ok, recipe}), do: {:ok, Repo.preload(recipe, @preload)}
+  defp maybe_preload_recipe({:ok, recipe}), do: {:ok, Repo.preload(recipe, @preloads)}
   defp maybe_preload_recipe(error), do: error
 
   def update_recipe(%Recipe{} = recipe, original_attrs) do
+    %Recipe{}
+    |> Recipe.changeset(original_attrs)
+    |> Repo.insert()
+    |> Repo.preload(@preloads)
+  end
+
+  def old_update_recipe(%Recipe{} = recipe, original_attrs) do
     attrs = map_attrs(original_attrs, recipe)
 
     case attrs["errors"] do
@@ -132,7 +139,9 @@ defmodule Relaxir.Recipes do
   end
 
   def change_recipe(%Recipe{} = recipe, attrs \\ %{}) do
-    Recipe.changeset(recipe, map_attrs(attrs))
+    changeset = Recipe.changeset(recipe, attrs)
+    changes = Map.put(changeset.changes, :categories, attrs["categories"])
+    Map.put(changeset, :changes, changes)
   end
 
   def map_ingredients(attrs) do
@@ -160,12 +169,9 @@ defmodule Relaxir.Recipes do
     end)
   end
 
-  # def map_attrs(attrs, recipe \\ %Recipe{recipe_categories: [], recipe_ingredients: []}) do
   def map_attrs(attrs, recipe \\ %Recipe{recipe_ingredients: []}) do
     attrs
-    # |> Categories.Parser.downcase_categories()
-    # |> Categories.Parser.map_categories()
-    # |> Categories.Parser.map_existing_categories(recipe)
+    |> Enum.map(fn c -> c.name end)
     |> Ingredients.Parser.downcase_ingredients()
     |> Ingredients.Parser.map_ingredients()
     |> Ingredients.Parser.map_existing_ingredients(recipe)

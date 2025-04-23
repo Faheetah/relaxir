@@ -2,6 +2,7 @@ defmodule RelaxirWeb.RecipeLive.FormComponent do
   use RelaxirWeb, :live_component
 
   alias Relaxir.Recipes
+  alias Relaxir.Categories
 
   @impl true
   def render(assigns) do
@@ -19,6 +20,17 @@ defmodule RelaxirWeb.RecipeLive.FormComponent do
         phx-change="validate"
         phx-submit="save"
       >
+
+        <.input field={@form[:title]} type="text" label="Title" />
+
+        <.live_select
+          field={@form[:categories]}
+          phx-target={@myself}
+          mode={:tags}
+          dropdown_extra_class="mt-4"
+          option_extra_class="py-2"
+          style={:tailwind}
+        />
 
         <:actions>
           <.button phx-disable-with="Saving...">Save Recipe</.button>
@@ -48,6 +60,22 @@ defmodule RelaxirWeb.RecipeLive.FormComponent do
     save_recipe(socket, socket.assigns.action, recipe_params)
   end
 
+  @impl true
+  def handle_event("live_select_change", %{"text" => text, "id" => live_select_id}, socket) do
+    tags = Categories.search_categories(text)
+
+    send_update(LiveSelect.Component, id: live_select_id, options: tags)
+
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_event("clear", %{"id" => id}, socket) do
+    send_update(LiveSelect.Component, options: [], id: id)
+
+    {:noreply, socket}
+  end
+
   defp save_recipe(socket, :edit, recipe_params) do
     case Recipes.update_recipe(socket.assigns.recipe, recipe_params) do
       {:ok, recipe} ->
@@ -66,7 +94,7 @@ defmodule RelaxirWeb.RecipeLive.FormComponent do
   defp save_recipe(socket, :new, recipe_params) do
     case Recipes.create_recipe(recipe_params) do
       {:ok, recipe} ->
-        notify_parent({:saved, recipe})
+        # notify_parent({:saved, recipe})
 
         {:noreply,
          socket
