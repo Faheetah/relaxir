@@ -6,7 +6,7 @@ defmodule RelaxirWeb.ErrorHelpers do
   @doc """
   Generates tag for inlined form input errors.
   """
-  def error_tag(form, field) do
+  def error_tag(_form, _field) do
   end
 
   @doc """

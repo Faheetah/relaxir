@@ -2,13 +2,6 @@ defmodule RelaxirWeb.RecipeView do
   use RelaxirWeb, :view
 
   def boolean_input(form, field, _opts \\ []) do
-    value =
-      case Phoenix.HTML.Form.input_value(form, field) do
-        true -> "true"
-        _ -> "false"
-      end
-
-    Phoenix.HTML.Form.checkbox(form, field, value: value)
   end
 
   def categories_input(form, field, opts \\ []) do

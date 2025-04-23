@@ -5,19 +5,15 @@ defmodule Relaxir.Recipes do
 
   alias Relaxir.Repo
   alias Relaxir.Ingredients
-  alias Relaxir.RecipeIngredient
+  # alias Relaxir.RecipeIngredient
   alias Relaxir.Recipes.Recipe
 
   @preloads [
-    [recipe_ingredients: from(ri in RecipeIngredient, order_by: ri.order)],
-    [
-      ingredients: [
-        source_recipe: [
-          recipe_ingredients: from(ri in RecipeIngredient, order_by: ri.order, preload: [:ingredient, :unit])
-        ]
-      ]
-    ],
-    :units,
+    # [recipe_ingredients: from(
+    #   ri in RecipeIngredient,
+    #   order_by: ri.order,
+    #   preload: [:unit, ingredient: [source_recipe: :recipe_ingredients]]
+    # )],
     :categories,
     :user
   ]
@@ -50,6 +46,7 @@ defmodule Relaxir.Recipes do
     Recipe
     |> preload(^@preloads)
     |> Repo.get!(id)
+    |> Map.put(:recipe_ingredients, [])
   end
 
   def get_recipe_by_name!(title) do

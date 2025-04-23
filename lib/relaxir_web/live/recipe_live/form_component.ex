@@ -91,7 +91,7 @@ defmodule RelaxirWeb.RecipeLive.FormComponent do
          |> put_flash(:info, "Recipe updated successfully")
          |> push_navigate(to: ~p"/recipes/#{recipe.id}")}
 
-      {:error, %Ecto.Changeset{} = changeset} ->
+      {:error, %Ecto.Changeset{}} ->
         {:noreply, assign(socket, form: to_form(Recipes.change_recipe(socket.assigns.recipe, recipe_params)))}
     end
   end
