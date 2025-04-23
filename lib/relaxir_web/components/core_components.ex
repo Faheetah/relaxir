@@ -19,6 +19,22 @@ defmodule RelaxirWeb.CoreComponents do
   alias Phoenix.LiveView.JS
   import RelaxirWeb.Gettext
 
+  attr :ingredient, :string, required: true
+  attr :class, :string, required: true
+  attr :index, :integer, required: true
+
+  def ingredient_option(assigns) do
+    ingredient = String.split(assigns.ingredient, "|")
+
+    assigns = assign(assigns, :ingredient, Enum.at(ingredient, assigns.index))
+
+    ~H"""
+    <span class={@class}>
+      <%= @ingredient %>
+    </span>
+    """
+  end
+
   @doc """
   Renders a modal.
 

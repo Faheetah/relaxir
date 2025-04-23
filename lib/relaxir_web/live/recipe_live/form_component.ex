@@ -25,16 +25,61 @@ defmodule RelaxirWeb.RecipeLive.FormComponent do
 
         <.input field={@form[:description]} type="textarea" label="Description" />
 
-        <.live_select
-          field={@form[:categories]}
-          phx-target={@myself}
-          mode={:tags}
-          dropdown_extra_class="mt-4"
-          option_extra_class="py-2"
-          style={:tailwind}
-        />
+        <div>
+          <.label for={@form[:categories].id}>Categories</.label>
+          <.live_select
+            field={@form[:categories]}
+            phx-target={@myself}
+            mode={:tags}
+            dropdown_extra_class="mt-4"
+            option_extra_class="py-2"
+            container_extra_class="flex flex-col mt-2"
+            text_input_extra_class="border-neutral-300 focus:ring-0 focus:border-neutral-400"
+            text_input_selected_class="border-neutral-300 focus:ring-0 focus:border-neutral-400"
+            tags_container_class="order-last mt-2 p-0 flex flex-wrap gap-1"
+            tag_extra_class="bg-neutral-700 text-neutral-100 px-2 py-1"
+            style={:tailwind}
+          />
+        </div>
 
         <.input field={@form[:directions]} type="textarea" label="Directions" />
+
+        <div>
+          <.label for={@form[:categories].id}>Ingredients</.label>
+          <.live_select
+            field={@form[:recipe_ingredients]}
+            phx-target={@myself}
+            mode={:tags}
+            dropdown_extra_class="mt-4"
+            option_extra_class="py-2"
+            text_input_extra_class="border-neutral-300 focus:ring-0 focus:border-neutral-400"
+            text_input_selected_class="border-neutral-300 focus:ring-0 focus:border-neutral-400"
+            container_extra_class="flex flex-col mt-2"
+            tags_container_class="order-last mt-2 p-0 flex flex-col flex-wrap gap-1"
+            clear_tag_button_extra_class="order-first"
+            tag_extra_class="bg-neutral-100 !rounded px-2 py-2"
+            style={:tailwind}
+          >
+            <:option :let={option}>
+              <div>
+                <.ingredient_option class="text-purple-700" ingredient={option.label} index={0} />
+                <.ingredient_option class="text-blue-700" ingredient={option.label} index={1} />
+                <.ingredient_option class="text-green-700" ingredient={option.label} index={2} />
+                <.ingredient_option class="text-yellow-700" ingredient={option.label} index={3} />
+              </div>
+            </:option>
+            <:tag :let={option}>
+              <div>
+                <div>
+                  <.ingredient_option class="text-purple-700" ingredient={option.label} index={0} />
+                  <.ingredient_option class="text-blue-700" ingredient={option.label} index={1} />
+                  <.ingredient_option class="text-green-700" ingredient={option.label} index={2} />
+                  <.ingredient_option class="text-yellow-700" ingredient={option.label} index={3} />
+                </div>
+              </div>
+            </:tag>
+          </.live_select>
+        </div>
 
         <.input field={@form[:note]} type="textarea" label="Note" />
 
@@ -66,9 +111,18 @@ defmodule RelaxirWeb.RecipeLive.FormComponent do
     save_recipe(socket, socket.assigns.action, recipe_params)
   end
 
+  # Temporary POC for ingredients submissions
+  @impl true
+  def handle_event("live_select_change", %{"text" => text, "id" => live_select_id, "field" => "recipe_recipe_ingredients"}, socket) do
+    # parse this and return it back
+    options = ["1|cup|bullshit|stupid", "2|cup|beef bar|note"]
+    send_update(LiveSelect.Component, id: live_select_id, options: options)
+
+    {:noreply, socket}
+  end
+
   @impl true
   def handle_event("live_select_change", %{"text" => text, "id" => live_select_id, "field" => field}, socket) do
-    IO.inspect field
     items =
       case field do
         "recipe_categories" -> Categories.search_categories(text)
@@ -87,6 +141,7 @@ defmodule RelaxirWeb.RecipeLive.FormComponent do
   end
 
   defp save_recipe(socket, :edit, recipe_params) do
+    IO.inspect recipe_params
     case Recipes.update_recipe(socket.assigns.recipe, recipe_params) do
       {:ok, recipe} ->
         notify_parent({:saved, recipe})
