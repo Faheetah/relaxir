@@ -45,7 +45,12 @@ defmodule RelaxirWeb.RecipeLive.FormComponent do
         <.input field={@form[:directions]} type="textarea" label="Directions" />
 
         <div>
-          <.label for={@form[:categories].id}>Ingredients</.label>
+          <.label for={@form[:categories].id}>
+            Ingredients
+            <span title={Enum.join(@units, ", ")} class="w-4 h-4">
+              <.icon class="w-3 h-3" name="hero-question-mark-circle" />
+            </span>
+          </.label>
           <.live_select
             field={@form[:recipe_ingredients]}
             phx-target={@myself}
@@ -93,9 +98,15 @@ defmodule RelaxirWeb.RecipeLive.FormComponent do
 
   @impl true
   def update(%{recipe: recipe} = assigns, socket) do
+    units =
+      Relaxir.Units.list_units
+      |> Enum.flat_map(fn u -> [u.name, u.abbreviation] end)
+      |> Enum.reject(& &1 == nil)
+
     {:ok,
      socket
      |> assign(assigns)
+     |> assign(:units, units)
      |> assign_new(:form, fn ->
        to_form(Recipes.change_recipe(recipe))
      end)}
@@ -115,8 +126,10 @@ defmodule RelaxirWeb.RecipeLive.FormComponent do
   @impl true
   def handle_event("live_select_change", %{"text" => text, "id" => live_select_id, "field" => "recipe_recipe_ingredients"}, socket) do
     # parse this and return it back
-    options = ["1|cup|bullshit|stupid", "2|cup|beef bar|note"]
-    send_update(LiveSelect.Component, id: live_select_id, options: options)
+    # options = ["1|cup|bullshit|stupid", "2|cup|beef bar|note"]
+    {:ok, result} = Recipes.parse_ingredient(text, socket.assigns.units)
+    options = Enum.join(result, "|")
+    send_update(LiveSelect.Component, id: live_select_id, options: [options])
 
     {:noreply, socket}
   end

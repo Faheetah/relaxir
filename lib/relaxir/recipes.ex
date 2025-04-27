@@ -101,15 +101,12 @@ defmodule Relaxir.Recipes do
 
   def do_changeset_update(changeset, recipe) do
     with %{title: title} <- changeset.changes do
-      insert_cache(recipe)
-      delete_cache(%{title: title, id: recipe.id})
     end
 
     with %{recipe_ingredients: recipe_ingredients} <- changeset.changes do
       recipe_ingredients
       |> Enum.each(fn ingredient ->
         with %{action: :insert, changes: %{ingredient_id: ingredient_id, ingredient: %{changes: %{name: name}}}} <- ingredient do
-          Relaxir.Ingredients.insert_cache(%{name: name, id: ingredient_id})
         end
       end)
     end
@@ -120,7 +117,6 @@ defmodule Relaxir.Recipes do
   # sobelow_skip ["Traversal"]
   # traversal is not possible due to dest coming from application config
   def delete_recipe(%Recipe{} = recipe) do
-    delete_cache(recipe)
     dest = Application.fetch_env!(:relaxir, RelaxirWeb.UploadLive)[:dest]
 
     # TODO move this to a separate module to handle physical file access
@@ -132,50 +128,72 @@ defmodule Relaxir.Recipes do
   end
 
   def change_recipe(%Recipe{} = recipe, attrs \\ %{}) do
-    changeset = Recipe.changeset(recipe, attrs)
+    Recipe.changeset(recipe, attrs)
+    |> map_ingredients(recipe, attrs)
+    |> map_categories(recipe, attrs)
+  end
+
+  defp map_categories(changeset, recipe, attrs) do
     changes = Map.put(changeset.changes, :categories, attrs["categories"] || Enum.map(recipe.categories, & &1.name))
     Map.put(changeset, :changes, changes)
   end
 
-  def map_ingredients(attrs) do
-    attrs
-    |> Ingredients.Parser.map_ingredients()
-    |> Map.get("recipe_ingredients", [])
-    |> Enum.map(fn i ->
-      case i do
-        %{ingredient_id: id} ->
-          Map.put(
-            i,
-            :ingredient,
-            Relaxir.Repo.get!(Ingredients.Ingredient, id)
-          )
-
-        i ->
-          i
-      end
-    end)
-    |> Enum.map(fn i ->
-      case i do
-        %{unit_id: id} -> Map.put(i, :unit, Relaxir.Repo.get!(Units.Unit, id))
-        i -> i
-      end
-    end)
+  # Takes a changeset and returns a changeset with ingredients mapped as a list of strings
+  defp map_ingredients(changeset, recipe, attrs) do
+    changes = Map.put(changeset.changes, :categories, attrs["categories"] || Enum.map(recipe.categories, & &1.name))
+    Map.put(changeset, :changes, changes)
   end
 
-  # def map_attrs(attrs, recipe \\ %Recipe{recipe_ingredients: []}) do
-    # attrs
-    # |> Enum.map(fn c -> c.name end)
-    # |> Ingredients.Parser.downcase_ingredients()
-    # |> Ingredients.Parser.map_ingredients()
-    # |> Ingredients.Parser.map_existing_ingredients(recipe)
-  # end
+  # Parse out units, ingredients, amounts, and note
+  # start by splitting, then downcase and singularize, then match, then recombine
+  def parse_ingredient(unparsed, units) do
+    {note, terms} =
+      String.split(unparsed, ",", trim: true)
+      |> Enum.map(&String.trim/1)
+      |> List.pop_at(-1)
+      |> maybe_get_note()
 
-  def insert_cache(recipe) do
-    Invert.set(Relaxir.Recipes.Recipe, :title, {recipe.title, [recipe.title, recipe.id]})
+    [amount, unit, ingredient] =
+      terms
+      |> String.split(" ")
+      |> Enum.map(&String.downcase/1)
+      |> Enum.map(&Inflex.singularize/1)
+      |> parse_terms(units)
+
+    {:ok, [amount, unit, Enum.join(ingredient, " "), note]}
   end
 
-  def delete_cache(recipe) do
-    Invert.delete(Relaxir.Recipes.Recipe, :title, {recipe.title, [recipe.title, recipe.id]})
+  defp maybe_get_note({terms, []}), do: {nil, terms}
+  defp maybe_get_note({note, terms}), do: {note, hd(terms)}
+
+  def get_units() do
+    Relaxir.Units.list_units
+    |> Enum.flat_map(fn u -> [u.name, u.abbreviation] end)
+    |> Enum.reject(& &1 == nil)
+  end
+
+  defp parse_terms(unmatched, units) do
+    {amount, rest} =
+      unmatched
+      |> hd
+      |> Float.parse
+      |> parse_float(unmatched)
+
+    [unit | ingredients] = parse_unit(rest, units)
+
+    [amount, unit, ingredients]
+  end
+
+  defp parse_float(:error, unmatched), do: {"", unmatched}
+  defp parse_float({number, _rest}, [_amount | unmatched]), do: {number, unmatched}
+
+  defp parse_unit([], _units), do: ["", ""]
+  defp parse_unit([first | rest], units) do
+    if first in units do
+      [first | rest]
+    else
+      ["", [first | rest]]
+    end
   end
 
   def get_recipe_ingredient_names(changeset) do
