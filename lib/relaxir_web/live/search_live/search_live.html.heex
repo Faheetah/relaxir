@@ -24,7 +24,7 @@ Search
 <div class="mt-6 mb-2 text-2xl font-bold"><%= String.capitalize(category) %></div>
 <div class="grid grid-cols-4">
   <%= for result <- results do %>
-    <.link href="#{category}/#{result.id}" class="p-2 border rounded hover:bg-blue-100 hover:border-blue-400 border-gray-400 bg-gray-100 m-4">
+    <.link href={"#{category}/#{result.value}"} class="p-2 border rounded hover:bg-blue-100 hover:border-blue-400 border-gray-400 bg-gray-100 m-4">
       <%= result.value %>
     </.link>
 

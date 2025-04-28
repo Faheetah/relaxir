@@ -51,6 +51,7 @@ defmodule Relaxir.Categories do
   def get_category!(id) do
     query =
       from c in Category,
+      where: c.id == ^id,
       join: rc in RecipeCategory,
       on: rc.category_id == c.id,
       join: r in Recipe,
