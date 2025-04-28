@@ -25,7 +25,7 @@ defmodule Relaxir.Recipes do
   def list_recipes do
     Repo.all(
       from r in Recipe,
-      # where: r.published == true,
+      where: r.published == true,
       order_by: [desc: r.inserted_at],
       preload: [:user, :categories]
     )

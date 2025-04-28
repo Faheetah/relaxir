@@ -1,27 +1,29 @@
-<div class="text-5xl text-center font-medium font-serif">
+<div class="text-6xl text-center font-medium font-serif">
   Categories
 </div>
 
 
 <div class="divide-y-2 divide-gray-600">
   <%= for category <- @top_categories do %>
-  <div class="py-8">
-    <div class="text-4xl mb-4 font-bold">
-      <.link href={~p"/categories/#{category.name}"}>
-        <%= String.capitalize(category.name) %>
-      </.link>
+    <%= if length(category.recipes) >= 4 do %>
+    <div class="py-8">
+      <div class="text-4xl mb-4 font-bold">
+        <.link href={~p"/categories/#{category.name}"}>
+          <%= String.capitalize(category.name) %>
+        </.link>
 
-    </div>
+      </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-4 gap-8">
-      <div :for={recipe <- category.recipes}>
-        <.live_component
-          module={RelaxirWeb.RecipeLive.RecipeCardComponent}
-          id={"rc-#{category.id}-#{recipe.id}"}
-          recipe={recipe}
-        />
+      <div class="grid grid-cols-1 sm:grid-cols-4 gap-8">
+        <div :for={recipe <- category.recipes}>
+          <.live_component
+            module={RelaxirWeb.RecipeLive.RecipeCardComponent}
+            id={"rc-#{category.id}-#{recipe.id}"}
+            recipe={recipe}
+          />
+        </div>
       </div>
     </div>
-  </div>
+    <% end %>
   <% end %>
 </div>

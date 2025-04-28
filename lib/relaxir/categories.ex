@@ -49,13 +49,32 @@ defmodule Relaxir.Categories do
 
 
   def get_category!(id) do
+    query =
+      from c in Category,
+      join: rc in RecipeCategory,
+      on: rc.category_id == c.id,
+      join: r in Recipe,
+      on: rc.recipe_id == r.id,
+      where: r.published == true,
+      order_by: [desc: r.inserted_at]
+
     Category
-    |> preload(:recipes)
-    |> Repo.get!(id)
+    |> Repo.get!(query)
   end
 
   def get_category_by_name!(name) do
-    Repo.get_by(Category, name: name)
+    query =
+      from c in Category,
+      where: c.name == ^name,
+      join: rc in RecipeCategory,
+      on: rc.category_id == c.id,
+      join: r in Recipe,
+      on: rc.recipe_id == r.id,
+      where: r.published == true,
+      group_by: c.id,
+      select: c
+
+    Repo.one(query)
     |> Repo.preload(recipes: [:categories])
   end
 
