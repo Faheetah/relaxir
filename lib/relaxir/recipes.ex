@@ -4,16 +4,20 @@ defmodule Relaxir.Recipes do
   import Ecto.Query
 
   alias Relaxir.Repo
-  alias Relaxir.Ingredients
-  # alias Relaxir.RecipeIngredient
+  alias Relaxir.Categories.Category
+  alias Relaxir.Ingredients.Ingredient
+  alias Relaxir.RecipeIngredient
   alias Relaxir.Recipes.Recipe
+  alias Relaxixr.Units.Unit
 
   @preloads [
-    # [recipe_ingredients: from(
-    #   ri in RecipeIngredient,
-    #   order_by: ri.order,
-    #   preload: [:unit, ingredient: [source_recipe: :recipe_ingredients]]
-    # )],
+    [recipe_ingredients: from(
+      ri in RecipeIngredient,
+      left_join: i in Ingredient,
+      on: i.id == ri.ingredient_id,
+      order_by: i.name,
+      preload: [:unit, ingredient: [source_recipe: :recipe_ingredients]]
+    )],
     :categories,
     :user
   ]
@@ -46,7 +50,6 @@ defmodule Relaxir.Recipes do
     Recipe
     |> preload(^@preloads)
     |> Repo.get!(id)
-    |> Map.put(:recipe_ingredients, [])
   end
 
   def get_recipe_by_name!(title) do
@@ -99,14 +102,14 @@ defmodule Relaxir.Recipes do
     end
   end
 
-  def do_changeset_update(changeset, recipe) do
-    with %{title: title} <- changeset.changes do
+  def do_changeset_update(changeset, _recipe) do
+    with %{title: _title} <- changeset.changes do
     end
 
     with %{recipe_ingredients: recipe_ingredients} <- changeset.changes do
       recipe_ingredients
       |> Enum.each(fn ingredient ->
-        with %{action: :insert, changes: %{ingredient_id: ingredient_id, ingredient: %{changes: %{name: name}}}} <- ingredient do
+        with %{action: :insert, changes: %{ingredient_id: _ingredient_id, ingredient: %{changes: %{name: _name}}}} <- ingredient do
         end
       end)
     end
@@ -140,8 +143,16 @@ defmodule Relaxir.Recipes do
 
   # Takes a changeset and returns a changeset with ingredients mapped as a list of strings
   defp map_ingredients(changeset, recipe, attrs) do
-    changes = Map.put(changeset.changes, :categories, attrs["categories"] || Enum.map(recipe.categories, & &1.name))
+    changes = Map.put(changeset.changes, :recipe_ingredients, attrs["recipe_ingredients"] || Enum.map(recipe.recipe_ingredients, &format_ingredient/1))
     Map.put(changeset, :changes, changes)
+  end
+
+  defp format_ingredient(recipe_ingredient) do
+    amount = recipe_ingredient.amount || ""
+    unit = recipe_ingredient.unit || %{name: ""}
+    note = recipe_ingredient.note || ""
+
+    Enum.join([amount, unit.name, recipe_ingredient.ingredient.name, note], "|")
   end
 
   # Parse out units, ingredients, amounts, and note
@@ -204,12 +215,12 @@ defmodule Relaxir.Recipes do
   end
 
   defp get_ingredient_name(%{changes: %{ingredient_id: id}} = ingredient) do
-    name = Relaxir.Repo.get!(Relaxir.Ingredients.Ingredient, id).name
+    name = Relaxir.Repo.get!(Ingredient, id).name
     Map.merge(ingredient, %{changes: %{ingredient: %{changes: %{name: name}}}}, fn _, m1, m2 -> Map.merge(m1, m2) end)
   end
 
   defp get_ingredient_name(%{changes: %{unit_id: id}} = ingredient) do
-    unit = Relaxir.Repo.get!(Units.Unit, id)
+    unit = Relaxir.Repo.get!(Unit, id)
 
     cond do
       Map.get(ingredient.changes, :amount) == nil -> ingredient
@@ -231,7 +242,7 @@ defmodule Relaxir.Recipes do
     |> Enum.map(fn c ->
       case c.changes do
         %{category_id: id} ->
-          name = Relaxir.Repo.get!(Relaxir.Categories.Category, id).name
+          name = Relaxir.Repo.get!(Category, id).name
 
           %{changes: %{category_id: id, category: %{changes: %{name: name}}}}
 

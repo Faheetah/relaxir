@@ -23,6 +23,8 @@ defmodule RelaxirWeb.RecipeLive.FormComponent do
 
         <.input field={@form[:title]} type="text" label="Title" />
 
+        <.input field={@form[:published]} type="checkbox" label="Published" />
+
         <.input field={@form[:description]} type="textarea" label="Description" />
 
         <div>
@@ -126,7 +128,7 @@ defmodule RelaxirWeb.RecipeLive.FormComponent do
   @impl true
   def handle_event("live_select_change", %{"text" => text, "id" => live_select_id, "field" => "recipe_recipe_ingredients"}, socket) do
     # parse this and return it back
-    # options = ["1|cup|bullshit|stupid", "2|cup|beef bar|note"]
+    # options = ["1|cup|some ingredient|stupid", "2|cup|beef bar|note"]
     {:ok, result} = Recipes.parse_ingredient(text, socket.assigns.units)
     options = Enum.join(result, "|")
     send_update(LiveSelect.Component, id: live_select_id, options: [options])
@@ -154,7 +156,6 @@ defmodule RelaxirWeb.RecipeLive.FormComponent do
   end
 
   defp save_recipe(socket, :edit, recipe_params) do
-    IO.inspect recipe_params
     case Recipes.update_recipe(socket.assigns.recipe, recipe_params) do
       {:ok, recipe} ->
         notify_parent({:saved, recipe})

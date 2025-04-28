@@ -36,7 +36,7 @@ defmodule RelaxirWeb.RecipeLive.Index do
   defp apply_action(socket, :new, _params) do
     socket
     |> assign(:page_title, "New Recipe")
-    |> assign(:recipe, %Recipe{})
+    |> assign(:recipe, %Recipe{recipe_ingredients: [], categories: []})
   end
 
   defp apply_action(socket, :index, _params) do

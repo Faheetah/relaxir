@@ -7,6 +7,7 @@ defmodule Relaxir.Recipes.Recipe do
   alias Relaxir.RecipeIngredient
   alias Relaxir.RecipeCategory
   alias Relaxir.Repo
+  alias Relaxir.Units.Unit
 
   schema "recipes" do
     field :title, :string
@@ -20,13 +21,10 @@ defmodule Relaxir.Recipes.Recipe do
     field :vegan, :boolean
     field :spicy, :boolean
     field :image_filename, :string
-    # has_many :recipe_ingredients, RecipeIngredient, on_replace: :delete, on_delete: :delete_all
-    # has_many :ingredients, through: [:recipe_ingredients, :ingredient]
-    # has_many :units, through: [:recipe_ingredients, :unit]
-    # has_many :recipe_categories, RecipeCategory, on_replace: :delete, on_delete: :delete_all
-    # has_many :categories, through: [:recipe_categories, :category]
+    has_many :recipe_ingredients, RecipeIngredient, on_replace: :delete, on_delete: :delete_all
+    has_many :ingredients, through: [:recipe_ingredients, :ingredient]
     many_to_many :categories, Category, join_through: RecipeCategory, on_replace: :delete, on_delete: :delete_all
-    # has_one :ingredient, Ingredient, foreign_key: :source_recipe_id
+    has_one :ingredient, Ingredient, foreign_key: :source_recipe_id
     belongs_to :user, Relaxir.Accounts.User
 
     timestamps()
@@ -50,9 +48,8 @@ defmodule Relaxir.Recipes.Recipe do
   def changeset(recipe, attrs, insert? \\ true) do
     recipe
     |> cast(strip_directions(attrs), @cast_attrs)
-    # |> cast_assoc(:recipe_categories)
     |> put_assoc(:categories, parse_categories(attrs, insert?))
-    # |> cast_assoc(:recipe_ingredients)
+    |> put_assoc(:recipe_ingredients, parse_ingredients(Map.get(attrs, "recipe_ingredients", []), insert?))
     |> validate_required([:title])
     |> unique_constraint([:title])
     |> find_ingredient_errors()
@@ -112,5 +109,33 @@ defmodule Relaxir.Recipes.Recipe do
       {_, i} -> Enum.map(i, &find_error(&1))
       i -> i
     end
+  end
+
+  # defp parse_ingredients([], true), do: []
+  defp parse_ingredients(recipe_ingredients, false), do: recipe_ingredients
+  defp parse_ingredients(recipe_ingredients, true) do
+    Enum.map(recipe_ingredients, &format_ingredients/1)
+  end
+
+  defp format_ingredients(recipe_ingredient) do
+    [amount, unit_name, ingredient_name, note] = String.split(recipe_ingredient, "|")
+    unit = Repo.get_by(Unit, name: unit_name) || Repo.get_by(Unit, abbreviation: unit_name)
+    ingredient = Repo.get_by(Ingredient, name: ingredient_name)
+
+    %{
+      amount: parse_amount(amount),
+      note: note,
+      unit: unit,
+      ingredient: ingredient || %{name: ingredient_name}
+    }
+  end
+
+  defp parse_amount(""), do: nil
+  defp parse_amount(amount), do: Float.parse(amount) |> elem(0)
+
+  def get_or_insert_ingredient(name, false), do: %Ingredient{name: name}
+  def get_or_insert_ingredient(name, true) do
+    name = String.downcase(name)
+    Repo.get_by(Ingredient, name: name) || Repo.insert!(%Ingredient{name: name})
   end
 end

@@ -30,7 +30,7 @@ defmodule RelaxirWeb.FormattingComponents do
 
   def ingredient(assigns) do
     ~H"""
-    <%= @amount %> <%= @unit && @unit.name %> <%= @name %><span class="italic text-neutral-500"><%= @note && ", #{@note}" %></span>
+    <%= @amount %> <%= @unit && @unit.name %> <%= @name %><span class="italic text-neutral-500"><%= (@note != "" && ", #{@note}" || "")  %></span>
     """
   end
 end
