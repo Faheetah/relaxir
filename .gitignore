@@ -30,7 +30,7 @@ npm-debug.log
 # this depending on your deployment strategy.
 /priv/static/assets
 /priv/static/images/default-full-*.jpg
-/test-uploads/live_view_upload-*
+/test-uploads/*
 /priv/static/cache_manifest.json
 /priv/static/favicon-*
 
