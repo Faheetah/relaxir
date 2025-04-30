@@ -3,7 +3,7 @@
     <div class="mx-6 lg:mx-0">
       <.link href={~p"/categories/#{@category.name}"}>
         <%= if Map.get(@category, :image_filename) do %>
-          <img src={"/uploads/#{@category.image_filename}-full.png"}>
+          <img src={"/uploads/#{@category.image_filename}"}>
         <% else %>
           <img src="/images/default-full.jpg">
         <% end %>

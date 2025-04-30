@@ -32,12 +32,12 @@ ENV LC_ALL en_US.UTF-8
 
 RUN git clone https://github.com/asdf-vm/asdf.git /asdf
 RUN /asdf/bin/asdf plugin add erlang
-RUN /asdf/bin/asdf install erlang 25.3
-RUN /asdf/bin/asdf global erlang 25.3
+RUN /asdf/bin/asdf install erlang 26.2.5.2
+RUN /asdf/bin/asdf global erlang 26.2.5.2
 
 RUN /asdf/bin/asdf plugin add elixir
-RUN /asdf/bin/asdf install elixir 1.14.4-otp-25
-RUN /asdf/bin/asdf global elixir 1.14.4-otp-25
+RUN /asdf/bin/asdf install elixir 1.17.3
+RUN /asdf/bin/asdf global elixir 1.17.3
 
 RUN /asdf/bin/asdf plugin add nodejs
 RUN /asdf/bin/asdf install nodejs 18.19.0
