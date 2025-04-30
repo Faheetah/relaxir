@@ -57,6 +57,8 @@ defmodule RelaxirWeb.Router do
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
       delete "/users/log_out", UserSessionController, :delete
 
+      live "/categories/:name/edit", CategoryLive.Show, :edit
+
       live "/recipes/new", RecipeLive.Index, :new
       live "/recipes/:id/edit", RecipeLive.Show, :edit
     end

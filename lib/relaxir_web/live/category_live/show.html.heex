@@ -1,13 +1,29 @@
 <div class="text-6xl text-center font-medium font-serif mb-16">
     <%= String.capitalize(@category.name) %>
+
+    <%= if length(@category.recipes) == 0 do %>
+    <div class="text-xl py-8">No recipes for <%= @category.name %> yet, please check back later.</div>
+    <% end %>
 </div>
 
 <div class="grid grid-cols-1 sm:grid-cols-4 gap-8">
-    <div :for={recipe <- @category.recipes}>
-    <.live_component
-        module={RelaxirWeb.RecipeLive.RecipeCardComponent}
-        id={"r-#{recipe.id}"}
-        recipe={recipe}
-    />
-    </div>
+
+  <div :for={recipe <- @category.recipes}>
+  <.live_component
+      module={RelaxirWeb.RecipeLive.RecipeCardComponent}
+      id={"r-#{recipe.id}"}
+      recipe={recipe}
+  />
+  </div>
 </div>
+
+<.modal :if={@live_action == :edit} id="category-modal" show on_cancel={JS.patch(~p"/categories/#{@category}")}>
+  <.live_component
+    module={RelaxirWeb.CategoryLive.FormComponent}
+    id={@category.id}
+    name={@category.name}
+    action={@live_action}
+    category={@category}
+    patch={~p"/category/#{@category}"}
+  />
+</.modal>

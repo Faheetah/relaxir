@@ -80,12 +80,20 @@ defmodule Relaxir.Categories do
       on: rc.category_id == c.id,
       join: r in Recipe,
       on: rc.recipe_id == r.id,
-      where: r.published == true,
       group_by: c.id,
       select: c
 
     Repo.one(query)
     |> Repo.preload(recipes: [:categories])
+  end
+
+  def reject_unpublished_recipes(%{recipes: recipes, recipe_categories: recipe_categories} = category) do
+    filtered_recipe_categories = Enum.reject(recipe_categories, & &1.recipe.published == false)
+    filtered_recipes = Enum.reject(recipes, & &1.published == false)
+
+    category
+    |> Map.put(:recipe_categories, filtered_recipe_categories)
+    |> Map.put(:recipes, filtered_recipes)
   end
 
   def get_categories_by_name!(names) do

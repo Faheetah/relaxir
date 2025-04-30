@@ -2,6 +2,7 @@ defmodule RelaxirWeb.CategoryLive.Show do
   use RelaxirWeb, :live_view
 
   alias Relaxir.Categories
+  alias Relaxir.Categories.Category
 
   @impl true
   def mount(_params, _session, socket) do
@@ -10,8 +11,16 @@ defmodule RelaxirWeb.CategoryLive.Show do
 
   @impl true
   def handle_params(%{"name" => name}, _, socket) do
-    category = Categories.get_category_by_name!(name)
-    recipes = Categories.latest_recipes_for_category(category, 24)
+    category =
+      (Categories.get_category_by_name!(name) || %Category{name: name, recipes: [], recipe_categories: []})
+      |> Categories.reject_unpublished_recipes
+
+    recipes =
+      if category.recipes != [] do
+        Categories.latest_recipes_for_category(category, category.id)
+      else
+        []
+      end
 
     {
       :noreply,
