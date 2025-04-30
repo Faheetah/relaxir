@@ -64,8 +64,8 @@ defmodule RelaxirWeb.SearchLive do
   end
 
   defp get_results(filter, query) do
-
-    search = Search.search_for(filter, query)
+    sanitized = String.replace(query, "%", "")
+    search = Search.search_for("%#{sanitized}%", filter)
 
     count = Enum.reduce(search, 0, fn {_, i}, acc -> acc + length(i) end)
 

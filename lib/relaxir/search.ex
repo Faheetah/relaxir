@@ -1,4 +1,7 @@
 defmodule Relaxir.Search do
+  import Ecto.Query
+
+  alias Relaxir.Repo
 
   @search_table_mapping %{
     "recipes" => {Relaxir.Recipes.Recipe, :title},
@@ -7,22 +10,19 @@ defmodule Relaxir.Search do
   }
 
   @spec search_for([atom] | nil, String.t) :: [{term, integer}]
-  def search_for(fields, terms) do
+  def search_for(terms, fields) do
     fields || Map.keys(@search_table_mapping)
     |> Enum.filter(fn field -> @search_table_mapping[field] end)
-    |> Enum.reduce(%{}, fn field, acc -> Map.put(acc, field, search_table(@search_table_mapping[field], terms)) end)
+    |> Enum.reduce(%{}, fn field, acc -> Map.put(acc, field, search_db(@search_table_mapping[field], terms)) end)
   end
 
-  def search_table({module, name}, terms) do
-    case Invert.get(module, name, terms) do
-      {:ok, results} -> results
-      {:error, :not_found} -> []
-    end
-    |> Enum.sort_by(
-      fn {[term, _], score} ->
-        score - String.length(term) / 1000
-      end,
-      :desc
-    )
+  # returns:
+  # [
+  #   {[result, id], rank]}
+  # ]
+  def search_db({module, column}, terms) do
+    IO.inspect terms
+    Repo.all(from m in module, where: ilike(field(m, ^column), ^terms))
+    |> Enum.map(fn q -> {[Map.get(q, column), q.id], 1} end)
   end
 end
