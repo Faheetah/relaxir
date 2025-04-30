@@ -7,7 +7,16 @@ defmodule Relaxir.Categories do
   alias Relaxir.Recipes.Recipe
 
   def list_categories do
-    Repo.all(order_by(Category, asc: :name))
+    Repo.all(
+      from c in Category,
+      join: rc in RecipeCategory,
+      on: rc.category_id == c.id,
+      select: [c, count(rc.category_id)],
+      where: rc.category_id > 0,
+      group_by: c.id,
+      order_by: [asc: [c.name]]
+    )
+    |> Enum.map(fn [category, _count] -> category end)
   end
 
   def search_categories(name) do

@@ -25,6 +25,7 @@ defmodule Relaxir.Categories.Category do
     |> cast(attrs, [:name])
     |> cast_assoc(:recipe_categories)
     |> validate_required([:name])
+    |> validate_format(:name, ~r/[^a-z]/)
     |> unique_constraint([:name])
   end
 end

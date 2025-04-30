@@ -59,6 +59,7 @@ defmodule Relaxir.Recipes.Recipe do
     (attrs["categories"] || [])
     |> Enum.map(&String.trim/1)
     |> Enum.reject(& &1 == "")
+    |> Enum.filter(& String.match?(&1, ~r/[a-z\s\-]/))
     |> Enum.map(& get_or_insert_category(&1, insert?))
   end
 
