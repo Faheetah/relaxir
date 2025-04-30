@@ -84,6 +84,7 @@ defmodule RelaxirWeb.Router do
       live "/recipes/:id", RecipeLive.Show, :show
 
       live "/categories", CategoryLive.Index, :index
+      live "/categories/all", CategoryLive.All, :all
       live "/categories/:name", CategoryLive.Show, :show
 
       live "/search", SearchLive, :search

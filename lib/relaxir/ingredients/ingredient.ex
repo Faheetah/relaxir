@@ -9,6 +9,7 @@ defmodule Relaxir.Ingredients.Ingredient do
     field :name, :string
     field :singular, :string
     field :description, :string
+    field :image_filename, :string
     # has_many :child_ingredients, __MODULE__, foreign_key: :parent_ingredient_id
     has_many :recipe_ingredients, RecipeIngredient
     has_many :recipes, through: [:recipe_ingredients, :recipe], on_replace: :delete

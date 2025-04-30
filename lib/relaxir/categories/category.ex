@@ -6,6 +6,7 @@ defmodule Relaxir.Categories.Category do
 
   schema "categories" do
     field :name, :string
+    field :image_filename, :string
     has_many :recipe_categories, RecipeCategory
     has_many :recipes, through: [:recipe_categories, :recipe], on_replace: :delete
 

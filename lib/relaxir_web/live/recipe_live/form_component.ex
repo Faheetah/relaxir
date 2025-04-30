@@ -138,19 +138,13 @@ defmodule RelaxirWeb.RecipeLive.FormComponent do
 
   @impl true
   def handle_event("live_select_change", %{"text" => text, "id" => live_select_id, "field" => field}, socket) do
+    IO.inspect live_select_id
     items =
       case field do
         "recipe_categories" -> Categories.search_categories(text)
       end
 
-    send_update(LiveSelect.Component, id: live_select_id, options: [text | items])
-
-    {:noreply, socket}
-  end
-
-  @impl true
-  def handle_event("clear", %{"id" => id}, socket) do
-    send_update(LiveSelect.Component, options: [], id: id)
+    send_update(LiveSelect.Component, id: live_select_id, options: [text | items], placeholder: "")
 
     {:noreply, socket}
   end
