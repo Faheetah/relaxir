@@ -48,7 +48,7 @@ defmodule RelaxirWeb.UploadLive do
     image_filename =
       hd(consumed_uploads)
       |> String.split("/")
-      |> Enum.at(1)
+      |> Enum.at(-1)
       |> String.trim_trailing("-full.jpg")
 
     # Callback to target so it can handle updating its own image_filepath
