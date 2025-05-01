@@ -109,6 +109,10 @@ defmodule Relaxir.Categories do
     end
   end
 
+  def update_image_filename(category, image_filename) do
+    update_category(category, %{"image_filename" => image_filename})
+  end
+
   def update_category(%Category{} = category, attrs) do
     category
     |> Category.changeset(attrs)

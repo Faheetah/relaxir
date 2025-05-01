@@ -21,7 +21,6 @@ defmodule Relaxir.Search do
   #   {[result, id], rank]}
   # ]
   def search_db({module, column}, terms) do
-    IO.inspect terms
     Repo.all(from m in module, where: ilike(field(m, ^column), ^terms))
     |> Enum.map(fn q -> {[Map.get(q, column), q.id], 1} end)
   end

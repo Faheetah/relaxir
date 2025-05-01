@@ -138,7 +138,6 @@ defmodule RelaxirWeb.RecipeLive.FormComponent do
 
   @impl true
   def handle_event("live_select_change", %{"text" => text, "id" => live_select_id, "field" => field}, socket) do
-    IO.inspect live_select_id
     items =
       case field do
         "recipe_categories" -> Categories.search_categories(text)

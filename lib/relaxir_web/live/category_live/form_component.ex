@@ -24,6 +24,13 @@ defmodule RelaxirWeb.CategoryLive.FormComponent do
 
         <.input field={@form[:image_filename]} type="text" label="Image Filename" />
 
+        <.link
+          class="flex bg-neutral-900 text-white text-4xl"
+          navigate={~p"/images/#{@category}/upload?#{%{redirect: "/categories/#{@category.id}/upload", path: @category.image_filename || ""}}"}
+        >
+          <span class="place-self-center text-center w-full">Upload an image</span>
+        </.link>
+
         <:actions>
           <.button phx-disable-with="Saving...">Save Category</.button>
         </:actions>
