@@ -123,7 +123,10 @@
       <div class="relative">
           <%= if @current_user && @current_user.is_admin do %>
           <div class="opacity-0 hover:opacity-70">
-            <.link href={~p"/recipes/#{@recipe}/upload"} class="flex absolute bg-neutral-900 w-full h-full text-white text-4xl">
+            <.link
+              class="flex absolute bg-neutral-900 w-full h-full text-white text-4xl"
+              navigate={~p"/images/#{@recipe}/upload?#{%{redirect: "/recipes/#{@recipe.id}/upload", path: @recipe.image_filename || ""}}"}
+            >
               <span class="place-self-center text-center w-full">Upload an image</span>
             </.link>
           </div>

@@ -71,6 +71,10 @@ defmodule Relaxir.Recipes do
   defp maybe_preload_recipe({:ok, recipe}), do: {:ok, Repo.preload(recipe, @preloads)}
   defp maybe_preload_recipe(error), do: error
 
+  def update_image_filename(recipe, image_filename) do
+    update_recipe(recipe, %{"image_filename" => image_filename})
+  end
+
   def update_recipe(%Recipe{} = recipe, attrs) do
     recipe
     |> Recipe.changeset(attrs)

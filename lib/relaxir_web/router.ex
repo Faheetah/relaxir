@@ -61,6 +61,13 @@ defmodule RelaxirWeb.Router do
 
       live "/recipes/new", RecipeLive.Index, :new
       live "/recipes/:id/edit", RecipeLive.Show, :edit
+
+      # Callback for image uploads to update the image_filepath
+      live "/recipes/:id/upload", RecipeLive.Upload, :upload
+
+      scope "/", as: :uploads do
+        live "/images/:id/upload", UploadLive, :new
+      end
     end
 
     scope "/" do
@@ -93,10 +100,6 @@ defmodule RelaxirWeb.Router do
 
       live "/tools", ToolLive.Index, :index
       live "/tools/:name", ToolLive.Show, :show
-
-      scope "/", as: :recipe do
-        live "/recipes/:id/upload", UploadLive, :new
-      end
     end
   end
 end

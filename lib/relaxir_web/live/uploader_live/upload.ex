@@ -2,12 +2,13 @@ defmodule RelaxirWeb.UploadLive do
   use RelaxirWeb, :live_view
 
   @impl Phoenix.LiveView
-  def mount(%{"id" => recipe_id} = _params, _session, socket) do
+  def mount(%{"path" => upload_image_filename, "redirect" => upload_redirect}, _session, socket) do
     {
       :ok,
       socket
+      |> assign(:upload_image_filename, upload_image_filename)
+      |> assign(:upload_redirect, upload_redirect)
       |> assign(:uploaded_files, [])
-      |> assign(:recipe, recipe_id)
       |> allow_upload(:picture, accept: ~w(.jpg .jpeg .png), max_entries: 1)
     }
   end
@@ -32,27 +33,30 @@ defmodule RelaxirWeb.UploadLive do
   # TODO move this to a separate module to handle physical file access
   @impl Phoenix.LiveView
   def handle_event("save", _params, socket) do
-    consume_uploaded_entries(socket, :picture, fn %{path: path}, _entry ->
-      dest = Application.fetch_env!(:relaxir, RelaxirWeb.UploadLive)[:dest]
-      :ok = resize(path, dest, "640", "480", "full")
+    consumed_uploads =
+      consume_uploaded_entries(socket, :picture, fn %{path: path}, _entry ->
+        dest = Application.fetch_env!(:relaxir, RelaxirWeb.UploadLive)[:dest]
+        {:ok, filename} = resize(path, dest, "640", "480", "full")
 
-      recipe =
-        socket.assigns.recipe
-        |> String.to_integer()
-        |> Relaxir.Recipes.get_recipe!()
+        if socket.assigns.upload_image_filename != "" do
+          File.rm(Path.join(dest, "#{socket.assigns.upload_image_filename}-full.jpg"))
+        end
+        {:ok, filename}
+      end)
 
-      if recipe.image_filename do
-        :ok = File.rm(Path.join(dest, "#{recipe.image_filename}-full.jpg"))
-      end
+    # These come from the target's show.html.heex as query paramters
+    image_filename =
+      hd(consumed_uploads)
+      |> String.split("/")
+      |> Enum.at(1)
+      |> String.trim_trailing("-full.jpg")
 
-      recipe
-      |> Relaxir.Recipes.Recipe.changeset(%{"image_filename" => Path.basename(path)})
-      |> Relaxir.Repo.update()
-    end)
+    # Callback to target so it can handle updating its own image_filepath
+    redirect = "#{socket.assigns.upload_redirect}?image_filename=#{image_filename}"
 
     {
       :noreply,
-      redirect(socket, to: ~p"/recipes/#{socket.assigns.recipe}")
+      redirect(socket, to: redirect)
     }
   end
 
@@ -60,6 +64,8 @@ defmodule RelaxirWeb.UploadLive do
   # Traversal is not possible due to dest coming from application config
   # TODO move this to a separate module to handle physical file access
   defp resize(path, dest, width, height, suffix) do
+    image_filename = Path.join(dest, "#{Path.basename(path)}-#{suffix}.jpg")
+
     {_, 0} = System.cmd("gm", [
       "convert",
       path,
@@ -68,10 +74,11 @@ defmodule RelaxirWeb.UploadLive do
       "-crop", "#{width}x#{height}+0+0",
       "+profile", "'*'",
       "-compress", "JPEG",
-      Path.join(dest, "#{Path.basename(path)}-#{suffix}.jpg")
+      image_filename
     ])
-    :ok =
-      Path.join(dest, "#{Path.basename(path)}-#{suffix}.jpg")
-      |> File.chmod(0o644)
+
+    :ok = File.chmod(image_filename, 0o644)
+
+    {:ok, image_filename}
   end
 end
