@@ -10,6 +10,7 @@ import Config
 # which you should run after static files are built and
 # before starting your production server.
 config :relaxir, RelaxirWeb.Endpoint,
+  show_sensitive_data_on_connection_error: true,
   url: [host: "www.relaxanddine.com", port: 443],
   cache_static_manifest: "priv/static/cache_manifest.json"
 

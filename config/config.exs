@@ -18,7 +18,7 @@ config :relaxir, RelaxirWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "6lFP79ir6YXHSm71b8+XKI75KIKXcA/FgXPzWwMrEISUBlz9a09Xcb1T9FEW19jK",
   render_errors: [
-    view: RelaxirWeb.ErrorView, accepts: ~w(html json),
+    view: RelaxirWeb.ErrorHTML, accepts: ~w(html),
     layout: false
   ],
   pubsub_server: Relaxir.PubSub,
