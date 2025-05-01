@@ -29,4 +29,13 @@ defmodule RelaxirWeb.CategoryLive.Show do
       |> assign(:recipes, recipes)
     }
   end
+
+  @impl true
+  def handle_event("delete", %{"id" => id}, socket) do
+    {:ok, _recipe} =
+      Categories.get_category!(id)
+      |> Categories.delete_category
+
+    {:noreply, redirect(socket, to: ~p"/categories/all")}
+  end
 end

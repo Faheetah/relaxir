@@ -58,18 +58,7 @@ defmodule Relaxir.Categories do
 
 
   def get_category!(id) do
-    query =
-      from c in Category,
-      where: c.id == ^id,
-      join: rc in RecipeCategory,
-      on: rc.category_id == c.id,
-      join: r in Recipe,
-      on: rc.recipe_id == r.id,
-      where: r.published == true,
-      order_by: [desc: r.inserted_at]
-
-    Category
-    |> Repo.get!(query)
+    Repo.get!(Category, id)
   end
 
   def get_category_by_name!(name) do

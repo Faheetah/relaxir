@@ -1,6 +1,15 @@
 <div class="text-6xl text-center font-medium font-serif mb-16">
     <%= String.capitalize(@category.name) %>
 
+    <%= if @current_user do %>
+    <.link patch={~p"/categories/#{@category.name}/edit"} phx-click={JS.push_focus()}>
+      <.icon name="hero-pencil-square" class="text-neutral-300 hover:text-neutral-400" />
+    </.link>
+    <.link phx-click={JS.push("delete", value: %{id: @category.id})} data-confirm={"Really delete #{@category.name}?"}>
+      <.icon name="hero-trash" class="text-neutral-300 hover:text-neutral-400" />
+    </.link>
+    <% end %>
+
     <%= if length(@category.recipes) == 0 do %>
     <div class="text-xl py-8">No recipes for <%= @category.name %> yet, please check back later.</div>
     <% end %>
@@ -17,13 +26,13 @@
   </div>
 </div>
 
-<.modal :if={@live_action == :edit} id="category-modal" show on_cancel={JS.patch(~p"/categories/#{@category}")}>
+<.modal :if={@live_action == :edit} id="category-modal" show on_cancel={JS.patch(~p"/categories/#{@category.name}")}>
   <.live_component
     module={RelaxirWeb.CategoryLive.FormComponent}
     id={@category.id}
     name={@category.name}
     action={@live_action}
     category={@category}
-    patch={~p"/category/#{@category}"}
+    patch={~p"/category/#{@category.name}"}
   />
 </.modal>
