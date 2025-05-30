@@ -163,7 +163,7 @@
                 <%= for source_recipe_recipe_ingredient <- recipe_ingredient.ingredient.source_recipe.recipe_ingredients do %>
                   <li>
                   <span class="text-neutral-500 text-lg hover:underline decoration-2 decoration-amber-600 underline-offset-4">
-                    - <.link href={~p"/ingredients/#{source_recipe_recipe_ingredient.ingredient}"}><.ingredient name={source_recipe_recipe_ingredient.name} unit={source_recipe_recipe_ingredient.unit} amount={source_recipe_recipe_ingredient.amount} note={source_recipe_recipe_ingredient.note} /></.link>
+                    - <.link href={~p"/ingredients/#{source_recipe_recipe_ingredient.ingredient.id}/#{source_recipe_recipe_ingredient.ingredient.name |> String.downcase |> String.replace(" ", "-")}"}><.ingredient name={source_recipe_recipe_ingredient.name} unit={source_recipe_recipe_ingredient.unit} amount={source_recipe_recipe_ingredient.amount} note={source_recipe_recipe_ingredient.note} /></.link>
                   </span>
                   </li>
                 <% end %>
@@ -171,7 +171,7 @@
               </span>
             <% else %>
               <span class="text-black text-lg hover:underline decoration-2 decoration-amber-600 underline-offset-4">
-                <.link href={~p"/ingredients/#{recipe_ingredient.ingredient}"}>
+                <.link href={~p"/ingredients/#{recipe_ingredient.ingredient.id}/#{recipe_ingredient.ingredient.name |> String.downcase |> String.replace(" ", "-")}"}>
                   <.ingredient name={recipe_ingredient.ingredient.name} unit={recipe_ingredient.unit} amount={recipe_ingredient.amount} note={recipe_ingredient.note} />
                 </.link>
               </span>
