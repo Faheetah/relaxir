@@ -1,0 +1,39 @@
+<div class="text-6xl text-center font-medium font-serif mb-16">
+    <%= String.capitalize(@ingredient.name) %>
+
+    <%= if @current_user do %>
+    <.link patch={~p"/ingredients/#{@ingredient.name}/edit"} phx-click={JS.push_focus()}>
+      <.icon name="hero-pencil-square" class="text-neutral-300 hover:text-neutral-400" />
+    </.link>
+    <.link phx-click={JS.push("delete", value: %{id: @ingredient.id})} data-confirm={"Really delete #{@ingredient.name}?"}>
+      <.icon name="hero-trash" class="text-neutral-300 hover:text-neutral-400" />
+    </.link>
+    <% end %>
+
+    <%= if length(@recipes) == 0 do %>
+    <div class="text-xl py-8">No recipes for <%= @ingredient.name %> yet, please check back later.</div>
+    <% end %>
+</div>
+
+<div class="grid grid-cols-1 sm:grid-cols-4 gap-8">
+
+  <div :for={recipe <- @recipes}>
+  <.live_component
+      module={RelaxirWeb.RecipeLive.RecipeCardComponent}
+      id={"r-#{recipe.id}"}
+      recipe={recipe}
+  />
+  </div>
+</div>
+
+<.modal :if={@live_action == :edit} id="ingredient-modal" show on_cancel={JS.patch(~p"/ingredients/#{@ingredient.name}")}>
+  <.live_component
+    module={RelaxirWeb.IngredientLive.FormComponent}
+    id={@ingredient.id}
+    name={@ingredient.name}
+    action={@live_action}
+    category={@ingredient}
+    patch={~p"/ingredients/#{@ingredient.name}"}
+  />
+</.modal>
+

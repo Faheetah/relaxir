@@ -87,8 +87,8 @@ defmodule RelaxirWeb.Router do
       live "/users/confirm/:token", UserConfirmationLive, :edit
       live "/users/confirm", UserConfirmationInstructionsLive, :new
 
-      live "/ingredients/:id", RecipeLive.Index, :index
-      live "/ingredients/:id/:slug", RecipeLive.Index, :index
+      live "/ingredients/:id", IngredientLive.Show, :index
+      live "/ingredients/:id/:slug", IngredientLive.Show, :index
 
       live "/", RecipeLive.Index, :index
       live "/recipes", RecipeLive.Index, :index

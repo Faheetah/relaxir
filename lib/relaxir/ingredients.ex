@@ -55,13 +55,13 @@ defmodule Relaxir.Ingredients do
     |> Repo.all()
     |> Enum.reverse()
     |> Enum.reduce([], fn ingredient, acc ->
-      recipes = latest_recipes_for_ingredient(ingredient)
+      recipes = get_recipes_for_ingredient(ingredient)
 
       [{ingredient, recipes} | acc]
     end)
   end
 
-  def latest_recipes_for_ingredient(ingredient, limit \\ 4) do
+  def get_recipes_for_ingredient(ingredient) do
     children =
       ingredient.child_ingredients
       |> Enum.flat_map(fn i -> [i] ++ i.child_ingredients end)
@@ -76,8 +76,7 @@ defmodule Relaxir.Ingredients do
       where: r.id == ri.recipe_id and r.published == true,
       order_by: [desc: r.inserted_at],
       select: r,
-      distinct: r,
-      limit: ^limit
+      distinct: r
 
     top_recipes
     |> Repo.all
