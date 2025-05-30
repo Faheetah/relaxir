@@ -10,11 +10,19 @@ defmodule RelaxirWeb.CategoryLive.Show do
   end
 
   @impl true
-  def handle_params(%{"name" => name}, _, socket) do
-    category =
-      (Categories.get_category_by_name!(name) || %Category{name: name, recipes: [], recipe_categories: []})
-      |> Categories.reject_unpublished_recipes
+  def handle_params(%{"id" => id, "name" => name}, _, socket) do
+    (Categories.get_category!(id) || %Category{name: name, recipes: [], recipe_categories: []})
+    |> Categories.reject_unpublished_recipes()
+    |> get_recipes(socket)
+  end
 
+  def handle_params(%{"name" => name}, _, socket) do
+    (Categories.get_category_by_name!(name) || %Category{name: name, recipes: [], recipe_categories: []})
+    |> Categories.reject_unpublished_recipes()
+    |> get_recipes(socket)
+  end
+
+  defp get_recipes(category, socket) do
     recipes =
       if category.recipes != [] do
         Categories.latest_recipes_for_category(category, category.id)
