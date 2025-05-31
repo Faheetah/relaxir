@@ -59,12 +59,16 @@ defmodule RelaxirWeb.Router do
 
       live "/categories/:name/edit", CategoryLive.Show, :edit
 
+      live "/ingredients/:id/edit", IngredientLive.Show, :edit
+      live "/ingredients/:id/delete", IngredientLive.Show, :delete
+
       live "/recipes/new", RecipeLive.Index, :new
       live "/recipes/:id/edit", RecipeLive.Show, :edit
 
       # Callback for image uploads to update the image_filepath
       live "/recipes/:id/upload", RecipeLive.Upload, :upload
       live "/categories/:id/upload", CategoryLive.Upload, :upload
+      live "/ingredients/:id/upload", IngredientLive.Upload, :upload
 
       scope "/", as: :uploads do
         live "/images/:id/upload", UploadLive, :new
@@ -87,6 +91,7 @@ defmodule RelaxirWeb.Router do
       live "/users/confirm/:token", UserConfirmationLive, :edit
       live "/users/confirm", UserConfirmationInstructionsLive, :new
 
+      live "/ingredients", IngredientLive.Index, :index
       live "/ingredients/:id", IngredientLive.Show, :index
       live "/ingredients/:id/:slug", IngredientLive.Show, :index
 

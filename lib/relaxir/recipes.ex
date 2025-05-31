@@ -16,7 +16,7 @@ defmodule Relaxir.Recipes do
       left_join: i in Ingredient,
       on: i.id == ri.ingredient_id,
       order_by: i.name,
-      preload: [:unit, ingredient: [source_recipe: :recipe_ingredients]]
+      preload: [:unit, ingredient: [source_recipe: [recipe_ingredients: :ingedient]]]
     )],
     :categories,
     :user
@@ -94,7 +94,6 @@ defmodule Relaxir.Recipes do
       _ ->
         recipe
         |> Recipe.changeset(attrs)
-        |> do_changeset_update(recipe)
         |> Repo.update()
         |> case do
           {:ok, recipe} ->
@@ -104,21 +103,6 @@ defmodule Relaxir.Recipes do
             error
         end
     end
-  end
-
-  def do_changeset_update(changeset, _recipe) do
-    with %{title: _title} <- changeset.changes do
-    end
-
-    with %{recipe_ingredients: recipe_ingredients} <- changeset.changes do
-      recipe_ingredients
-      |> Enum.each(fn ingredient ->
-        with %{action: :insert, changes: %{ingredient_id: _ingredient_id, ingredient: %{changes: %{name: _name}}}} <- ingredient do
-        end
-      end)
-    end
-
-    changeset
   end
 
   # sobelow_skip ["Traversal"]
@@ -207,7 +191,7 @@ defmodule Relaxir.Recipes do
     if first in units do
       [first | rest]
     else
-      ["", [first | rest]]
+      ["", first | rest]
     end
   end
 

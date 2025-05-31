@@ -36,12 +36,12 @@ defmodule RelaxirWeb.IngredientLive.Show do
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
     {:ok, _recipe} =
-      Recipes.get_recipe!(id)
-      |> Recipes.delete_recipe
+      Ingredients.get_ingredient!(id)
+      |> Ingredients.delete_ingredient
 
     {
       :noreply,
-      redirect(socket, to: ~p"/recipes")
+      redirect(socket, to: ~p"/ingredients")
     }
   end
 end

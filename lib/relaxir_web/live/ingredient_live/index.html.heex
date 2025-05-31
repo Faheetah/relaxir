@@ -1,0 +1,39 @@
+<div class="text-6xl text-center font-medium font-serif">
+  All Ingredients
+
+  <%= if @current_user && @current_user.is_admin do %>
+    <.link href={~p"/ingredients/new"} do %>
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 inline text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    </.link>
+  <% end %>
+</div>
+
+<div class="grid grid-cols-1 sm:grid-cols-4 gap-4 py-8">
+<%= for ingredient <- @ingredients do %>
+  <div id={"ingredient-#{ingredient.id}"}>
+    <div>
+      <div class="mx-6 lg:mx-0">
+        <.link href={~p"/ingredients/#{ingredient.id}/#{ingredient.name}"}>
+          <%= if Map.get(ingredient, :image_filename) do %>
+            <img src={"/uploads/#{ingredient.image_filename}-full.jpg"}>
+          <% else %>
+            <img src="/images/default-full.jpg">
+          <% end %>
+        </.link>
+      </div>
+    </div>
+
+    <div class="mx-6 lg:mx-0">
+      <div class="text-2xl tracking-tight leading-6 font-bold font-serif pb-4 mt-4">
+        <.link href={~p"/ingredients/#{ingredient.id}"}>
+          <%= String.capitalize(ingredient.name) %>
+        </.link>
+      </div>
+    </div>
+  </div>
+
+
+<% end %>
+</div>

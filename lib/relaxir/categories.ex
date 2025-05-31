@@ -110,14 +110,6 @@ defmodule Relaxir.Categories do
     %Category{}
     |> Category.changeset(attrs)
     |> Repo.insert()
-    |> case do
-      {:ok, category} ->
-        insert_cache(category)
-        {:ok, category}
-
-      error ->
-        error
-    end
   end
 
   def update_image_filename(category, image_filename) do
@@ -127,33 +119,14 @@ defmodule Relaxir.Categories do
   def update_category(%Category{} = category, attrs) do
     category
     |> Category.changeset(attrs)
-    |> do_changeset_update(category)
     |> Repo.update()
   end
 
-  def do_changeset_update(changeset, category) do
-    with %{name: name} <- changeset.changes do
-      delete_cache(category)
-      insert_cache(%{name: name, id: category.id})
-    end
-
-    changeset
-  end
-
   def delete_category(%Category{} = category) do
-    delete_cache(category)
     Repo.delete(category)
   end
 
   def change_category(%Category{} = category, attrs \\ %{}) do
     Category.changeset(category, attrs)
-  end
-
-  def insert_cache(category) do
-    Invert.set(Relaxir.Categories.Category, :name, {category.name, [category.name, category.id]})
-  end
-
-  def delete_cache(category) do
-    Invert.delete(Relaxir.Categories.Category, :name, {category.name, [category.name, category.id]})
   end
 end

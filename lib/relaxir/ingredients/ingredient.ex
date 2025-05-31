@@ -28,7 +28,7 @@ defmodule Relaxir.Ingredients.Ingredient do
       end
 
     ingredient
-    |> cast(attrs, [:name, :singular, :description, :parent_ingredient_id, :source_recipe_id])
+    |> cast(attrs, [:name, :singular, :description, :parent_ingredient_id, :source_recipe_id, :image_filename])
     |> cast_assoc(:recipe_ingredients)
     |> cast_assoc(:parent_ingredient)
     |> cast_assoc(:source_recipe)

@@ -123,49 +123,26 @@ defmodule Relaxir.Ingredients do
     %Ingredient{}
     |> Ingredient.changeset(maybe_singularize_attrs(attrs))
     |> Repo.insert()
-    |> case do
-      {:ok, ingredient} ->
-        insert_cache(ingredient)
-        {:ok, ingredient}
-
-      error ->
-        error
-    end
   end
 
   def maybe_singularize_attrs(%{"singular" => ""} = attrs), do: Map.put(attrs, "singular", Inflex.singularize(attrs["name"]))
   def maybe_singularize_attrs(attrs), do: attrs
 
+  def update_image_filename(ingredient, image_filename) do
+    update_ingredient(ingredient, %{"image_filename" => image_filename})
+  end
+
   def update_ingredient(%Ingredient{} = ingredient, attrs) do
     ingredient
     |> Ingredient.changeset(attrs)
-    |> do_changeset_update(ingredient)
     |> Repo.update()
   end
 
-  def do_changeset_update(changeset, ingredient) do
-    with %{name: name} <- changeset.changes do
-      delete_cache(ingredient)
-      insert_cache(%{name: name, id: ingredient.id})
-    end
-
-    changeset
-  end
-
   def delete_ingredient(%Ingredient{} = ingredient) do
-    delete_cache(ingredient)
     Repo.delete(ingredient)
   end
 
   def change_ingredient(%Ingredient{} = ingredient, attrs \\ %{}) do
     Ingredient.changeset(ingredient, attrs)
-  end
-
-  def insert_cache(ingredient) do
-    Invert.set(Relaxir.Ingredients.Ingredient, :name, {ingredient.name, [ingredient.name, ingredient.id]})
-  end
-
-  def delete_cache(ingredient) do
-    Invert.delete(Relaxir.Ingredients.Ingredient, :name, {ingredient.name, [ingredient.name, ingredient.id]})
   end
 end

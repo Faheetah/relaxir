@@ -2,7 +2,7 @@
     <%= String.capitalize(@ingredient.name) %>
 
     <%= if @current_user do %>
-    <.link patch={~p"/ingredients/#{@ingredient.name}/edit"} phx-click={JS.push_focus()}>
+    <.link patch={~p"/ingredients/#{@ingredient.id}/edit"} phx-click={JS.push_focus()}>
       <.icon name="hero-pencil-square" class="text-neutral-300 hover:text-neutral-400" />
     </.link>
     <.link phx-click={JS.push("delete", value: %{id: @ingredient.id})} data-confirm={"Really delete #{@ingredient.name}?"}>
@@ -32,8 +32,8 @@
     id={@ingredient.id}
     name={@ingredient.name}
     action={@live_action}
-    category={@ingredient}
-    patch={~p"/ingredients/#{@ingredient.name}"}
+    ingredient={@ingredient}
+    patch={~p"/ingredients/#{@ingredient.id}/#{@ingredient.name}"}
   />
 </.modal>
 
