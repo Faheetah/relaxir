@@ -15,12 +15,13 @@
 
 FROM debian:bullseye-slim as builder
 
-ENV PATH "$PATH:/root/.asdf/shims/:/asdf/bin/"
+ENV PATH "$PATH:/root/.asdf/shims/"
 ENV MIX_ENV="prod"
+ENV ASDF_VERSION=v0.18.0
 
 # install build dependencies
 RUN apt-get update -y \
-    && apt-get install -y build-essential procps autoconf libssh-dev libncurses5-dev git curl unzip locales \
+    && apt-get install -y build-essential procps autoconf libssh-dev libncurses5-dev git curl wget unzip locales \
     && apt-get clean  \
     && rm -f /var/lib/apt/lists/*_*
 
@@ -30,18 +31,21 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
-RUN git clone https://github.com/asdf-vm/asdf.git /asdf
-RUN /asdf/bin/asdf plugin add erlang
-RUN /asdf/bin/asdf install erlang 26.2.5.2
-RUN /asdf/bin/asdf global erlang 26.2.5.2
+# RUN git clone https://github.com/asdf-vm/asdf.git /asdf
+RUN wget https://github.com/asdf-vm/asdf/releases/download/v0.18.0/asdf-${ASDF_VERSION}-linux-amd64.tar.gz
+RUN tar -zxf asdf-${ASDF_VERSION}-linux-amd64.tar.gz
+RUN mv /asdf /bin/asdf
+RUN asdf plugin add erlang
+RUN asdf install erlang 26.2.5.2
+RUN asdf set --home erlang 26.2.5.2
 
-RUN /asdf/bin/asdf plugin add elixir
-RUN /asdf/bin/asdf install elixir 1.17.3
-RUN /asdf/bin/asdf global elixir 1.17.3
+RUN asdf plugin add elixir
+RUN asdf install elixir 1.17.3
+RUN asdf set --home elixir 1.17.3
 
-RUN /asdf/bin/asdf plugin add nodejs
-RUN /asdf/bin/asdf install nodejs 18.19.0
-RUN /asdf/bin/asdf global nodejs 18.19.0
+RUN asdf plugin add nodejs
+RUN asdf install nodejs 18.19.0
+RUN asdf set --home nodejs 18.19.0
 
 # prepare build dir
 WORKDIR /app
