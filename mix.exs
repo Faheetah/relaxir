@@ -4,7 +4,7 @@ defmodule Relaxir.MixProject do
   def project do
     [
       app: :relaxir,
-      version: "2.0.6",
+      version: "2.0.7",
       url: "https://github.com/Faheetah/relaxir/",
       elixir: "~> 1.17",
       elixirc_paths: elixirc_paths(Mix.env()),

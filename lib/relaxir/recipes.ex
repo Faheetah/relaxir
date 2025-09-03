@@ -16,7 +16,7 @@ defmodule Relaxir.Recipes do
       left_join: i in Ingredient,
       on: i.id == ri.ingredient_id,
       order_by: i.name,
-      preload: [:unit, ingredient: [source_recipe: [recipe_ingredients: :ingedient]]]
+      preload: [:unit, ingredient: [source_recipe: [recipe_ingredients: [:ingredient, :unit]]]]
     )],
     :categories,
     :user
