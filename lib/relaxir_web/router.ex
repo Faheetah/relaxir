@@ -36,10 +36,7 @@ defmodule RelaxirWeb.Router do
 
     live_session :redirect_if_user_is_authenticated,
       on_mount: [{RelaxirWeb.UserAuth, :redirect_if_user_is_authenticated}] do
-      # live "/users/register", UserRegistrationLive, :new
       live "/users/log_in", UserLoginLive, :new
-      # live "/users/reset_password", UserForgotPasswordLive, :new
-      # live "/users/reset_password/:token", UserResetPasswordLive, :edit
     end
 
     post "/users/log_in", UserSessionController, :create
@@ -52,9 +49,6 @@ defmodule RelaxirWeb.Router do
 
     live_session :require_authenticated_user,
       on_mount: [{RelaxirWeb.UserAuth, :ensure_authenticated}] do
-      live "/profile", UserSettingsLive, :edit
-      live "/users/settings", UserSettingsLive, :edit
-      live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
       delete "/users/log_out", UserSessionController, :delete
 
       live "/categories/:name/edit", CategoryLive.Show, :edit
