@@ -30,15 +30,40 @@ defmodule RelaxirWeb.FormattingComponents do
 
   def ingredient(assigns) do
     ~H"""
-    <%= @amount %>
+    <%= parse_decimal_to_fraction(@amount) %>
     <%= @unit && inflex_unit(@unit.name, @amount) %>
     <%= inflex_ingredient(@name, @unit, @amount) %><span class="italic text-neutral-500"><%= ((@note != "" && @note != nil) && ", #{@note}" || "")  %></span>
     """
   end
 
   defp inflex_unit(name, amount) when amount > 1, do: Inflex.pluralize(name)
-  defp inflex_unit(name, amount), do: Inflex.singularize(name)
+  defp inflex_unit(name, _amount), do: Inflex.singularize(name)
 
   defp inflex_ingredient(name, nil, amount) when not is_nil(amount) and amount > 1, do: Inflex.pluralize(name)
   defp inflex_ingredient(name, _unit, _amount), do: Inflex.singularize(name)
+
+  # I don't like this function but it does work and is moderately performant
+  def parse_decimal_to_fraction(nil), do: nil
+  def parse_decimal_to_fraction(amount) do
+    # covers up to 1..100/1..100 reliably
+    # can possibly cover up to 1/999999 reasonably well
+    # reducing this can improve performance in case of DoS since :timer.tc 1/999999 = ~600ms
+    denominator =
+      1..9_999_999
+      |> Enum.find(1, fn f ->
+        # amount / 1 to force float, in case of amount = 1
+        Float.floor(f * (amount / 1)) == f * amount
+      end)
+
+    numerator = trunc(amount * denominator)
+    whole = trunc((numerator - rem(numerator, denominator)) / denominator)
+    gcd = Integer.gcd(numerator, denominator)
+
+    [whole, trunc(rem(numerator, denominator) / gcd), trunc(denominator / gcd)]
+    |> case do
+      [0, n, d] when n > 0 and d > 0 -> "#{n}/#{d}"
+      [w, _, 1] -> w
+      [w, n, d] -> "#{w} #{n}/#{d}"
+    end
+  end
 end
