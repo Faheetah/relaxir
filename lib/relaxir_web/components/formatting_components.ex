@@ -40,7 +40,7 @@ defmodule RelaxirWeb.FormattingComponents do
   defp inflex_unit(name, _amount), do: Inflex.singularize(name)
 
   defp inflex_ingredient(name, nil, amount) when not is_nil(amount) and amount > 1, do: Inflex.pluralize(name)
-  defp inflex_ingredient(name, _unit, _amount), do: Inflex.singularize(name)
+  defp inflex_ingredient(name, _unit, _amount), do: name
 
   # I don't like this function but it does work and is moderately performant
   def parse_decimal_to_fraction(nil), do: nil
