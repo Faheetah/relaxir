@@ -30,7 +30,15 @@ defmodule RelaxirWeb.FormattingComponents do
 
   def ingredient(assigns) do
     ~H"""
-    <%= @amount %> <%= @unit && @unit.name %> <%= @name %><span class="italic text-neutral-500"><%= ((@note != "" && @note != nil) && ", #{@note}" || "")  %></span>
+    <%= @amount %>
+    <%= @unit && inflex_unit(@unit.name, @amount) %>
+    <%= inflex_ingredient(@name, @unit, @amount) %><span class="italic text-neutral-500"><%= ((@note != "" && @note != nil) && ", #{@note}" || "")  %></span>
     """
   end
+
+  defp inflex_unit(name, amount) when amount > 1, do: Inflex.pluralize(name)
+  defp inflex_unit(name, amount), do: Inflex.singularize(name)
+
+  defp inflex_ingredient(name, nil, amount) when not is_nil(amount) and amount > 1, do: Inflex.pluralize(name)
+  defp inflex_ingredient(name, _unit, _amount), do: Inflex.singularize(name)
 end
