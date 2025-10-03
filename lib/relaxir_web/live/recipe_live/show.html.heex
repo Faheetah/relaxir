@@ -189,7 +189,7 @@
       <div class="px-4 lg:px-0">
         <%= if @recipe.directions do %>
         <div class="text-3xl font-medium mt-4 mb-8 text-black">Directions</div>
-        <ul class="space-y-4 -ml-2 list-decimal text-2xl border-y font-extralight lg:list-outside text-amber-600 font-bold">
+        <ul class="space-y-4 -ml-2 list-decimal text-2xl border-y font-extralight lg:list-outside text-amber-600">
         <%= for md <- @recipe.directions |> String.split("\n", trim: true) |> Enum.reject(&(String.trim(&1) == "")) do %>
           <li>
             <div class="text-black ml-2 my-6 text-lg font-normal"><%= md %></div>

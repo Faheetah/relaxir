@@ -51,7 +51,7 @@ defmodule Relaxir.Recipes.Recipe do
     |> put_assoc(:categories, parse_categories(attrs, insert?))
     |> put_assoc(:recipe_ingredients, parse_ingredients(Map.get(attrs, "recipe_ingredients", []), insert?))
     |> validate_required([:title])
-    |> unique_constraint([:title])
+    |> unique_constraint(:title)
     |> find_ingredient_errors()
   end
 
@@ -112,7 +112,6 @@ defmodule Relaxir.Recipes.Recipe do
     end
   end
 
-  # defp parse_ingredients([], true), do: []
   defp parse_ingredients(recipe_ingredients, false), do: recipe_ingredients
   defp parse_ingredients(recipe_ingredients, true) do
     Enum.map(recipe_ingredients, &format_ingredients/1)
