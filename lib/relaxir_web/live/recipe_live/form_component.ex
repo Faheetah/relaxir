@@ -124,7 +124,7 @@ defmodule RelaxirWeb.RecipeLive.FormComponent do
     save_recipe(socket, socket.assigns.action, recipe_params)
   end
 
-  # Temporary POC for ingredients submissions
+  # Recipe ingredient input parsing
   @impl true
   def handle_event("live_select_change", %{"text" => text, "id" => live_select_id, "field" => "recipe_recipe_ingredients"}, socket) do
     # parse this and return it back
