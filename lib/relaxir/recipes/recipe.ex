@@ -115,6 +115,7 @@ defmodule Relaxir.Recipes.Recipe do
   defp parse_ingredients(recipe_ingredients, false), do: recipe_ingredients
   defp parse_ingredients(recipe_ingredients, true) do
     Enum.map(recipe_ingredients, &format_ingredients/1)
+    |> Enum.reject(fn ri -> ri.ingredient.name == "" end)
   end
 
   defp format_ingredients(recipe_ingredient) do
