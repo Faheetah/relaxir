@@ -11,13 +11,7 @@ defmodule RelaxirWeb.RecipeLive.Index do
 
   @impl true
   def handle_params(params, _url, socket) do
-    # TODO add in somewhere functionality to show draft/published/all buttons if logged in
-    recipes =
-      case Map.get(params, "show") do
-        "drafts" -> Recipes.list_draft_recipes()
-        "draft" -> Recipes.list_draft_recipes()
-        _ -> Recipes.list_recipes()
-      end
+    recipes = Recipes.list_recipes(socket.assigns.current_user)
 
     {
       :noreply,

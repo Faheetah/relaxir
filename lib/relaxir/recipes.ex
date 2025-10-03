@@ -22,10 +22,12 @@ defmodule Relaxir.Recipes do
     :user
   ]
 
-  def list_recipes do
+  def list_recipes(current_user?) do
+    published = if current_user?, do: [], else: [published: true]
+
     Repo.all(
       from r in Recipe,
-      where: r.published == true,
+      where: ^published,
       order_by: [desc: r.inserted_at],
       preload: [:user, :categories]
     )

@@ -25,6 +25,9 @@
     <div class="text-2xl tracking-tight leading-6 font-bold font-serif pb-4 mt-4">
       <.link href={~p"/recipes/#{@recipe}"}>
         <%= @recipe.title %>
+        <%= if !@recipe.published do %>
+        <.icon name="hero-newspaper" class="text-neutral-400 h-8" />
+        <% end %>
       </.link>
 
       <span class="ml-1">
