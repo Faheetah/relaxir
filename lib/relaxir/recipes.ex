@@ -68,30 +68,6 @@ defmodule Relaxir.Recipes do
     |> Repo.update()
   end
 
-  def old_update_recipe(%Recipe{} = recipe, attrs) do
-    case attrs["errors"] do
-      {:error, error} ->
-        {
-          :error,
-          recipe
-          |> Recipe.changeset(Map.merge(attrs, %{"ingredients" => attrs["errors"]}))
-          |> Ecto.Changeset.add_error(:ingredients, error, validation: :required)
-        }
-
-      _ ->
-        recipe
-        |> Recipe.changeset(attrs)
-        |> Repo.update()
-        |> case do
-          {:ok, recipe} ->
-            {:ok, Repo.preload(recipe, [:recipe_ingredients, :ingredients, :recipe_categories, :categories])}
-
-          error ->
-            error
-        end
-    end
-  end
-
   # sobelow_skip ["Traversal"]
   # traversal is not possible due to dest coming from application config
   def delete_recipe(%Recipe{} = recipe) do
@@ -133,11 +109,9 @@ defmodule Relaxir.Recipes do
   # Parse out units, ingredients, amounts, and note
   # start by splitting, then downcase and singularize, then match, then recombine
   def parse_ingredient(unparsed, units) do
-    {note, terms} =
-      String.split(unparsed, ",", trim: true)
+    [terms | note] =
+      String.split(unparsed, ",", trim: true, parts: 2)
       |> Enum.map(&String.trim/1)
-      |> List.pop_at(-1)
-      |> maybe_get_note()
 
     [amount, unit, ingredient] =
       terms
@@ -148,9 +122,6 @@ defmodule Relaxir.Recipes do
 
     {:ok, [amount, unit, Enum.join(ingredient, " "), note]}
   end
-
-  defp maybe_get_note({terms, []}), do: {nil, terms}
-  defp maybe_get_note({note, terms}), do: {note, hd(terms)}
 
   def get_units() do
     Relaxir.Units.list_units
