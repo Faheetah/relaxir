@@ -106,14 +106,14 @@
 
       <%# categories %>
       <div class="space-x text-sm border-t">
-      <span class="text-g">TAGS: </span>
-        <%= if @recipe.categories != [] do %>
+      <%= if @recipe.categories != [] do %>
+        <span class="text-g">TAGS: </span>
         <%= for category <- @recipe.categories do %>
           <.link href={~p"/categories/#{category.name}"} class="inline hover:underline decoration hover:decoration-amber-600 underline-offset-2 text-neutral-800 leading-10 px-2 pt-1 pb-1">
             <%= String.upcase(category.name) %>
           </.link>
         <% end %>
-        <% end %>
+      <% end %>
       </div>
     </div>
 

@@ -93,6 +93,7 @@ defmodule Relaxir.Recipes do
   end
 
   # Takes a changeset and returns a changeset with ingredients mapped as a list of strings
+  defp map_ingredients(changeset, recipe, %{"recipe_ingredients_empty_selection" => ""}), do: changeset
   defp map_ingredients(changeset, recipe, attrs) do
     changes = Map.put(changeset.changes, :recipe_ingredients, attrs["recipe_ingredients"] || Enum.map(recipe.recipe_ingredients, &format_ingredient/1))
     Map.put(changeset, :changes, changes)
