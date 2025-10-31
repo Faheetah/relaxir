@@ -13,9 +13,9 @@
 #   - Ex: hexpm/elixir:1.14.4-erlang-25.0.2-debian-bullseye-20210902-slim
 #
 
-FROM debian:bullseye-slim as builder
+FROM debian:bullseye-slim AS builder
 
-ENV PATH "$PATH:/root/.asdf/shims/"
+ENV PATH="$PATH:/root/.asdf/shims/"
 ENV MIX_ENV="prod"
 ENV ASDF_VERSION=v0.18.0
 
@@ -27,9 +27,9 @@ RUN apt-get update -y \
 
 RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && locale-gen
 
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US:en
-ENV LC_ALL en_US.UTF-8
+ENV LANG=en_US.UTF-8
+ENV LANGUAGE=en_US:en
+ENV LC_ALL=en_US.UTF-8
 
 # RUN git clone https://github.com/asdf-vm/asdf.git /asdf
 RUN wget https://github.com/asdf-vm/asdf/releases/download/v0.18.0/asdf-${ASDF_VERSION}-linux-amd64.tar.gz
@@ -98,9 +98,9 @@ RUN apt-get update -y && apt-get install -y libstdc++6 openssl libncurses5 local
 # Set the locale
 RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && locale-gen
 
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US:en
-ENV LC_ALL en_US.UTF-8
+ENV LANG=en_US.UTF-8
+ENV LANGUAGE=en_US:en
+ENV LC_ALL=en_US.UTF-8
 
 WORKDIR "/app"
 RUN chown nobody /app
