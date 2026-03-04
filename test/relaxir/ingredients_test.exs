@@ -109,21 +109,5 @@ defmodule Relaxir.IngredientsTest do
       results = Relaxir.Ingredients.get_ingredients_by_name!(query)
       assert hd(results).name == "ducks"
     end
-
-    @tag :skip
-    test "finds a name missing singular with a singular query" do
-      ingredient_fixture(%{name: "ducks"})
-      query = ["duck"]
-      results = Relaxir.Ingredients.get_ingredients_by_name!(query)
-      assert hd(results).name == "ducks"
-    end
-
-    @tag :skip
-    test "finds a name missing singular with a plural query" do
-      ingredient_fixture(%{name: "ducks"})
-      query = ["ducks"]
-      results = Relaxir.Ingredients.get_ingredients_by_name!(query)
-      assert hd(results).name == "ducks"
-    end
   end
 end
