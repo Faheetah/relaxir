@@ -68,6 +68,7 @@ defmodule Relaxir.MixProject do
       {:csv, "~> 3.0.5"},
       {:inflex, "~> 2.1.0"},
       {:invert, git: "https://github.com/faheetah/invert", tag: "0.3.0"},
+      {:unit, git: "https://github.com/faheetah/unit"},
       # test and code quality
       {:mix_test_watch, "~> 1.1", runtime: false, only: :dev},
       {:credo, "~> 1.7", only: :dev},
