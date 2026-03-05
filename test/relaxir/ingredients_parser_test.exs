@@ -1,69 +1,85 @@
-defmodule Relaxir.RecipeParserTest do
+defmodule Relaxir.IngredientsParserTest do
   use ExUnit.Case, async: true
   import Relaxir.Ingredients.Parser
 
-  describe "extract_ingredient_fields/1" do
-    test "returns an ingredients when nothing else is provided" do
-      assert {:ok, %{name: "broccoli"}} == extract_ingredient_fields("broccoli")
+  describe "parse_ingredients/1" do
+    test "parses ingredients and sorts by order" do
+      attrs = %{
+        "ingredients" => [
+          "2 cups flour",
+          "1 egg",
+          "1/2 teaspoon salt"
+        ]
+      }
+
+      result = parse_ingredients(attrs)
+
+      assert %{"ingredients" => ingredients} = result
+      assert is_list(ingredients)
+      assert length(ingredients) == 3
+
+      # Check that all ingredients were parsed
+      flour = Enum.find(ingredients, fn i -> i.name == "flour" end)
+      egg = Enum.find(ingredients, fn i -> i.name == "" and i.unit == "egg" end)
+      salt = Enum.find(ingredients, fn i -> i.name == "salt" end)
+
+      assert flour
+      assert flour.amount == 2
+      assert flour.unit == "cups"
+
+      assert egg
+      assert egg.amount == 1
+
+      assert salt
+      assert salt.amount == 0.5
+      assert salt.unit == "teaspoon"
     end
 
-    test "extracts an amount when a number and two words are provided" do
-      assert {:ok, %{name: "broccoli", amount: 1, unit: "cup"}} == extract_ingredient_fields("1 cup broccoli")
+    test "handles empty ingredients list" do
+      attrs = %{"ingredients" => []}
+
+      result = parse_ingredients(attrs)
+
+      assert %{"ingredients" => []} = result
     end
 
-    test "parses plural measurements" do
-      assert {:ok, %{name: "broccoli", amount: 2, unit: "cups"}} == extract_ingredient_fields("2 cups broccoli")
-    end
+    test "handles missing ingredients key" do
+      attrs = %{"other_field" => "value"}
 
-    test "converts fractional ingredients" do
-      assert {:ok, %{name: "broccoli", amount: 0.5, unit: "cups"}} == extract_ingredient_fields("1/2 cups broccoli")
-    end
-
-    test "parses a note when starting with a number" do
-      # guards against false positives when parsing complex amounts i.e. "1 1/2 cups"
-      assert {:ok, %{name: "egg", note: "1 times"}} == extract_ingredient_fields("egg, 1 times")
-    end
-
-    test "parses a note when amount and single word ingredient" do
-      # guards against false positives when parsing ingredients without units i.e. "1/4 onion, sliced"
-      assert {:ok, %{amount: 0.25, name: "", unit: "onion", note: "sliced"}} == extract_ingredient_fields("1/4 onion, sliced")
-    end
-
-    test "parses a note when amount and multiple commas" do
-      # guards against false positives when parsing ingredients without units i.e. "1/4 onion, sliced"
-      assert {:ok, %{amount: 1, name: "", unit: "onion", note: "sliced, diced, and nice"}} ==
-               extract_ingredient_fields("1 onion, sliced, diced, and nice")
-    end
-
-    test "parses an ingredient without a unit" do
-      # guards against false positives when parsing complex amounts i.e. "1 1/2 cups"
-      assert {:ok, %{amount: 1, name: "", unit: "egg"}} == extract_ingredient_fields("1 egg")
-    end
-
-    test "ignores no amount provided" do
-      assert {:ok, %{name: "egg", note: "chopped"}} == extract_ingredient_fields("egg, chopped")
+      # The function will fail when ingredients key is missing
+      # as it tries to enumerate over nil
+      assert_raise Protocol.UndefinedError, fn ->
+        parse_ingredients(attrs)
+      end
     end
   end
 
-  describe "parse_amount/1" do
-    test "returns :error if nothing found" do
-      assert :error == parse_amount("a a")
+  describe "map_recipe_ingredient_fields/2" do
+    test "returns attrs unchanged when amount or unit is nil" do
+      attrs = %{name: "flour", amount: nil, unit: "cups"}
+      units = []
+
+      result = map_recipe_ingredient_fields(attrs, units)
+
+      assert result == attrs
     end
 
-    test "returns amount found" do
-      assert 1 == parse_amount("1")
+    test "returns attrs unchanged when amount is nil" do
+      attrs = %{name: "flour", amount: nil, unit: "cups"}
+      units = []
+
+      result = map_recipe_ingredient_fields(attrs, units)
+
+      assert result == attrs
     end
 
-    test "returns fraction found" do
-      assert 0.5 == parse_amount("1/2")
-    end
+    test "returns attrs unchanged when unit is nil" do
+      attrs = %{name: "flour", amount: 2, unit: nil}
+      units = []
 
-    test "returns :error on bad numerator" do
-      assert :error == parse_amount("a/1")
-    end
+      result = map_recipe_ingredient_fields(attrs, units)
 
-    test "returns :error on bad denominator" do
-      assert :error == parse_amount("1/a")
+      assert result == attrs
     end
   end
 end

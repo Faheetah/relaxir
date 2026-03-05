@@ -1,93 +1,19 @@
 defmodule Relaxir.Ingredients.Parser do
-  alias Relaxir.Ingredients
-  alias Relaxir.Units
-
-  def downcase_ingredients(attrs) do
-    ingredients =
-      Map.get(attrs, "ingredients", [])
-      |> Enum.map(fn i -> Map.put(i, :name, String.downcase(i[:name])) end)
-
-    case ingredients do
-      [] -> attrs
-      _ -> Map.put(attrs, "ingredients", ingredients)
-    end
-  end
-
-  def map_existing_ingredients(attrs, recipe) do
-    current_recipe_ingredients =
-      recipe.recipe_ingredients
-      |> Enum.reduce(
-        [],
-        fn ri, acc ->
-          [%{id: ri.id, ingredient: %{id: ri.ingredient.id}} | acc]
-        end
-      )
-
-    recipe_ingredients =
-      (attrs["recipe_ingredients"] || [])
-      |> Enum.map(fn i ->
-        case i do
-          %{:ingredient_id => id} ->
-            find_ingredient(current_recipe_ingredients, recipe, id)
-            |> Map.merge(%{
-              note: Map.get(i, :note),
-              amount: Map.get(i, :amount),
-              unit_id: Map.get(i, :unit_id)
-            })
-
-          _ ->
-            i
-        end
-      end)
-      |> Enum.with_index()
-      |> Enum.map(fn {ingredient, index} -> Map.merge(ingredient, %{order: index}) end)
-
-    errors =
-      Enum.find(
-        recipe_ingredients,
-        fn i ->
-          case i do
-            {:error, error} -> error
-            _ -> nil
-          end
-        end
-      )
-
-    if errors != nil do
-      Map.put(attrs, "errors", errors)
-    else
-      Map.put(attrs, "recipe_ingredients", recipe_ingredients)
-    end
-  end
-
-  def find_ingredient(ingredients, recipe, ingredient_id) do
-    Enum.find(ingredients, %{recipe_id: recipe.id, ingredient_id: ingredient_id}, fn cri ->
-      if cri.ingredient.id == ingredient_id do
-        cri
-      end
-    end)
-  end
-
-  def map_ingredients(attrs) when is_map_key(attrs, "ingredients") do
-    units = Units.list_units()
-
+  def parse_ingredients(attrs) do
     ingredients =
       attrs["ingredients"]
-      |> Enum.map(&map_recipe_ingredient_fields(&1, units))
+      |> Enum.map(&extract_ingredient_fields/1)
+      |> Enum.map(fn ingredient ->
+        case ingredient do
+          {:ok, ingredient} -> ingredient
+          {:error, error} -> {:error, error}
+          [] -> []
+        end
+      end)
+      |> Enum.sort_by(fn i -> Map.get(i, :order) end)
 
-    fetched_ingredients =
-      ingredients
-      |> Enum.map(fn i -> i.name end)
-      |> Ingredients.get_ingredients_by_name!()
-
-    ingredients =
-      ingredients
-      |> Enum.map(&match_existing_ingredients(&1, fetched_ingredients))
-
-    Map.put(attrs, "recipe_ingredients", ingredients)
+    Map.put(attrs, "ingredients", ingredients)
   end
-
-  def map_ingredients(attrs), do: attrs
 
   def map_recipe_ingredient_fields(attrs, units) do
     amount = Map.get(attrs, :amount)
@@ -99,24 +25,6 @@ defmodule Relaxir.Ingredients.Parser do
       find_unit(units, unit_name)
       |> map_unit(attrs, unit_name, amount)
     end
-  end
-
-  defp match_existing_ingredient(i, ingredient) do
-    if i.singular == nil do
-      i.name == ingredient.name || i.singular == ingredient.name
-    else
-      i.singular == Inflex.singularize(ingredient.name)
-    end
-  end
-
-  defp match_existing_ingredients(ingredient, fetched_ingredients) do
-    # adding i.name == ingredient.name for cases that inflex does not work, i.e. "canned tomatoes", may have side effects?
-    case Enum.find(fetched_ingredients, fn i -> (match_existing_ingredient(i, ingredient) || i.name == ingredient.name) end) do
-      nil -> %{ingredient: ingredient}
-      ingredient -> %{ingredient_id: ingredient.id}
-    end
-    |> Map.merge(ingredient)
-    |> Map.delete(:name)
   end
 
   defp singularize_unit(unit, name) do
@@ -150,29 +58,13 @@ defmodule Relaxir.Ingredients.Parser do
 
   defp map_unit({:error, error}, _attrs, _unit_name, _amount), do: {:error, error}
 
-  def parse_ingredients(attrs) do
-    ingredients =
-      attrs["ingredients"]
-      |> Enum.map(&extract_ingredient_fields/1)
-      |> Enum.map(fn ingredient ->
-        case ingredient do
-          {:ok, ingredient} -> ingredient
-          {:error, error} -> {:error, error}
-          [] -> []
-        end
-      end)
-      |> Enum.sort_by(fn i -> Map.get(i, :order) end)
-
-    Map.put(attrs, "ingredients", ingredients)
-  end
-
-  def extract_ingredient_fields(ingredient) do
+  defp extract_ingredient_fields(ingredient) do
     {:ok, %{name: ingredient}}
     |> extract_ingredient_note
     |> extract_ingredient_amount
   end
 
-  def extract_ingredient_amount({:ok, ingredient}) do
+  defp extract_ingredient_amount({:ok, ingredient}) do
     case String.split(ingredient.name) do
       [whole, fraction, unit | name] ->
         if Float.parse(fraction) != :error and Float.parse(whole) != :error and hd(Tuple.to_list(Float.parse(fraction))) do
@@ -206,7 +98,7 @@ defmodule Relaxir.Ingredients.Parser do
      )}
   end
 
-  def parse_amount(amount) do
+  defp parse_amount(amount) do
     divisor =
       amount
       |> String.split("/")
@@ -220,7 +112,7 @@ defmodule Relaxir.Ingredients.Parser do
     end
   end
 
-  def extract_ingredient_note({:ok, ingredient}) do
+  defp extract_ingredient_note({:ok, ingredient}) do
     [name | note] = String.split(ingredient.name, ",")
 
     note =
