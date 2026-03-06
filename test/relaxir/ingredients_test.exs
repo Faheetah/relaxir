@@ -147,26 +147,26 @@ defmodule Relaxir.IngredientsTest do
       Relaxir.Recipes.create_recipe(%{
         "title" => "Recipe 1",
         "directions" => "Mix salt and water",
-        "ingredients" => [%{name: "salt"}]
+        "recipe_ingredients" => ["||salt|"]
       })
 
       Relaxir.Recipes.create_recipe(%{
         "title" => "Recipe 2",
         "directions" => "Add salt and pepper",
-        "ingredients" => [%{name: "salt"}, %{name: "pepper"}]
+        "recipe_ingredients" => ["||salt|", "||pepper|"]
       })
 
       Relaxir.Recipes.create_recipe(%{
         "title" => "Recipe 3",
         "directions" => "Season with salt",
-        "ingredients" => [%{name: "salt"}]
+        "recipe_ingredients" => ["||salt|"]
       })
 
       # Pepper used in 1 recipe
       Relaxir.Recipes.create_recipe(%{
         "title" => "Recipe 4",
         "directions" => "Add some pepper",
-        "ingredients" => [%{name: "pepper"}]
+        "recipe_ingredients" => ["||pepper|"]
       })
 
       # Sugar used in 0 recipes
@@ -190,25 +190,25 @@ defmodule Relaxir.IngredientsTest do
       Relaxir.Recipes.create_recipe(%{
         "title" => "Recipe 1",
         "directions" => "Use flour and butter",
-        "ingredients" => [%{name: "flour"}, %{name: "butter"}]
+        "recipe_ingredients" => ["||flour|", "||butter|"]
       })
 
       Relaxir.Recipes.create_recipe(%{
         "title" => "Recipe 2",
         "directions" => "Use flour",
-        "ingredients" => [%{name: "flour"}]
+        "recipe_ingredients" => ["||flour|"]
       })
 
       Relaxir.Recipes.create_recipe(%{
         "title" => "Recipe 3",
         "directions" => "Use butter",
-        "ingredients" => [%{name: "butter"}]
+        "recipe_ingredients" => ["||butter|"]
       })
 
       Relaxir.Recipes.create_recipe(%{
         "title" => "Recipe 4",
         "directions" => "Use sugar",
-        "ingredients" => [%{name: "sugar"}]
+        "recipe_ingredients" => ["||sugar|"]
       })
 
       # Get top 2 ingredients
@@ -225,7 +225,7 @@ defmodule Relaxir.IngredientsTest do
       assert length(top_ingredients) == 2
 
       # Extract names of top ingredients
-      top_ingredient_names = Enum.map(top_ingredients, &(&1.name))
+      top_ingredient_names = Enum.map(top_ingredients, &(&1 |> elem(0) |> Map.get(:name)))
 
       # Both flour and butter should be in the top ingredients (they each appear in 2 recipes)
       assert "flour" in top_ingredient_names
