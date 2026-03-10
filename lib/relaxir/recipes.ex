@@ -71,11 +71,9 @@ defmodule Relaxir.Recipes do
   # sobelow_skip ["Traversal"]
   # traversal is not possible due to dest coming from application config
   def delete_recipe(%Recipe{} = recipe) do
-    dest = Application.fetch_env!(:relaxir, RelaxirWeb.UploadLive)[:dest]
-
-    # TODO move this to a separate module to handle physical file access
     if recipe.image_filename do
-      :ok = File.rm(Path.join(dest, "#{recipe.image_filename}-full.jpg"))
+      dest = Application.fetch_env!(:relaxir, RelaxirWeb.UploadLive)[:dest]
+      Relaxir.Uploader.remove_previous(dest, recipe.image_filename)
     end
 
     Repo.delete(recipe)

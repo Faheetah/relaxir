@@ -31,4 +31,18 @@ defmodule Relaxir.Uploader do
   end
 
   def remove_previous(_dest, _filename), do: :ok
+
+  # sobelow_skip ["Traversal"]
+  # Traversal is not possible due to dest coming from application config
+  def remove_orphaned(dest, file) do
+    file_path = Path.join(dest, file)
+    case File.rm(file_path) do
+      :ok ->
+        IO.puts("Deleted file #{file}")
+        :ok
+      {:error, reason} ->
+        IO.puts("Failed to delete #{file}: #{reason}")
+        {:error, reason}
+    end
+  end
 end
