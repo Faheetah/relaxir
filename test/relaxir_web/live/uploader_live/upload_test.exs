@@ -2,6 +2,7 @@ defmodule RelaxirWeb.UploadLiveTest do
   use RelaxirWeb.ConnCase, async: true
 
   import Phoenix.LiveViewTest
+  import Relaxir.ImageFixtures
 
   @moduletag :uploader
 
@@ -39,16 +40,15 @@ defmodule RelaxirWeb.UploadLiveTest do
     test "cancel-upload event removes upload entry", %{conn: conn} do
       {:ok, lv, _html} = live(conn, "/images/123/upload?path=test-path&redirect=/test-redirect")
 
-      # Create a file input with a test image (using a smaller file)
-      image_path = "test-uploads/live_view_upload-1727292726-728403659794-4-full.jpg"
-      image_content = File.read!(image_path)
+      # Create a file input with a 1x1 white pixel JPG image
+      image_content = one_pixel_jpg()
 
       file_input = file_input(lv, "#upload-form", :picture, [
         %{
           last_modified: 1_594_171_879_000,
           name: "test-image.jpg",
           content: image_content,
-          size: byte_size(image_content),
+          size: one_pixel_jpg_size(),
           type: "image/jpeg"
         }
       ])
@@ -87,16 +87,15 @@ defmodule RelaxirWeb.UploadLiveTest do
     test "save event processes uploaded file", %{conn: conn} do
       {:ok, lv, _html} = live(conn, "/images/123/upload?path=test-path&redirect=/test-redirect")
 
-      # Create a file input with a test image (using a smaller file)
-      image_path = "test-uploads/live_view_upload-1727292726-728403659794-4-full.jpg"
-      image_content = File.read!(image_path)
+      # Create a file input with a 1x1 white pixel JPG image
+      image_content = one_pixel_jpg()
 
       file_input = file_input(lv, "#upload-form", :picture, [
         %{
           last_modified: 1_594_171_879_000,
           name: "test-image.jpg",
           content: image_content,
-          size: byte_size(image_content),
+          size: one_pixel_jpg_size(),
           type: "image/jpeg"
         }
       ])
