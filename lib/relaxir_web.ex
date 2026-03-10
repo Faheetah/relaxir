@@ -21,9 +21,7 @@ defmodule RelaxirWeb do
 
   def router do
     quote do
-      # TODO uncomment to fully convert
-      # use Phoenix.Router, helpers: false
-      use Phoenix.Router
+      use Phoenix.Router, helpers: false
 
       # Import common connection and controller functions to use in pipelines
       import Plug.Conn
