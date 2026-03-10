@@ -33,6 +33,7 @@ defmodule RelaxirWeb.RecipeLive.FormComponent do
             field={@form[:categories]}
             phx-target={@myself}
             mode={:tags}
+            allow_clear={true}
             dropdown_extra_class="mt-4"
             option_extra_class="py-2"
             container_extra_class="flex flex-col mt-2"
@@ -57,6 +58,7 @@ defmodule RelaxirWeb.RecipeLive.FormComponent do
             field={@form[:recipe_ingredients]}
             phx-target={@myself}
             mode={:tags}
+            allow_clear={true}
             dropdown_extra_class="mt-4"
             option_extra_class="py-2"
             text_input_extra_class="border-neutral-300 focus:ring-0 focus:border-neutral-400"
