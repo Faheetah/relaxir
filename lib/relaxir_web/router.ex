@@ -82,9 +82,6 @@ defmodule RelaxirWeb.Router do
 
     live_session :current_user,
       on_mount: [{RelaxirWeb.UserAuth, :mount_current_user}] do
-      live "/users/confirm/:token", UserConfirmationLive, :edit
-      live "/users/confirm", UserConfirmationInstructionsLive, :new
-
       live "/ingredients", IngredientLive.Index, :index
       live "/ingredients/:id", IngredientLive.Show, :index
       live "/ingredients/:id/:slug", IngredientLive.Show, :index

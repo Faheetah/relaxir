@@ -56,8 +56,6 @@ defmodule Relaxir.Ingredients.Parser do
     Map.merge(attrs, %{amount: amount, unit_id: unit.id})
   end
 
-  defp map_unit({:error, error}, _attrs, _unit_name, _amount), do: {:error, error}
-
   defp extract_ingredient_fields(ingredient) do
     {:ok, %{name: ingredient}}
     |> extract_ingredient_note

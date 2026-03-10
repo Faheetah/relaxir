@@ -5,27 +5,27 @@
   <button class="border border-gray-400 bg-gray-200 p-1" type="submit">Upload</button>
 </form>
 
-<%# use phx-drop-target with the upload ref to enable file drag and drop %>
+<%!-- use phx-drop-target with the upload ref to enable file drag and drop --%>
 <section phx-drop-target={@uploads.picture.ref}>
 
-<%# render each picture entry %>
+<%!-- render each picture entry --%>
 <%= for entry <- @uploads.picture.entries do %>
   <article class="upload-entry">
 
 
-    <%# entry.progress will update automatically for in-flight entries %>
+    <%!-- entry.progress will update automatically for in-flight entries --%>
     <progress value={entry.progress} max="100"> <%= entry.progress %>% </progress>
 
-    <%# a regular click event whose handler will invoke Phoenix.LiveView.cancel_upload/3 %>
+    <%!-- a regular click event whose handler will invoke Phoenix.LiveView.cancel_upload/3 --%>
     <button phx-click="cancel-upload" phx-value-ref={entry.ref} aria-label="cancel">&times;</button>
 
-    <%# Phoenix.Component.upload_errors/2 returns a list of error atoms %>
+    <%!-- Phoenix.Component.upload_errors/2 returns a list of error atoms --%>
     <%= for err <- upload_errors(@uploads.picture, entry) do %>
       <p class="alert alert-danger"><%= inspect(err) %></p>
     <% end %>
 
     <figure>
-      <%# Phoenix.Component.live_img_preview/2 renders a client-side preview %>
+      <%!-- Phoenix.Component.live_img_preview/2 renders a client-side preview --%>
       <.live_img_preview entry={entry} />
       <figcaption><%= entry.client_name %></figcaption>
     </figure>

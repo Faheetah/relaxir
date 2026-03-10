@@ -132,7 +132,7 @@ defmodule Relaxir.RecipesTest do
       assert recipe.title == unique_title
 
       # Check that recipe ingredients were created
-      assert length(recipe.recipe_ingredients) == 10
+      assert Enum.count(recipe.recipe_ingredients) == 10
 
       # Verify specific ingredients with different permutations
       # Find flour with amount 2.5, unit cup, note sifted
@@ -220,7 +220,7 @@ defmodule Relaxir.RecipesTest do
       assert recipe.title == unique_title
 
       # Check that categories were created and associated
-      assert length(recipe.categories) == 2
+      assert Enum.count(recipe.categories) == 2
       category_names = Enum.map(recipe.categories, & &1.name)
       assert "dessert" in category_names
       assert "sweet" in category_names
@@ -238,7 +238,7 @@ defmodule Relaxir.RecipesTest do
       assert {:ok, %Recipe{} = recipe} = Recipes.create_recipe(attrs)
 
       # Verify initial categories
-      assert length(recipe.categories) == 2
+      assert Enum.count(recipe.categories) == 2
       category_names = Enum.map(recipe.categories, & &1.name)
       assert "dessert" in category_names
       assert "sweet" in category_names
@@ -253,7 +253,7 @@ defmodule Relaxir.RecipesTest do
       assert {:ok, %Recipe{} = updated_recipe} = Recipes.update_recipe(recipe, update_attrs)
 
       # Verify updated categories
-      assert length(updated_recipe.categories) == 2
+      assert Enum.count(updated_recipe.categories) == 2
       updated_category_names = Enum.map(updated_recipe.categories, & &1.name)
       assert "savory" in updated_category_names
       assert "main course" in updated_category_names
@@ -273,7 +273,7 @@ defmodule Relaxir.RecipesTest do
       assert {:ok, %Recipe{} = recipe} = Recipes.create_recipe(attrs)
 
       # Verify initial categories
-      assert length(recipe.categories) == 2
+      assert Enum.count(recipe.categories) == 2
 
       # Update recipe with empty categories list
       update_attrs = %{
@@ -285,7 +285,7 @@ defmodule Relaxir.RecipesTest do
       assert {:ok, %Recipe{} = updated_recipe} = Recipes.update_recipe(recipe, update_attrs)
 
       # Verify all categories are removed
-      assert length(updated_recipe.categories) == 0
+      assert updated_recipe.categories == []
     end
   end
 
@@ -302,7 +302,7 @@ defmodule Relaxir.RecipesTest do
       assert recipe.title == unique_title
 
       # Check that recipe ingredients were created
-      assert length(recipe.recipe_ingredients) == 2
+      assert Enum.count(recipe.recipe_ingredients) == 2
 
       # Verify first ingredient
       first_ri = Enum.find(recipe.recipe_ingredients, fn ri -> ri.ingredient.name == "flour" end)
@@ -329,7 +329,7 @@ defmodule Relaxir.RecipesTest do
       assert {:ok, %Recipe{} = recipe} = Recipes.create_recipe(attrs)
 
       # Verify initial ingredients with amounts, units, and notes
-      assert length(recipe.recipe_ingredients) == 2
+      assert Enum.count(recipe.recipe_ingredients) == 2
 
       # Verify first ingredient
       first_ri = Enum.find(recipe.recipe_ingredients, fn ri -> ri.ingredient.name == "flour" end)
@@ -353,7 +353,7 @@ defmodule Relaxir.RecipesTest do
       assert {:ok, %Recipe{} = updated_recipe} = Recipes.update_recipe(recipe, update_attrs)
 
       # Verify updated ingredients with amounts, units, and notes
-      assert length(updated_recipe.recipe_ingredients) == 3
+      assert Enum.count(updated_recipe.recipe_ingredients) == 3
 
       # Verify first updated ingredient
       first_updated_ri = Enum.find(updated_recipe.recipe_ingredients, fn ri -> ri.ingredient.name == "sugar" end)
@@ -391,7 +391,7 @@ defmodule Relaxir.RecipesTest do
       assert {:ok, %Recipe{} = recipe} = Recipes.create_recipe(attrs)
 
       # Verify initial ingredients
-      assert length(recipe.recipe_ingredients) == 2
+      assert Enum.count(recipe.recipe_ingredients) == 2
 
       # Update recipe with empty ingredients list
       update_attrs = %{
@@ -403,7 +403,7 @@ defmodule Relaxir.RecipesTest do
       assert {:ok, %Recipe{} = updated_recipe} = Recipes.update_recipe(recipe, update_attrs)
 
       # Verify all ingredients are removed
-      assert length(updated_recipe.recipe_ingredients) == 0
+      assert updated_recipe.recipe_ingredients == []
     end
   end
 end

@@ -11,7 +11,8 @@ defmodule Relaxir.MixProject do
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       test_coverage: [tool: ExCoveralls],
-      deps: deps()
+      deps: deps(),
+      listeners: [Phoenix.CodeReloader]
     ]
   end
 

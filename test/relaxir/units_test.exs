@@ -50,7 +50,7 @@ defmodule Relaxir.UnitsTest do
     test "lists all units" do
       Units.create_unit(%{name: @singular})
       units = Units.list_units()
-      assert length(units) > 0
+      assert units != []
     end
   end
 end

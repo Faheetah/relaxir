@@ -44,7 +44,8 @@ defmodule RelaxirWeb do
 
   def controller do
     quote do
-      use Phoenix.Controller, namespace: RelaxirWeb
+      use Phoenix.Controller,
+        formats: [html: "View", json: "View"]
 
       import Plug.Conn
       use Gettext, backend: RelaxirWeb.Gettext
@@ -103,7 +104,7 @@ defmodule RelaxirWeb do
       use Phoenix.Component
 
       import RelaxirWeb.ErrorHelpers
-      use Gettext, backend: RelaxirWeb.GetText
+      use Gettext, backend: RelaxirWeb.Gettext
       alias RelaxirWeb.Router.Helpers, as: Routes
     end
   end

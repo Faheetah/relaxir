@@ -1,6 +1,6 @@
 <header class="print:hidden z-40 sticky top-0 bg-white lg:px-0 lg:mx-auto lg:w-5/6">
   <div class="flex py-2 place-items-center">
-    <%# hamburger menu %>
+    <%!-- hamburger menu --%>
     <div class="flex-none pl-2 self-end lg:hidden h-full">
       <label data-menu-toggle for="hamburger-toggle" class="cursor-pointer">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -9,7 +9,7 @@
       </label>
     </div>
 
-    <%# logo %>
+    <%!-- logo --%>
     <div class="flex-auto h-full lg:flex-none text-center text-3xl lg:text-5xl font-black tracking-tighter">
       <a href="/">
       <span class="text-amber-600">Relax</span><span class="text-amber-500 text-2xl lg:text-4xl font-bold">+</span><span class="text-amber-600">Dine</span>
@@ -17,14 +17,14 @@
     </div>
     <span class="ml-2 text-xs text-neutral-50 font-thin">v{Application.spec(:relaxir, :vsn)}</span>
 
-    <%# regular menu %>
+    <%!-- regular menu --%>
     <div class="hidden lg:inline-block text-xl self-end space-x-8 pl-8 mx-4 flex-1 justify-items-end text-gray-900 decoration-amber-500 decoration-2 underline-offset-4">
       <a class="hover:underline" href="/">RECIPES</a>
       <a class="hover:underline" href="/categories">CATEGORIES</a>
       <a class="hover:underline" href="/tools">TOOLS</a>
     </div>
 
-    <%# search icon %>
+    <%!-- search icon --%>
     <div class="flex-none self-end pr-2">
       <label class="cursor-pointer" data-menu-toggle for="search-toggle">
         <.link href="/search">
@@ -34,7 +34,7 @@
     </div>
 
 
-    <%# login/logout %>
+    <%!-- login/logout --%>
     <div class="flex-none self-end group hidden lg:inline">
       <%= if @current_user do %>
         <.link href={~p"/recipes/new"} >
@@ -53,7 +53,7 @@
 
   </div>
 
-  <%# hamburger expand %>
+  <%!-- hamburger expand --%>
   <input class="hidden peer" id="hamburger-toggle" type="checkbox" />
   <div class="peer-checked:block pt-4 w-full h-full fixed bg-white text-xl hidden">
     <%= for item <- ~w[recipes categories tools search profile] do %>
@@ -77,7 +77,7 @@
     <% end %>
   </div>
 
-  <%# Sub menu %>
+  <%!-- Sub menu --%>
   <div class="hidden lg:flex space-x-2 bg-neutral-800 text-neutral-100 text-sm font-bold decoration-amber-600 underline-offset-4">
     <a href="/categories/appetizers" class="py-2 px-4 hover:underline">APPETIZERS</a>
     <a href="/categories/breakfast" class="py-2 px-4 hover:underline">BREAKFAST</a>
@@ -107,5 +107,5 @@
 </main>
 
 <footer>
-  <%# footer will go here, and will pin to bottom from main flex-grow %>
+  <%!-- footer will go here, and will pin to bottom from main flex-grow --%>
 </footer>

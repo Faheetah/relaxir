@@ -1,8 +1,8 @@
 <div class="lg:w-11/12 mx-auto">
-  <%# header %>
+  <%!-- header --%>
   <div class="grid grid-cols-2 pb-8">
     <div class="px-4 lg:px-0 col col-span-2 lg:col-span-1 order-last lg:order-first lg:mr-12 space-y-4 lg:space-y-8 mb-8">
-      <%# main category %>
+      <%!-- main category --%>
       <div class="text-sm hidden lg:block">
         <.link href={~p"/recipes"} class="hover:underline decoration-amber-600 underline-offset-2">
           RECIPES
@@ -19,7 +19,7 @@
         <span class="text-amber-600">></span>
       </div>
 
-      <%# title %>
+      <%!-- title --%>
       <div class="text-3xl lg:text-4xl space-y-4 text-center lg:text-left">
         <div class="font-bold font-serif space-x-2">
           <%= @recipe.title %>
@@ -65,7 +65,7 @@
         </div>
       </div>
 
-      <%# mobile main category %>
+      <%!-- mobile main category --%>
       <div class="text-sm lg:hidden block">
         <.link href={~p"/recipes"} class="hover:underline decoration-amber-600 underline-offset-2">
           RECIPES
@@ -82,8 +82,8 @@
         <span class="text-amber-600">></span>
       </div>
 
-      <%# prep/cook/makes %>
-      <%# THIS NEEDS TO BE IMPLEMENTED %>
+      <%!-- prep/cook/makes --%>
+      <%!-- THIS NEEDS TO BE IMPLEMENTED --%>
       <div class="hidden border-x border-neutral-400 text-center grid grid-cols-3 font-medium divide-neutral-400 divide-x">
         <div>
           <div class="font-medium">PREP</div>
@@ -101,10 +101,10 @@
         </div>
       </div>
 
-      <%# description %>
+      <%!-- description --%>
       <div class="lg:text-lg"><%= @recipe.description %></div>
 
-      <%# categories %>
+      <%!-- categories --%>
       <div class="space-x text-sm border-t">
       <%= if @recipe.categories != [] do %>
         <span class="text-g">TAGS: </span>
@@ -118,7 +118,7 @@
     </div>
 
 
-    <%# image %>
+    <%!-- image --%>
     <div class="col col-span-2 lg:col-span-1 order-first lg:order-last print:hidden">
       <div class="relative">
           <%= if @current_user && @current_user.is_admin do %>
@@ -141,7 +141,7 @@
     </div>
   </div>
 
-  <%# recipe %>
+  <%!-- recipe --%>
   <div class="lg:grid grid-cols-5 lg:py-8">
     <div class="col-span-2 px-4 lg:px-0 pt-2">
       <%= if @recipe.recipe_ingredients != [] do %>

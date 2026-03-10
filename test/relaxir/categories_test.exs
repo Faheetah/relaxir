@@ -44,7 +44,7 @@ defmodule Relaxir.CategoriesTest do
 
       # Should return all categories
       assert is_list(result)
-      assert length(result) > 0
+      assert result != []
 
       # All categories with recipes should be in the results
       category_names = Enum.map(result, & &1.name)
