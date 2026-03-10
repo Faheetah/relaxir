@@ -28,19 +28,14 @@ defmodule RelaxirWeb.UploadLive do
     {:noreply, cancel_upload(socket, :picture, ref)}
   end
 
-  # sobelow_skip ["Traversal"]
-  # traversal is not possible due to dest coming from application config
-  # TODO move this to a separate module to handle physical file access
   @impl Phoenix.LiveView
   def handle_event("save", _params, socket) do
     consumed_uploads =
       consume_uploaded_entries(socket, :picture, fn %{path: path}, _entry ->
         dest = Application.fetch_env!(:relaxir, RelaxirWeb.UploadLive)[:dest]
-        {:ok, filename} = resize(path, dest, "640", "480", "full")
+        {:ok, filename} = Relaxir.Uploader.resize(path, dest, "640", "480", "full")
 
-        if socket.assigns.upload_image_filename != "" do
-          File.rm(Path.join(dest, "#{socket.assigns.upload_image_filename}-full.jpg"))
-        end
+        Relaxir.Uploader.remove_previous(dest, socket.assigns.upload_image_filename)
         {:ok, filename}
       end)
 
@@ -58,27 +53,5 @@ defmodule RelaxirWeb.UploadLive do
       :noreply,
       redirect(socket, to: redirect)
     }
-  end
-
-  # sobelow_skip ["Traversal"]
-  # Traversal is not possible due to dest coming from application config
-  # TODO move this to a separate module to handle physical file access
-  defp resize(path, dest, width, height, suffix) do
-    image_filename = Path.join(dest, "#{Path.basename(path)}-#{suffix}.jpg")
-
-    {_, 0} = System.cmd("gm", [
-      "convert",
-      path,
-      "-resize", "#{width}x#{height}^",
-      "-gravity", "Center",
-      "-crop", "#{width}x#{height}+0+0",
-      "+profile", "'*'",
-      "-compress", "JPEG",
-      image_filename
-    ])
-
-    :ok = File.chmod(image_filename, 0o644)
-
-    {:ok, image_filename}
   end
 end

@@ -1,0 +1,34 @@
+defmodule Relaxir.Uploader do
+  @moduledoc """
+  Handles file upload operations including resizing and storage.
+  """
+
+  # sobelow_skip ["Traversal"]
+  # Traversal is not possible due to dest coming from application config
+  def resize(path, dest, width, height, suffix) do
+    image_filename = Path.join(dest, "#{Path.basename(path)}-#{suffix}.jpg")
+
+    {_, 0} = System.cmd("gm", [
+      "convert",
+      path,
+      "-resize", "#{width}x#{height}^",
+      "-gravity", "Center",
+      "-crop", "#{width}x#{height}+0+0",
+      "+profile", "'*'",
+      "-compress", "JPEG",
+      image_filename
+    ])
+
+    :ok = File.chmod(image_filename, 0o644)
+
+    {:ok, image_filename}
+  end
+
+  # sobelow_skip ["Traversal"]
+  # Traversal is not possible due to dest coming from application config
+  def remove_previous(dest, filename) when is_binary(filename) and filename != "" do
+    File.rm(Path.join(dest, "#{filename}-full.jpg"))
+  end
+
+  def remove_previous(_dest, _filename), do: :ok
+end
