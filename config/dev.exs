@@ -2,7 +2,8 @@ import Config
 
 config :relaxir, :registration, enabled: true
 
-config :relaxir, RelaxirWeb.UploadLive, dest: "test-uploads"
+config :relaxir, RelaxirWeb.UploadLive,
+  dest: "test-uploads/"
 
 # Configure your database
 config :relaxir, Relaxir.Repo,
