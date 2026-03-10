@@ -58,12 +58,13 @@ defmodule Relaxir.Recipes.Recipe do
   defp parse_categories(attrs, insert?) do
     (attrs["categories"] || [])
     |> Enum.map(&String.trim/1)
-    |> Enum.reject(& &1 == "")
-    |> Enum.filter(& String.match?(&1, ~r/[a-z\s\-]/))
-    |> Enum.map(& get_or_insert_category(&1, insert?))
+    |> Enum.reject(&(&1 == ""))
+    |> Enum.filter(&String.match?(&1, ~r/[a-z\s\-]/))
+    |> Enum.map(&get_or_insert_category(&1, insert?))
   end
 
   def get_or_insert_category(name, false), do: %Category{name: name}
+
   def get_or_insert_category(name, true) do
     name = String.downcase(name)
     Repo.get_by(Category, name: name) || Repo.insert!(%Category{name: name})
@@ -113,6 +114,7 @@ defmodule Relaxir.Recipes.Recipe do
   end
 
   defp parse_ingredients(recipe_ingredients, false), do: recipe_ingredients
+
   defp parse_ingredients(recipe_ingredients, true) do
     Enum.map(recipe_ingredients, &format_ingredients/1)
     |> Enum.reject(fn ri -> ri.ingredient.name == "" end)
@@ -135,6 +137,7 @@ defmodule Relaxir.Recipes.Recipe do
   defp parse_amount(amount), do: Float.parse(amount) |> elem(0)
 
   def get_or_insert_ingredient(name, false), do: %Ingredient{name: name}
+
   def get_or_insert_ingredient(name, true) do
     name = String.downcase(name)
     Repo.get_by(Ingredient, name: name) || Repo.insert!(%Ingredient{name: name})

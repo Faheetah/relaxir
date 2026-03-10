@@ -19,9 +19,9 @@ defmodule Relaxir.Ingredients do
   def list_ingredients_missing_parent() do
     query =
       from i in Ingredient,
-      where: is_nil(i.parent_ingredient_id),
-      preload: [[parent_ingredient: :parent_ingredient, child_ingredients: :child_ingredients]],
-      order_by: [asc: :name]
+        where: is_nil(i.parent_ingredient_id),
+        preload: [[parent_ingredient: :parent_ingredient, child_ingredients: :child_ingredients]],
+        order_by: [asc: :name]
 
     Repo.all(query)
   end
@@ -29,9 +29,9 @@ defmodule Relaxir.Ingredients do
   def list_ingredients_missing_singular() do
     query =
       from i in Ingredient,
-      where: is_nil(i.singular),
-      preload: [[parent_ingredient: :parent_ingredient, child_ingredients: :child_ingredients]],
-      order_by: [asc: :name]
+        where: is_nil(i.singular),
+        preload: [[parent_ingredient: :parent_ingredient, child_ingredients: :child_ingredients]],
+        order_by: [asc: :name]
 
     Repo.all(query)
   end
@@ -39,16 +39,16 @@ defmodule Relaxir.Ingredients do
   def top_ingredients(limit \\ 4) do
     recipe_count =
       from ri in RecipeIngredient,
-      group_by: ri.ingredient_id,
-      select: ri.ingredient_id,
-      order_by: [desc: count(ri.recipe_id)],
-      limit: ^limit
+        group_by: ri.ingredient_id,
+        select: ri.ingredient_id,
+        order_by: [desc: count(ri.recipe_id)],
+        limit: ^limit
 
     query =
       from i in Ingredient,
-      where: i.name not in @excluded_ingredient_names,
-      join: ri in subquery(recipe_count),
-      on: i.id == ri.ingredient_id
+        where: i.name not in @excluded_ingredient_names,
+        join: ri in subquery(recipe_count),
+        on: i.id == ri.ingredient_id
 
     query
     |> preload([[child_ingredients: :child_ingredients]])
@@ -71,15 +71,16 @@ defmodule Relaxir.Ingredients do
 
     top_recipes =
       from ri in RecipeIngredient,
-      where: ri.ingredient_id in ^ingredient_ids,
-      join: r in Recipe, on: r.id == ri.recipe_id,
-      where: r.id == ri.recipe_id and r.published == true,
-      order_by: [desc: r.inserted_at],
-      select: r,
-      distinct: r
+        where: ri.ingredient_id in ^ingredient_ids,
+        join: r in Recipe,
+        on: r.id == ri.recipe_id,
+        where: r.id == ri.recipe_id and r.published == true,
+        order_by: [desc: r.inserted_at],
+        select: r,
+        distinct: r
 
     top_recipes
-    |> Repo.all
+    |> Repo.all()
     |> Repo.preload(:user)
     |> Repo.preload(:categories)
   end
@@ -102,7 +103,7 @@ defmodule Relaxir.Ingredients do
   # We only expecet there to ever be 3 levels of ingredients and not arbitrary levels
   def get_ingredient_by_name!(name) do
     Ingredient
-    |> preload([parent_ingredient: :parent_ingredient])
+    |> preload(parent_ingredient: :parent_ingredient)
     |> Repo.get_by(name: name)
   end
 

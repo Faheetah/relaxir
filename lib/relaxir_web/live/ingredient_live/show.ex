@@ -12,9 +12,10 @@ defmodule RelaxirWeb.IngredientLive.Show do
   def handle_params(%{"id" => id}, _, socket) do
     ingredient = Ingredients.get_ingredient!(id)
     recipes = Ingredients.get_recipes_for_ingredient(ingredient)
+
     slug =
       ingredient.name
-      |> String.downcase
+      |> String.downcase()
       |> String.replace(" ", "-")
 
     meta_attrs = %{
@@ -37,7 +38,7 @@ defmodule RelaxirWeb.IngredientLive.Show do
   def handle_event("delete", %{"id" => id}, socket) do
     {:ok, _recipe} =
       Ingredients.get_ingredient!(id)
-      |> Ingredients.delete_ingredient
+      |> Ingredients.delete_ingredient()
 
     {
       :noreply,

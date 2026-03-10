@@ -21,11 +21,12 @@ defmodule RelaxirWeb.RecipeLive.UploadTest do
 
       # Call handle_params directly with valid parameters
       # This simulates being called as a callback from UploadLive
-      {:noreply, updated_socket} = RelaxirWeb.RecipeLive.Upload.handle_params(
-        %{"id" => Integer.to_string(recipe.id), "image_filename" => "test.jpg"},
-        "/recipes/#{recipe.id}/upload?image_filename=test.jpg",
-        socket
-      )
+      {:noreply, updated_socket} =
+        RelaxirWeb.RecipeLive.Upload.handle_params(
+          %{"id" => Integer.to_string(recipe.id), "image_filename" => "test.jpg"},
+          "/recipes/#{recipe.id}/upload?image_filename=test.jpg",
+          socket
+        )
 
       # Verify it redirects to the recipe page
       assert updated_socket.redirected == {:live, :patch, %{kind: :push, to: "/recipes/#{recipe.id}"}}

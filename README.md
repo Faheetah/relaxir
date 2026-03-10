@@ -53,7 +53,7 @@ Alternatively, a `tests.sh` script is included that will run all of the above an
 
 # Prod
 
-Increment version in mix.esx
+Increment version in mix.exs
 
 Add a tag for the version, found with `mix relaxir.version`
 

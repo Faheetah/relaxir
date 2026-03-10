@@ -14,10 +14,8 @@ defmodule RelaxirWeb.ConnCase do
       import RelaxirWeb.ConnCase
       import Relaxir.DataHelpers
 
-
       alias Phoenix.Flash
       alias RelaxirWeb.Router.Helpers, as: Routes
-
     end
   end
 

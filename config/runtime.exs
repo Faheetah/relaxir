@@ -18,6 +18,5 @@ if config_env() == :prod do
 
   config :relaxir, RelaxirWeb.Endpoint, server: true
 
-  config :relaxir, RelaxirWeb.UploadLive,
-    dest: System.fetch_env!("RELAXIR_UPLOAD_PATH") || "/tmp/uploads"
+  config :relaxir, RelaxirWeb.UploadLive, dest: System.fetch_env!("RELAXIR_UPLOAD_PATH") || "/tmp/uploads"
 end

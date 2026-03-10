@@ -136,73 +136,93 @@ defmodule Relaxir.RecipesTest do
 
       # Verify specific ingredients with different permutations
       # Find flour with amount 2.5, unit cup, note sifted
-      flour1 = Enum.find(recipe.recipe_ingredients, fn ri ->
-        ri.ingredient.name == "flour" and ri.amount == 2.5 and
-        ri.unit.name == "cup" and ri.note == "sifted"
-      end)
+      flour1 =
+        Enum.find(recipe.recipe_ingredients, fn ri ->
+          ri.ingredient.name == "flour" and ri.amount == 2.5 and
+            ri.unit.name == "cup" and ri.note == "sifted"
+        end)
+
       assert flour1, "Expected to find flour with amount 2.5, unit cup, note sifted"
 
       # Find flour2 with nil amount, unit cup, note sifted2
-      flour2 = Enum.find(recipe.recipe_ingredients, fn ri ->
-        ri.ingredient.name == "flour2" and is_nil(ri.amount) and
-        ri.unit.name == "cup" and ri.note == "sifted2"
-      end)
+      flour2 =
+        Enum.find(recipe.recipe_ingredients, fn ri ->
+          ri.ingredient.name == "flour2" and is_nil(ri.amount) and
+            ri.unit.name == "cup" and ri.note == "sifted2"
+        end)
+
       assert flour2, "Expected to find flour2 with nil amount, unit cup, note sifted2"
 
       # Find flour3 with amount 3.0, nil unit, note sifted3
-      flour3 = Enum.find(recipe.recipe_ingredients, fn ri ->
-        ri.ingredient.name == "flour3" and ri.amount == 3.0 and
-        is_nil(ri.unit) and ri.note == "sifted3"
-      end)
+      flour3 =
+        Enum.find(recipe.recipe_ingredients, fn ri ->
+          ri.ingredient.name == "flour3" and ri.amount == 3.0 and
+            is_nil(ri.unit) and ri.note == "sifted3"
+        end)
+
       assert flour3, "Expected to find flour3 with amount 3.0, nil unit, note sifted3"
 
       # Find flour4 with amount 1.5, unit cup, empty note
-      flour4 = Enum.find(recipe.recipe_ingredients, fn ri ->
-        ri.ingredient.name == "flour4" and ri.amount == 1.5 and
-        ri.unit.name == "cup" and ri.note == ""
-      end)
+      flour4 =
+        Enum.find(recipe.recipe_ingredients, fn ri ->
+          ri.ingredient.name == "flour4" and ri.amount == 1.5 and
+            ri.unit.name == "cup" and ri.note == ""
+        end)
+
       assert flour4, "Expected to find flour4 with amount 1.5, unit cup, empty note"
 
       # Find flour5 with nil amount, nil unit, note "to taste"
-      flour5 = Enum.find(recipe.recipe_ingredients, fn ri ->
-        ri.ingredient.name == "flour5" and is_nil(ri.amount) and
-        is_nil(ri.unit) and ri.note == "to taste"
-      end)
+      flour5 =
+        Enum.find(recipe.recipe_ingredients, fn ri ->
+          ri.ingredient.name == "flour5" and is_nil(ri.amount) and
+            is_nil(ri.unit) and ri.note == "to taste"
+        end)
+
       assert flour5, "Expected to find flour5 with nil amount, nil unit, note 'to taste'"
 
       # Find flour6 with nil amount, unit tbsp, empty note
-      flour6 = Enum.find(recipe.recipe_ingredients, fn ri ->
-        ri.ingredient.name == "flour6" and is_nil(ri.amount) and
-        ri.unit.name == "tablespoon" and ri.note == ""
-      end)
+      flour6 =
+        Enum.find(recipe.recipe_ingredients, fn ri ->
+          ri.ingredient.name == "flour6" and is_nil(ri.amount) and
+            ri.unit.name == "tablespoon" and ri.note == ""
+        end)
+
       assert flour6, "Expected to find flour6 with nil amount, unit tablespoon, empty note"
 
       # Find flour7 with amount 2.0, nil unit, empty note
-      flour7 = Enum.find(recipe.recipe_ingredients, fn ri ->
-        ri.ingredient.name == "flour7" and ri.amount == 2.0 and
-        is_nil(ri.unit) and ri.note == ""
-      end)
+      flour7 =
+        Enum.find(recipe.recipe_ingredients, fn ri ->
+          ri.ingredient.name == "flour7" and ri.amount == 2.0 and
+            is_nil(ri.unit) and ri.note == ""
+        end)
+
       assert flour7, "Expected to find flour7 with amount 2.0, nil unit, empty note"
 
       # Find flour8 with nil amount, nil unit, empty note
-      flour8 = Enum.find(recipe.recipe_ingredients, fn ri ->
-        ri.ingredient.name == "flour8" and is_nil(ri.amount) and
-        is_nil(ri.unit) and ri.note == ""
-      end)
+      flour8 =
+        Enum.find(recipe.recipe_ingredients, fn ri ->
+          ri.ingredient.name == "flour8" and is_nil(ri.amount) and
+            is_nil(ri.unit) and ri.note == ""
+        end)
+
       assert flour8, "Expected to find flour8 with nil amount, nil unit, empty note"
 
       # Find flour9 with decimal amount 0.5, unit cup, note "finely ground"
-      flour9 = Enum.find(recipe.recipe_ingredients, fn ri ->
-        ri.ingredient.name == "flour9" and ri.amount == 0.5 and
-        ri.unit.name == "cup" and ri.note == "finely ground"
-      end)
+      flour9 =
+        Enum.find(recipe.recipe_ingredients, fn ri ->
+          ri.ingredient.name == "flour9" and ri.amount == 0.5 and
+            ri.unit.name == "cup" and ri.note == "finely ground"
+        end)
+
       assert flour9, "Expected to find flour9 with amount 0.5, unit cup, note 'finely ground'"
 
       # Find flour10 with whole number amount 1, unit cup, empty note
-      flour10 = Enum.find(recipe.recipe_ingredients, fn ri ->
-        ri.ingredient.name == "flour10" and ri.amount == 1.0 and
-        ri.unit.name == "cup" and ri.note == ""
-      end)
+      flour10 =
+        Enum.find(recipe.recipe_ingredients, fn ri ->
+          ri.ingredient.name == "flour10" and ri.amount == 1.0 and
+            ri.unit.name == "cup" and ri.note == ""
+        end)
+
       assert flour10, "Expected to find flour10 with amount 1.0, unit cup, empty note"
     end
   end
@@ -210,6 +230,7 @@ defmodule Relaxir.RecipesTest do
   describe "recipes with categories" do
     test "create_recipe/1 with categories creates recipe and associates categories" do
       unique_title = "Recipe with categories #{System.unique_integer()}"
+
       attrs = %{
         "title" => unique_title,
         "directions" => "Test directions",
@@ -229,6 +250,7 @@ defmodule Relaxir.RecipesTest do
     test "update_recipe/2 with categories updates recipe and modifies category associations" do
       # Create a recipe with categories
       unique_title = "Recipe with categories #{System.unique_integer()}"
+
       attrs = %{
         "title" => unique_title,
         "directions" => "Test directions",
@@ -264,6 +286,7 @@ defmodule Relaxir.RecipesTest do
     test "update_recipe/2 removes all categories when empty categories list provided" do
       # Create a recipe with categories
       unique_title = "Recipe with categories #{System.unique_integer()}"
+
       attrs = %{
         "title" => unique_title,
         "directions" => "Test directions",
@@ -292,6 +315,7 @@ defmodule Relaxir.RecipesTest do
   describe "recipes with ingredients" do
     test "create_recipe/1 with recipe_ingredients creates recipe and associates ingredients" do
       unique_title = "Recipe with ingredients #{System.unique_integer()}"
+
       attrs = %{
         "title" => unique_title,
         "directions" => "Test directions",
@@ -320,6 +344,7 @@ defmodule Relaxir.RecipesTest do
     test "update_recipe/2 with recipe_ingredients updates recipe and modifies ingredient associations" do
       # Create a recipe with ingredients
       unique_title = "Recipe with ingredients #{System.unique_integer()}"
+
       attrs = %{
         "title" => unique_title,
         "directions" => "Test directions",
@@ -382,6 +407,7 @@ defmodule Relaxir.RecipesTest do
     test "update_recipe/2 removes all ingredients when empty recipe_ingredients list provided" do
       # Create a recipe with ingredients
       unique_title = "Recipe with ingredients #{System.unique_integer()}"
+
       attrs = %{
         "title" => unique_title,
         "directions" => "Test directions",

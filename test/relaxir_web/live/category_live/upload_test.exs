@@ -13,11 +13,12 @@ defmodule RelaxirWeb.CategoryLive.UploadTest do
       {:ok, category} = Relaxir.Categories.create_category(%{name: "test-category"})
 
       # Create a recipe with the category to ensure it can be retrieved
-      {:ok, recipe} = Relaxir.Recipes.create_recipe(%{
-        title: "test recipe for category",
-        directions: "test directions",
-        categories: ["test-category"]
-      })
+      {:ok, recipe} =
+        Relaxir.Recipes.create_recipe(%{
+          title: "test recipe for category",
+          directions: "test directions",
+          categories: ["test-category"]
+        })
 
       # Manually create the association in the database
       # This bypasses the issue with the recipe creation process not properly associating categories
@@ -37,11 +38,12 @@ defmodule RelaxirWeb.CategoryLive.UploadTest do
 
       # Call handle_params directly with valid parameters
       # This simulates being called as a callback from UploadLive
-      {:noreply, updated_socket} = RelaxirWeb.CategoryLive.Upload.handle_params(
-        %{"id" => Integer.to_string(category.id), "image_filename" => "test.jpg"},
-        "/categories/#{category.id}/upload?image_filename=test.jpg",
-        socket
-      )
+      {:noreply, updated_socket} =
+        RelaxirWeb.CategoryLive.Upload.handle_params(
+          %{"id" => Integer.to_string(category.id), "image_filename" => "test.jpg"},
+          "/categories/#{category.id}/upload?image_filename=test.jpg",
+          socket
+        )
 
       # Verify it redirects to the category page
       encoded_name = URI.encode_www_form(category.name)

@@ -14,7 +14,7 @@ defmodule RelaxirWeb.RecipeLive.Show do
 
     slug =
       recipe.title
-      |> String.downcase
+      |> String.downcase()
       |> String.replace(" ", "-")
 
     meta_attrs = %{
@@ -40,7 +40,7 @@ defmodule RelaxirWeb.RecipeLive.Show do
   def handle_event("delete", %{"id" => id}, socket) do
     {:ok, _recipe} =
       Recipes.get_recipe!(id)
-      |> Recipes.delete_recipe
+      |> Recipes.delete_recipe()
 
     {
       :noreply,

@@ -1,5 +1,19 @@
 defmodule Relaxir.Recipes do
-  @moduledoc false
+  @moduledoc """
+  Provides functions for managing recipes in the Relaxir application.
+
+  This module handles all recipe-related operations including:
+  - Listing recipes
+  - Creating, updating, and deleting recipes
+  - Managing recipe ingredients and categories
+  - Parsing ingredient strings
+  - Handling recipe images
+
+  The module also provides utility functions for working with recipe data
+  and preparing it for display in the web interface.
+  """
+
+  import Ecto.Query
 
   import Ecto.Query
 
@@ -11,13 +25,16 @@ defmodule Relaxir.Recipes do
   alias Relaxixr.Units.Unit
 
   @preloads [
-    [recipe_ingredients: from(
-      ri in RecipeIngredient,
-      left_join: i in Ingredient,
-      on: i.id == ri.ingredient_id,
-      order_by: i.name,
-      preload: [:unit, ingredient: [source_recipe: [recipe_ingredients: [:ingredient, :unit]]]]
-    )],
+    [
+      recipe_ingredients:
+        from(
+          ri in RecipeIngredient,
+          left_join: i in Ingredient,
+          on: i.id == ri.ingredient_id,
+          order_by: i.name,
+          preload: [:unit, ingredient: [source_recipe: [recipe_ingredients: [:ingredient, :unit]]]]
+        )
+    ],
     :categories,
     :user
   ]
@@ -27,9 +44,9 @@ defmodule Relaxir.Recipes do
 
     Repo.all(
       from r in Recipe,
-      where: ^published,
-      order_by: [desc: r.inserted_at],
-      preload: [:user, :categories]
+        where: ^published,
+        order_by: [desc: r.inserted_at],
+        preload: [:user, :categories]
     )
   end
 
@@ -92,8 +109,15 @@ defmodule Relaxir.Recipes do
 
   # Takes a changeset and returns a changeset with ingredients mapped as a list of strings
   defp map_ingredients(changeset, _recipe, %{"recipe_ingredients_empty_selection" => ""}), do: changeset
+
   defp map_ingredients(changeset, recipe, attrs) do
-    changes = Map.put(changeset.changes, :recipe_ingredients, attrs["recipe_ingredients"] || Enum.map(recipe.recipe_ingredients, &format_ingredient/1))
+    changes =
+      Map.put(
+        changeset.changes,
+        :recipe_ingredients,
+        attrs["recipe_ingredients"] || Enum.map(recipe.recipe_ingredients, &format_ingredient/1)
+      )
+
     Map.put(changeset, :changes, changes)
   end
 
@@ -123,16 +147,16 @@ defmodule Relaxir.Recipes do
   end
 
   def get_units() do
-    Relaxir.Units.list_units
+    Relaxir.Units.list_units()
     |> Enum.flat_map(fn u -> [u.name, u.abbreviation] end)
-    |> Enum.reject(& &1 == nil)
+    |> Enum.reject(&(&1 == nil))
   end
 
   defp parse_terms(unmatched, units) do
     {amount, rest} =
       unmatched
       |> hd
-      |> Float.parse
+      |> Float.parse()
       |> parse_float(unmatched)
 
     [unit | ingredients] = parse_unit(rest, units)
@@ -144,6 +168,7 @@ defmodule Relaxir.Recipes do
   defp parse_float({number, _rest}, [_amount | unmatched]), do: {number, unmatched}
 
   defp parse_unit([], _units), do: ["", ""]
+
   defp parse_unit([first | rest], units) do
     if first in units do
       [first | rest]

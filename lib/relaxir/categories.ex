@@ -19,11 +19,11 @@ defmodule Relaxir.Categories do
   def top_categories(category_limit \\ 8, recipe_limit \\ 4) do
     Repo.all(
       from c in Category,
-      join: rc in RecipeCategory,
-      on: rc.category_id == c.id,
-      group_by: c.id,
-      order_by: [desc: count(rc.recipe_id)],
-      limit: ^category_limit
+        join: rc in RecipeCategory,
+        on: rc.category_id == c.id,
+        group_by: c.id,
+        order_by: [desc: count(rc.recipe_id)],
+        limit: ^category_limit
     )
     |> Enum.map(fn category ->
       Map.put(category, :recipes, latest_recipes_for_category(category, recipe_limit))
@@ -33,31 +33,31 @@ defmodule Relaxir.Categories do
   def latest_recipes_for_category(category, limit \\ 4) do
     top_recipes =
       from rc in RecipeCategory,
-      where: rc.category_id == ^category.id,
-      join: r in Recipe, on: r.id == rc.recipe_id,
-      where: r.id == rc.recipe_id,
-      where: r.published == true,
-      order_by: [desc: r.inserted_at],
-      select: r,
-      limit: ^limit
+        where: rc.category_id == ^category.id,
+        join: r in Recipe,
+        on: r.id == rc.recipe_id,
+        where: r.id == rc.recipe_id,
+        where: r.published == true,
+        order_by: [desc: r.inserted_at],
+        select: r,
+        limit: ^limit
 
     top_recipes
-    |> Repo.all
+    |> Repo.all()
     |> Repo.preload(:user)
     |> Repo.preload(:categories)
   end
 
-
   def get_category!(id) do
     query =
       from c in Category,
-      where: c.id == ^id,
-      join: rc in RecipeCategory,
-      on: rc.category_id == c.id,
-      join: r in Recipe,
-      on: rc.recipe_id == r.id,
-      group_by: c.id,
-      select: c
+        where: c.id == ^id,
+        join: rc in RecipeCategory,
+        on: rc.category_id == c.id,
+        join: r in Recipe,
+        on: rc.recipe_id == r.id,
+        group_by: c.id,
+        select: c
 
     Repo.one(query)
     |> Repo.preload(recipes: [:categories])
@@ -66,21 +66,21 @@ defmodule Relaxir.Categories do
   def get_category_by_name!(name) do
     query =
       from c in Category,
-      where: c.name == ^name,
-      join: rc in RecipeCategory,
-      on: rc.category_id == c.id,
-      join: r in Recipe,
-      on: rc.recipe_id == r.id,
-      group_by: c.id,
-      select: c
+        where: c.name == ^name,
+        join: rc in RecipeCategory,
+        on: rc.category_id == c.id,
+        join: r in Recipe,
+        on: rc.recipe_id == r.id,
+        group_by: c.id,
+        select: c
 
     Repo.one(query)
     |> Repo.preload(recipes: [:categories])
   end
 
   def reject_unpublished_recipes(%{recipes: recipes, recipe_categories: recipe_categories} = category) do
-    filtered_recipe_categories = Enum.reject(recipe_categories, & &1.recipe.published == false)
-    filtered_recipes = Enum.reject(recipes, & &1.published == false)
+    filtered_recipe_categories = Enum.reject(recipe_categories, &(&1.recipe.published == false))
+    filtered_recipes = Enum.reject(recipes, &(&1.published == false))
 
     category
     |> Map.put(:recipe_categories, filtered_recipe_categories)

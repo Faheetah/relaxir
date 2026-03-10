@@ -43,15 +43,16 @@ defmodule RelaxirWeb.UploadLiveTest do
       # Create a file input with a 1x1 white pixel JPG image
       image_content = one_pixel_jpg()
 
-      file_input = file_input(lv, "#upload-form", :picture, [
-        %{
-          last_modified: 1_594_171_879_000,
-          name: "test-image.jpg",
-          content: image_content,
-          size: one_pixel_jpg_size(),
-          type: "image/jpeg"
-        }
-      ])
+      file_input =
+        file_input(lv, "#upload-form", :picture, [
+          %{
+            last_modified: 1_594_171_879_000,
+            name: "test-image.jpg",
+            content: image_content,
+            size: one_pixel_jpg_size(),
+            type: "image/jpeg"
+          }
+        ])
 
       # Upload the file
       upload_result = render_upload(file_input, "test-image.jpg")
@@ -61,6 +62,7 @@ defmodule RelaxirWeb.UploadLiveTest do
         {:error, errors} ->
           # If there are errors, fail the test with a descriptive message
           flunk("Upload failed with errors: #{inspect(errors)}")
+
         _ ->
           # Verify the upload entry exists
           assert has_element?(lv, "figure", "test-image.jpg")
@@ -90,15 +92,16 @@ defmodule RelaxirWeb.UploadLiveTest do
       # Create a file input with a 1x1 white pixel JPG image
       image_content = one_pixel_jpg()
 
-      file_input = file_input(lv, "#upload-form", :picture, [
-        %{
-          last_modified: 1_594_171_879_000,
-          name: "test-image.jpg",
-          content: image_content,
-          size: one_pixel_jpg_size(),
-          type: "image/jpeg"
-        }
-      ])
+      file_input =
+        file_input(lv, "#upload-form", :picture, [
+          %{
+            last_modified: 1_594_171_879_000,
+            name: "test-image.jpg",
+            content: image_content,
+            size: one_pixel_jpg_size(),
+            type: "image/jpeg"
+          }
+        ])
 
       # Upload the file
       upload_result = render_upload(file_input, "test-image.jpg")
@@ -108,6 +111,7 @@ defmodule RelaxirWeb.UploadLiveTest do
         {:error, errors} ->
           # If there are errors, fail the test with a descriptive message
           flunk("Upload failed with errors: #{inspect(errors)}")
+
         _ ->
           # Try to save the uploaded file by submitting the form
           # Note: This will likely fail due to the hd([]) issue in the implementation

@@ -1,0 +1,113 @@
+<%= if @tool == "conversions" do %>
+  <h1>Conversions</h1>
+
+  <h2>Volumetric</h2>
+  <p>8oz to a cup</p>
+  <p>16 tablespoons to a cup</p>
+  <p>3 teaspoons to a tablespoon</p>
+  <p>48 teaspoons to a cup</p>
+
+  <h2>Weight</h2>
+  <p>28.35 grams to an ounce (approx)</p>
+<% else %>
+  <%= if @tool == "dishers" do %>
+    <div class="text-4xl mb-8">Dishers</div>
+
+    <table class="border mb-8">
+      <thead class="bg-neutral-100">
+        <tr class="border">
+          <th class="w-1/2 p-2">Size</th>
+          <th class="w-1/4 p-2">Fluid oz</th>
+          <th class="w-1/4 p-2">Imperial</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="border divide-x bg-orange-600 text-white">
+          <td class="p-2">#4 (orange)</td>
+          <td class="p-2">8 oz</td>
+          <td class="p-2">1 cup</td>
+        </tr>
+        <tr class="border divide-x bg-teal-200">
+          <td class="p-2">#5 (teal)</td>
+          <td class="p-2">6 oz</td>
+          <td class="p-2">3/4 cup</td>
+        </tr>
+        <tr class="border divide-x">
+          <td class="p-2">#6 (white)</td>
+          <td class="p-2">4.75 oz</td>
+          <td class="p-2">5/8 cup</td>
+        </tr>
+        <tr class="border divide-x bg-neutral-500 text-white">
+          <td class="p-2">#8 (gray)</td>
+          <td class="p-2">3.75 oz</td>
+          <td class="p-2">1/2 cup</td>
+        </tr>
+        <tr class="border divide-x bg-stone-300">
+          <td class="p-2">#10 (ivory)</td>
+          <td class="p-2">3.25 oz</td>
+          <td class="p-2">3/8 cup</td>
+        </tr>
+        <tr class="border divide-x bg-green-200">
+          <td class="p-2">#12 (green)</td>
+          <td class="p-2">2.875 oz</td>
+          <td class="p-2">1/3 cup</td>
+        </tr>
+        <tr class="border divide-x bg-cyan-100">
+          <td class="p-2">#14 (sky blue)</td>
+          <td class="p-2">2.375 oz</td>
+          <td class="p-2">1/3 cup</td>
+        </tr>
+        <tr class="border divide-x bg-blue-700 text-white">
+          <td class="p-2">#16 (royal blue)</td>
+          <td class="p-2">2 oz</td>
+          <td class="p-2">1/4 cup</td>
+        </tr>
+        <tr class="border divide-x bg-yellow-200">
+          <td class="p-2">#20 (yellow)</td>
+          <td class="p-2">1.875 oz</td>
+          <td class="p-2">3 1/2 tbsp</td>
+        </tr>
+        <tr class="border divide-x bg-red-300">
+          <td class="p-2">#24 (red)</td>
+          <td class="p-2">1.5 oz</td>
+          <td class="p-2">3 tbsp</td>
+        </tr>
+        <tr class="border divide-x bg-neutral-800 text-white">
+          <td class="p-2">#30 (black)</td>
+          <td class="p-2">1.125 oz</td>
+          <td class="p-2">2 1/4 tbsp</td>
+        </tr>
+        <tr class="border divide-x bg-stone-500 text-white">
+          <td class="p-2">#36 (mushroom)</td>
+          <td class="p-2">0.875 oz</td>
+          <td class="p-2">1 3/4 tbsp</td>
+        </tr>
+        <tr class="border divide-x bg-purple-600 text-white">
+          <td class="p-2">#40 (orchid)</td>
+          <td class="p-2">0.75 oz</td>
+          <td class="p-2">1 1/2 tbsp</td>
+        </tr>
+        <tr class="border divide-x bg-amber-700 text-white">
+          <td class="p-2">#50 (terracotta)</td>
+          <td class="p-2">0.625 oz</td>
+          <td class="p-2">4 tsp</td>
+        </tr>
+        <tr class="border divide-x bg-pink-300">
+          <td class="p-2">#60 (pink)</td>
+          <td class="p-2">0.5 oz</td>
+          <td class="p-2">1 tbsp</td>
+        </tr>
+        <tr class="border divide-x bg-pink-900 text-white">
+          <td class="p-2">#70 (plum)</td>
+          <td class="p-2">0.375 oz</td>
+          <td class="p-2">2 3/4 tsp</td>
+        </tr>
+        <tr class="border divide-x bg-orange-600 text-white">
+          <td class="p-2">#100 (also orange)</td>
+          <td class="p-2">0.25 oz</td>
+          <td class="p-2">2 tsp</td>
+        </tr>
+      </tbody>
+    </table>
+  <% end %>
+<% end %>

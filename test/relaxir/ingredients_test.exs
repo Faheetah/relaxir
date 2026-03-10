@@ -218,7 +218,6 @@ defmodule Relaxir.IngredientsTest do
       assert is_list(top_ingredients)
       assert length(top_ingredients) <= 2
 
-
       # Check that we get ingredients with the highest recipe counts first
       # Flour and butter should be at the top (2 recipes each)
       # The exact ordering might vary, but we should get 2 items

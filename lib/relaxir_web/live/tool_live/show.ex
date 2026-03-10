@@ -8,9 +8,4 @@ defmodule RelaxirWeb.ToolLive.Show do
       assign(socket, :tool, name)
     }
   end
-
-  @impl true
-  def render(assigns) do
-    Phoenix.View.render(RelaxirWeb.ToolView, "#{assigns.tool}.html", assigns)
-  end
 end

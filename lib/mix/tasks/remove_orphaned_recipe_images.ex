@@ -11,6 +11,7 @@ defmodule Mix.Tasks.Relaxir.RemoveOrphanedRecipeImages do
     Repo.start_link()
 
     file_base_path = Application.fetch_env!(:relaxir, RelaxirWeb.UploadLive)[:dest]
+
     File.ls(file_base_path)
     |> then(fn {:ok, files} -> files end)
     |> Enum.map(&check_image_exists/1)

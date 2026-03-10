@@ -11,7 +11,21 @@ defmodule RelaxirWeb.FormattingComponents do
   attr :year, :integer, required: true
 
   def date(assigns) do
-    months = %{1 => "Jan", 2 => "Feb", 3 => "Mar", 4 => "Apr", 5 => "May", 6 => "Jun", 7 => "Jul", 8 => "Aug", 9 => "Sep", 10 => "Oct", 11 => "Nov", 12 => "Dec"}
+    months = %{
+      1 => "Jan",
+      2 => "Feb",
+      3 => "Mar",
+      4 => "Apr",
+      5 => "May",
+      6 => "Jun",
+      7 => "Jul",
+      8 => "Aug",
+      9 => "Sep",
+      10 => "Oct",
+      11 => "Nov",
+      12 => "Dec"
+    }
+
     month = months[assigns.month]
 
     assigns = assign_new(assigns, :long_month, fn -> month end)
@@ -44,6 +58,7 @@ defmodule RelaxirWeb.FormattingComponents do
 
   # I don't like this function but it does work and is moderately performant
   def parse_decimal_to_fraction(nil), do: nil
+
   def parse_decimal_to_fraction(amount) do
     # covers up to 1..100/1..100 reliably
     # can possibly cover up to 1/999999 reasonably well

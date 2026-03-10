@@ -35,8 +35,6 @@ defmodule Relaxir.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      # TODO remove if migrated fully to live view
-      {:phoenix_view, "~> 2.0"},
       {:plug_cowboy, "~> 2.6"},
       # Phoenix/Ecto related
       {:phoenix, "~> 1.7"},
@@ -51,13 +49,7 @@ defmodule Relaxir.MixProject do
       {:phoenix_live_dashboard, "~> 0.8.3"},
       {:esbuild, "~> 0.8", runtime: Mix.env() == :dev},
       {:tailwind, "~> 0.2.2", runtime: Mix.env() == :dev},
-      {:heroicons,
-       github: "tailwindlabs/heroicons",
-       tag: "v2.1.1",
-       sparse: "optimized",
-       app: false,
-       compile: false,
-       depth: 1},
+      {:heroicons, github: "tailwindlabs/heroicons", tag: "v2.1.1", sparse: "optimized", app: false, compile: false, depth: 1},
       # telemetry
       {:telemetry_metrics, "~> 1.0"},
       {:telemetry_poller, "~> 1.0"},

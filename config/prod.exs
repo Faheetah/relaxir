@@ -18,5 +18,4 @@ config :relaxir, RelaxirWeb.Endpoint,
 config :logger, level: :info
 
 # I have no idea how to have this in runtime.exs but also not fail on compile from Application.compile_env!/3
-config :relaxir, RelaxirWeb.UploadLive,
-  dest: "/tmp/uploads"
+config :relaxir, RelaxirWeb.UploadLive, dest: "/tmp/uploads"

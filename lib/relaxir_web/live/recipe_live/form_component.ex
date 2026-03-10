@@ -101,9 +101,9 @@ defmodule RelaxirWeb.RecipeLive.FormComponent do
   @impl true
   def update(%{recipe: recipe} = assigns, socket) do
     units =
-      Relaxir.Units.list_units
+      Relaxir.Units.list_units()
       |> Enum.flat_map(fn u -> [u.name, u.abbreviation] end)
-      |> Enum.reject(& &1 == nil)
+      |> Enum.reject(&(&1 == nil))
 
     {:ok,
      socket

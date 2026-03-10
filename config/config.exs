@@ -16,21 +16,20 @@ config :relaxir, :registration, enabled: false
 # Configures the endpoint
 config :relaxir, RelaxirWeb.Endpoint,
   url: [host: "localhost"],
-  secret_key_base: "6lFP79ir6YXHSm71b8+XKI75KIKXcA/FgXPzWwMrEISUBlz9a09Xcb1T9FEW19jK",
+  secret_key_base: System.get_env("SECRET_KEY_BASE") || "6lFP79ir6YXHSm71b8+XKI75KIKXcA/FgXPzWwMrEISUBlz9a09Xcb1T9FEW19jK",
   render_errors: [
-    view: RelaxirWeb.ErrorHTML, accepts: ~w(html),
+    view: RelaxirWeb.ErrorHTML,
+    accepts: ~w(html),
     layout: false
   ],
   pubsub_server: Relaxir.PubSub,
   live_view: [signing_salt: "HNKcYMPI"]
 
-
 # Configure esbuild (the version is required)
 config :esbuild,
   version: "0.17.11",
   default: [
-    args:
-      ~w(js/app.js --bundle --target=es2016 --outdir=../priv/static/assets --external:/fonts/* --external:/images/*),
+    args: ~w(js/app.js --bundle --target=es2016 --outdir=../priv/static/assets --external:/fonts/* --external:/images/*),
     cd: Path.expand("../assets", __DIR__),
     env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
   ]
@@ -47,7 +46,7 @@ config :tailwind,
     cd: Path.expand("../assets", __DIR__)
   ]
 
-  # Invert
+# Invert
 config :invert, Invert,
   tables: [
     {Relaxir.Ingredients.Ingredient, :name, [:name, :id]},

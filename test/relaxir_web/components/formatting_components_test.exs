@@ -16,8 +16,20 @@ defmodule RelaxirWeb.Components.FormattingComponentsTest do
     end
 
     test "works with all months" do
-      months = [{1, "Jan"}, {2, "Feb"}, {3, "Mar"}, {4, "Apr"}, {5, "May"}, {6, "Jun"},
-                {7, "Jul"}, {8, "Aug"}, {9, "Sep"}, {10, "Oct"}, {11, "Nov"}, {12, "Dec"}]
+      months = [
+        {1, "Jan"},
+        {2, "Feb"},
+        {3, "Mar"},
+        {4, "Apr"},
+        {5, "May"},
+        {6, "Jun"},
+        {7, "Jul"},
+        {8, "Aug"},
+        {9, "Sep"},
+        {10, "Oct"},
+        {11, "Nov"},
+        {12, "Dec"}
+      ]
 
       Enum.each(months, fn {month_num, month_name} ->
         assigns = %{day: 1, month: month_num, year: 2023}
@@ -123,5 +135,4 @@ defmodule RelaxirWeb.Components.FormattingComponentsTest do
       assert FormattingComponents.parse_decimal_to_fraction(0.166) == "83/500"
     end
   end
-
 end

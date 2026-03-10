@@ -24,6 +24,5 @@ defmodule Relaxir.Repo.Migrations.CreateRecipes do
     end
 
     create(unique_index(:recipes, [:title]))
-
   end
 end

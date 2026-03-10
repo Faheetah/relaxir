@@ -2,8 +2,7 @@ import Config
 
 config :relaxir, :registration, enabled: true
 
-config :relaxir, RelaxirWeb.UploadLive,
-  dest: "test-uploads/"
+config :relaxir, RelaxirWeb.UploadLive, dest: "test-uploads/"
 
 # Configure your database
 config :relaxir, Relaxir.Repo,
@@ -29,7 +28,7 @@ config :relaxir, RelaxirWeb.Endpoint,
   code_reloader: true,
   debug_errors: true,
   watchers: [
-    esbuild: {Esbuild, :install_and_run, [:default,  ~w(--sourcemap=inline --watch)]},
+    esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]},
     tailwind: {Tailwind, :install_and_run, [:default, ~w(--watch)]}
   ]
 

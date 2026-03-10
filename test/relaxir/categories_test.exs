@@ -39,7 +39,10 @@ defmodule Relaxir.CategoriesTest do
       }
     end
 
-    test "list_categories/0 returns all categories", %{categories_with_recipes: categories_with_recipes, standalone_category: standalone_category} do
+    test "list_categories/0 returns all categories", %{
+      categories_with_recipes: categories_with_recipes,
+      standalone_category: standalone_category
+    } do
       result = Categories.list_categories()
 
       # Should return all categories
@@ -149,11 +152,12 @@ defmodule Relaxir.CategoriesTest do
       _category2 = category_fixture(%{name: "category two"})
 
       # Create a recipe that uses one of these categories
-      {:ok, _recipe} = Relaxir.Recipes.create_recipe(%{
-        "title" => "test recipe #{System.unique_integer()}",
-        "directions" => "test directions",
-        "categories" => ["category one"]
-      })
+      {:ok, _recipe} =
+        Relaxir.Recipes.create_recipe(%{
+          "title" => "test recipe #{System.unique_integer()}",
+          "directions" => "test directions",
+          "categories" => ["category one"]
+        })
 
       # Get categories by name
       result = Categories.get_categories_by_name!(["category one", "category two"])
@@ -174,43 +178,49 @@ defmodule Relaxir.CategoriesTest do
       category_name_1 = "category with 1 recipe #{System.unique_integer()}"
 
       # Create 3 recipes for the first category
-      {:ok, _recipe1} = Relaxir.Recipes.create_recipe(%{
-        "title" => "test recipe 1 #{System.unique_integer()}",
-        "directions" => "test directions",
-        "categories" => [category_name_3]
-      })
+      {:ok, _recipe1} =
+        Relaxir.Recipes.create_recipe(%{
+          "title" => "test recipe 1 #{System.unique_integer()}",
+          "directions" => "test directions",
+          "categories" => [category_name_3]
+        })
 
-      {:ok, _recipe2} = Relaxir.Recipes.create_recipe(%{
-        "title" => "test recipe 2 #{System.unique_integer()}",
-        "directions" => "test directions",
-        "categories" => [category_name_3]
-      })
+      {:ok, _recipe2} =
+        Relaxir.Recipes.create_recipe(%{
+          "title" => "test recipe 2 #{System.unique_integer()}",
+          "directions" => "test directions",
+          "categories" => [category_name_3]
+        })
 
-      {:ok, _recipe3} = Relaxir.Recipes.create_recipe(%{
-        "title" => "test recipe 3 #{System.unique_integer()}",
-        "directions" => "test directions",
-        "categories" => [category_name_3]
-      })
+      {:ok, _recipe3} =
+        Relaxir.Recipes.create_recipe(%{
+          "title" => "test recipe 3 #{System.unique_integer()}",
+          "directions" => "test directions",
+          "categories" => [category_name_3]
+        })
 
       # Create 2 recipes for the second category
-      {:ok, _recipe4} = Relaxir.Recipes.create_recipe(%{
-        "title" => "test recipe 4 #{System.unique_integer()}",
-        "directions" => "test directions",
-        "categories" => [category_name_2]
-      })
+      {:ok, _recipe4} =
+        Relaxir.Recipes.create_recipe(%{
+          "title" => "test recipe 4 #{System.unique_integer()}",
+          "directions" => "test directions",
+          "categories" => [category_name_2]
+        })
 
-      {:ok, _recipe5} = Relaxir.Recipes.create_recipe(%{
-        "title" => "test recipe 5 #{System.unique_integer()}",
-        "directions" => "test directions",
-        "categories" => [category_name_2]
-      })
+      {:ok, _recipe5} =
+        Relaxir.Recipes.create_recipe(%{
+          "title" => "test recipe 5 #{System.unique_integer()}",
+          "directions" => "test directions",
+          "categories" => [category_name_2]
+        })
 
       # Create 1 recipe for the third category
-      {:ok, _recipe6} = Relaxir.Recipes.create_recipe(%{
-        "title" => "test recipe 6 #{System.unique_integer()}",
-        "directions" => "test directions",
-        "categories" => [category_name_1]
-      })
+      {:ok, _recipe6} =
+        Relaxir.Recipes.create_recipe(%{
+          "title" => "test recipe 6 #{System.unique_integer()}",
+          "directions" => "test directions",
+          "categories" => [category_name_1]
+        })
 
       result = Categories.top_categories()
 
@@ -231,20 +241,23 @@ defmodule Relaxir.CategoriesTest do
       # Verify that our categories with more recipes appear before those with fewer
       if category_3_recipes && category_2_recipes && category_1_recipes do
         # Count recipes for each category
-        count_3 = Relaxir.Repo.aggregate(
-          from(rc in Relaxir.RecipeCategory, where: rc.category_id == ^category_3_recipes.id),
-          :count
-        )
+        count_3 =
+          Relaxir.Repo.aggregate(
+            from(rc in Relaxir.RecipeCategory, where: rc.category_id == ^category_3_recipes.id),
+            :count
+          )
 
-        count_2 = Relaxir.Repo.aggregate(
-          from(rc in Relaxir.RecipeCategory, where: rc.category_id == ^category_2_recipes.id),
-          :count
-        )
+        count_2 =
+          Relaxir.Repo.aggregate(
+            from(rc in Relaxir.RecipeCategory, where: rc.category_id == ^category_2_recipes.id),
+            :count
+          )
 
-        count_1 = Relaxir.Repo.aggregate(
-          from(rc in Relaxir.RecipeCategory, where: rc.category_id == ^category_1_recipes.id),
-          :count
-        )
+        count_1 =
+          Relaxir.Repo.aggregate(
+            from(rc in Relaxir.RecipeCategory, where: rc.category_id == ^category_1_recipes.id),
+            :count
+          )
 
         # Should be ordered by recipe count descending
         assert count_3 >= count_2

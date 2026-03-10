@@ -1,7 +1,21 @@
 defmodule Relaxir.Application do
-  # See https://hexdocs.pm/elixir/Application.html
-  # for more information on OTP Applications
-  @moduledoc false
+  @moduledoc """
+  The Relaxir Application Supervisor.
+
+  This module is responsible for starting and supervising all the processes
+  required for the Relaxir application to function properly. It starts the
+  following services:
+
+  - Database repository (Relaxir.Repo)
+  - Search hydrator for caching
+  - Telemetry for monitoring
+  - Phoenix PubSub for messaging
+  - Presence tracking
+  - Web endpoint (RelaxirWeb.Endpoint)
+
+  See https://hexdocs.pm/elixir/Application.html for more information
+  on OTP Applications.
+  """
 
   use Application
 
