@@ -22,7 +22,7 @@ defmodule Relaxir.Recipes do
   alias Relaxir.Ingredients.Ingredient
   alias Relaxir.RecipeIngredient
   alias Relaxir.Recipes.Recipe
-  alias Relaxixr.Units.Unit
+  alias Relaxir.Units.Unit
 
   @preloads [
     [
@@ -32,7 +32,7 @@ defmodule Relaxir.Recipes do
           left_join: i in Ingredient,
           on: i.id == ri.ingredient_id,
           order_by: i.name,
-          preload: [:unit, ingredient: [source_recipe: [recipe_ingredients: [:ingredient, :unit]]]]
+          preload: [ingredient: [source_recipe: [recipe_ingredients: [:ingredient]]]]
         )
     ],
     :categories,
@@ -123,58 +123,49 @@ defmodule Relaxir.Recipes do
 
   defp format_ingredient(recipe_ingredient) do
     amount = recipe_ingredient.amount || ""
-    unit = recipe_ingredient.unit || %{name: ""}
+    unit_name = if recipe_ingredient.unit, do: recipe_ingredient.unit.name, else: ""
     note = recipe_ingredient.note || ""
 
-    Enum.join([amount, unit.name, recipe_ingredient.ingredient.name, note], "|")
+    Enum.join([amount, unit_name, recipe_ingredient.ingredient.name, note], "|")
   end
 
-  # Parse out units, ingredients, amounts, and note
-  # start by splitting, then downcase and singularize, then match, then recombine
-  def parse_ingredient(unparsed, units) do
-    [terms | note] =
-      String.split(unparsed, ",", trim: true, parts: 2)
-      |> Enum.map(&String.trim/1)
+  # Parse ingredient using the new Unit library
+  def parse_ingredient_with_units(unparsed) do
+    # Try parsing with specific measurement types to avoid conflicts (e.g., c for celsius vs cups)
+    parsed_result =
+      case Relaxir.Units.parse_unit_string_weight(unparsed) do
+        {:ok, unit, rest} -> {:ok, unit, rest}
+        {:error, _reason} ->
+          case Relaxir.Units.parse_unit_string_volume(unparsed) do
+            {:ok, unit, rest} -> {:ok, unit, rest}
+            {:error, _reason} -> Relaxir.Units.parse_unit_string(unparsed)
+          end
+      end
 
-    [amount, unit, ingredient] =
-      terms
-      |> String.split(" ")
-      |> Enum.map(&String.downcase/1)
-      |> Enum.map(&Inflex.singularize/1)
-      |> parse_terms(units)
+    case parsed_result do
+      {:error, reason} ->
+        {:error, reason}
 
-    {:ok, [amount, unit, Enum.join(ingredient, " "), note]}
+      {:ok, :error, _rest} ->
+        {:error, "Could not parse unit"}
+
+      {:ok, unit, rest} ->
+        amount = unit.value
+        unit_str = Relaxir.Units.get_unit_name(unit)
+
+        # Extract note if present
+        [ingredient_part | note_parts] = String.split(rest, ",", parts: 2) |> Enum.map(&String.trim/1)
+        note = if length(note_parts) > 0, do: hd(note_parts), else: ""
+
+        # Extract ingredient name
+        ingredient = String.trim(ingredient_part)
+
+        {:ok, [Float.to_string(amount), unit_str, ingredient, note]}
+    end
   end
 
   def get_units() do
     Relaxir.Units.list_units()
-    |> Enum.flat_map(fn u -> [u.name, u.abbreviation] end)
-    |> Enum.reject(&(&1 == nil))
-  end
-
-  defp parse_terms(unmatched, units) do
-    {amount, rest} =
-      unmatched
-      |> hd
-      |> Float.parse()
-      |> parse_float(unmatched)
-
-    [unit | ingredients] = parse_unit(rest, units)
-
-    [amount, unit, ingredients]
-  end
-
-  defp parse_float(:error, unmatched), do: {"", unmatched}
-  defp parse_float({number, _rest}, [_amount | unmatched]), do: {number, unmatched}
-
-  defp parse_unit([], _units), do: ["", ""]
-
-  defp parse_unit([first | rest], units) do
-    if first in units do
-      [first | rest]
-    else
-      ["", first | rest]
-    end
   end
 
   def get_recipe_ingredient_names(changeset) do

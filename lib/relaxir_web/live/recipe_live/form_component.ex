@@ -50,9 +50,6 @@ defmodule RelaxirWeb.RecipeLive.FormComponent do
         <div>
           <.label for={@form[:categories].id}>
             Ingredients
-            <span title={Enum.join(@units, ", ")} class="w-4 h-4">
-              <.icon class="w-3 h-3" name="hero-question-mark-circle" />
-            </span>
           </.label>
           <.live_select
             field={@form[:recipe_ingredients]}
@@ -102,15 +99,9 @@ defmodule RelaxirWeb.RecipeLive.FormComponent do
 
   @impl true
   def update(%{recipe: recipe} = assigns, socket) do
-    units =
-      Relaxir.Units.list_units()
-      |> Enum.flat_map(fn u -> [u.name, u.abbreviation] end)
-      |> Enum.reject(&(&1 == nil))
-
     {:ok,
      socket
      |> assign(assigns)
-     |> assign(:units, units)
      |> assign_new(:form, fn ->
        to_form(Recipes.change_recipe(recipe))
      end)}
@@ -129,11 +120,16 @@ defmodule RelaxirWeb.RecipeLive.FormComponent do
   # Recipe ingredient input parsing
   @impl true
   def handle_event("live_select_change", %{"text" => text, "id" => live_select_id, "field" => "recipe_recipe_ingredients"}, socket) do
-    # parse this and return it back
+    # parse this and return it back using the new unit library
     # options = ["1|cup|some ingredient|stupid", "2|cup|beef bar|note"]
-    {:ok, result} = Recipes.parse_ingredient(text, socket.assigns.units)
-    options = Enum.join(result, "|")
-    send_update(LiveSelect.Component, id: live_select_id, options: [options])
+    case Recipes.parse_ingredient_with_units(text) do
+      {:ok, result} ->
+        options = Enum.join(result, "|")
+        send_update(LiveSelect.Component, id: live_select_id, options: [options])
+      {:error, _reason} ->
+        # If parsing fails, send an empty option
+        send_update(LiveSelect.Component, id: live_select_id, options: [])
+    end
 
     {:noreply, socket}
   end

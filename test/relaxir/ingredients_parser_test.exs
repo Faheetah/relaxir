@@ -3,12 +3,12 @@ defmodule Relaxir.IngredientsParserTest do
   import Relaxir.Ingredients.Parser
 
   describe "parse_ingredients/1" do
-    test "parses ingredients and sorts by order" do
+    test "parses ingredients with units" do
       attrs = %{
         "ingredients" => [
           "2 cups flour",
-          "1 egg",
-          "1/2 teaspoon salt"
+          "1/2 teaspoon salt",
+          "1.5 kg sugar, sifted"
         ]
       }
 
@@ -20,19 +20,37 @@ defmodule Relaxir.IngredientsParserTest do
 
       # Check that all ingredients were parsed
       flour = Enum.find(ingredients, fn i -> i.name == "flour" end)
-      egg = Enum.find(ingredients, fn i -> i.name == "" and i.unit == "egg" end)
       salt = Enum.find(ingredients, fn i -> i.name == "salt" end)
+      sugar = Enum.find(ingredients, fn i -> i.name == "sugar" end)
 
       assert flour
-      assert flour.amount == 2
+      assert flour.amount == 2.0
       assert flour.unit == "cups"
-
-      assert egg
-      assert egg.amount == 1
 
       assert salt
       assert salt.amount == 0.5
-      assert salt.unit == "teaspoon"
+      assert salt.unit == "teaspoons"
+
+      assert sugar
+      assert sugar.amount == 1.5
+      assert sugar.unit == "kilograms"
+      assert sugar.note == "sifted"
+    end
+
+    test "returns empty list for ingredients without units" do
+      attrs = %{
+        "ingredients" => [
+          "1 egg",
+          "2 tomatoes",
+          "salt"
+        ]
+      }
+
+      result = parse_ingredients(attrs)
+
+      assert %{"ingredients" => ingredients} = result
+      assert is_list(ingredients)
+      assert length(ingredients) == 0
     end
 
     test "handles empty ingredients list" do

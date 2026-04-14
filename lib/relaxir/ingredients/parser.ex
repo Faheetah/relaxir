@@ -1,20 +1,24 @@
 defmodule Relaxir.Ingredients.Parser do
+  @moduledoc """
+  Parser for recipe ingredients that uses the new Unit library for parsing
+  and maintains backward compatibility with existing database units.
+  """
+
+  @doc """
+  Parses a list of ingredients using the new Unit library.
+  """
   def parse_ingredients(attrs) do
     ingredients =
       attrs["ingredients"]
-      |> Enum.map(&extract_ingredient_fields/1)
-      |> Enum.map(fn ingredient ->
-        case ingredient do
-          {:ok, ingredient} -> ingredient
-          {:error, error} -> {:error, error}
-          [] -> []
-        end
-      end)
-      |> Enum.sort_by(fn i -> Map.get(i, :order) end)
+      |> Enum.map(&parse_ingredient/1)
+      |> Enum.reject(&is_nil/1)
 
     Map.put(attrs, "ingredients", ingredients)
   end
 
+  @doc """
+  Maps recipe ingredient fields using the new Unit library.
+  """
   def map_recipe_ingredient_fields(attrs, units) do
     amount = Map.get(attrs, :amount)
     unit_name = Map.get(attrs, :unit)
@@ -56,78 +60,41 @@ defmodule Relaxir.Ingredients.Parser do
     Map.merge(attrs, %{amount: amount, unit_id: unit.id})
   end
 
-  defp extract_ingredient_fields(ingredient) do
-    {:ok, %{name: ingredient}}
-    |> extract_ingredient_note
-    |> extract_ingredient_amount
-  end
+  defp parse_ingredient(ingredient_string) do
+    # Try to parse using the new Unit library first
+    case Relaxir.Units.parse_unit_string(ingredient_string) do
+      {:ok, unit, rest} ->
+        # Successfully parsed with Unit library
+        build_ingredient_from_unit(unit, rest)
 
-  defp extract_ingredient_amount({:ok, ingredient}) do
-    case String.split(ingredient.name) do
-      [whole, fraction, unit | name] ->
-        if Float.parse(fraction) != :error and Float.parse(whole) != :error and hd(Tuple.to_list(Float.parse(fraction))) do
-          parsed_amount = hd(Tuple.to_list(Float.parse(whole))) + parse_amount(fraction)
-          build_ingredient(parsed_amount, ingredient: ingredient, unit: unit, name: name)
-        else
-          build_ingredient(parse_amount(whole), ingredient: ingredient, unit: fraction, name: [unit | name])
-        end
-
-      [amount, unit | name] ->
-        build_ingredient(parse_amount(amount), ingredient: ingredient, unit: unit, name: name)
-
-      _ ->
-        {:ok, ingredient}
+      {:error, _reason} ->
+        # Return nil for unparseable ingredients
+        nil
     end
   end
 
-  defp build_ingredient(:error, ingredient: ingredient, unit: _unit, name: _name) do
-    {:ok, ingredient}
-  end
+  defp build_ingredient_from_unit(unit, rest) do
+    # Clean up the rest of the string
+    cleaned_rest = String.trim(rest)
 
-  defp build_ingredient(amount, ingredient: ingredient, unit: unit, name: name) do
-    {:ok,
-     Map.merge(
-       ingredient,
-       %{
-         amount: amount,
-         unit: unit,
-         name: Enum.join(name, " ")
-       }
-     )}
-  end
+    # Extract note if present (everything after the first comma)
+    case String.split(cleaned_rest, ",", parts: 2) |> Enum.map(&String.trim/1) do
+      [ingredient_name] ->
+        # No note present
+        %{
+          amount: unit.value,
+          unit: (unit.value == 1.0 && unit.singular) || unit.plural,
+          name: ingredient_name
+        }
 
-  defp parse_amount(amount) do
-    divisor =
-      amount
-      |> String.split("/")
-      |> Enum.map(&Integer.parse/1)
-
-    case divisor do
-      [:error | _] -> :error
-      [_, :error] -> :error
-      [{amt, _}] -> amt
-      [{numerator, _}, {denominator, _}] -> numerator / denominator
+      [ingredient_name, note] ->
+        # Note present
+        %{
+          amount: unit.value,
+          unit: (unit.value == 1.0 && unit.singular) || unit.plural,
+          name: ingredient_name,
+          note: note
+        }
     end
-  end
-
-  defp extract_ingredient_note({:ok, ingredient}) do
-    [name | note] = String.split(ingredient.name, ",")
-
-    note =
-      note
-      |> Enum.reject(&(&1 == nil))
-      |> Enum.join(",")
-      |> String.trim()
-
-    {
-      :ok,
-      Map.merge(
-        ingredient,
-        case note do
-          "" -> %{name: String.trim(name)}
-          _ -> %{name: String.trim(name), note: note}
-        end
-      )
-    }
   end
 end

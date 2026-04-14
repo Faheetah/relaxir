@@ -6,7 +6,8 @@ defmodule Relaxir.RecipeIngredient do
     field :amount, :float
     field :note, :string
     field :order, :integer
-    belongs_to :unit, Relaxir.Units.Unit
+    field :unit_id, :integer
+    field :unit, :map, virtual: true
     belongs_to :recipe, Relaxir.Recipes.Recipe
     belongs_to :ingredient, Relaxir.Ingredients.Ingredient
     field :suggestion, :string, virtual: true

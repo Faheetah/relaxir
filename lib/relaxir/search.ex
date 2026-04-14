@@ -9,11 +9,12 @@ defmodule Relaxir.Search do
     "ingredients" => {Relaxir.Ingredients.Ingredient, :name}
   }
 
-  @spec search_for([atom] | nil, String.t) :: [{term, integer}]
+  @spec search_for([atom] | nil, String.t()) :: [{term, integer}]
   def search_for(terms, fields) do
-    fields || Map.keys(@search_table_mapping)
-    |> Enum.filter(fn field -> @search_table_mapping[field] end)
-    |> Enum.reduce(%{}, fn field, acc -> Map.put(acc, field, search_db(@search_table_mapping[field], terms)) end)
+    fields ||
+      Map.keys(@search_table_mapping)
+      |> Enum.filter(fn field -> @search_table_mapping[field] end)
+      |> Enum.reduce(%{}, fn field, acc -> Map.put(acc, field, search_db(@search_table_mapping[field], terms)) end)
   end
 
   # returns:

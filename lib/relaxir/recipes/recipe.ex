@@ -7,7 +7,6 @@ defmodule Relaxir.Recipes.Recipe do
   alias Relaxir.RecipeIngredient
   alias Relaxir.RecipeCategory
   alias Relaxir.Repo
-  alias Relaxir.Units.Unit
 
   schema "recipes" do
     field :title, :string
@@ -122,16 +121,45 @@ defmodule Relaxir.Recipes.Recipe do
 
   defp format_ingredients(recipe_ingredient) do
     [amount, unit_name, ingredient_name, note] = String.split(recipe_ingredient, "|")
-    unit = Repo.get_by(Unit, name: unit_name) || Repo.get_by(Unit, abbreviation: unit_name)
+
+    # Parse unit using the unit library to get the full name
+    unit_map = if unit_name != "" and not is_nil(unit_name) do
+      # Try to parse the unit string to get the unit
+      # If amount is empty, use a dummy amount for parsing
+      parse_string = if amount == "", do: "1 #{unit_name}", else: "#{amount} #{unit_name}"
+
+      # Try parsing as volume first, then as weight
+      parsed_unit = case Relaxir.Units.parse_unit_string_volume(parse_string) do
+        {:ok, unit, _rest} -> unit
+        _ ->
+          case Relaxir.Units.parse_unit_string_weight(parse_string) do
+            {:ok, unit, _rest} -> unit
+            _ -> nil
+          end
+      end
+
+      if parsed_unit do
+        # Get the unit name from the parsed unit
+        unit_name = Relaxir.Units.get_unit_name(parsed_unit)
+        if unit_name, do: %{name: unit_name}, else: nil
+      else
+        # If parsing fails, create a unit map with the original unit name
+        %{name: unit_name}
+      end
+    else
+      nil
+    end
+
     ingredient = Repo.get_by(Ingredient, name: ingredient_name)
 
     %{
       amount: parse_amount(amount),
+      unit: unit_map,
       note: note,
-      unit: unit,
       ingredient: ingredient || %{name: ingredient_name}
     }
   end
+
 
   defp parse_amount(""), do: nil
   defp parse_amount(amount), do: Float.parse(amount) |> elem(0)

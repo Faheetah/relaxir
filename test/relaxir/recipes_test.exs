@@ -123,8 +123,10 @@ defmodule Relaxir.RecipesTest do
           "||flour8|",
           # Decimal amount
           "0.5|c|flour9|finely ground",
-          # Whole number amount
-          "1|c|flour10|"
+           # Whole number amount
+           "1|c|flour10|",
+           # Milliliter unit
+           "1|ml|milk|"
         ]
       }
 
@@ -132,7 +134,7 @@ defmodule Relaxir.RecipesTest do
       assert recipe.title == unique_title
 
       # Check that recipe ingredients were created
-      assert Enum.count(recipe.recipe_ingredients) == 10
+      assert Enum.count(recipe.recipe_ingredients) == 11
 
       # Verify specific ingredients with different permutations
       # Find flour with amount 2.5, unit cup, note sifted
@@ -224,6 +226,15 @@ defmodule Relaxir.RecipesTest do
         end)
 
       assert flour10, "Expected to find flour10 with amount 1.0, unit cup, empty note"
+
+      # Find milk with amount 1.0, unit milliliter, empty note
+      milk =
+        Enum.find(recipe.recipe_ingredients, fn ri ->
+          ri.ingredient.name == "milk" and ri.amount == 1.0 and
+            ri.unit.name == "milliliter" and ri.note == ""
+        end)
+
+      assert milk, "Expected to find milk with amount 1.0, unit milliliter, empty note"
     end
   end
 
