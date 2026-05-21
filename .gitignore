@@ -41,3 +41,13 @@ results.sarif
 /assets/node_modules/
 
 PLAN.md
+
+# Playwright test files
+playwright-test.js
+playwright-*.png
+*.log
+
+# Node modules (local npm install)
+/node_modules/
+package.json
+package-lock.json

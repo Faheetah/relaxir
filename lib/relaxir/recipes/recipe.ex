@@ -115,11 +115,13 @@ defmodule Relaxir.Recipes.Recipe do
   defp parse_ingredients(recipe_ingredients, false), do: recipe_ingredients
 
   defp parse_ingredients(recipe_ingredients, true) do
-    Enum.map(recipe_ingredients, &format_ingredients/1)
+    recipe_ingredients
+    |> Enum.with_index()
+    |> Enum.map(fn {ingredient, index} -> format_ingredients(ingredient, index) end)
     |> Enum.reject(fn ri -> ri.ingredient.name == "" end)
   end
 
-  defp format_ingredients(recipe_ingredient) do
+  defp format_ingredients(recipe_ingredient, order) do
     [amount, unit_name, ingredient_name, note] = String.split(recipe_ingredient, "|")
 
     # Parse unit using the unit library to get the full name
@@ -156,6 +158,7 @@ defmodule Relaxir.Recipes.Recipe do
       amount: parse_amount(amount),
       unit: unit_map,
       note: note,
+      order: order,
       ingredient: ingredient || %{name: ingredient_name}
     }
   end

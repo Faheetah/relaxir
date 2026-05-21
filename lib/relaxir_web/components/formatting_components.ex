@@ -50,8 +50,24 @@ defmodule RelaxirWeb.FormattingComponents do
     """
   end
 
+  defp inflex_unit(name, amount) when is_binary(amount) do
+    case Float.parse(amount) do
+      {float_amount, ""} -> inflex_unit(name, float_amount)
+      {float_amount, _rest} -> inflex_unit(name, float_amount)
+      :error -> Inflex.singularize(name)
+    end
+  end
+
   defp inflex_unit(name, amount) when amount > 1, do: Inflex.pluralize(name)
   defp inflex_unit(name, _amount), do: Inflex.singularize(name)
+
+  defp inflex_ingredient(name, nil, amount) when is_binary(amount) do
+    case Float.parse(amount) do
+      {float_amount, ""} -> inflex_ingredient(name, nil, float_amount)
+      {float_amount, _rest} -> inflex_ingredient(name, nil, float_amount)
+      :error -> name
+    end
+  end
 
   defp inflex_ingredient(name, nil, amount) when not is_nil(amount) and amount > 1, do: Inflex.pluralize(name)
   defp inflex_ingredient(name, _unit, _amount), do: name
@@ -59,7 +75,19 @@ defmodule RelaxirWeb.FormattingComponents do
   # I don't like this function but it does work and is moderately performant
   def parse_decimal_to_fraction(nil), do: nil
 
-  def parse_decimal_to_fraction(amount) do
+  def parse_decimal_to_fraction(amount) when is_binary(amount) do
+    case Float.parse(amount) do
+      {float_amount, ""} -> parse_decimal_to_fraction(float_amount)
+      {float_amount, _rest} -> parse_decimal_to_fraction(float_amount)
+      :error -> amount
+    end
+  end
+
+  def parse_decimal_to_fraction(amount) when is_integer(amount) do
+    parse_decimal_to_fraction(amount / 1)
+  end
+
+  def parse_decimal_to_fraction(amount) when is_float(amount) do
     # covers up to 1..100/1..100 reliably
     # can possibly cover up to 1/999999 reasonably well
     # reducing this can improve performance in case of DoS since :timer.tc 1/999999 = ~600ms

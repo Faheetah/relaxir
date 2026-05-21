@@ -31,7 +31,7 @@ defmodule Relaxir.Recipes do
           ri in RecipeIngredient,
           left_join: i in Ingredient,
           on: i.id == ri.ingredient_id,
-          order_by: i.name,
+          order_by: ri.order,
           preload: [ingredient: [source_recipe: [recipe_ingredients: [:ingredient]]]]
         )
     ],
@@ -131,27 +131,59 @@ defmodule Relaxir.Recipes do
 
   # Parse ingredient using the new Unit library
   def parse_ingredient_with_units(unparsed) do
-    # Try parsing with specific measurement types to avoid conflicts (e.g., c for celsius vs cups)
+    # Strip note temporarily to help unit parsing — the Unit library
+    # cannot handle commas (e.g. "1 cup, noted" fails to parse the unit).
+    {unit_part, note} =
+      case String.split(unparsed, ",", parts: 2) do
+        [part] -> {part, ""}
+        [part, rest] -> {part, String.trim(rest)}
+      end
+
+    # Only accept weight or volume units (not temperature, etc.)
     parsed_result =
-      case Relaxir.Units.parse_unit_string_weight(unparsed) do
-        {:ok, unit, rest} -> {:ok, unit, rest}
+      case Relaxir.Units.parse_unit_string_weight(unit_part) do
+        {:ok, unit, rest} -> {:ok, unit, rest, note}
         {:error, _reason} ->
-          case Relaxir.Units.parse_unit_string_volume(unparsed) do
-            {:ok, unit, rest} -> {:ok, unit, rest}
-            {:error, _reason} -> Relaxir.Units.parse_unit_string(unparsed)
+          case Relaxir.Units.parse_unit_string_volume(unit_part) do
+            {:ok, unit, rest} -> {:ok, unit, rest, note}
+            {:error, _reason} -> {:error, :no_valid_unit}
           end
       end
 
     case parsed_result do
-      {:error, reason} ->
-        {:error, reason}
+      {:error, _reason} ->
+        # If unit parsing fails, try to parse as count-based ingredient (e.g., "3 eggs")
+        parse_count_based_ingredient(unparsed)
 
-      {:ok, :error, _rest} ->
-        {:error, "Could not parse unit"}
-
-      {:ok, unit, rest} ->
+      {:ok, unit, rest, note} ->
         amount = unit.value
         unit_str = Relaxir.Units.get_unit_name(unit)
+
+        # Extract ingredient name from remaining text after unit
+        ingredient = String.trim(rest)
+
+        # If there was trailing text after the unit *and* a comma-note,
+        # the trailing text is the ingredient and the comma-part is the note.
+        # If there was no trailing text after the unit, the comma-part is still the note
+        # but the ingredient will be empty (which the caller rejects as invalid).
+        full_note =
+          case {note, ingredient} do
+            {"", ""} -> ""
+            {note, ""} -> note
+            {"", _rest} -> ""
+            {note, _rest} -> note
+          end
+
+        {:ok, [Float.to_string(amount), unit_str, ingredient, full_note]}
+    end
+  end
+
+  defp parse_count_based_ingredient(unparsed) do
+    # Try to extract a number at the beginning for count-based ingredients
+    case Float.parse(String.trim(unparsed)) do
+      {amount, rest} ->
+        # Successfully parsed a number
+        rest = String.trim(rest)
 
         # Extract note if present
         [ingredient_part | note_parts] = String.split(rest, ",", parts: 2) |> Enum.map(&String.trim/1)
@@ -160,7 +192,15 @@ defmodule Relaxir.Recipes do
         # Extract ingredient name
         ingredient = String.trim(ingredient_part)
 
-        {:ok, [Float.to_string(amount), unit_str, ingredient, note]}
+        {:ok, [Float.to_string(amount), "", ingredient, note]}
+
+      :error ->
+        # No number at the beginning, treat as ingredient only
+        [ingredient_part | note_parts] = String.split(unparsed, ",", parts: 2) |> Enum.map(&String.trim/1)
+        note = if length(note_parts) > 0, do: hd(note_parts), else: ""
+        ingredient = String.trim(ingredient_part)
+
+        {:ok, ["", "", ingredient, note]}
     end
   end
 
