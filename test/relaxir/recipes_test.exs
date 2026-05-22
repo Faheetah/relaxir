@@ -100,33 +100,33 @@ defmodule Relaxir.RecipesTest do
     test "create_recipe/1 with various recipe_ingredients permutations" do
       unique_title = "Recipe with ingredient permutations #{System.unique_integer()}"
 
-      # Test various permutations of "amount|unit|ingredient|note"
+      # Test various permutations of "amount||unit||ingredient||note" using || delimiter
       attrs = %{
         "title" => unique_title,
         "directions" => "Test directions",
         "recipe_ingredients" => [
           # All fields present
-          "2.5|c|flour|sifted",
+          "2.5||c||flour||sifted",
           # Missing amount (empty)
-          "|c|flour2|sifted2",
+          "||c||flour2||sifted2",
           # Missing unit (empty)
-          "3.0||flour3|sifted3",
+          "3.0||||flour3||sifted3",
           # Missing note (empty)
-          "1.5|c|flour4|",
+          "1.5||c||flour4||",
           # No amount, no unit
-          "||flour5|to taste",
+          "||||flour5||to taste",
           # No amount, no note
-          "|tbsp|flour6|",
+          "||tbsp||flour6||",
           # No unit, no note
-          "2.0||flour7|",
+          "2.0||||flour7||",
           # Only ingredient
-          "||flour8|",
+          "||||flour8||",
           # Decimal amount
-          "0.5|c|flour9|finely ground",
-           # Whole number amount
-           "1|c|flour10|",
-           # Milliliter unit
-           "1|ml|milk|"
+          "0.5||c||flour9||finely ground",
+          # Whole number amount
+          "1||c||flour10||",
+          # Milliliter unit
+          "1||ml||milk||"
         ]
       }
 
@@ -330,7 +330,7 @@ defmodule Relaxir.RecipesTest do
       attrs = %{
         "title" => unique_title,
         "directions" => "Test directions",
-        "recipe_ingredients" => ["2.5|c|flour|sifted", "1|tbsp|butter|melted"]
+        "recipe_ingredients" => ["2.5||c||flour||sifted", "1||tbsp||butter||melted"]
       }
 
       assert {:ok, %Recipe{} = recipe} = Recipes.create_recipe(attrs)
@@ -359,7 +359,7 @@ defmodule Relaxir.RecipesTest do
       attrs = %{
         "title" => unique_title,
         "directions" => "Test directions",
-        "recipe_ingredients" => ["2.5|c|flour|sifted", "1|tbsp|butter|melted"]
+        "recipe_ingredients" => ["2.5||c||flour||sifted", "1||tbsp||butter||melted"]
       }
 
       assert {:ok, %Recipe{} = recipe} = Recipes.create_recipe(attrs)
@@ -383,7 +383,7 @@ defmodule Relaxir.RecipesTest do
       update_attrs = %{
         "title" => recipe.title,
         "directions" => recipe.directions,
-        "recipe_ingredients" => ["1.5|c|sugar|granulated", "3|whole|eggs|large", "0.5|c|milk|whole"]
+        "recipe_ingredients" => ["1.5||c||sugar||granulated", "3||whole||eggs||large", "0.5||c||milk||whole"]
       }
 
       assert {:ok, %Recipe{} = updated_recipe} = Recipes.update_recipe(recipe, update_attrs)
@@ -422,7 +422,7 @@ defmodule Relaxir.RecipesTest do
       attrs = %{
         "title" => unique_title,
         "directions" => "Test directions",
-        "recipe_ingredients" => ["||flour|", "||butter|"]
+        "recipe_ingredients" => ["||||flour||", "||||butter||"]
       }
 
       assert {:ok, %Recipe{} = recipe} = Recipes.create_recipe(attrs)
@@ -441,6 +441,76 @@ defmodule Relaxir.RecipesTest do
 
       # Verify all ingredients are removed
       assert updated_recipe.recipe_ingredients == []
+    end
+  end
+
+  describe "search functions" do
+    test "search_recipes/1 returns matching recipes" do
+      unique_title = "Test Search Recipe #{System.unique_integer()}"
+
+      attrs = %{
+        "title" => unique_title,
+        "directions" => "Test directions"
+      }
+
+      assert {:ok, %Recipe{}} = Recipes.create_recipe(attrs)
+
+      results = Recipes.search_recipes("Test Search")
+      assert is_list(results)
+      assert unique_title in results
+    end
+
+    test "search_recipes/1 returns empty list for no matches" do
+      results = Recipes.search_recipes("xyz123nonexistent")
+      assert results == []
+    end
+
+    test "search_recipes/1 limits results to 20" do
+      # Create more than 20 recipes starting with "Test Limit"
+      for i <- 1..25 do
+        Recipes.create_recipe(%{
+          "title" => "Test Limit Recipe #{i}",
+          "directions" => "Test directions"
+        })
+      end
+
+      results = Recipes.search_recipes("Test Limit")
+      assert length(results) <= 20
+    end
+  end
+
+  describe "recipe-as-ingredient" do
+    test "create_ingredient_from_recipe/1 creates an ingredient from a recipe" do
+      unique_title = "Recipe for Ingredient #{System.unique_integer()}"
+
+      {:ok, %Recipe{} = recipe} =
+        Recipes.create_recipe(%{
+          "title" => unique_title,
+          "directions" => "Test directions"
+        })
+
+      assert {:ok, %Relaxir.Ingredients.Ingredient{} = ingredient} = Recipes.create_ingredient_from_recipe(recipe)
+      # Name is lowercased by the ingredient changeset
+      assert ingredient.name == String.downcase(unique_title)
+      assert ingredient.source_recipe_id == recipe.id
+    end
+
+    test "get_or_create_ingredient_from_recipe/1 returns existing ingredient" do
+      unique_title = "Recipe for Get or Create #{System.unique_integer()}"
+
+      {:ok, %Recipe{} = recipe} =
+        Recipes.create_recipe(%{
+          "title" => unique_title,
+          "directions" => "Test directions"
+        })
+
+      # Create the ingredient first
+      {:ok, %Relaxir.Ingredients.Ingredient{} = _ingredient1} = Recipes.create_ingredient_from_recipe(recipe)
+
+      # Try to get or create again - should return the existing one
+      assert {:ok, %Relaxir.Ingredients.Ingredient{} = ingredient2} = Recipes.get_or_create_ingredient_from_recipe(recipe)
+      # Name is lowercased by the ingredient changeset
+      assert ingredient2.name == String.downcase(unique_title)
     end
   end
 end

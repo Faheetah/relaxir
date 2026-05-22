@@ -95,15 +95,18 @@ defmodule Relaxir.Units do
           {unit, _} ->
             # Get the unit name from the parsed unit
             unit_name = get_unit_name(unit)
+
             if unit_name do
               %{name: unit_name, abbreviation: normalized_name}
             else
               nil
             end
+
           _ ->
             # For custom unit names that haven't been created, return nil
             nil
         end
+
       unit ->
         unit
     end

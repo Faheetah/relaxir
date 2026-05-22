@@ -9,11 +9,43 @@
       <.icon name="hero-trash" class="text-neutral-300 hover:text-neutral-400" />
     </.link>
     <% end %>
-
-    <%= if length(@recipes) == 0 do %>
-    <div class="text-xl py-8">No recipes for <%= @ingredient.name %> yet, please check back later.</div>
-    <% end %>
 </div>
+
+<%!-- Parent ingredient hierarchy --%>
+<%= if @ingredient.parent_ingredient do %>
+<div class="text-center mb-8">
+  <div class="text-sm text-neutral-500 mb-2">Part of</div>
+  <div class="inline-flex items-center gap-2 px-4 py-2 bg-neutral-100 rounded-full">
+    <.link navigate={~p"/ingredients/#{@ingredient.parent_ingredient.id}/#{String.downcase(@ingredient.parent_ingredient.name)}"} class="text-amber-600 hover:text-amber-700 font-medium">
+      <%= String.capitalize(@ingredient.parent_ingredient.name) %>
+    </.link>
+    <%= if @ingredient.parent_ingredient.parent_ingredient do %>
+      <span class="text-neutral-400">→</span>
+      <.link navigate={~p"/ingredients/#{@ingredient.parent_ingredient.parent_ingredient.id}/#{String.downcase(@ingredient.parent_ingredient.parent_ingredient.name)}"} class="text-amber-600 hover:text-amber-700 font-medium">
+        <%= String.capitalize(@ingredient.parent_ingredient.parent_ingredient.name) %>
+      </.link>
+    <% end %>
+  </div>
+</div>
+<% end %>
+
+<%!-- Child ingredients --%>
+<%= if @ingredient.child_ingredients && @ingredient.child_ingredients != [] do %>
+<div class="text-center mb-8">
+  <div class="text-sm text-neutral-500 mb-2">Includes</div>
+  <div class="flex flex-wrap justify-center gap-2">
+    <%= for child <- @ingredient.child_ingredients do %>
+      <.link navigate={~p"/ingredients/#{child.id}/#{String.downcase(child.name)}"} class="px-4 py-2 bg-amber-100 text-amber-800 rounded-full hover:bg-amber-200 transition-colors">
+        <%= String.capitalize(child.name) %>
+      </.link>
+    <% end %>
+  </div>
+</div>
+<% end %>
+
+<%= if length(@recipes) == 0 do %>
+<div class="text-xl py-8 text-center text-neutral-500">No recipes for <%= @ingredient.name %> yet, please check back later.</div>
+<% end %>
 
 <div class="grid grid-cols-1 sm:grid-cols-4 gap-8">
 

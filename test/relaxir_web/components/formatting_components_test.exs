@@ -130,6 +130,12 @@ defmodule RelaxirWeb.Components.FormattingComponentsTest do
       assert FormattingComponents.parse_decimal_to_fraction(nil) == nil
     end
 
+    test "preserves string fractions like 1/2" do
+      assert FormattingComponents.parse_decimal_to_fraction("1/2") == "1/2"
+      assert FormattingComponents.parse_decimal_to_fraction("3/4") == "3/4"
+      assert FormattingComponents.parse_decimal_to_fraction("1 1/2") == "1 1/2"
+    end
+
     test "converts complex fractions" do
       assert FormattingComponents.parse_decimal_to_fraction(0.333) == "333/1000"
       assert FormattingComponents.parse_decimal_to_fraction(0.166) == "83/500"

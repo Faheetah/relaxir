@@ -16,6 +16,26 @@ defmodule Relaxir.Ingredients do
     |> Repo.all()
   end
 
+  @doc """
+  Returns a map of ingredient_id => [recipes] for the given ingredient IDs.
+  Returns up to `limit` random published recipes per ingredient.
+  """
+  def get_recipes_for_ingredients(ingredient_ids, limit \\ 4) do
+    from(
+      ri in RecipeIngredient,
+      where: ri.ingredient_id in ^ingredient_ids,
+      join: r in Recipe,
+      on: r.id == ri.recipe_id,
+      where: r.published == true,
+      select: {ri.ingredient_id, r},
+      distinct: [ri.ingredient_id, r.id],
+      order_by: fragment("RANDOM()"),
+      limit: ^limit
+    )
+    |> Repo.all()
+    |> Enum.group_by(fn {id, _recipe} -> id end, fn {_id, recipe} -> recipe end)
+  end
+
   def list_ingredients_missing_parent() do
     query =
       from i in Ingredient,
@@ -107,6 +127,13 @@ defmodule Relaxir.Ingredients do
     |> Repo.get_by(name: name)
   end
 
+  # Non-bang version that returns nil instead of raising
+  def get_ingredient_by_name(name) do
+    Ingredient
+    |> preload(parent_ingredient: :parent_ingredient)
+    |> Repo.get_by(name: name)
+  end
+
   def get_ingredients_by_name!(names) do
     singular_names = Enum.map(names, &Inflex.singularize/1)
 
@@ -146,4 +173,38 @@ defmodule Relaxir.Ingredients do
   def change_ingredient(%Ingredient{} = ingredient, attrs \\ %{}) do
     Ingredient.changeset(ingredient, attrs)
   end
+
+  @doc """
+  Search for ingredients by name prefix (for live_select autocomplete)
+  """
+  def search_ingredients(query) when is_binary(query) do
+    query =
+      from i in Ingredient,
+        where: ilike(i.name, ^"#{query}%"),
+        order_by: [asc: i.name],
+        limit: 20
+
+    Repo.all(query)
+    |> Enum.map(& &1.name)
+  end
+
+  def search_ingredients(_), do: []
+
+  @doc """
+  Search for ingredients by substring (fuzzy match) for suggestion purposes.
+  Returns full Ingredient structs so we can use their names.
+  """
+  def search_ingredients_fuzzy(query) when is_binary(query) and byte_size(query) > 0 do
+    search_term = "%#{query}%"
+
+    from(
+      i in Ingredient,
+      where: ilike(i.name, ^search_term),
+      order_by: [asc: i.name],
+      limit: 8
+    )
+    |> Repo.all()
+  end
+
+  def search_ingredients_fuzzy(_), do: []
 end

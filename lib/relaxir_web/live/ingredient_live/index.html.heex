@@ -10,30 +10,63 @@
   <% end %>
 </div>
 
-<div class="grid grid-cols-1 sm:grid-cols-4 gap-4 py-8">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 py-8">
 <%= for ingredient <- @ingredients do %>
-  <div id={"ingredient-#{ingredient.id}"}>
-    <div>
+  <div id={"ingredient-#{ingredient.id}"} class="group">
+    <div class="relative overflow-hidden rounded-lg shadow-sm hover:shadow-md transition-shadow">
       <div class="mx-6 lg:mx-0">
         <.link href={~p"/ingredients/#{ingredient.id}/#{ingredient.name}"}>
           <%= if Map.get(ingredient, :image_filename) do %>
-            <img src={"/uploads/#{ingredient.image_filename}-full.jpg"}>
+            <img src={"/uploads/#{ingredient.image_filename}-full.jpg"} class="w-full h-48 object-cover">
           <% else %>
-            <img src="/images/default-full.jpg">
+            <img src="/images/default-full.jpg" class="w-full h-48 object-cover">
           <% end %>
         </.link>
       </div>
     </div>
 
-    <div class="mx-6 lg:mx-0">
-      <div class="text-2xl tracking-tight leading-6 font-bold font-serif pb-4 mt-4">
-        <.link href={~p"/ingredients/#{ingredient.id}"}>
+    <div class="mx-6 lg:mx-0 mt-3">
+      <div class="text-2xl tracking-tight leading-6 font-bold font-serif pb-2">
+        <.link href={~p"/ingredients/#{ingredient.id}"} class="hover:text-amber-600 transition-colors">
           <%= String.capitalize(ingredient.name) %>
         </.link>
       </div>
+
+      <%!-- Sub-ingredients --%>
+      <%= if ingredient.child_ingredients && ingredient.child_ingredients != [] do %>
+        <div class="mb-3">
+          <div class="text-xs text-neutral-500 uppercase tracking-wider mb-1">Includes</div>
+          <div class="flex flex-wrap gap-1">
+            <%= for child <- ingredient.child_ingredients do %>
+              <.link
+                href={~p"/ingredients/#{child.id}/#{child.name}"}
+                class="text-sm px-2 py-1 bg-amber-50 text-amber-700 rounded-full hover:bg-amber-100 transition-colors"
+              >
+                <%= String.capitalize(child.name) %>
+              </.link>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+
+      <%!-- Recipes using this ingredient --%>
+      <% recipes = Map.get(@ingredient_recipes, ingredient.id, []) %>
+      <%= if recipes != [] do %>
+        <div class="mb-3">
+          <div class="text-xs text-neutral-500 uppercase tracking-wider mb-1">Used in</div>
+          <div class="space-y-1">
+            <%= for recipe <- recipes do %>
+              <.link
+                href={~p"/recipes/#{recipe.id}/#{recipe.title |> String.downcase |> String.replace(" ", "-")}"}
+                class="block text-sm text-neutral-700 hover:text-amber-600 hover:underline decoration-amber-600 underline-offset-2 transition-colors"
+              >
+                <%= recipe.title %>
+              </.link>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
     </div>
   </div>
-
-
 <% end %>
 </div>

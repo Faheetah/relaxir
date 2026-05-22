@@ -121,36 +121,47 @@ defmodule Relaxir.Recipes.Recipe do
     |> Enum.reject(fn ri -> ri.ingredient.name == "" end)
   end
 
+  # Delimiter for serializing ingredients - using :: to avoid conflicts with ingredient names
+  @ingredient_delimiter "||"
+
   defp format_ingredients(recipe_ingredient, order) do
-    [amount, unit_name, ingredient_name, note] = String.split(recipe_ingredient, "|")
+    # Split on the delimiter, but only into 4 parts max to handle any edge cases
+    parts = String.split(recipe_ingredient, @ingredient_delimiter, parts: 4)
+
+    # Pad with empty strings if less than 4 parts
+    [amount, unit_name, ingredient_name, note] = parts ++ List.duplicate("", 4 - length(parts))
 
     # Parse unit using the unit library to get the full name
-    unit_map = if unit_name != "" and not is_nil(unit_name) do
-      # Try to parse the unit string to get the unit
-      # If amount is empty, use a dummy amount for parsing
-      parse_string = if amount == "", do: "1 #{unit_name}", else: "#{amount} #{unit_name}"
+    unit_map =
+      if unit_name != "" and not is_nil(unit_name) do
+        # Try to parse the unit string to get the unit
+        # If amount is empty, use a dummy amount for parsing
+        parse_string = if amount == "", do: "1 #{unit_name}", else: "#{amount} #{unit_name}"
 
-      # Try parsing as volume first, then as weight
-      parsed_unit = case Relaxir.Units.parse_unit_string_volume(parse_string) do
-        {:ok, unit, _rest} -> unit
-        _ ->
-          case Relaxir.Units.parse_unit_string_weight(parse_string) do
-            {:ok, unit, _rest} -> unit
-            _ -> nil
+        # Try parsing as volume first, then as weight
+        parsed_unit =
+          case Relaxir.Units.parse_unit_string_volume(parse_string) do
+            {:ok, unit, _rest} ->
+              unit
+
+            _ ->
+              case Relaxir.Units.parse_unit_string_weight(parse_string) do
+                {:ok, unit, _rest} -> unit
+                _ -> nil
+              end
           end
-      end
 
-      if parsed_unit do
-        # Get the unit name from the parsed unit
-        unit_name = Relaxir.Units.get_unit_name(parsed_unit)
-        if unit_name, do: %{name: unit_name}, else: nil
+        if parsed_unit do
+          # Get the unit name from the parsed unit
+          unit_name = Relaxir.Units.get_unit_name(parsed_unit)
+          if unit_name, do: %{name: unit_name}, else: nil
+        else
+          # If parsing fails, create a unit map with the original unit name
+          %{name: unit_name}
+        end
       else
-        # If parsing fails, create a unit map with the original unit name
-        %{name: unit_name}
+        nil
       end
-    else
-      nil
-    end
 
     ingredient = Repo.get_by(Ingredient, name: ingredient_name)
 
@@ -163,9 +174,19 @@ defmodule Relaxir.Recipes.Recipe do
     }
   end
 
-
   defp parse_amount(""), do: nil
-  defp parse_amount(amount), do: Float.parse(amount) |> elem(0)
+  defp parse_amount(amount) do
+    # Handle fractions like "1/2" by converting to float
+    case String.split(amount, "/") do
+      [numerator, denominator] ->
+        case {Float.parse(numerator), Float.parse(denominator)} do
+          {{n, _}, {d, _}} when d != 0 -> n / d
+          _ -> Float.parse(amount) |> elem(0)
+        end
+      _ ->
+        Float.parse(amount) |> elem(0)
+    end
+  end
 
   def get_or_insert_ingredient(name, false), do: %Ingredient{name: name}
 

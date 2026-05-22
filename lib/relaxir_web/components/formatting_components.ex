@@ -41,12 +41,13 @@ defmodule RelaxirWeb.FormattingComponents do
   attr :amount, :integer, required: true
   attr :unit, Unit, default: %Unit{}
   attr :note, :string
+  attr :singular, :string, default: nil
 
   def ingredient(assigns) do
     ~H"""
     <%= parse_decimal_to_fraction(@amount) %>
     <%= @unit && inflex_unit(@unit.name, @amount) %>
-    <%= inflex_ingredient(@name, @unit, @amount) %><span class="italic text-neutral-500"><%= ((@note != "" && @note != nil) && ", #{@note}" || "")  %></span>
+    <%= inflex_ingredient(@name, @singular, @unit, @amount) %><span class="italic text-neutral-500"><%= ((@note != "" && @note != nil) && ", #{@note}" || "")  %></span>
     """
   end
 
@@ -61,16 +62,25 @@ defmodule RelaxirWeb.FormattingComponents do
   defp inflex_unit(name, amount) when amount > 1, do: Inflex.pluralize(name)
   defp inflex_unit(name, _amount), do: Inflex.singularize(name)
 
-  defp inflex_ingredient(name, nil, amount) when is_binary(amount) do
+  # Use stored singular field if available, otherwise inflect from name
+  defp inflex_ingredient(name, singular, unit, amount) when is_binary(amount) do
     case Float.parse(amount) do
-      {float_amount, ""} -> inflex_ingredient(name, nil, float_amount)
-      {float_amount, _rest} -> inflex_ingredient(name, nil, float_amount)
-      :error -> name
+      {float_amount, ""} -> inflex_ingredient(name, singular, unit, float_amount)
+      {float_amount, _rest} -> inflex_ingredient(name, singular, unit, float_amount)
+      :error -> inflex_ingredient(name, singular, unit, 1)
     end
   end
 
-  defp inflex_ingredient(name, nil, amount) when not is_nil(amount) and amount > 1, do: Inflex.pluralize(name)
-  defp inflex_ingredient(name, _unit, _amount), do: name
+  defp inflex_ingredient(name, singular, _unit, amount) when not is_nil(amount) and amount > 1 do
+    # Use stored plural form if available (singular + "s" is a reasonable default)
+    plural = if singular, do: singular <> "s", else: Inflex.pluralize(name)
+    plural
+  end
+
+  defp inflex_ingredient(name, singular, _unit, _amount) do
+    # Use stored singular form if available, otherwise inflect from name
+    if singular, do: singular, else: name
+  end
 
   # I don't like this function but it does work and is moderately performant
   def parse_decimal_to_fraction(nil), do: nil
@@ -78,7 +88,7 @@ defmodule RelaxirWeb.FormattingComponents do
   def parse_decimal_to_fraction(amount) when is_binary(amount) do
     case Float.parse(amount) do
       {float_amount, ""} -> parse_decimal_to_fraction(float_amount)
-      {float_amount, _rest} -> parse_decimal_to_fraction(float_amount)
+      {_float_amount, _rest} -> amount
       :error -> amount
     end
   end
@@ -88,11 +98,12 @@ defmodule RelaxirWeb.FormattingComponents do
   end
 
   def parse_decimal_to_fraction(amount) when is_float(amount) do
-    # covers up to 1..100/1..100 reliably
-    # can possibly cover up to 1/999999 reasonably well
-    # reducing this can improve performance in case of DoS since :timer.tc 1/999999 = ~600ms
+    # Denominator range for fraction parsing
+    # Higher values support more precise fractions but take longer to compute
+    max_denominator = 100_000
+
     denominator =
-      1..9_999_999
+      1..max_denominator
       |> Enum.find(1, fn f ->
         # amount / 1 to force float, in case of amount = 1
         Float.floor(f * (amount / 1)) == f * amount

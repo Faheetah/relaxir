@@ -147,26 +147,26 @@ defmodule Relaxir.IngredientsTest do
       Relaxir.Recipes.create_recipe(%{
         "title" => "Recipe 1",
         "directions" => "Mix salt and water",
-        "recipe_ingredients" => ["||salt|"]
+        "recipe_ingredients" => ["||||salt||"]
       })
 
       Relaxir.Recipes.create_recipe(%{
         "title" => "Recipe 2",
         "directions" => "Add salt and pepper",
-        "recipe_ingredients" => ["||salt|", "||pepper|"]
+        "recipe_ingredients" => ["||||salt||", "||||pepper||"]
       })
 
       Relaxir.Recipes.create_recipe(%{
         "title" => "Recipe 3",
         "directions" => "Season with salt",
-        "recipe_ingredients" => ["||salt|"]
+        "recipe_ingredients" => ["||||salt||"]
       })
 
       # Pepper used in 1 recipe
       Relaxir.Recipes.create_recipe(%{
         "title" => "Recipe 4",
         "directions" => "Add some pepper",
-        "recipe_ingredients" => ["||pepper|"]
+        "recipe_ingredients" => ["||||pepper||"]
       })
 
       # Sugar used in 0 recipes
@@ -190,25 +190,25 @@ defmodule Relaxir.IngredientsTest do
       Relaxir.Recipes.create_recipe(%{
         "title" => "Recipe 1",
         "directions" => "Use flour and butter",
-        "recipe_ingredients" => ["||flour|", "||butter|"]
+        "recipe_ingredients" => ["||||flour||", "||||butter||"]
       })
 
       Relaxir.Recipes.create_recipe(%{
         "title" => "Recipe 2",
         "directions" => "Use flour",
-        "recipe_ingredients" => ["||flour|"]
+        "recipe_ingredients" => ["||||flour||"]
       })
 
       Relaxir.Recipes.create_recipe(%{
         "title" => "Recipe 3",
         "directions" => "Use butter",
-        "recipe_ingredients" => ["||butter|"]
+        "recipe_ingredients" => ["||||butter||"]
       })
 
       Relaxir.Recipes.create_recipe(%{
         "title" => "Recipe 4",
         "directions" => "Use sugar",
-        "recipe_ingredients" => ["||sugar|"]
+        "recipe_ingredients" => ["||||sugar||"]
       })
 
       # Get top 2 ingredients
@@ -257,6 +257,65 @@ defmodule Relaxir.IngredientsTest do
       attrs = %{"name" => "salt"}
       result = Ingredients.maybe_singularize_attrs(attrs)
       assert result == attrs
+    end
+  end
+
+  describe "search functions" do
+    test "search_ingredients/1 returns matching ingredients" do
+      # Create some ingredients
+      _salt = ingredient_fixture(%{name: "salt"})
+      _pepper = ingredient_fixture(%{name: "black pepper"})
+      _sugar = ingredient_fixture(%{name: "sugar"})
+
+      # Search uses prefix match (ilike with %), so "black" finds "black pepper"
+      results = Ingredients.search_ingredients("black")
+      assert is_list(results)
+      assert "black pepper" in results
+      refute "salt" in results
+      refute "sugar" in results
+    end
+
+    test "search_ingredients/1 returns empty list for no matches" do
+      results = Ingredients.search_ingredients("xyz123")
+      assert results == []
+    end
+
+    test "search_ingredients/1 limits results to 20" do
+      # Create more than 20 ingredients starting with "test"
+      for i <- 1..25 do
+        ingredient_fixture(%{name: "test ingredient #{i}"})
+      end
+
+      results = Ingredients.search_ingredients("test")
+      assert length(results) <= 20
+    end
+
+    test "search_ingredients_fuzzy/1 returns matching ingredients by substring" do
+      # Create some ingredients
+      _salt = ingredient_fixture(%{name: "salt"})
+      _pepper = ingredient_fixture(%{name: "black pepper"})
+      _sugar = ingredient_fixture(%{name: "sugar"})
+
+      # Fuzzy search finds "pepper" inside "black pepper"
+      results = Ingredients.search_ingredients_fuzzy("pepper")
+      assert is_list(results)
+      assert length(results) >= 1
+      assert Enum.any?(results, fn i -> i.name == "black pepper" end)
+    end
+
+    test "search_ingredients_fuzzy/1 returns empty list for no matches" do
+      results = Ingredients.search_ingredients_fuzzy("xyz123")
+      assert results == []
+    end
+
+    test "search_ingredients_fuzzy/1 limits results to 8" do
+      # Create more than 8 ingredients containing "test"
+      for i <- 1..10 do
+        ingredient_fixture(%{name: "test ingredient #{i}"})
+      end
+
+      results = Ingredients.search_ingredients_fuzzy("test")
+      assert length(results) <= 8
     end
   end
 end

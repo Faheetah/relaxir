@@ -48,6 +48,24 @@ defmodule RelaxirWeb.RecipeLive.Show do
     }
   end
 
+  @impl true
+  def handle_event("create_ingredient", %{"id" => id}, socket) do
+    recipe = Recipes.get_recipe!(id)
+
+    case Recipes.get_or_create_ingredient_from_recipe(recipe) do
+      {:ok, ingredient} ->
+        {:noreply,
+         socket
+         |> put_flash(:info, "Ingredient '#{ingredient.name}' created from recipe")
+         |> redirect(to: ~p"/ingredients/#{ingredient.id}/#{String.downcase(ingredient.name)}")}
+
+      {:error, changeset} ->
+        {:noreply,
+         socket
+         |> put_flash(:error, "Failed to create ingredient: #{inspect(changeset.errors)}")}
+    end
+  end
+
   defp page_title(:show), do: "Show Recipe"
   defp page_title(:edit), do: "Edit Recipe"
 end

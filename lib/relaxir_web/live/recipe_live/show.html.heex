@@ -49,6 +49,9 @@
           <.link phx-click={JS.push("delete", value: %{id: @recipe.id})} data-confirm={"Really delete #{@recipe.title}?"}>
             <.icon name="hero-trash" class="text-neutral-300 hover:text-neutral-400" />
           </.link>
+          <.link phx-click={JS.push("create_ingredient", value: %{id: @recipe.id})} title="Create ingredient from this recipe">
+            <.icon name="hero-beaker" class="text-neutral-300 hover:text-neutral-400" />
+          </.link>
           <% end %>
         </div>
 

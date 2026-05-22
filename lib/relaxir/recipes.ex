@@ -121,12 +121,15 @@ defmodule Relaxir.Recipes do
     Map.put(changeset, :changes, changes)
   end
 
+  # Delimiter for serializing ingredients - using :: to avoid conflicts with ingredient names
+  @ingredient_delimiter "||"
+
   defp format_ingredient(recipe_ingredient) do
     amount = recipe_ingredient.amount || ""
     unit_name = if recipe_ingredient.unit, do: recipe_ingredient.unit.name, else: ""
     note = recipe_ingredient.note || ""
 
-    Enum.join([amount, unit_name, recipe_ingredient.ingredient.name, note], "|")
+    Enum.join([amount, unit_name, recipe_ingredient.ingredient.name, note], @ingredient_delimiter)
   end
 
   # Parse ingredient using the new Unit library
@@ -142,7 +145,9 @@ defmodule Relaxir.Recipes do
     # Only accept weight or volume units (not temperature, etc.)
     parsed_result =
       case Relaxir.Units.parse_unit_string_weight(unit_part) do
-        {:ok, unit, rest} -> {:ok, unit, rest, note}
+        {:ok, unit, rest} ->
+          {:ok, unit, rest, note}
+
         {:error, _reason} ->
           case Relaxir.Units.parse_unit_string_volume(unit_part) do
             {:ok, unit, rest} -> {:ok, unit, rest, note}
@@ -156,57 +161,128 @@ defmodule Relaxir.Recipes do
         parse_count_based_ingredient(unparsed)
 
       {:ok, unit, rest, note} ->
-        amount = unit.value
-        unit_str = Relaxir.Units.get_unit_name(unit)
+        # Check if this unit parse looks suspicious (e.g., single letter unit consuming part of a word)
+        if suspicious_unit_parse?(unit_part, unit, rest) do
+          # Fall back to count-based parsing
+          parse_count_based_ingredient(unparsed)
+        else
+          amount = unit.value
+          unit_str = Relaxir.Units.get_unit_name(unit)
 
-        # Extract ingredient name from remaining text after unit
-        ingredient = String.trim(rest)
+          # Extract ingredient name from remaining text after unit
+          ingredient = String.trim(rest)
 
-        # If there was trailing text after the unit *and* a comma-note,
-        # the trailing text is the ingredient and the comma-part is the note.
-        # If there was no trailing text after the unit, the comma-part is still the note
-        # but the ingredient will be empty (which the caller rejects as invalid).
-        full_note =
-          case {note, ingredient} do
-            {"", ""} -> ""
-            {note, ""} -> note
-            {"", _rest} -> ""
-            {note, _rest} -> note
-          end
+          # If there was trailing text after the unit *and* a comma-note,
+          # the trailing text is the ingredient and the comma-part is the note.
+          # If there was no trailing text after the unit, the comma-part is still the note
+          # but the ingredient will be empty (which the caller rejects as invalid).
+          full_note =
+            case {note, ingredient} do
+              {"", ""} -> ""
+              {note, ""} -> note
+              {"", _rest} -> ""
+              {note, _rest} -> note
+            end
 
-        {:ok, [Float.to_string(amount), unit_str, ingredient, full_note]}
+          {:ok, [Float.to_string(amount), unit_str, ingredient, full_note]}
+        end
     end
   end
 
+  defp suspicious_unit_parse?(original, unit, rest) do
+    # Returns true (suspicious) only if:
+    # 1. rest is not empty AND
+    # 2. unit word was NOT found in original AND
+    # 3. a single-letter unit consumed part of a word
+    rest != "" and not unit_word_found?(original, unit) and single_letter_consumed?(unit, rest)
+  end
+
+  defp single_letter_consumed?(unit, _rest) do
+    alias = Map.get(unit, :alias, "")
+    singular = unit.singular
+    String.length(alias) == 1 || String.length(singular) == 1
+  end
+
+  defp unit_word_found?(original, unit) do
+    original_lower = String.downcase(original)
+    singular = String.downcase(unit.singular)
+    singular_pattern = ~r/(^|\s)#{Regex.escape(singular)}(\s|$)/i
+
+    Regex.match?(singular_pattern, original_lower) ||
+      (Map.has_key?(unit, :plural) && Regex.match?(~r/(^|\s)#{Regex.escape(String.downcase(unit.plural))}(\s|$)/i, original_lower)) ||
+      (Map.has_key?(unit, :alias) && Regex.match?(~r/(^|\s)#{Regex.escape(String.downcase(unit.alias))}(\s|$)/i, original_lower))
+  end
+
   defp parse_count_based_ingredient(unparsed) do
-    # Try to extract a number at the beginning for count-based ingredients
-    case Float.parse(String.trim(unparsed)) do
-      {amount, rest} ->
-        # Successfully parsed a number
+    trimmed = String.trim(unparsed)
+
+    # Try to parse a fraction (e.g., "1/2", "3/4") at the beginning
+    case parse_fraction_prefix(trimmed) do
+      {:ok, amount_str, rest} ->
         rest = String.trim(rest)
 
         # Extract note if present
         [ingredient_part | note_parts] = String.split(rest, ",", parts: 2) |> Enum.map(&String.trim/1)
         note = if length(note_parts) > 0, do: hd(note_parts), else: ""
-
-        # Extract ingredient name
         ingredient = String.trim(ingredient_part)
 
-        {:ok, [Float.to_string(amount), "", ingredient, note]}
+        {:ok, [amount_str, "", ingredient, note]}
 
       :error ->
-        # No number at the beginning, treat as ingredient only
-        [ingredient_part | note_parts] = String.split(unparsed, ",", parts: 2) |> Enum.map(&String.trim/1)
-        note = if length(note_parts) > 0, do: hd(note_parts), else: ""
-        ingredient = String.trim(ingredient_part)
+        # Try to extract a decimal number at the beginning
+        case Float.parse(trimmed) do
+          {amount, rest} ->
+            rest = String.trim(rest)
 
-        {:ok, ["", "", ingredient, note]}
+            # Extract note if present
+            [ingredient_part | note_parts] = String.split(rest, ",", parts: 2) |> Enum.map(&String.trim/1)
+            note = if length(note_parts) > 0, do: hd(note_parts), else: ""
+            ingredient = String.trim(ingredient_part)
+
+            {:ok, [Float.to_string(amount), "", ingredient, note]}
+
+          :error ->
+            # No number at the beginning, treat as ingredient only
+            [ingredient_part | note_parts] = String.split(trimmed, ",", parts: 2) |> Enum.map(&String.trim/1)
+            note = if length(note_parts) > 0, do: hd(note_parts), else: ""
+            ingredient = String.trim(ingredient_part)
+
+            {:ok, ["", "", ingredient, note]}
+        end
+    end
+  end
+
+  # Parse a fraction like "1/2" or "3/4" at the beginning of a string
+  defp parse_fraction_prefix(string) do
+    case Regex.run(~r/^(\d+)\/(\d+)\s*(.*)$/, string) do
+      [_, numerator, denominator, rest] ->
+        amount_str = "#{numerator}/#{denominator}"
+        {:ok, amount_str, rest}
+
+      nil ->
+        :error
     end
   end
 
   def get_units() do
     Relaxir.Units.list_units()
   end
+
+  @doc """
+  Search for recipes by title prefix (for live_select autocomplete)
+  """
+  def search_recipes(query) when is_binary(query) do
+    query =
+      from r in Recipe,
+        where: ilike(r.title, ^"#{query}%"),
+        order_by: [asc: r.title],
+        limit: 20
+
+    Repo.all(query)
+    |> Enum.map(& &1.title)
+  end
+
+  def search_recipes(_), do: []
 
   def get_recipe_ingredient_names(changeset) do
     changeset
@@ -251,5 +327,30 @@ defmodule Relaxir.Recipes do
           c
       end
     end)
+  end
+
+  @doc """
+  Creates an ingredient from a recipe, allowing the recipe to be used as an ingredient in other recipes.
+  """
+  def create_ingredient_from_recipe(%Recipe{} = recipe) do
+    attrs = %{
+      "name" => recipe.title,
+      "singular" => Inflex.singularize(recipe.title),
+      "description" => "From recipe: #{recipe.title}",
+      "source_recipe_id" => recipe.id
+    }
+
+    Relaxir.Ingredients.create_ingredient(attrs)
+  end
+
+  @doc """
+  Gets or creates an ingredient from a recipe. Returns the existing ingredient if one already exists.
+  """
+  def get_or_create_ingredient_from_recipe(%Recipe{} = recipe) do
+    # Use lowercase name for lookup since ingredient names are stored lowercase
+    case Relaxir.Ingredients.get_ingredient_by_name(String.downcase(recipe.title)) do
+      nil -> create_ingredient_from_recipe(recipe)
+      ingredient -> {:ok, ingredient}
+    end
   end
 end
