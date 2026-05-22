@@ -256,7 +256,6 @@ defmodule RelaxirWeb.InventoryLive.Index do
 
         {:noreply,
          socket
-         |> put_flash(:info, "Inventory label created")
          |> assign(:user_inventories, user_inventories)}
 
       {:error, changeset} ->
