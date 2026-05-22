@@ -11,6 +11,7 @@ defmodule Relaxir.Accounts.User do
     field :is_admin, :boolean
     field :confirmed_at, :utc_datetime
     has_many :recipes, Relaxir.Recipes.Recipe
+    has_many :inventories, Relaxir.Inventory.Inventory
 
     timestamps(type: :utc_datetime)
   end

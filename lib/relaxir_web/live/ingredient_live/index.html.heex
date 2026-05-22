@@ -53,3 +53,14 @@
   </div>
 <% end %>
 </div>
+
+<.modal :if={@live_action == :new} id="ingredient-modal" show on_cancel={JS.patch(~p"/ingredients")}>
+  <.live_component
+    module={RelaxirWeb.IngredientLive.FormComponent}
+    id={:new}
+    name={@page_title}
+    action={@live_action}
+    ingredient={@ingredient}
+    patch={~p"/ingredients"}
+  />
+</.modal>

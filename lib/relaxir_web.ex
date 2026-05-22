@@ -126,6 +126,7 @@ defmodule RelaxirWeb do
 
       # Custom components
       import RelaxirWeb.FormattingComponents
+      import RelaxirWeb.InventoryIconComponent
 
       # Gettext
       import RelaxirWeb.Gettext

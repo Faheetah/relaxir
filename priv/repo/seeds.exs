@@ -26,6 +26,7 @@ get_or_create_ingredient = fn name, parent_id ->
         name: name,
         parent_ingredient_id: parent_id
       })
+
     existing ->
       {:ok, existing}
   end

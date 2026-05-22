@@ -74,11 +74,56 @@ let ClipboardPaste = {
   }
 }
 
+let AutoResizeText = {
+  mounted() {
+    this.doResize = () => this.resize()
+    this.doResize()
+    window.addEventListener("resize", this.doResize)
+  },
+
+  updated() {
+    this.doResize()
+  },
+
+  destroyed() {
+    window.removeEventListener("resize", this.doResize)
+  },
+
+  resize() {
+    const el = this.el
+    const parent = el.parentElement
+    if (!parent) return
+
+    const parentWidth = parent.clientWidth
+    const parentHeight = parent.clientHeight
+    let fontSize = parseFloat(window.getComputedStyle(el).fontSize)
+
+    el.style.fontSize = ""
+
+    // Binary search for the best font size
+    let min = 8
+    let max = fontSize
+
+    while (min <= max) {
+      const mid = Math.floor((min + max) / 2)
+      el.style.fontSize = mid + "px"
+
+      if (el.scrollWidth <= parentWidth && el.scrollHeight <= parentHeight) {
+        min = mid + 1
+      } else {
+        max = mid - 1
+      }
+    }
+
+    el.style.fontSize = max + "px"
+  }
+}
+
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 let liveSocket = new LiveSocket("/live", Socket, {
     longPollFallbackMs: 2500,
     params: {_csrf_token: csrfToken},
-    hooks: {...live_select, ClipboardPaste}
+    hooks: {...live_select, ClipboardPaste, AutoResizeText}
 })
 
 // connect if there are any LiveViews on the page

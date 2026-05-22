@@ -53,11 +53,15 @@ defmodule RelaxirWeb.Router do
 
       live "/categories/:name/edit", CategoryLive.Show, :edit
 
+      live "/ingredients/new", IngredientLive.Index, :new
       live "/ingredients/:id/edit", IngredientLive.Show, :edit
       live "/ingredients/:id/delete", IngredientLive.Show, :delete
 
       live "/recipes/new", RecipeLive.Index, :new
       live "/recipes/:id/edit", RecipeLive.Show, :edit
+
+      # Inventory routes
+      live "/inventory", InventoryLive.Index, :index
 
       # Callback for image uploads to update the image_filepath
       live "/recipes/:id/upload", RecipeLive.Upload, :upload

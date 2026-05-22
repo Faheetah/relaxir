@@ -175,6 +175,7 @@ defmodule Relaxir.Recipes.Recipe do
   end
 
   defp parse_amount(""), do: nil
+
   defp parse_amount(amount) do
     # Handle fractions like "1/2" by converting to float
     case String.split(amount, "/") do
@@ -183,6 +184,7 @@ defmodule Relaxir.Recipes.Recipe do
           {{n, _}, {d, _}} when d != 0 -> n / d
           _ -> Float.parse(amount) |> elem(0)
         end
+
       _ ->
         Float.parse(amount) |> elem(0)
     end

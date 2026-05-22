@@ -2,6 +2,7 @@ defmodule RelaxirWeb.IngredientLive.FormComponent do
   use RelaxirWeb, :live_component
 
   alias Relaxir.Ingredients
+  alias Relaxir.Ingredients.Ingredient
   alias Relaxir.Recipes
 
   @impl true
@@ -61,12 +62,14 @@ defmodule RelaxirWeb.IngredientLive.FormComponent do
 
         <.input field={@form[:image_filename]} type="text" label="Image Filename" />
 
+        <%= if @ingredient.id do %>
         <.link
           class="flex bg-neutral-900 text-white text-4xl"
           navigate={~p"/images/#{@ingredient}/upload?#{%{redirect: "/ingredients/#{@ingredient.id}/upload", path: @ingredient.image_filename || ""}}"}
         >
           <span class="place-self-center text-center w-full">Upload an image</span>
         </.link>
+        <% end %>
 
         <:actions>
           <.button phx-disable-with="Saving...">Save Ingredient</.button>
@@ -130,6 +133,21 @@ defmodule RelaxirWeb.IngredientLive.FormComponent do
 
       {:error, %Ecto.Changeset{}} ->
         {:noreply, assign(socket, form: to_form(Ingredients.change_ingredient(socket.assigns.ingredient, ingredient_params)))}
+    end
+  end
+
+  defp save_ingredient(socket, :new, ingredient_params) do
+    case Ingredients.create_ingredient(ingredient_params) do
+      {:ok, ingredient} ->
+        notify_parent({:saved, ingredient})
+
+        {:noreply,
+         socket
+         |> put_flash(:info, "Ingredient created successfully")
+         |> push_navigate(to: ~p"/ingredients/#{ingredient.id}/#{ingredient.name}")}
+
+      {:error, %Ecto.Changeset{}} ->
+        {:noreply, assign(socket, form: to_form(Ingredients.change_ingredient(%Ingredient{}, ingredient_params)))}
     end
   end
 

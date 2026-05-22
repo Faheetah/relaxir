@@ -38,15 +38,19 @@
     <%!-- login/logout --%>
     <div class="flex-none self-end group hidden lg:inline">
       <%= if @current_user do %>
-        <.link href={~p"/recipes/new"} >
+        <.link href={~p"/recipes/new"} title="Add Recipe">
           <.icon name="hero-plus-circle" class="ml-2" />
         </.link>
 
-        <.link href={~p"/users/log_out"} method="delete" >
+        <.link href={~p"/inventory"} title="Inventory">
+          <.icon name="hero-clipboard-document-list" class="ml-2" />
+        </.link>
+
+        <.link href={~p"/users/log_out"} method="delete" title="Log out">
           <.icon name="hero-arrow-right-start-on-rectangle" class="ml-2" />
         </.link>
       <% else %>
-        <.link href={~p"/users/log_in"}>
+        <.link href={~p"/users/log_in"} title="Log in">
           <.icon name="hero-arrow-left-end-on-rectangle" />
         </.link>
       <% end %>
