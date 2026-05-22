@@ -76,35 +76,69 @@ defmodule RelaxirWeb.InventoryLive.Index do
   # Handle live_select selection events
   @impl true
   def handle_event("live_select_event", %{"field" => "ingredient_search", "value" => value}, socket) do
-    # Update the form with the selected value
+    user_id = socket.assigns.current_user.id
+
+    # Update the form with the selected value and refresh search results
+    search_results = Inventory.search_ingredients_not_in_items(user_id, value)
     form = to_form(%{"ingredient_search" => value})
 
     {:noreply,
      socket
      |> assign(:form, form)
-     |> assign(:search_query, value)}
+     |> assign(:search_query, value)
+     |> assign(:search_results, search_results)}
+  end
+
+  # Handle live_select select events (when user selects an option)
+  @impl true
+  def handle_event("select", %{"id" => "ingredient-search-select", "selection" => selection}, socket) when is_list(selection) do
+    user_id = socket.assigns.current_user.id
+
+    selected_value =
+      case selection do
+        [%{"value" => value}] -> value
+        _ -> nil
+      end
+
+    if selected_value do
+      search_results = Inventory.search_ingredients_not_in_items(user_id, selected_value)
+      form = to_form(%{"ingredient_search" => selected_value})
+
+      {:noreply,
+       socket
+       |> assign(:form, form)
+       |> assign(:search_query, selected_value)
+       |> assign(:search_results, search_results)}
+    else
+      {:noreply, socket}
+    end
   end
 
   @impl true
   def handle_event("add_ingredient", _params, socket) do
     user_id = socket.assigns.current_user.id
 
-    # Get the selected value from the form params
-    selected_value = socket.assigns.form.params["ingredient_search"]
+    # Always query the database directly - don't rely on cached search_results
+    # This ensures prod behavior matches dev (LiveView state may be serialized in prod)
+    search_results = Inventory.search_ingredients_not_in_items(user_id, "")
 
-    if is_nil(selected_value) or selected_value == "" do
-      {:noreply, socket}
+    # Get the selected value from the form params, or use search_query assign
+    selected_value =
+      socket.assigns.form.params["ingredient_search"] ||
+      socket.assigns.search_query ||
+      ""
+
+    if selected_value == "" do
+      {:noreply, put_flash(socket, :error, "Please select an ingredient first.")}
     else
-      # Look up ingredient by name from search results
-      search_results = socket.assigns.search_results
-
+      # Always do a fresh DB lookup - ignore cached search_results
       found =
         Enum.find(search_results, fn ing ->
           ing.name == selected_value || "#{ing.name} (#{ing.singular})" == selected_value
-        end)
+        end) || Relaxir.Ingredients.get_ingredient_by_name(selected_value)
 
       if is_nil(found) do
-        {:noreply, socket}
+        {:noreply, put_flash(socket, :error, "Ingredient not found: #{selected_value}")}
       else
         ingredient_id = found.id
 
@@ -131,7 +165,7 @@ defmodule RelaxirWeb.InventoryLive.Index do
                  |> assign(:form, to_form(%{"ingredient_search" => ""}))}
 
               {:error, _changeset} ->
-                {:noreply, socket}
+                {:noreply, put_flash(socket, :error, "Failed to add ingredient.")}
             end
 
           existing_item ->
@@ -149,7 +183,7 @@ defmodule RelaxirWeb.InventoryLive.Index do
                  |> assign(:form, to_form(%{"ingredient_search" => ""}))}
 
               {:error, _changeset} ->
-                {:noreply, socket}
+                {:noreply, put_flash(socket, :error, "Failed to update ingredient amount.")}
             end
         end
       end
@@ -292,7 +326,7 @@ defmodule RelaxirWeb.InventoryLive.Index do
       end)
 
     send_update(LiveSelect.Component, id: live_select_id, options: options, placeholder: "")
-    {:noreply, socket}
+    {:noreply, assign(socket, :search_results, search_results)}
   end
 
   @impl true
