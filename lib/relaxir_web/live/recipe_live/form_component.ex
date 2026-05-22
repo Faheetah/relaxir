@@ -173,7 +173,7 @@ defmodule RelaxirWeb.RecipeLive.FormComponent do
                                     <.icon name="hero-plus" class="w-4 h-4 inline-block stroke-2" />
                                   </sup>
                                 <% end %>
-                                <%= if ingredient.note do %>
+                                <%= if ingredient.note && ingredient.note != "" do %>
                                   <span class="italic text-neutral-500">
                                     <%= ", " <> ingredient.note %>
                                   </span>
@@ -697,7 +697,7 @@ defmodule RelaxirWeb.RecipeLive.FormComponent do
 
     parts =
       if ingredient.note && ingredient.note != "" do
-        [", " <> ingredient.note | parts]
+        [ingredient.note | parts]
       else
         parts
       end
@@ -749,19 +749,19 @@ defmodule RelaxirWeb.RecipeLive.FormComponent do
     amount =
       cond do
         is_binary(ri.amount) and ri.amount != "" -> ri.amount
-        is_number(ri.amount) -> Float.to_string(ri.amount)
+        is_number(ri.amount) -> parse_decimal_to_fraction(ri.amount)
         true -> ""
       end
 
     unit = if ri.unit, do: ri.unit.name, else: ""
     name = ri.ingredient.name
-    note = ri.note || ""
+    note = if ri.note && ri.note != "", do: ri.note, else: nil
 
     parts = []
     parts = if amount != "", do: [amount | parts], else: parts
     parts = if unit != "", do: [unit | parts], else: parts
     parts = [name | parts]
-    parts = if note != "", do: [", " <> note | parts], else: parts
+    parts = if note, do: [note | parts], else: parts
 
     Enum.reverse(parts) |> Enum.join(" ")
   end

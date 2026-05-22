@@ -51,3 +51,5 @@ playwright-*.png
 /node_modules/
 package.json
 package-lock.json
+
+plans/
