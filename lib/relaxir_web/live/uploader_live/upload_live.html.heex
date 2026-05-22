@@ -1,35 +1,86 @@
-<form id="upload-form" phx-submit="save" phx-change="validate">
-  <.live_file_input upload={@uploads.picture} />
+<div class="max-w-2xl mx-auto px-4 py-12">
+  <h1 class="text-3xl font-serif font-bold text-neutral-900 mb-8 text-center">Upload Image</h1>
 
+  <%!-- Drop zone --%>
+  <section
+    id="upload-dropzone"
+    phx-drop-target={@uploads.picture.ref}
+    phx-hook="ClipboardPaste"
+    class={[
+      "relative border-2 border-dashed rounded-xl p-10 text-center transition-all duration-200",
+      "border-neutral-300 bg-white hover:border-amber-400 hover:bg-amber-50/30"
+    ]}
+  >
+    <div class="space-y-4">
+      <.icon name="hero-photo" class="w-16 h-16 text-amber-300 mx-auto" />
+      <div>
+        <p class="text-lg font-medium text-neutral-700">Drag and drop an image here</p>
+        <p class="text-sm text-neutral-500 mt-1">or paste from clipboard (Ctrl+V / Cmd+V)</p>
+      </div>
+      <div class="text-xs text-neutral-400">Supports JPG, PNG, AVIF</div>
+    </div>
+  </section>
 
-  <button class="border border-gray-400 bg-gray-200 p-1" type="submit">Upload</button>
-</form>
+  <%!-- File input + submit --%>
+  <form id="upload-form" phx-submit="save" phx-change="validate" class="mt-10 space-y-8 bg-white">
+    <div class="flex items-center gap-4">
+      <label class="flex-1 cursor-pointer">
+        <span class="sr-only">Choose file</span>
+        <.live_file_input upload={@uploads.picture} class="block w-full text-sm text-neutral-600
+          file:mr-4 file:py-2.5 file:px-6 file:rounded-lg file:border file:border-amber-800
+          file:text-sm file:font-serif file:font-medium file:bg-amber-50 file:text-amber-900
+          hover:file:bg-amber-100 hover:file:border-amber-900 transition-all" />
+      </label>
+      <button
+        type="submit"
+        class="shrink-0 inline-flex items-center gap-2 px-6 py-2.5 bg-amber-600 text-white text-sm font-semibold rounded-lg
+               hover:bg-amber-700 active:bg-amber-800 transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2"
+      >
+        <.icon name="hero-arrow-up-tray" class="w-4 h-4" />
+        Upload
+      </button>
+    </div>
+  </form>
 
-<%!-- use phx-drop-target with the upload ref to enable file drag and drop --%>
-<section phx-drop-target={@uploads.picture.ref}>
+  <p class="text-sm text-neutral-500 mt-2 text-center">Select a file to see a preview. Upload will process when you click "Upload".</p>
 
-<%!-- render each picture entry --%>
-<%= for entry <- @uploads.picture.entries do %>
-  <article class="upload-entry">
+  <%!-- Upload entries / previews --%>
+  <div class="mt-8 space-y-4">
+    <%= for entry <- @uploads.picture.entries do %>
+      <article class="upload-entry flex items-center gap-4 p-4 bg-white border border-neutral-200 rounded-lg shadow-sm">
+        <div class="shrink-0 w-20 h-20 rounded-lg overflow-hidden bg-neutral-100 flex items-center justify-center relative">
+          <.live_img_preview entry={entry} class="w-full h-full object-cover" />
+        </div>
 
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-medium text-neutral-900 truncate"><%= entry.client_name %></p>
+          <div class="mt-2 flex items-center gap-3">
+            <progress value={entry.progress} max="100" class="h-2 flex-1 rounded-full bg-neutral-200 accent-amber-600">
+              <%= entry.progress %>%
+            </progress>
+            <span class="text-xs text-neutral-500 w-10 text-right"><%= entry.progress %>%</span>
+          </div>
+        </div>
 
-    <%!-- entry.progress will update automatically for in-flight entries --%>
-    <progress value={entry.progress} max="100"> <%= entry.progress %>% </progress>
-
-    <%!-- a regular click event whose handler will invoke Phoenix.LiveView.cancel_upload/3 --%>
-    <button phx-click="cancel-upload" phx-value-ref={entry.ref} aria-label="cancel">&times;</button>
-
-    <%!-- Phoenix.Component.upload_errors/2 returns a list of error atoms --%>
-    <%= for err <- upload_errors(@uploads.picture, entry) do %>
-      <p class="alert alert-danger"><%= inspect(err) %></p>
+        <button
+          phx-click="cancel-upload"
+          phx-value-ref={entry.ref}
+          aria-label="cancel"
+          class="shrink-0 p-2 text-neutral-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+        >
+          <.icon name="hero-x-mark" class="w-5 h-5" />
+        </button>
+      </article>
     <% end %>
+  </div>
 
-    <figure>
-      <%!-- Phoenix.Component.live_img_preview/2 renders a client-side preview --%>
-      <.live_img_preview entry={entry} />
-      <figcaption><%= entry.client_name %></figcaption>
-    </figure>
-  </article>
-<% end %>
-
-</section>
+  <%!-- Errors --%>
+  <div class="mt-4 space-y-2">
+    <%= for err <- upload_errors(@uploads.picture) do %>
+      <p class="flex items-center gap-2 text-sm text-red-600 bg-red-50 px-4 py-3 rounded-lg">
+        <.icon name="hero-exclamation-triangle" class="w-4 h-4 shrink-0" />
+        <%= inspect(err) %>
+      </p>
+    <% end %>
+  </div>
+</div>

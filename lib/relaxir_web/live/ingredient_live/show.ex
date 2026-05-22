@@ -10,7 +10,19 @@ defmodule RelaxirWeb.IngredientLive.Show do
 
   @impl true
   def handle_params(%{"id" => id}, _, socket) do
-    ingredient = Ingredients.get_ingredient!(id) |> Relaxir.Repo.preload([:parent_ingredient, :child_ingredients])
+    # Preload up to 4 levels of parent hierarchy for breadcrumb display
+    ingredient = Ingredients.get_ingredient!(id) |> Relaxir.Repo.preload([
+      :child_ingredients,
+      parent_ingredient: [
+        :parent_ingredient,
+        parent_ingredient: [
+          :parent_ingredient,
+          parent_ingredient: [
+            :parent_ingredient
+          ]
+        ]
+      ]
+    ])
     recipes = Ingredients.get_recipes_for_ingredient(ingredient)
 
     slug =

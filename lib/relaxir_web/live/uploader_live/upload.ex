@@ -9,7 +9,7 @@ defmodule RelaxirWeb.UploadLive do
       |> assign(:upload_image_filename, upload_image_filename)
       |> assign(:upload_redirect, upload_redirect)
       |> assign(:uploaded_files, [])
-      |> allow_upload(:picture, accept: ~w(.jpg .jpeg .png), max_entries: 1)
+      |> allow_upload(:picture, accept: ~w(.jpg .jpeg .png .avif), max_entries: 1)
     }
   end
 

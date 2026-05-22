@@ -65,7 +65,7 @@ defmodule RelaxirWeb.UploadLiveTest do
 
         _ ->
           # Verify the upload entry exists
-          assert has_element?(lv, "figure", "test-image.jpg")
+          assert has_element?(lv, ".upload-entry", "test-image.jpg")
 
           # Get the ref of the uploaded entry
           ref =
@@ -80,7 +80,7 @@ defmodule RelaxirWeb.UploadLiveTest do
           render_hook(lv, "cancel-upload", %{"ref" => ref})
 
           # Verify the upload entry is removed
-          refute has_element?(lv, "figure", "test-image.jpg")
+          refute has_element?(lv, ".upload-entry", "test-image.jpg")
       end
     end
   end

@@ -13,7 +13,7 @@ defmodule RelaxirWeb.IngredientLive.Index do
 
   @impl true
   def handle_params(_params, _url, socket) do
-    ingredients = Ingredients.list_ingredients()
+    ingredients = Ingredients.list_pure_ingredients()
 
     ingredient_ids = Enum.map(ingredients, & &1.id)
     ingredient_recipes = Ingredients.get_recipes_for_ingredients(ingredient_ids)

@@ -46,6 +46,21 @@ defmodule Relaxir.Ingredients do
     Repo.all(query)
   end
 
+  def list_pure_ingredients() do
+    query =
+      from i in Ingredient,
+        where: is_nil(i.parent_ingredient_id),
+        where:
+          fragment(
+            "NOT EXISTS (SELECT 1 FROM recipe_ingredients WHERE ingredient_id = ?)",
+            i.id
+          ),
+        preload: [[parent_ingredient: :parent_ingredient, child_ingredients: :child_ingredients]],
+        order_by: [asc: :name]
+
+    Repo.all(query)
+  end
+
   def list_ingredients_missing_singular() do
     query =
       from i in Ingredient,

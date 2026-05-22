@@ -32,23 +32,6 @@
         </.link>
       </div>
 
-      <%!-- Sub-ingredients --%>
-      <%= if ingredient.child_ingredients && ingredient.child_ingredients != [] do %>
-        <div class="mb-3">
-          <div class="text-xs text-neutral-500 uppercase tracking-wider mb-1">Includes</div>
-          <div class="flex flex-wrap gap-1">
-            <%= for child <- ingredient.child_ingredients do %>
-              <.link
-                href={~p"/ingredients/#{child.id}/#{child.name}"}
-                class="text-sm px-2 py-1 bg-amber-50 text-amber-700 rounded-full hover:bg-amber-100 transition-colors"
-              >
-                <%= String.capitalize(child.name) %>
-              </.link>
-            <% end %>
-          </div>
-        </div>
-      <% end %>
-
       <%!-- Recipes using this ingredient --%>
       <% recipes = Map.get(@ingredient_recipes, ingredient.id, []) %>
       <%= if recipes != [] do %>

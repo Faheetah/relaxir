@@ -1,43 +1,106 @@
-<div class="text-6xl text-center font-medium font-serif mb-16">
-    <%= String.capitalize(@ingredient.name) %>
+<div class="lg:w-11/12 mx-auto">
+  <%!-- header --%>
+  <div class="grid grid-cols-2 pb-8">
+    <div class="px-4 lg:px-0 col col-span-2 lg:col-span-1 order-last lg:order-first lg:mr-12 space-y-4 lg:space-y-8 mb-8">
+      <%!-- breadcrumb --%>
+      <div class="text-sm">
+        <.link href={~p"/ingredients"} class="hover:underline decoration-amber-600 underline-offset-2">
+          INGREDIENTS
+        </.link>
 
-    <%= if @current_user do %>
-    <.link patch={~p"/ingredients/#{@ingredient.id}/edit"} phx-click={JS.push_focus()}>
-      <.icon name="hero-pencil-square" class="text-neutral-300 hover:text-neutral-400" />
-    </.link>
-    <.link phx-click={JS.push("delete", value: %{id: @ingredient.id})} data-confirm={"Really delete #{@ingredient.name}?"}>
-      <.icon name="hero-trash" class="text-neutral-300 hover:text-neutral-400" />
-    </.link>
-    <% end %>
-</div>
+        <%= if @ingredient.parent_ingredient do %>
+          <% path =
+            @ingredient
+            |> Stream.unfold(fn ing ->
+              if ing.parent_ingredient, do: {ing.parent_ingredient, ing.parent_ingredient}, else: nil
+            end)
+            |> Enum.take(10)
+            |> Enum.reverse()
+          %>
+          <%= for parent <- path do %>
+            <span class="text-amber-600">></span>
+            <.link href={~p"/ingredients/#{parent.id}/#{String.downcase(parent.name)}"} class="hover:underline decoration-amber-600 underline-offset-2">
+              <%= String.upcase(parent.name) %>
+            </.link>
+          <% end %>
+        <% end %>
+        <span class="text-amber-600">></span>
+        <span class="font-medium"><%= String.upcase(@ingredient.name) %></span>
+      </div>
 
-<%!-- Parent ingredient hierarchy --%>
-<%= if @ingredient.parent_ingredient do %>
-<div class="text-center mb-8">
-  <div class="text-sm text-neutral-500 mb-2">Part of</div>
-  <div class="inline-flex items-center gap-2 px-4 py-2 bg-neutral-100 rounded-full">
-    <.link navigate={~p"/ingredients/#{@ingredient.parent_ingredient.id}/#{String.downcase(@ingredient.parent_ingredient.name)}"} class="text-amber-600 hover:text-amber-700 font-medium">
-      <%= String.capitalize(@ingredient.parent_ingredient.name) %>
-    </.link>
-    <%= if @ingredient.parent_ingredient.parent_ingredient do %>
-      <span class="text-neutral-400">→</span>
-      <.link navigate={~p"/ingredients/#{@ingredient.parent_ingredient.parent_ingredient.id}/#{String.downcase(@ingredient.parent_ingredient.parent_ingredient.name)}"} class="text-amber-600 hover:text-amber-700 font-medium">
-        <%= String.capitalize(@ingredient.parent_ingredient.parent_ingredient.name) %>
-      </.link>
-    <% end %>
+      <%!-- title --%>
+      <div class="text-3xl lg:text-4xl space-y-4 text-center lg:text-left">
+        <div class="font-bold font-serif space-x-2">
+          <%= String.capitalize(@ingredient.name) %>
+
+          <%= if @current_user do %>
+          <.link patch={~p"/ingredients/#{@ingredient.id}/edit"} phx-click={JS.push_focus()}>
+            <.icon name="hero-pencil-square" class="text-neutral-300 hover:text-neutral-400" />
+          </.link>
+          <.link phx-click={JS.push("delete", value: %{id: @ingredient.id})} data-confirm={"Really delete #{@ingredient.name}?"}>
+            <.icon name="hero-trash" class="text-neutral-300 hover:text-neutral-400" />
+          </.link>
+          <% end %>
+        </div>
+      </div>
+
+      <%!-- description --%>
+      <%= if @ingredient.description do %>
+      <div class="lg:text-lg"><%= @ingredient.description %></div>
+      <% end %>
+    </div>
+
+    <%!-- image --%>
+    <div class="col col-span-2 lg:col-span-1 order-first lg:order-last print:hidden">
+      <div class="relative">
+          <%= if @current_user && @current_user.is_admin do %>
+          <div class="opacity-0 hover:opacity-70">
+            <.link
+              class="flex absolute bg-neutral-900 w-full h-full text-white text-4xl"
+              navigate={~p"/images/#{@ingredient}/upload?#{%{redirect: "/ingredients/#{@ingredient.id}/upload", path: @ingredient.image_filename || ""}}"}
+            >
+              <span class="place-self-center text-center w-full">Upload an image</span>
+            </.link>
+          </div>
+          <% end %>
+
+          <%= if @ingredient.image_filename do %>
+            <img src={"/uploads/#{@ingredient.image_filename}-full.jpg"}>
+          <% else %>
+            <img src="/images/default-full.jpg" class="w-full">
+          <% end %>
+      </div>
+    </div>
   </div>
 </div>
-<% end %>
 
-<%!-- Child ingredients --%>
+<%!-- Child ingredients grid --%>
 <%= if @ingredient.child_ingredients && @ingredient.child_ingredients != [] do %>
-<div class="text-center mb-8">
-  <div class="text-sm text-neutral-500 mb-2">Includes</div>
-  <div class="flex flex-wrap justify-center gap-2">
+<div class="mb-12">
+  <div class="text-2xl text-center font-medium font-serif mb-6">Sub-Ingredients</div>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
     <%= for child <- @ingredient.child_ingredients do %>
-      <.link navigate={~p"/ingredients/#{child.id}/#{String.downcase(child.name)}"} class="px-4 py-2 bg-amber-100 text-amber-800 rounded-full hover:bg-amber-200 transition-colors">
-        <%= String.capitalize(child.name) %>
-      </.link>
+      <div id={"ingredient-#{child.id}"} class="group">
+        <div class="relative overflow-hidden rounded-lg shadow-sm hover:shadow-md transition-shadow">
+          <div class="mx-6 lg:mx-0">
+            <.link href={~p"/ingredients/#{child.id}/#{child.name}"}>
+              <%= if Map.get(child, :image_filename) do %>
+                <img src={"/uploads/#{child.image_filename}-full.jpg"} class="w-full h-48 object-cover">
+              <% else %>
+                <img src="/images/default-full.jpg" class="w-full h-48 object-cover">
+              <% end %>
+            </.link>
+          </div>
+        </div>
+
+        <div class="mx-6 lg:mx-0 mt-3">
+          <div class="text-2xl tracking-tight leading-6 font-bold font-serif pb-2">
+            <.link href={~p"/ingredients/#{child.id}"} class="hover:text-amber-600 transition-colors">
+              <%= String.capitalize(child.name) %>
+            </.link>
+          </div>
+        </div>
+      </div>
     <% end %>
   </div>
 </div>
