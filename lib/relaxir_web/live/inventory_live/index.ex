@@ -9,7 +9,10 @@ defmodule RelaxirWeb.InventoryLive.Index do
      socket
      |> stream(:items, [])
      |> assign(:show_add_modal, false)
-     |> assign(:show_labels_modal, false)}
+     |> assign(:show_labels_modal, false)
+     |> assign(:filter_inventory_id, nil)
+     |> assign(:filter_restock_only, false)
+     |> assign(:filter_search, "")}
   end
 
   @impl true
@@ -17,7 +20,8 @@ defmodule RelaxirWeb.InventoryLive.Index do
     user_id = socket.assigns.current_user.id
     search_query = socket.assigns[:search_query] || ""
 
-    grouped_items = Inventory.get_items_grouped_by_parent(user_id)
+    filters = build_filters(socket.assigns)
+    grouped_items = Inventory.get_items_grouped_by_parent(user_id, filters)
     user_inventories = Inventory.list_inventory_labels(user_id)
 
     {
@@ -30,6 +34,64 @@ defmodule RelaxirWeb.InventoryLive.Index do
       |> assign(:search_results, [])
       |> assign(:form, to_form(%{"ingredient_search" => search_query}))
     }
+  end
+
+  defp build_filters(assigns) do
+    %{
+      inventory_id: assigns[:filter_inventory_id],
+      restock_only: assigns[:filter_restock_only] || false,
+      search: assigns[:filter_search]
+    }
+    |> Enum.reject(fn {_k, v} -> is_nil(v) or v == "" or v == false end)
+    |> Map.new()
+  end
+
+  defp refresh_grouped_items(socket, overrides) do
+    user_id = socket.assigns.current_user.id
+
+    current = %{
+      filter_inventory_id: socket.assigns.filter_inventory_id,
+      filter_restock_only: socket.assigns.filter_restock_only,
+      filter_search: socket.assigns.filter_search
+    }
+
+    assigns = Map.merge(current, overrides)
+    filters = build_filters(assigns)
+    Inventory.get_items_grouped_by_parent(user_id, filters)
+  end
+
+  @impl true
+  def handle_event("filter_inventory", %{"inventory_id" => inventory_id}, socket) do
+    inventory_id = if inventory_id == "", do: nil, else: inventory_id
+
+    socket =
+      socket
+      |> assign(:filter_inventory_id, inventory_id)
+      |> assign(:grouped_items, refresh_grouped_items(socket, %{filter_inventory_id: inventory_id}))
+
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_event("filter_restock", _params, socket) do
+    new_value = not (socket.assigns.filter_restock_only || false)
+
+    socket =
+      socket
+      |> assign(:filter_restock_only, new_value)
+      |> assign(:grouped_items, refresh_grouped_items(socket, %{filter_restock_only: new_value}))
+
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_event("filter_search", %{"value" => query}, socket) do
+    socket =
+      socket
+      |> assign(:filter_search, query)
+      |> assign(:grouped_items, refresh_grouped_items(socket, %{filter_search: query}))
+
+    {:noreply, socket}
   end
 
   @impl true
@@ -195,12 +257,9 @@ defmodule RelaxirWeb.InventoryLive.Index do
 
     case Inventory.update_item_amount(item, 1) do
       {:ok, _updated_item} ->
-        user_id = socket.assigns.current_user.id
-        grouped_items = Inventory.get_items_grouped_by_parent(user_id)
-
         {:noreply,
          socket
-         |> assign(:grouped_items, grouped_items)}
+         |> assign(:grouped_items, refresh_grouped_items(socket, %{}))}
 
       {:error, changeset} ->
         {:noreply,
@@ -215,12 +274,9 @@ defmodule RelaxirWeb.InventoryLive.Index do
 
     case Inventory.update_item_amount(item, -1) do
       {:ok, _updated_item} ->
-        user_id = socket.assigns.current_user.id
-        grouped_items = Inventory.get_items_grouped_by_parent(user_id)
-
         {:noreply,
          socket
-         |> assign(:grouped_items, grouped_items)}
+         |> assign(:grouped_items, refresh_grouped_items(socket, %{}))}
 
       {:error, changeset} ->
         {:noreply,
@@ -234,13 +290,10 @@ defmodule RelaxirWeb.InventoryLive.Index do
     item = Inventory.get_item!(id)
     {:ok, _} = Inventory.delete_item(item)
 
-    user_id = socket.assigns.current_user.id
-    grouped_items = Inventory.get_items_grouped_by_parent(user_id)
-
     {:noreply,
      socket
      |> put_flash(:info, "Ingredient removed from inventory")
-     |> assign(:grouped_items, grouped_items)}
+     |> assign(:grouped_items, refresh_grouped_items(socket, %{}))}
   end
 
   @impl true
@@ -250,12 +303,9 @@ defmodule RelaxirWeb.InventoryLive.Index do
 
     case Inventory.update_item(item, %{inventory_id: inventory_id}) do
       {:ok, _updated_item} ->
-        user_id = socket.assigns.current_user.id
-        grouped_items = Inventory.get_items_grouped_by_parent(user_id)
-
         {:noreply,
          socket
-         |> assign(:grouped_items, grouped_items)}
+         |> assign(:grouped_items, refresh_grouped_items(socket, %{}))}
 
       {:error, changeset} ->
         {:noreply,
@@ -372,12 +422,9 @@ defmodule RelaxirWeb.InventoryLive.Index do
       item ->
         case Inventory.update_item_amount(item, 1) do
           {:ok, _updated_item} ->
-            user_id = socket.assigns.current_user.id
-            grouped_items = Inventory.get_items_grouped_by_parent(user_id)
-
             {:noreply,
              socket
-             |> assign(:grouped_items, grouped_items)}
+             |> assign(:grouped_items, refresh_grouped_items(socket, %{}))}
 
           {:error, _changeset} ->
             {:noreply, socket}
@@ -394,12 +441,9 @@ defmodule RelaxirWeb.InventoryLive.Index do
       item ->
         case Inventory.update_item_amount(item, -1) do
           {:ok, _updated_item} ->
-            user_id = socket.assigns.current_user.id
-            grouped_items = Inventory.get_items_grouped_by_parent(user_id)
-
             {:noreply,
              socket
-             |> assign(:grouped_items, grouped_items)}
+             |> assign(:grouped_items, refresh_grouped_items(socket, %{}))}
 
           {:error, _changeset} ->
             {:noreply, socket}
@@ -416,12 +460,9 @@ defmodule RelaxirWeb.InventoryLive.Index do
       item ->
         case Relaxir.Repo.delete(item) do
           {:ok, _} ->
-            user_id = socket.assigns.current_user.id
-            grouped_items = Inventory.get_items_grouped_by_parent(user_id)
-
             {:noreply,
              socket
-             |> assign(:grouped_items, grouped_items)}
+             |> assign(:grouped_items, refresh_grouped_items(socket, %{}))}
 
           {:error, _changeset} ->
             {:noreply, socket}
@@ -435,12 +476,9 @@ defmodule RelaxirWeb.InventoryLive.Index do
 
     case Inventory.update_item(item, %{inventory_id: inventory_id}) do
       {:ok, _updated_item} ->
-        user_id = socket.assigns.current_user.id
-        grouped_items = Inventory.get_items_grouped_by_parent(user_id)
-
         {:noreply,
          socket
-         |> assign(:grouped_items, grouped_items)}
+         |> assign(:grouped_items, refresh_grouped_items(socket, %{}))}
 
       {:error, _changeset} ->
         {:noreply, socket}
@@ -453,12 +491,9 @@ defmodule RelaxirWeb.InventoryLive.Index do
 
     case Inventory.toggle_item_restock(item) do
       {:ok, _updated_item} ->
-        user_id = socket.assigns.current_user.id
-        grouped_items = Inventory.get_items_grouped_by_parent(user_id)
-
         {:noreply,
          socket
-         |> assign(:grouped_items, grouped_items)}
+         |> assign(:grouped_items, refresh_grouped_items(socket, %{}))}
 
       {:error, _changeset} ->
         {:noreply, socket}
@@ -467,11 +502,8 @@ defmodule RelaxirWeb.InventoryLive.Index do
 
   @impl true
   def handle_info({RelaxirWeb.InventoryLive.FormComponent, {:saved, _item}}, socket) do
-    user_id = socket.assigns.current_user.id
-    grouped_items = Inventory.get_items_grouped_by_parent(user_id)
-
     {:noreply,
      socket
-     |> assign(:grouped_items, grouped_items)}
+     |> assign(:grouped_items, refresh_grouped_items(socket, %{}))}
   end
 end

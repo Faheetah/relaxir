@@ -212,16 +212,67 @@ defmodule Relaxir.Inventory do
 
   """
   def get_items_grouped_by_parent(user_id) do
-    items =
+    get_items_grouped_by_parent(user_id, %{})
+  end
+
+  @doc """
+  Groups items by their top-level parent ingredient with optional filters.
+
+  Filters:
+    - `:inventory_id` - filter by inventory label ID (nil for unlabeled)
+    - `:restock_only` - when true, only show items with restock=true
+    - `:search` - text search on item name or ingredient name
+
+  ## Examples
+
+      iex> get_items_grouped_by_parent(123, %{inventory_id: 1, restock_only: true, search: "apple"})
+      %{"Fruits" => [%Item{ingredient: %Ingredient{name: "apple"}}]}
+
+  """
+  def get_items_grouped_by_parent(user_id, filters) do
+    query =
       Item
       |> where([i], i.user_id == ^user_id)
+      |> apply_inventory_filter(filters[:inventory_id])
+      |> apply_restock_filter(filters[:restock_only])
+      |> apply_search_filter(filters[:search])
       |> preload(^@item_preloads)
       |> order_by([i], asc: i.inserted_at)
-      |> Repo.all()
+
+    items = Repo.all(query)
 
     Enum.group_by(items, fn item ->
       get_top_level_parent_name(item.ingredient)
     end)
+  end
+
+  defp apply_inventory_filter(query, nil), do: query
+  defp apply_inventory_filter(query, ""), do: query
+
+  defp apply_inventory_filter(query, "unlabeled") do
+    where(query, [i], is_nil(i.inventory_id))
+  end
+
+  defp apply_inventory_filter(query, inventory_id) when is_binary(inventory_id) do
+    apply_inventory_filter(query, String.to_integer(inventory_id))
+  end
+
+  defp apply_inventory_filter(query, inventory_id) do
+    where(query, [i], i.inventory_id == ^inventory_id)
+  end
+
+  defp apply_restock_filter(query, true), do: where(query, [i], i.restock == true)
+  defp apply_restock_filter(query, _), do: query
+
+  defp apply_search_filter(query, nil), do: query
+  defp apply_search_filter(query, ""), do: query
+
+  defp apply_search_filter(query, search) do
+    search_pattern = "%#{search}%"
+
+    query
+    |> join(:left, [i], ing in assoc(i, :ingredient))
+    |> where([i, ing], ilike(i.name, ^search_pattern) or ilike(ing.name, ^search_pattern))
   end
 
   defp get_top_level_parent_name(ingredient) do

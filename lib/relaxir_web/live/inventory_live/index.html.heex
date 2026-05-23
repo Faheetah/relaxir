@@ -52,6 +52,93 @@
   </div>
 </div>
 
+<%!-- Filters --%>
+<div class="mt-6 mb-4 space-y-4">
+  <%!-- Inventory type radio filters --%>
+  <div class="flex flex-wrap items-center gap-2">
+    <span class="text-sm font-medium text-gray-600 mr-1">Inventory:</span>
+    <button
+      type="button"
+      phx-click="filter_inventory"
+      phx-value-inventory_id=""
+      class={[
+        "px-3 py-1.5 rounded-full text-sm font-medium border transition-colors cursor-pointer",
+        if(is_nil(@filter_inventory_id),
+          do: "bg-amber-500 border-amber-500 text-white",
+          else: "bg-white border-gray-300 text-gray-700 hover:border-amber-400"
+        )
+      ]}
+    >
+      All
+    </button>
+
+    <button
+      type="button"
+      phx-click="filter_inventory"
+      phx-value-inventory_id="unlabeled"
+      class={[
+        "px-3 py-1.5 rounded-full text-sm font-medium border transition-colors cursor-pointer",
+        if(@filter_inventory_id == "unlabeled",
+          do: "bg-amber-500 border-amber-500 text-white",
+          else: "bg-white border-gray-300 text-gray-700 hover:border-amber-400"
+        )
+      ]}
+    >
+      Unlabeled
+    </button>
+
+    <%= for inventory <- @user_inventories do %>
+      <button
+        type="button"
+        phx-click="filter_inventory"
+        phx-value-inventory_id={inventory.id}
+        class={[
+          "px-3 py-1.5 rounded-full text-sm font-medium border transition-colors flex items-center gap-1.5 cursor-pointer",
+          if(@filter_inventory_id == "#{inventory.id}",
+            do: "bg-amber-500 border-amber-500 text-white",
+            else: "bg-white border-gray-300 text-gray-700 hover:border-amber-400"
+          )
+        ]}
+      >
+        <.inventory_icon type={inventory.icon || "shelf"} class="w-4 h-4" />
+        <%= inventory.name %>
+      </button>
+    <% end %>
+  </div>
+
+  <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+    <%!-- Shopping list toggle --%>
+    <button
+      type="button"
+      phx-click="filter_restock"
+      class={[
+        "px-4 py-2 rounded-lg text-sm font-medium border transition-colors flex items-center gap-2",
+        if(@filter_restock_only,
+          do: "bg-amber-500 border-amber-500 text-white",
+          else: "bg-white border-gray-300 text-gray-700 hover:border-amber-400"
+        )
+      ]}
+    >
+      <.icon name="hero-shopping-cart" class="h-4 w-4" />
+      <%= if @filter_restock_only, do: "Shopping List", else: "Show Shopping List" %>
+    </button>
+
+    <%!-- Text search --%>
+    <div class="relative flex-1 w-full sm:max-w-xs">
+      <.icon name="hero-magnifying-glass" class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+      <input
+        type="text"
+        name="filter_search"
+        value={@filter_search}
+        placeholder="Search items..."
+        phx-keyup="filter_search"
+        phx-debounce="300"
+        class="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+      />
+    </div>
+  </div>
+</div>
+
 <div>
   <%!-- Add Modal --%>
   <%= if @show_add_modal do %>
