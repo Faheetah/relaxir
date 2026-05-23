@@ -149,6 +149,24 @@ defmodule Relaxir.Inventory do
   end
 
   @doc """
+  Toggles the restock flag on an item.
+
+  ## Examples
+
+      iex> toggle_item_restock(item)
+      {:ok, %Item{restock: true}}
+
+      iex> toggle_item_restock(item)
+      {:ok, %Item{restock: false}}
+
+  """
+  def toggle_item_restock(%Item{} = item) do
+    item
+    |> Ecto.Changeset.change(restock: not item.restock)
+    |> Repo.update()
+  end
+
+  @doc """
   Deletes an item.
 
   ## Examples

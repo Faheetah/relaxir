@@ -68,6 +68,10 @@
     <% end %>
 
     <%= if @current_user do %>
+      <.link href={~p"/inventory"} class="flex px-8 py-4 hover:bg-neutral-200">
+        <div class="flex-auto">INVENTORY</div>
+      </.link>
+
       <.link href={~p"/recipes/new"} class="flex px-8 py-4 hover:bg-neutral-200">
         <div class="flex-auto">ADD RECIPE</div>
       </.link>

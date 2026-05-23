@@ -31,7 +31,7 @@ defmodule RelaxirWeb.InventoryLive.InventoryTileComponent do
               type="button"
               phx-click={if @show_inventory_overlay, do: "hide_inventory_overlay", else: "show_inventory_overlay"}
               phx-target={@myself}
-              class="w-10 h-8 flex items-center justify-center bg-white/20 hover:bg-white/30 text-gray-200 rounded transition-colors"
+              class="w-10 h-8 flex items-center justify-center bg-white/20 hover:bg-white/30 text-gray-200 rounded-full transition-colors"
               title="Change inventory"
             >
               <%= if @item.inventory do %>
@@ -103,49 +103,68 @@ defmodule RelaxirWeb.InventoryLive.InventoryTileComponent do
           </div>
         </div>
 
-        <%!-- Bottom section: + and - buttons with count BETWEEN them --%>
+        <%!-- Bottom section: +/- buttons on left, shopping cart on right --%>
         <div class="flex justify-between items-center">
-          <%!-- Decrement button (left) --%>
-          <button
-            type="button"
-            phx-click="decrement"
-            phx-target={@myself}
-            class="w-10 h-8 flex items-center justify-center bg-white/20 hover:bg-white/30 text-white rounded-full disabled:opacity-30 disabled:cursor-not-allowed transition-all"
-            disabled={@item.amount == 0}
-            title="Decrease amount"
-          >
-            <.icon name="hero-minus" class="h-4 w-4" />
-          </button>
+          <%!-- Decrement and Increment buttons (left) --%>
+          <div class="flex items-center gap-2">
+            <button
+              type="button"
+              phx-click="decrement"
+              phx-target={@myself}
+              class="w-10 h-8 flex items-center justify-center bg-white/20 hover:bg-white/30 text-white rounded-full disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+              disabled={@item.amount == 0}
+              title="Decrease amount"
+            >
+              <.icon name="hero-minus" class="h-4 w-4" />
+            </button>
 
-          <%!-- Amount display in the middle --%>
-          <div class="flex flex-col items-center justify-center flex-1 px-2">
-            <div class={[
-              "text-4xl font-normal drop-shadow-lg",
-              if(@item.amount == 0, do: "text-red-500", else: "text-white")
-            ]}>
-              <%= @item.amount %>
+            <%!-- Amount display --%>
+            <div class="flex flex-col items-center justify-center px-2 w-14">
+              <div class={[
+                "text-4xl font-normal drop-shadow-lg tabular-nums text-center",
+                if(@item.amount == 0, do: "text-red-500", else: "text-white")
+              ]}>
+                <%= @item.amount %>
+              </div>
+              <%= if @item.unit do %>
+                <div class="text-sm text-white drop-shadow-lg">
+                  <%= @item.unit.abbreviation || @item.unit.name %>
+                </div>
+              <% end %>
+              <%= if @item.note && @item.note != "" do %>
+                <div class="text-xs text-white italic truncate drop-shadow-lg mt-1">
+                  "<%= @item.note %>"
+                </div>
+              <% end %>
             </div>
-            <%= if @item.unit do %>
-              <div class="text-sm text-white drop-shadow-lg">
-                <%= @item.unit.abbreviation || @item.unit.name %>
-              </div>
-            <% end %>
-            <%= if @item.note && @item.note != "" do %>
-              <div class="text-xs text-white italic truncate drop-shadow-lg mt-1">
-                "<%= @item.note %>"
-              </div>
-            <% end %>
+
+            <button
+              type="button"
+              phx-click="increment"
+              phx-target={@myself}
+              class="w-10 h-8 flex items-center justify-center bg-white/20 hover:bg-white/30 text-white rounded-full transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+              disabled={@item.amount >= 99}
+              title="Increase amount"
+            >
+              <.icon name="hero-plus" class="h-4 w-4" />
+            </button>
           </div>
 
-          <%!-- Increment button (right) --%>
+          <%!-- Shopping cart button (right) --%>
           <button
             type="button"
-            phx-click="increment"
+            phx-click="toggle_restock"
             phx-target={@myself}
-            class="w-10 h-8 flex items-center justify-center bg-white/20 hover:bg-white/30 text-white rounded-full transition-all"
-            title="Increase amount"
+            class={[
+              "w-10 h-8 flex items-center justify-center rounded-full transition-all",
+              if(@item.restock,
+                do: "bg-amber-500/80 hover:bg-amber-500 text-white",
+                else: "bg-white/20 hover:bg-white/30 text-white"
+              )
+            ]}
+            title={if(@item.restock, do: "Remove from restock list", else: "Add to restock list")}
           >
-            <.icon name="hero-plus" class="h-4 w-4" />
+            <.icon name="hero-shopping-cart" class="h-5 w-5" />
           </button>
         </div>
       </div>
@@ -188,5 +207,12 @@ defmodule RelaxirWeb.InventoryLive.InventoryTileComponent do
 
     send(self(), {:change_inventory, item.id, inventory_id})
     {:noreply, assign(socket, :show_inventory_overlay, false)}
+  end
+
+  @impl true
+  def handle_event("toggle_restock", _params, socket) do
+    item = socket.assigns.item
+    send(self(), {:toggle_restock, item.id})
+    {:noreply, socket}
   end
 end

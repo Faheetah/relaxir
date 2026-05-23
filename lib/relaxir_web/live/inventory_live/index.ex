@@ -366,6 +366,9 @@ defmodule RelaxirWeb.InventoryLive.Index do
       nil ->
         {:noreply, socket}
 
+      item when item.amount >= 99 ->
+        {:noreply, socket}
+
       item ->
         case Inventory.update_item_amount(item, 1) do
           {:ok, _updated_item} ->
@@ -431,6 +434,24 @@ defmodule RelaxirWeb.InventoryLive.Index do
     item = Inventory.get_item!(id)
 
     case Inventory.update_item(item, %{inventory_id: inventory_id}) do
+      {:ok, _updated_item} ->
+        user_id = socket.assigns.current_user.id
+        grouped_items = Inventory.get_items_grouped_by_parent(user_id)
+
+        {:noreply,
+         socket
+         |> assign(:grouped_items, grouped_items)}
+
+      {:error, _changeset} ->
+        {:noreply, socket}
+    end
+  end
+
+  @impl true
+  def handle_info({:toggle_restock, id}, socket) do
+    item = Inventory.get_item!(id)
+
+    case Inventory.toggle_item_restock(item) do
       {:ok, _updated_item} ->
         user_id = socket.assigns.current_user.id
         grouped_items = Inventory.get_items_grouped_by_parent(user_id)

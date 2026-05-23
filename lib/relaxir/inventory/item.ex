@@ -11,6 +11,7 @@ defmodule Relaxir.Inventory.Item do
     field :name, :string
     field :amount, :integer, default: 0
     field :note, :string
+    field :restock, :boolean, default: false
 
     belongs_to :user, User
     belongs_to :ingredient, Ingredient
@@ -23,7 +24,7 @@ defmodule Relaxir.Inventory.Item do
   @doc false
   def changeset(item, attrs) do
     item
-    |> cast(attrs, [:user_id, :ingredient_id, :unit_id, :inventory_id, :name, :amount, :note])
+    |> cast(attrs, [:user_id, :ingredient_id, :unit_id, :inventory_id, :name, :amount, :note, :restock])
     |> validate_required([:user_id, :ingredient_id, :amount])
     |> validate_number(:amount, greater_than_or_equal_to: 0)
     |> foreign_key_constraint(:user_id)
