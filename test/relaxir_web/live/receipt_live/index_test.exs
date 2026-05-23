@@ -1,7 +1,7 @@
 defmodule RelaxirWeb.ReceiptLive.IndexTest do
   use RelaxirWeb.ConnCase, async: true
 
-  describe "Receipt plan" do
+  describe "Receipt" do
     test "requires authentication", %{conn: conn} do
       conn = get(conn, ~p"/receipt")
       assert redirected_to(conn) == ~p"/users/log_in"
@@ -13,12 +13,12 @@ defmodule RelaxirWeb.ReceiptLive.IndexTest do
     end
   end
 
-  describe "Receipt plan for authenticated user" do
+  describe "Receipt for authenticated user" do
     setup :register_and_log_in_user
 
-    test "renders receipt plan page", %{conn: conn} do
+    test "renders receipt page", %{conn: conn} do
       conn = get(conn, ~p"/receipt")
-      assert html_response(conn, 200) =~ "Receipt Plan"
+      assert html_response(conn, 200) =~ "Receipt"
     end
 
     test "upload route works with required parameters", %{conn: conn} do

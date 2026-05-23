@@ -8,7 +8,7 @@
 
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
     <!-- Left column: Upload and instructions -->
-    <div class="bg-white rounded-lg shadow p-6 min-h-0 overflow-auto">
+    <div class="bg-white rounded-lg shadow p-6">
       <h2 class="text-xl font-semibold text-gray-800 mb-4">Scan Receipt</h2>
 
       <div :if={is_nil(@image_filename)} class="mb-6">
@@ -36,11 +36,13 @@
         <div class="text-center">
           <!-- Display the receipt image -->
           <div class="mb-6">
-            <img
-              src={@image_url}
-              alt="Uploaded receipt"
-              class="w-full h-auto rounded-lg shadow-lg border border-gray-200"
-            />
+            <div class="rounded-lg shadow-lg border border-gray-200 bg-gray-50 overflow-hidden">
+              <img
+                src={@image_url}
+                alt="Uploaded receipt"
+                class="w-full h-auto max-w-full object-contain"
+              />
+            </div>
           </div>
 
           <!-- Reupload button -->

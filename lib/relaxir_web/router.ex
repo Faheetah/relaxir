@@ -63,7 +63,7 @@ defmodule RelaxirWeb.Router do
       # Inventory routes
       live "/inventory", InventoryLive.Index, :index
 
-      # Receipt plan routes
+      # Receipt routes
       live "/receipt", ReceiptLive.Index, :index
 
       # Callback for image uploads to update the image_filepath
