@@ -44,8 +44,7 @@ defmodule RelaxirWeb.InventoryLive.InventoryTileComponent do
             <%!-- Inventory overlay --%>
             <%= if @show_inventory_overlay do %>
               <div
-                class="fixed bg-white/95 rounded-lg shadow-lg border z-[9999] min-w-[140px] max-h-48 overflow-y-auto"
-                style="transform: translateY(4px);"
+                class="absolute top-full left-0 mt-1 bg-white/95 rounded-lg shadow-lg border z-[9999] min-w-[140px]"
                 phx-click-away="hide_inventory_overlay"
                 phx-target={@myself}
                 id="inventory-overlay-{@item.id}"
