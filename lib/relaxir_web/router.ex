@@ -63,10 +63,16 @@ defmodule RelaxirWeb.Router do
       # Inventory routes
       live "/inventory", InventoryLive.Index, :index
 
+      # Receipt plan routes
+      live "/receipt", ReceiptLive.Index, :index
+
       # Callback for image uploads to update the image_filepath
       live "/recipes/:id/upload", RecipeLive.Upload, :upload
       live "/categories/:id/upload", CategoryLive.Upload, :upload
       live "/ingredients/:id/upload", IngredientLive.Upload, :upload
+
+      # Receipt upload - uses dummy filename since we're not updating an existing record
+      live "/receipts/upload", UploadLive, :new, as: :receipt_upload
 
       scope "/", as: :uploads do
         live "/images/:id/upload", UploadLive, :new

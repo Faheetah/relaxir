@@ -47,8 +47,18 @@
       phx-click="open_labels_modal"
       class="w-full px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white font-medium rounded-lg flex items-center justify-center"
     >
+      <.icon name="hero-folder" class="h-4 w-4 mr-2" />
       Manage Inventories
     </button>
+
+    <%!-- Scan Receipt button --%>
+    <.link
+      navigate={~p"/receipts/upload?path=&redirect=/receipt"}
+      class="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg flex items-center justify-center mt-2"
+    >
+      <.icon name="hero-document" class="h-4 w-4 mr-2" />
+      Scan Receipt
+    </.link>
   </div>
 </div>
 

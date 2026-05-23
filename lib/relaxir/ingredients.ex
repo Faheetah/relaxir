@@ -210,16 +210,142 @@ defmodule Relaxir.Ingredients do
   Returns full Ingredient structs so we can use their names.
   """
   def search_ingredients_fuzzy(query) when is_binary(query) and byte_size(query) > 0 do
-    search_term = "%#{query}%"
+    query_lower = String.downcase(query)
+    query_words = String.split(query_lower, ~r/\s+/)
 
-    from(
-      i in Ingredient,
-      where: ilike(i.name, ^search_term),
-      order_by: [asc: i.name],
-      limit: 8
-    )
-    |> Repo.all()
+    # First, try exact case-insensitive match
+    exact_match =
+      from(
+        i in Ingredient,
+        where: ilike(i.name, ^query),
+        limit: 1
+      )
+      |> Repo.all()
+
+    # If we have exact match, return it
+    if exact_match != [] do
+      exact_match
+    else
+      # Otherwise, do broader substring search
+      search_term = "%#{query}%"
+
+      # Get substring matches
+      substring_matches =
+        from(
+          i in Ingredient,
+          where: ilike(i.name, ^search_term),
+          limit: 20
+        )
+        |> Repo.all()
+
+      # If we have substring matches, sort them by similarity
+      if substring_matches != [] do
+        substring_matches
+        |> Enum.sort_by(fn ingredient ->
+          name = String.downcase(ingredient.name)
+          name_words = String.split(name, ~r/\s+/)
+
+          # Calculate similarity score
+          score = calculate_similarity_score(query_lower, query_words, name, name_words)
+          -score  # Negative for descending sort
+        end)
+        |> Enum.take(8)
+      else
+        # If no substring matches, try word-by-word similarity
+        # Get all ingredients and find the most similar ones
+        all_ingredients =
+          from(
+            i in Ingredient,
+            limit: 100
+          )
+          |> Repo.all()
+
+        all_ingredients
+        |> Enum.sort_by(fn ingredient ->
+          name = String.downcase(ingredient.name)
+          name_words = String.split(name, ~r/\s+/)
+
+          # Calculate similarity score
+          score = calculate_similarity_score(query_lower, query_words, name, name_words)
+          -score  # Negative for descending sort
+        end)
+        |> Enum.take(8)
+      end
+    end
   end
 
   def search_ingredients_fuzzy(_), do: []
+
+  defp calculate_similarity_score(query, query_words, name, name_words) do
+    # 1. Check for exact word matches with better plural handling
+    word_match_score =
+      Enum.reduce(query_words, 0, fn query_word, acc ->
+        case Enum.find(name_words, fn name_word ->
+          # Better stemming for plural handling
+          stemmed_query = stem_word(query_word)
+          stemmed_name = stem_word(name_word)
+
+          # Check multiple matching possibilities
+          stemmed_query == stemmed_name ||
+          String.contains?(name_word, query_word) ||
+          String.contains?(query_word, name_word) ||
+          # Also check if singular matches plural
+          singular_matches_plural(query_word, name_word) ||
+          singular_matches_plural(name_word, query_word)
+        end) do
+          nil -> acc
+          _ -> acc + 1.0
+        end
+      end) / max(length(query_words), 1)
+
+    # 2. Jaro distance for overall similarity
+    jaro_score = String.jaro_distance(query, name)
+
+    # 3. Check if query is contained in name or vice versa
+    containment_score =
+      cond do
+        String.contains?(name, query) -> 0.5
+        String.contains?(query, name) -> 0.3
+        true -> 0.0
+      end
+
+    # Weighted combination of scores
+    (word_match_score * 0.5) + (jaro_score * 0.3) + (containment_score * 0.2)
+  end
+
+  defp stem_word(word) do
+    # Remove common plural endings to get base form
+    # Try different patterns in order of specificity
+    cond do
+      # Words ending in "ies" -> "y" (cherries -> cherry)
+      String.ends_with?(word, "ies") ->
+        String.replace_suffix(word, "ies", "y")
+      # Words ending in "es" where removing "es" gives valid word
+      # Check common patterns: potatoes -> potato, tomatoes -> tomato
+      String.ends_with?(word, "oes") ->
+        String.replace_suffix(word, "oes", "o")
+      String.ends_with?(word, "es") ->
+        String.replace_suffix(word, "es", "")
+      # Regular plural with "s"
+      String.ends_with?(word, "s") ->
+        String.replace_suffix(word, "s", "")
+      true ->
+        word
+    end
+  end
+
+  defp singular_matches_plural(singular, plural) do
+    # Check if singular word matches plural form
+    stemmed_plural = stem_word(plural)
+
+    # Direct match after stemming
+    singular == stemmed_plural ||
+    # Also check if plural is just singular + "s" or + "es"
+    plural == singular <> "s" ||
+    plural == singular <> "es" ||
+    # Handle irregular: potato -> potatoes (actually potato + "es")
+    (String.ends_with?(singular, "o") and plural == singular <> "es") ||
+    # Handle: tomato -> tomatoes
+    (String.ends_with?(singular, "to") and plural == singular <> "es")
+  end
 end

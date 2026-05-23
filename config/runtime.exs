@@ -4,6 +4,11 @@
 # remember to add this file to your .gitignore.
 import Config
 
+# AI API configuration for receipt scanning (applies to all environments)
+config :relaxir, :ai_api_endpoint, System.get_env("AI_API_ENDPOINT")
+config :relaxir, :ai_api_key, System.get_env("AI_API_KEY")
+config :relaxir, :ai_model, System.get_env("AI_MODEL")
+
 if config_env() == :prod do
   config :relaxir, Relaxir.Repo,
     url: System.fetch_env!("DATABASE_URL"),

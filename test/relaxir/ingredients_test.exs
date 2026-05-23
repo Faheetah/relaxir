@@ -317,5 +317,43 @@ defmodule Relaxir.IngredientsTest do
       results = Ingredients.search_ingredients_fuzzy("test")
       assert length(results) <= 8
     end
+
+    test "search_ingredients_fuzzy/1 matches plural to singular variations" do
+      # Create a potato ingredient with singular form
+      _potato = ingredient_fixture(%{name: "potato", singular: "potato"})
+
+      # Test that "potatoes brushed" matches "potato" (plural to singular)
+      results = Ingredients.search_ingredients_fuzzy("potatoes brushed")
+      assert is_list(results)
+      assert length(results) >= 1
+
+      # The first result should be "potato" or contain "potato"
+      first_result = hd(results)
+      assert String.contains?(String.downcase(first_result.name), "potato")
+
+      # Also test direct singular query
+      results2 = Ingredients.search_ingredients_fuzzy("potato")
+      assert is_list(results2)
+      assert length(results2) >= 1
+      assert Enum.any?(results2, fn i -> i.name == "potato" end)
+    end
+
+    test "search_ingredients_fuzzy/1 handles typos and word variations" do
+      # Create ingredients for testing
+      _tomatoes = ingredient_fixture(%{name: "tomatoes", singular: "tomato"})
+      _peppers = ingredient_fixture(%{name: "bell peppers", singular: "bell pepper"})
+
+      # Test typo "tomatos" should match "tomatoes"
+      results = Ingredients.search_ingredients_fuzzy("tomatos")
+      assert is_list(results)
+      assert length(results) >= 1
+      assert Enum.any?(results, fn i -> i.name == "tomatoes" end)
+
+      # Test "bell pepper" should match "bell peppers"
+      results2 = Ingredients.search_ingredients_fuzzy("bell pepper")
+      assert is_list(results2)
+      assert length(results2) >= 1
+      assert Enum.any?(results2, fn i -> i.name == "bell peppers" end)
+    end
   end
 end

@@ -26,6 +26,24 @@ defmodule Relaxir.Uploader do
 
   # sobelow_skip ["Traversal"]
   # Traversal is not possible due to dest coming from application config
+  def copy(path, dest, suffix) do
+    # Get the original file extension
+    ext = Path.extname(path)
+    # Ensure we have an extension (default to .jpg for images)
+    ext = if ext == "", do: ".jpg", else: ext
+    # Create filename with extension
+    image_filename = Path.join(dest, "#{Path.basename(path, ext)}-#{suffix}#{ext}")
+
+    # Simply copy the file without any conversion
+    File.copy!(path, image_filename)
+
+    :ok = File.chmod(image_filename, 0o644)
+
+    {:ok, image_filename}
+  end
+
+  # sobelow_skip ["Traversal"]
+  # Traversal is not possible due to dest coming from application config
   def remove_previous(dest, filename) when is_binary(filename) and filename != "" do
     File.rm(Path.join(dest, "#{filename}-full.jpg"))
   end
