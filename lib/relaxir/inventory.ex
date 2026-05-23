@@ -260,7 +260,8 @@ defmodule Relaxir.Inventory do
     # Search for ingredients matching query, excluding those already in items
     # Also exclude top-level category ingredients (those with no parent that have children)
     from(i in Ingredient,
-      left_join: c in Ingredient, on: c.parent_ingredient_id == i.id,
+      left_join: c in Ingredient,
+      on: c.parent_ingredient_id == i.id,
       where: ilike(i.name, ^"%#{query}%"),
       where: i.id not in ^existing_ingredient_ids,
       where: not is_nil(i.parent_ingredient_id) or is_nil(c.id),

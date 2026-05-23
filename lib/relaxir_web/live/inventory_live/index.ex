@@ -125,17 +125,16 @@ defmodule RelaxirWeb.InventoryLive.Index do
     # Get the selected value from the form params, or use search_query assign
     selected_value =
       socket.assigns.form.params["ingredient_search"] ||
-      socket.assigns.search_query ||
-      ""
+        socket.assigns.search_query ||
+        ""
 
     if selected_value == "" do
       {:noreply, put_flash(socket, :error, "Please select an ingredient first.")}
     else
       # Always do a fresh DB lookup - ignore cached search_results
       found =
-        Enum.find(search_results, fn ing ->
-          ing.name == selected_value || "#{ing.name} (#{ing.singular})" == selected_value
-        end) || Relaxir.Ingredients.get_ingredient_by_name(selected_value)
+        Enum.find(search_results, fn ing -> ing.name == selected_value end) ||
+          Relaxir.Ingredients.get_ingredient_by_name(selected_value)
 
       if is_nil(found) do
         {:noreply, put_flash(socket, :error, "Ingredient not found: #{selected_value}")}
@@ -319,11 +318,9 @@ defmodule RelaxirWeb.InventoryLive.Index do
     user_id = socket.assigns.current_user.id
     search_results = Inventory.search_ingredients_not_in_items(user_id, text)
 
-    # Format results for LiveSelect dropdown
-    options =
-      Enum.map(search_results, fn ingredient ->
-        "#{ingredient.name}" <> if ingredient.singular, do: " (#{ingredient.singular})", else: ""
-      end)
+    # Format results for LiveSelect dropdown - use ingredient name as value
+    # The singular is just for display, not part of the value
+    options = Enum.map(search_results, fn ingredient -> ingredient.name end)
 
     send_update(LiveSelect.Component, id: live_select_id, options: options, placeholder: "")
     {:noreply, assign(socket, :search_results, search_results)}

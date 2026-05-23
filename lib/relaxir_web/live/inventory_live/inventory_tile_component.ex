@@ -6,7 +6,7 @@ defmodule RelaxirWeb.InventoryLive.InventoryTileComponent do
   @impl true
   def render(assigns) do
     ~H"""
-    <div class="border rounded-lg shadow-sm hover:shadow-md transition-shadow relative aspect-square w-full max-w-[200px] mx-auto overflow-visible">
+    <div class="border rounded-lg shadow-sm hover:shadow-md transition-shadow relative aspect-square w-full overflow-visible">
       <%!-- Background image --%>
       <img
         src={
